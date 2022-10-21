@@ -123,13 +123,74 @@ create function trg_no_overlapping_blueprints_periodic()
 	returns trigger
 	language plpgsql
 as $$
-declare
 begin
-	
+	if exists (
+		select		*
+		from		periodicslotblueprints p
+		where		p.id <> NEW.id and
+					blueprints_overlap(p, NEW)
+	)
+	then
+		return NULL;
+	end if;
+
+	return NEW;
 end;$$;
 
 
-create trigger trg_no_overlapping_blueprints
+create trigger no_overlapping_blueprints
 before insert or update on periodicslotblueprints
 for each row
 execute function trg_no_overlapping_blueprints_periodic();
+
+
+
+create function trg_no_overlapping_blueprints_manual()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if exists (
+		select		*
+		from		manualslotblueprints m
+		where		m.id <> NEW.id and
+					blueprints_overlap(m, NEW)
+	)
+	then
+		return NULL;
+	end if;
+
+	return NEW;
+end;$$;
+
+
+create trigger no_overlapping_blueprints
+before insert or update on manualslotblueprints
+for each row
+execute function trg_no_overlapping_blueprints_manual();
+
+
+create function trg_no_overlapping_blueprints()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if exists (
+		select		*
+		from		slotblueprints b
+		where		b.id <> NEW.id and
+					blueprints_overlap(b, NEW)
+	)
+	then
+		return NULL;
+	end if;
+
+	return NEW;
+end;$$;
+
+
+create trigger no_overlapping_blueprints
+before insert or update on slotblueprints
+for each row
+execute function trg_no_overlapping_blueprints();
+
