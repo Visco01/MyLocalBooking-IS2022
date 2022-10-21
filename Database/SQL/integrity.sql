@@ -246,3 +246,89 @@ before insert or update on manualslots
 for each row
 execute function trg_no_overlapping_slots_manual();
 
+
+
+-------------------------------
+-- slots' date should be compatibile with their blueprint's date window
+-------------------------------
+
+create function trg_slot_date_in_date_window()
+	returns trigger
+	language plpgsql
+as $$
+	isperiodic boolean;
+	blueprintid int;
+	fromdate date;
+	todate date;
+begin
+	isperiodic = (perform id from periodicslots where blueprint = NEW.id);
+	if isperiodic
+	then
+		select		pb.id
+		into		blueprintid
+		from		periodicslots p
+					join periodicslotblueprints pb on pb.id = p.blueprint
+		where		p.id = NEW.id
+	else
+		select		mb.id
+		into		blueprintid
+		from		manualslots p
+					join manualslotblueprints mb on mb.id = p.blueprint
+		where		p.id = NEW.id
+	end if;
+
+	select fromdate, todate into fromdate, todate from slotblueprints where id = blueprintid;
+
+	if not (NEW.date between fromdate and todate)
+	then
+		if isperiodic
+		then
+			delete from periodicslots where id = NEW.id;
+		else
+			delete from manualslots where id = NEW.id;
+		end if;
+	end if;
+
+	return NULL;
+end;$$;
+
+create trigger slot_date_in_date_window
+after insert or update on slots
+for each row
+deferrable initially deferred
+execute function trg_slot_date_in_date_window();
+
+
+
+
+create function trg_slot_date_in_date_window_sub()
+	returns trigger
+	language plpgsql
+as $$
+	slotdate date;
+	fromdate date;
+	todate date;
+begin
+	select date into slotdate from slots where id = NEW.id;
+	select fromdate, todate into fromdate, todate from slotblueprints where id = NEW.blueprint;
+
+	if slotdate between fromdate and todate
+	then
+		return NEW;
+	end if;
+
+	return NULL;
+end;$$;
+
+
+create trigger slot_date_in_date_window
+before insert or update on periodicslots
+for each row
+execute function trg_slot_date_in_date_window_sub();
+
+create trigger slot_date_in_date_window
+before insert or update on manualslots
+for each row
+execute function trg_slot_date_in_date_window_sub();
+
+
