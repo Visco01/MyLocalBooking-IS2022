@@ -31,7 +31,7 @@ begin
 	return NEW;
 end;$$;
 
-create trigger trg_no_mixed_blueprints
+create trigger no_mixed_blueprints
 before insert or update on periodicslotblueprints
 for each row
 execute function trg_no_mixed_blueprints_periodic();
@@ -67,7 +67,7 @@ begin
 end;$$;
 
 
-create trigger trg_no_mixed_blueprints
+create trigger no_mixed_blueprints
 before insert or update on manualslotblueprints
 for each row
 execute function trg_no_mixed_blueprints_manual();
@@ -106,7 +106,7 @@ begin
 end;$$;
 
 
-create trigger trg_no_mixed_blueprints
+create trigger no_mixed_blueprints
 before update on slotblueprints
 for each row
 execute function trg_no_mixed_blueprints();
@@ -193,4 +193,56 @@ create trigger no_overlapping_blueprints
 before insert or update on slotblueprints
 for each row
 execute function trg_no_overlapping_blueprints();
+
+
+
+-------------------------------
+-- no overlapping slots
+-------------------------------
+
+
+create function trg_no_overlapping_slots_periodic()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if exists (
+		select		*
+		from		periodicslots p
+		where		p.id <> NEW.id and slots_overlap(p, NEW)
+	)
+	then
+		return NULL;
+	end if;
+
+	return NEW;
+end;$$;
+
+create trigger no_overlapping_slots
+before insert or update on periodicslots
+for each row
+execute function trg_no_overlapping_slots_periodic();
+
+
+create function trg_no_overlapping_slots_manual()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if exists (
+		select		*
+		from		manualslots m
+		where		m.id <> NEW.id and slots_overlap(m, NEW)
+	)
+	then
+		return NULL;
+	end if;
+
+	return NEW;
+end;$$;
+
+create trigger no_overlapping_slots
+before insert or update on manualslots
+for each row
+execute function trg_no_overlapping_slots_manual();
 
