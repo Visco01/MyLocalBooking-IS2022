@@ -437,16 +437,7 @@ create or replace function trg_no_unmatched_slot_blueprint_sub()
 	language plpgsql
 as $$
 begin
-	if not exists (
-		select * from periodicslotblueprints where id = OLD.id
-	)
-	and not exists (
-		select * from manualslotblueprints where id = OLD.id
-	)
-	then
-		delete from slotblueprints where id = OLD.id;
-	end if;
-
+	delete from slotblueprints where id = OLD.id;
 	return NULL;
 end;$$;
 
@@ -501,16 +492,7 @@ create or replace function trg_no_unmatched_slot_sub()
 	language plpgsql
 as $$
 begin
-	if not exists (
-		select * from periodicslots where id = OLD.id
-	)
-	and not exists (
-		select * from manualslots where id = OLD.id
-	)
-	then
-		delete from slots where id = OLD.id;
-	end if;
-
+	delete from slots where id = OLD.id;
 	return NULL;
 end;$$;
 
