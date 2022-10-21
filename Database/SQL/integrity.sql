@@ -511,6 +511,61 @@ execute function trg_no_unmatched_slot_sub();
 
 
 -------------------------------
+-- no unmatched appusers
+-------------------------------
+
+create or replace function trg_no_unmatched_appusers()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if not exists (
+		select * from clients where id = NEW.id
+	)
+	and not exists (
+		select * from providers where id = NEW.id
+	)
+	then
+		delete from appusers where id = NEW.id;
+		raise 'Cannot insert an unmatched appuser';
+	end if;
+
+	return NULL;
+end;$$;
+
+drop trigger if exists no_unmatched_appusers on appusers;
+create constraint trigger no_unmatched_appusers
+after insert on appusers
+deferrable initially deferred
+for each row
+execute function trg_no_unmatched_appusers();
+
+
+create or replace function trg_no_unmatched_appusers_sub()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	delete from appusers where id = OLD.id;
+	return NULL;
+end;$$;
+
+
+drop trigger if exists no_unmatched_appusers on clients;
+create trigger no_unmatched_appusers
+after delete on clients
+for each row
+execute function trg_no_unmatched_appusers_sub();
+
+drop trigger if exists no_unmatched_appusers on providers;
+create trigger no_unmatched_appusers
+after delete on providers
+for each row
+execute function trg_no_unmatched_appusers_sub();
+
+
+
+-------------------------------
 -- reservations must follow reservation limits
 -------------------------------
 
