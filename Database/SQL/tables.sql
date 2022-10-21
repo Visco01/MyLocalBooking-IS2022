@@ -36,7 +36,9 @@ create table providers (
 drop table if exists blacklist cascade;
 create table blacklist (
 	usercellphone char(12),
-	provider int references providers(id),
+	provider int references providers(id)
+		on update cascade
+		on delete cascade,
 
 	primary key(usercellphone, provider)
 );
@@ -44,7 +46,9 @@ create table blacklist (
 drop table if exists strikes cascade;
 create table strikes (
 	usercellphone char(12),
-	provider int references providers(id),
+	provider int references providers(id)
+		on update cascade
+		on delete cascade,
 	count int not null default 1 check(count > 0),
 	
 	primary key(usercellphone, provider)
@@ -53,7 +57,9 @@ create table strikes (
 drop table if exists establishments cascade;
 create table establishments (
     id serial primary key,
-    owner int not null references providers(id),
+    owner int not null references providers(id)
+		on update cascade
+		on delete cascade,
     address text not null,
     name text not null,
 
@@ -64,8 +70,12 @@ create table establishments (
 
 drop table if exists ratings cascade;
 create table ratings (
-	user int references clients(id),
-	establishment int not null references establishments(id),
+	client int references clients(id)
+		on update cascade
+		on delete set null,
+	establishment int not null references establishments(id)
+		on update cascade
+		on delete cascade,
 	rating int not null check (rating between 1 and 5), --float per il mezzo punto non va bene
 	comment text
 );
@@ -79,14 +89,19 @@ create table slots (
 	-- che potrà poi condividere con chi vuole
 	password text,
 	owner int not null references appusers(id)
+		on update cascade
+		on delete no action
 );
 
 drop table if exists reservations cascade;
 create table reservations (
-	slot int references slots(id),
-	user int references clients(id),
-
-	primary key(slot, user)
+	slot int references slots(id)
+		on update cascade
+		on delete no action,
+	client int references clients(id)
+		on update cascade
+		on delete no action,
+	primary key(slot, client)
 );
 
 -- non possono essere allocate da sole, ma sono sempre allocate con la relativa periodicslotblueprint o manualslotblueprint
@@ -106,24 +121,32 @@ create table slotblueprints (
 -- solo gli owner possono inserire le blueprints
 drop table if exists periodicslotblueprints cascade;
 create table periodicslotblueprints (
-	id int primary key references slotblueprints(id),
+	id int primary key references slotblueprints(id)
+		on update cascade
+		on delete cascade,
 	fromtime time not null,
 	totime time not null check(totime > fromtime)
 );
 
 drop table if exists manualslotblueprints cascade;
 create table manualslotblueprints (
-	id int primary key references slotblueprints(id),
+	id int primary key references slotblueprints(id)
+		on update cascade
+		on delete cascade,
 	opentime time not null,
 	closetime time not null check (closetime > opentime),
-	maxduration interval not null check(maxduration > (closetime - opentime))
+	maxduration interval not null check(maxduration < (closetime - opentime))
 );
 
 -- l'unica informazione che contraddistingue i periodicslots che fanno riferimento alla stessa blueprint è la data
 drop table if exists periodicslots cascade;
 create table periodicslots (
-	id int primary key references slots(id),
+	id int primary key references slots(id)
+		on update cascade
+		on delete cascade,
 	blueprint int not null references periodicslotblueprints(id)
+		on delete cascade
+		on update cascade
 );
 
 -- il proprietario dello stabilimento potrebbe voler lasciare un certo grado di libertà agli utenti per quanto riguarda orari e date
@@ -132,8 +155,12 @@ create table periodicslots (
 -- in base alla reservation limit potranno prenotarsi altri utenti a quello slot
 drop table if exists manualslots cascade;
 create table manualslots (
-	id int primary key references slots(id),
-	blueprint int not null references manualslotblueprints(id),
+	id int primary key references slots(id)
+		on update cascade
+		on delete cascade,
+	blueprint int not null references manualslotblueprints(id)
+		on update cascade
+		on delete cascade,
 	fromtime time not null,
 	totime time not null check(totime > fromtime)
 );
