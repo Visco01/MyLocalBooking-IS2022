@@ -1,49 +1,59 @@
---drop table if exists apiusers;
---create table apiusers (
---	id serial primary key,
---	password text not null
---);
+drop table if exists apiusers cascade;
+create table apiusers (
+	id serial primary key,
+	name text not null unique,
+	password text not null
+);
 
-drop table if exists appusers;
+drop table if exists appusers cascade;
 create table appusers (
 	id serial primary key,
     password text not null,
-    cellphone text not null unique check (cellphone ~ '+[0-9]{2}[0-9]{10}'),
-    email varchar(320) not null,
+    cellphone char(12) not null unique,
+    email varchar(320),
     firstname text not null,
     lastname text not null,
     dob date not null
 );
-drop table if exists clients;
+
+drop table if exists clients cascade;
 create table clients (
 	id int primary key references appusers(id)
+		on update cascade
+		on delete cascade
 );
-drop table if exists providers;
+
+drop table if exists providers cascade;
 create table providers (
-	id int primary key references appusers(id),
+	id int primary key references appusers(id)
+		on update cascade
+		on delete cascade,
 	isverified boolean not null default false,
-	maxstrikes int not null,-- check (maxstrikes > 0),
+	maxstrikes int not null default 1 check(maxstrikes > 0),
 	companyname text
 );
-drop table if exists blacklist;
+
+drop table if exists blacklist cascade;
 create table blacklist (
-	user_ int references appusers(id),
+	usercellphone char(12),
 	provider int references providers(id),
 
-	primary key(user_, provider)
+	primary key(usercellphone, provider)
 );
-drop table if exists strikes;
+
+drop table if exists strikes cascade;
 create table strikes (
-	user_ int references appusers(id),
+	usercellphone char(12),
 	provider int references providers(id),
 	count int not null default 1 check(count > 0),
 	
-	primary key(user_, provider)
+	primary key(usercellphone, provider)
 );
-drop table if exists establishments;
+
+drop table if exists establishments cascade;
 create table establishments (
     id serial primary key,
-    owner int references appusers(id),
+    owner int not null references providers(id),
     address text not null,
     name text not null,
 
@@ -51,14 +61,16 @@ create table establishments (
 	-- ma con lo stesso indirizzo in quanto attaccati
 	unique(address, name)
 );
-drop table if exists ratings;
+
+drop table if exists ratings cascade;
 create table ratings (
-	user_ int references appusers(id),
-	establishment int references establishments(id),
+	user int references clients(id),
+	establishment int not null references establishments(id),
 	rating int not null check (rating between 1 and 5), --float per il mezzo punto non va bene
 	comment text
 );
-drop table if exists slots;
+
+drop table if exists slots cascade;
 create table slots (
 	id serial primary key,
 	date date not null,
@@ -66,17 +78,19 @@ create table slots (
 	-- l'utente può lasciare le prenotazioni aperte a chiunque voglia, altrimenti può bloccarla con una password
 	-- che potrà poi condividere con chi vuole
 	password text,
-	owner int not null references providers(id)
+	owner int not null references appusers(id)
 );
-drop table if exists reservations;
+
+drop table if exists reservations cascade;
 create table reservations (
 	slot int references slots(id),
-	user_ int references appusers(id),
+	user int references clients(id),
 
-	primary key(slot, user_)
+	primary key(slot, user)
 );
 
--- non possodrop table if exists slotblueprints;no essere allocate da sole, ma sono sempre allocate con la relativa periodicslotblueprint o manualslotblueprint
+-- non possono essere allocate da sole, ma sono sempre allocate con la relativa periodicslotblueprint o manualslotblueprint
+drop table if exists slotblueprints cascade;
 create table slotblueprints (
 	id serial primary key,
 	establishment int not null references establishments(id),
@@ -89,21 +103,24 @@ create table slotblueprints (
 
 -- serve per programmare slot periodici
 -- al momento della prenotazione viene spawnato un periodicslot che punta alla sua blueprint
--- solo gli drop table if exists periodicslotblueprints;owner possono inserire le blueprints
+-- solo gli owner possono inserire le blueprints
+drop table if exists periodicslotblueprints cascade;
 create table periodicslotblueprints (
-	id serial primary key references slotblueprints(id),
+	id int primary key references slotblueprints(id),
 	fromtime time not null,
 	totime time not null check(totime > fromtime)
 );
-drop table if exists manualslotblueprints;
+
+drop table if exists manualslotblueprints cascade;
 create table manualslotblueprints (
-	id serial primary key references slotblueprints(id),
+	id int primary key references slotblueprints(id),
 	opentime time not null,
-	closetime time not null,
-	maxduration interval not null check(maxduration > '1 SECOND'::INTERVAL)
+	closetime time not null check (closetime > opentime),
+	maxduration interval not null check(maxduration > (closetime - opentime))
 );
 
--- l'unica idrop table if exists periodicslots;nformazione che contraddistingue i periodicslots che fanno riferimento alla stessa blueprint è la data
+-- l'unica informazione che contraddistingue i periodicslots che fanno riferimento alla stessa blueprint è la data
+drop table if exists periodicslots cascade;
 create table periodicslots (
 	id int primary key references slots(id),
 	blueprint int not null references periodicslotblueprints(id)
@@ -112,7 +129,8 @@ create table periodicslots (
 -- il proprietario dello stabilimento potrebbe voler lasciare un certo grado di libertà agli utenti per quanto riguarda orari e date
 -- nel momento in cui l'utente decide di occupare uno spazio per cui sono abilitati gli slot manuali, vengono creati al contempo
 -- uno slot con gli orari desiderati e una prenotazione relativa a quello slot
--- in base adrop table if exists manualslots;lla reservation limit potranno prenotarsi altri utenti a quello slot
+-- in base alla reservation limit potranno prenotarsi altri utenti a quello slot
+drop table if exists manualslots cascade;
 create table manualslots (
 	id int primary key references slots(id),
 	blueprint int not null references manualslotblueprints(id),
