@@ -332,3 +332,68 @@ for each row
 execute function trg_slot_date_in_date_window_sub();
 
 
+
+
+-------------------------------
+-- manual slots should fit their blueprint's time frame
+-------------------------------
+
+create function trg_fit_blueprint_timeframe()
+	returns trigger
+	language plpgsql
+as $$
+	opentime time;
+	closetime time;
+	maxduration time;
+
+	slotduration = NEW.closetime - NEW.opentime;
+begin
+	select		opentime, closetime, maxduration
+	into		opentime, closetime, maxduration
+	from		manualslotblueprints
+	where		id = NEW.blueprint;
+
+	if (NEW.fromtime < opentime) or (NEW.totime > closetime) or (slotduration > maxduration)
+	then
+		return NULL;
+	end if;
+
+	return NEW;
+end;$$;
+
+
+create trigger fit_blueprint_timeframe
+before insert or update on manualslots
+for each row
+execute function trg_fit_blueprint_timeframe();
+
+
+create function trg_fit_blueprint_timeframe_blueprint()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if exists (
+		select		*
+		from		manualslots m
+		where		m.blueprint = NEW.id and
+					(m.totime - m.fromtime) > NEW.maxduration
+	)
+	then
+		return NULL;
+	end if;
+
+	return NEW;
+end;$$;
+
+
+create trigger fit_blueprint_timeframe
+before update on manualslotblueprints
+for each row
+when (
+	NEW.maxduration < OLD.maxduration or
+	NEW.fromtime > OLD.fromtime or
+	NEW.totime < OLD.totime
+)
+execute function trg_fit_blueprint_timeframe_blueprint();
+
