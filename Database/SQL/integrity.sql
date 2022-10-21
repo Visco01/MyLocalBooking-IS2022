@@ -527,3 +527,86 @@ after delete on manualslots
 for each row
 execute function trg_no_unmatched_slot_sub();
 
+
+-------------------------------
+-- reservations must follow reservation limits
+-------------------------------
+
+create or replace function trg_reservation_limit_slotblueprints()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if exists (
+		select		s.id
+		from		periodicslots p
+					join slots s on s.id = p.id
+					join reservations r on r.slot = s.id
+		where		p.blueprint = NEW.id
+		group by	s.id
+		having		count(*) > NEW.reservationlimit -- unknown -> false
+	)
+	or exists (
+		select		s.id
+		from		manualslots m
+					join slots s on s.id = m.id
+					join reservations r on r.slot = s.id
+		where		m.blueprint = NEW.id
+		group by	s.id
+		having		count(*) > NEW.reservationlimit -- unknown -> false
+	)
+	then
+		raise 'Already existing reservations exceed this reservation limit';
+		return NULL;
+	end if;
+
+	return NEW;
+end;$$;
+
+drop trigger if exists reservation_limit on slotblueprints;
+create trigger reservation_limit
+before update on slotblueprints
+for each row
+when (NEW.reservationlimit < OLD.reservationlimit)
+execute function trg_reservation_limit_slotblueprints();
+
+
+create or replace function trg_reservation_limit()
+	returns trigger
+	language plpgsql
+as $$
+declare
+	reservation_limit int;
+begin
+	if exists (select * from periodicslots where id = NEW.slot)
+	then
+		select		b.reservationlimit
+		into		reservation_limit
+		from		periodicslots p
+					join slotblueprints b on b.id = p.blueprint;
+	else
+		select		b.reservationlimit
+		into		reservation_limit
+		from		manualslots m
+					join slotblueprints b on b.id = m.blueprint;
+	end if;
+
+	if reservation_limit < ( -- unknown -> false
+		select		count(*) + 1
+		from		reservations
+		where		slot = NEW.slot
+	)
+	then
+		raise 'Reservation limit reached';
+		return NULL;
+	end if;
+
+	return NEW;
+end;$$;
+
+
+drop trigger if exists reservation_limit on reservations;
+create trigger reservation_limit
+before insert or update on reservations
+for each row
+execute function trg_reservation_limit();
