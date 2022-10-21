@@ -396,3 +396,70 @@ when (
 )
 execute function trg_fit_blueprint_timeframe_blueprint();
 
+
+-------------------------------
+-- no unmatched generic slot blueprint
+-------------------------------
+
+
+create or replace function trg_no_unmatched_slot_blueprint()
+	returns trigger 
+	language plpgsql
+as $$
+begin
+	if not exists (
+		select * from periodicslotblueprints where id = NEW.id
+	)
+	and not exists (
+		select * from manualslotblueprints where id = NEW.id
+	)
+	then
+		delete from slotblueprints where id = NEW.id;
+		raise 'Cannot insert an unmatched slotblueprint';
+	end if;
+
+	return NULL;
+end;$$;
+
+
+drop trigger if exists no_unmatched_slot_blueprint on slotblueprints;
+create constraint trigger no_unmatched_slot_blueprint
+after insert on slotblueprints
+deferrable initially deferred
+for each row
+execute function trg_no_unmatched_slot_blueprint();
+
+
+
+
+create or replace function trg_no_unmatched_slot_blueprint_sub()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if not exists (
+		select * from periodicslotblueprints where id = OLD.id
+	)
+	and not exists (
+		select * from manualslotblueprints where id = OLD.id
+	)
+	then
+		delete from slotblueprints where id = OLD.id;
+	end if;
+
+	return NULL;
+end;$$;
+
+
+drop trigger if exists no_unmatched_slot_blueprint on periodicslotblueprints;
+create trigger no_unmatched_slot_blueprint
+after delete on periodicslotblueprints
+for each row
+execute function trg_no_unmatched_slot_blueprint_sub();
+
+drop trigger if exists no_unmatched_slot_blueprint on manualslotblueprints;
+create trigger no_unmatched_slot_blueprint
+after delete on manualslotblueprints
+for each row
+execute function trg_no_unmatched_slot_blueprint_sub();
+
