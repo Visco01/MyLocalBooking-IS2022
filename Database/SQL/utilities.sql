@@ -3,9 +3,7 @@ create or replace function timeframes_overlap(f0 time, t0 time, f1 time, t1 time
     language plpgsql
 as $$
 begin
-    return  f0 between f1 and t1 or
-            t0 between f1 and t1 or
-            f0 <= f1 and t0 >= t1;
+	return (f0 = f1) or (f0 < f1 and t0 > f1) or (f0 > f1 and f0 < t1);
 end;
 $$;
 
@@ -14,9 +12,7 @@ create or replace function timeframes_overlap(f0 date, t0 date, f1 date, t1 date
     language plpgsql
 as $$
 begin
-    return  f0 between f1 and t1 or
-            t0 between f1 and t1 or
-            f0 <= f1 and t0 >= t1;
+	return (f0 = f1) or (f0 < f1 and t0 > f1) or (f0 > f1 and f0 < t1);
 end;
 $$;
 
