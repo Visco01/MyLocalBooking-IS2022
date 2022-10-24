@@ -647,3 +647,62 @@ create trigger reservation_limit
 before insert or update on reservations
 for each row
 execute function trg_reservation_limit();
+
+
+
+-------------------------------
+-- deny reservations to blacklisted users
+-------------------------------
+
+
+create or replace function blacklisted_user_reservations()
+	returns trigger
+	language plpgsql
+as $$
+	user_cellphone char(12);
+	provider_id int;
+begin
+	select cellphone into user_cellphone from appusers where id = NEW.client;
+	
+	select	e.owner
+	into	provider_id
+	from	get_base_blueprint_by_slot_id(NEW.slot) b
+			join establishments e on e.id = b.establishment;
+
+	if user_cellphone in (
+		select		usercellphone
+		from		blacklist
+		where		provider = provider_id
+	)
+	then
+		raise 'User is not allowed to make reservations for this slot';
+		return NULL;
+	end if;
+
+	return NEW;
+end;$$;
+
+drop trigger if exists blacklisted_user_reservations on reservations;
+create trigger blacklisted_user_reservations
+before insert or update on reservations
+for each row
+execute function trg_blacklisted_user_reservations();
+
+
+
+create function trg_blacklisted_user_drop_reservations()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	delete from reservations
+	where sl
+end;$$;
+
+drop trigger if exists blacklisted_user_reservations on blacklist;
+create trigger blacklisted_user_reservations
+after delete on blacklist
+for each row
+execute function trg_blacklisted_user_drop_reservations();
+
+

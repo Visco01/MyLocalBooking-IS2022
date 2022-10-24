@@ -151,3 +151,28 @@ begin
 end;
 $$;
 
+
+create or replace function get_base_blueprint_by_slot_id(slot_id int)
+	returns slotblueprints
+	language plpgsql
+as $$
+declare
+	base_blueprint slotblueprints;
+begin
+	select		b.*
+	into		base_blueprint
+	from		periodicslots p
+				join slotblueprints b on b.id = p.blueprint
+	where		p.id = slot_id;
+
+	if base_blueprint.id is NULL
+	then
+		select		b.*
+		into		base_blueprint
+		from		manualslots m
+					join slotblueprints b on b.id = m.blueprint
+		where		m.id = slot_id;
+	end if;
+
+	return base_blueprint;
+end;$$;
