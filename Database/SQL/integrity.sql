@@ -13,16 +13,16 @@ as $$
 declare
 	establishment_id int;
 begin
-	select		b.establishment
+	select		b.establishment_id
 	into		establishment_id
 	from		slotblueprints b
-	where		b.id = NEW.id;
+	where		b.id = NEW.slotblueprint_id;
 
 	if exists (
 		select		*
 		from		manualslotblueprints m
-					join slotblueprints b on b.id = m.id
-		where		b.establishment = establishment_id
+					join slotblueprints b on b.id = m.slotblueprint_id
+		where		b.establishment_id = establishment_id
 	)
 	then 
 		raise 'Mixed blueprint types are not allowed';
@@ -50,16 +50,16 @@ as $$
 declare
 	establishment_id int;
 begin
-	select		b.establishment
+	select		b.establishment_id
 	into		establishment_id
 	from		slotblueprints b
-	where		b.id = NEW.id;
+	where		b.id = NEW.slotblueprint_id;
 
 	if exists (
 		select		*
 		from		periodicslotblueprints p
-					join slotblueprints b on b.id = p.id
-		where		b.establishment = establishment_id
+					join slotblueprints b on b.id = p.slotblueprint_id
+		where		b.establishment_id = establishment_id
 	)
 	then
 		raise 'Mixed blueprint types are not allowed';
@@ -82,24 +82,13 @@ create or replace function trg_no_mixed_blueprints()
 	returns trigger
 	language plpgsql
 as $$
-declare
-	manual boolean;
-	periodic boolean;
 begin
-	manual = exists (select * from manualslotblueprints where id = NEW.id);
-	periodic = exists (select * from periodicslotblueprints where id = NEW.id);
-
-	if periodic and exists (
+	if exists (
 		select		*
-		from		manualslotblueprints m
-					join slotblueprints b on b.id = m.id
-		where		b.establishment = NEW.establishment
-	)
-	or manual and exists (
-		select		*
-		from		periodicslotblueprints p
-					join slotblueprints b on b.id = p.id
-		where		b.establishment = NEW.establishment
+		from		slotblueprints s
+					join manualslotblueprints m on m.slotblueprint_id = s.id
+					join periodicslotblueprints p on p.slotblueprint_id = s.id
+		where		s.establishment_id = NEW.establishment_id
 	)
 	then
 		raise 'Mixed blueprint types are not allowed';
@@ -131,8 +120,7 @@ begin
 	if exists (
 		select		*
 		from		periodicslotblueprints p
-		where		p.id <> NEW.id and
-					blueprints_overlap(p, NEW)
+		where		blueprints_overlap(p, NEW)
 	)
 	then
 		raise 'Blueprint overlaps with existing one';
@@ -158,8 +146,7 @@ begin
 	if exists (
 		select		*
 		from		manualslotblueprints m
-		where		m.id <> NEW.id and
-					blueprints_overlap(m, NEW)
+		where		blueprints_overlap(m, NEW)
 	)
 	then
 		raise 'Blueprint overlaps with existing one';
@@ -188,7 +175,7 @@ begin
 	if exists (
 		select		*
 		from		periodicslots p
-		where		p.id <> NEW.id and slots_overlap(p, NEW)
+		where		slots_overlap(p, NEW)
 	)
 	then
 		raise 'Slot overlaps with existing one';
@@ -213,7 +200,7 @@ begin
 	if exists (
 		select		*
 		from		manualslots m
-		where		m.id <> NEW.id and slots_overlap(m, NEW)
+		where		slots_overlap(m, NEW)
 	)
 	then
 		raise 'Slot overlaps with existing one';
@@ -245,31 +232,17 @@ declare
 	from_date date;
 	to_date date;
 begin
-	isperiodic = exists (select * from periodicslots p where p.blueprint = NEW.id);
-	if isperiodic
-	then
-		select		pb.id
-		into		blueprintid
-		from		periodicslots p
-					join periodicslotblueprints pb on pb.id = p.blueprint
-		where		p.id = NEW.id;
-	else
-		select		mb.id
-		into		blueprintid
-		from		manualslots p
-					join manualslotblueprints mb on mb.id = p.blueprint
-		where		p.id = NEW.id;
-	end if;
+	isperiodic = exists (select * from periodicslots p where p.slot_id = NEW.id);
 
-	select fromdate, todate into from_date, to_date from slotblueprints where id = blueprintid;
+	select fromdate, todate into from_date, to_date from get_base_blueprint_by_slot_id(NEW.id);
 
 	if not (NEW.date between from_date and to_date)
 	then
 		if isperiodic
 		then
-			delete from periodicslots where id = NEW.id;
+			delete from periodicslots where slot_id = NEW.id;
 		else
-			delete from manualslots where id = NEW.id;
+			delete from manualslots where slot_id = NEW.id;
 		end if;
 
 		raise 'Slot date does not fit its base blueprint''s recurrence time window';
@@ -297,8 +270,8 @@ declare
 	from_date date;
 	to_date date;
 begin
-	select date into slot_date from slots where id = NEW.id;
-	select fromdate, todate into from_date, to_date from slotblueprints where id = NEW.blueprint;
+	select date into slot_date from slots where id = NEW.slot_id;
+	select fromdate, todate into from_date, to_date from get_base_blueprint_by_slot_id(NEW.slot_id);
 
 	if slot_date between from_date and to_date
 	then
@@ -342,7 +315,7 @@ begin
 	select		opentime, closetime, maxduration
 	into		open_time, close_time, max_duration
 	from		manualslotblueprints
-	where		id = NEW.blueprint;
+	where		id = NEW.manualslotblueprint_id;
 
 	if (NEW.fromtime < open_time) or (NEW.totime > close_time)
 	then
@@ -374,7 +347,7 @@ begin
 	if exists (
 		select		*
 		from		manualslots m
-		where		m.blueprint = NEW.id and
+		where		m.manualslotblueprint_id = NEW.id and
 					(m.totime - m.fromtime) > NEW.maxduration
 	)
 	then
@@ -408,10 +381,10 @@ create or replace function trg_no_unmatched_slot_blueprint()
 as $$
 begin
 	if not exists (
-		select * from periodicslotblueprints where id = NEW.id
+		select * from periodicslotblueprints where slotblueprint_id = NEW.id
 	)
 	and not exists (
-		select * from manualslotblueprints where id = NEW.id
+		select * from manualslotblueprints where slotblueprint_id = NEW.id
 	)
 	then
 		delete from slotblueprints where id = NEW.id;
@@ -437,7 +410,13 @@ create or replace function trg_no_unmatched_slot_blueprint_sub()
 	language plpgsql
 as $$
 begin
-	delete from slotblueprints where id = OLD.id;
+	with to_drop as (
+		select		distinct b.id
+		from		slotblueprints b
+		where		not exists (select * from manualslotblueprints where slotblueprint_id = b.id) and
+					not exists (select * from periodicslotblueprints where slotblueprint_id = b.id)
+	)
+	delete from slotblueprints where id in (select id from to_drop);
 	return NULL;
 end;$$;
 
@@ -445,13 +424,13 @@ end;$$;
 drop trigger if exists no_unmatched_slot_blueprint on periodicslotblueprints;
 create trigger no_unmatched_slot_blueprint
 after delete on periodicslotblueprints
-for each row
+for each statement
 execute function trg_no_unmatched_slot_blueprint_sub();
 
 drop trigger if exists no_unmatched_slot_blueprint on manualslotblueprints;
 create trigger no_unmatched_slot_blueprint
 after delete on manualslotblueprints
-for each row
+for each statement
 execute function trg_no_unmatched_slot_blueprint_sub();
 
 
@@ -466,10 +445,10 @@ create or replace function trg_no_unmatched_slot()
 as $$
 begin
 	if not exists (
-		select * from periodicslots where id = NEW.id
+		select * from periodicslots where slot_id = NEW.id
 	)
 	and not exists (
-		select * from manualslots where id = NEW.id
+		select * from manualslots where slot_id = NEW.id
 	)
 	then
 		delete from slots where id = NEW.id;
@@ -492,7 +471,13 @@ create or replace function trg_no_unmatched_slot_sub()
 	language plpgsql
 as $$
 begin
-	delete from slots where id = OLD.id;
+	with to_drop as (
+		select		distinct s.id
+		from		slots s
+		where		not exists (select * from manualslots where slot_id = s.id) and
+					not exists (select * from periodicslots where slot_id = s.id)
+	)
+	delete from slots where id in (select id from to_drop);
 	return NULL;
 end;$$;
 
@@ -500,13 +485,13 @@ end;$$;
 drop trigger if exists no_unmatched_slot on periodicslots;
 create trigger no_unmatched_slot
 after delete on periodicslots
-for each row
+for each statement
 execute function trg_no_unmatched_slot_sub();
 
 drop trigger if exists no_unmatched_slot on manualslots;
 create trigger no_unmatched_slot
 after delete on manualslots
-for each row
+for each statement
 execute function trg_no_unmatched_slot_sub();
 
 
@@ -520,10 +505,10 @@ create or replace function trg_no_unmatched_app_users()
 as $$
 begin
 	if not exists (
-		select * from clients where id = NEW.id
+		select * from clients where app_user_id = NEW.id
 	)
 	and not exists (
-		select * from providers where id = NEW.id
+		select * from providers where app_user_id = NEW.id
 	)
 	then
 		delete from app_users where id = NEW.id;
@@ -546,7 +531,7 @@ create or replace function trg_no_unmatched_app_users_sub()
 	language plpgsql
 as $$
 begin
-	delete from app_users where id = OLD.id;
+	delete from app_users where id = OLD.app_user_id;
 	return NULL;
 end;$$;
 
@@ -576,19 +561,21 @@ as $$
 begin
 	if exists (
 		select		s.id
-		from		periodicslots p
-					join slots s on s.id = p.id
-					join reservations r on r.slot = s.id
-		where		p.blueprint = NEW.id
+		from		periodicslotblueprints pb
+					join periodicslots p on p.periodicslotblueprint_id = pb.id
+					join slots s on s.id = p.slot_id
+					join reservations r on r.slot_id = s.id
+		where		pb.slotblueprint_id = NEW.id
 		group by	s.id
 		having		count(*) > NEW.reservationlimit -- unknown -> false
 	)
 	or exists (
 		select		s.id
-		from		manualslots m
-					join slots s on s.id = m.id
-					join reservations r on r.slot = s.id
-		where		m.blueprint = NEW.id
+		from		manualslotblueprints mb
+					join manualslots m on m.periodicslotblueprint_id = mb.id
+					join slots s on s.id = m.slot_id
+					join reservations r on r.slot_id = s.id
+		where		mb.slotblueprint_id = NEW.id
 		group by	s.id
 		having		count(*) > NEW.reservationlimit -- unknown -> false
 	)
@@ -615,23 +602,14 @@ as $$
 declare
 	reservation_limit int;
 begin
-	if exists (select * from periodicslots where id = NEW.slot)
-	then
-		select		b.reservationlimit
-		into		reservation_limit
-		from		periodicslots p
-					join slotblueprints b on b.id = p.blueprint;
-	else
-		select		b.reservationlimit
-		into		reservation_limit
-		from		manualslots m
-					join slotblueprints b on b.id = m.blueprint;
-	end if;
+	select		reservationlimit
+	into		reservation_limit
+	from		get_base_blueprint_by_slot_id(NEW.slot_id);
 
 	if reservation_limit < ( -- unknown -> false
 		select		count(*) + 1
 		from		reservations
-		where		slot = NEW.slot
+		where		slot_id = NEW.slot_id
 	)
 	then
 		raise 'Reservation limit reached';
@@ -640,7 +618,6 @@ begin
 
 	return NEW;
 end;$$;
-
 
 drop trigger if exists reservation_limit on reservations;
 create trigger reservation_limit
@@ -659,20 +636,25 @@ create or replace function blacklisted_user_reservations()
 	returns trigger
 	language plpgsql
 as $$
+declare
 	user_cellphone char(12);
 	provider_id int;
 begin
-	select cellphone into user_cellphone from app_users where id = NEW.client;
+	select		a.cellphone
+	into		user_cellphone
+	from		clients c
+				join app_users a on a.id = c.app_user_id
+	where		c.id = NEW.client_id;
 	
-	select	e.owner
+	select	e.provider_id
 	into	provider_id
-	from	get_base_blueprint_by_slot_id(NEW.slot) b
-			join establishments e on e.id = b.establishment;
+	from	get_base_blueprint_by_slot_id(NEW.slot_id) b
+			join establishments e on e.id = b.establishment_id;
 
 	if user_cellphone in (
-		select		usercellphone
-		from		blacklist
-		where		provider = provider_id
+		select		b.usercellphone
+		from		blacklist b
+		where		b.provider_id = provider_id
 	)
 	then
 		raise 'User is not allowed to make reservations for this slot';
@@ -689,20 +671,22 @@ for each row
 execute function trg_blacklisted_user_reservations();
 
 
-
 create function trg_blacklisted_user_drop_reservations()
 	returns trigger
 	language plpgsql
 as $$
 begin
 	delete from reservations
-	where sl
+	where client_id in (
+		select		c.id
+		from		clients c
+					join appusers a on a.id = c.app_user_id
+		where		a.cellphone = NEW.usercellphone
+	);
 end;$$;
 
 drop trigger if exists blacklisted_user_reservations on blacklist;
 create trigger blacklisted_user_reservations
-after delete on blacklist
+after insert or update on blacklist
 for each row
 execute function trg_blacklisted_user_drop_reservations();
-
-
