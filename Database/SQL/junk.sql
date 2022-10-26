@@ -8,7 +8,7 @@ declare
 	userid int;
 	establishmentid int;
 begin
-	insert into appusers(password, cellphone, email, firstname, lastname, dob) values
+	insert into app_users(password, cellphone, email, firstname, lastname, dob) values
 	('', '393475322555', null, 'nicola', 'marizza', '10/06/00')
 	returning id into userid;
 
@@ -58,7 +58,7 @@ declare
     
     date date = '09/06/21';
     
-    owner int = (select id from appusers where email ~ 'marizza');
+    owner int = (select id from app_users where email ~ 'marizza');
 begin
     insert into slots(date, password, owner) values
     (date, null, owner)

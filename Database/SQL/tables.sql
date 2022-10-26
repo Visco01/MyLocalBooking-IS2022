@@ -1,14 +1,14 @@
-drop table if exists apiusers cascade;
-create table apiusers (
+drop table if exists users cascade;
+create table users (
 	id serial primary key,
 	name text not null unique,
-	password text not null
+	password_digest text not null
 );
 
-drop table if exists appusers cascade;
-create table appusers (
+drop table if exists app_users cascade;
+create table app_users (
 	id serial primary key,
-    password text not null,
+    password_digest text not null,
     cellphone char(12) not null unique,
     email varchar(320),
     firstname text not null,
@@ -18,14 +18,20 @@ create table appusers (
 
 drop table if exists clients cascade;
 create table clients (
-	id int primary key references appusers(id)
+	id serial primary key,
+	app_user_id int not null references app_users(id)
 		on update cascade
-		on delete cascade
+		on delete cascade,
+	lat float,
+	lng float,
+
+	check((lat is null and lng is null) or (lat is not null and lng is not null))
 );
 
 drop table if exists providers cascade;
 create table providers (
-	id int primary key references appusers(id)
+	id serial primary key,
+	app_user_id int not null references app_users(id)
 		on update cascade
 		on delete cascade,
 	isverified boolean not null default false,
@@ -35,45 +41,50 @@ create table providers (
 
 drop table if exists blacklist cascade;
 create table blacklist (
-	usercellphone char(12),
-	provider int references providers(id)
+	id serial primary key,
+	provider_id int not null references providers(id)
 		on update cascade
 		on delete cascade,
+	usercellphone char(12),
 
-	primary key(usercellphone, provider)
+	unique(usercellphone, provider_id)
 );
 
 drop table if exists strikes cascade;
 create table strikes (
-	usercellphone char(12),
-	provider int references providers(id)
+	id serial primary key,
+	provider_id int not null references providers(id)
 		on update cascade
 		on delete cascade,
+	usercellphone char(12),
 	count int not null default 1 check(count > 0),
 	
-	primary key(usercellphone, provider)
+	unique(usercellphone, provider_id)
 );
 
 drop table if exists establishments cascade;
 create table establishments (
     id serial primary key,
-    owner int not null references providers(id)
+    provider_id int not null references providers(id)
 		on update cascade
 		on delete cascade,
-    address text not null,
     name text not null,
+	lat float not null,
+	lng float not null,
 
 	-- potrebbero essere due campetti da basket (nomi diversi)
 	-- ma con lo stesso indirizzo in quanto attaccati
-	unique(address, name)
+	unique(address, name),
+	check((lat is null and lng is null) or (lat is not null and lng is not null))
 );
 
 drop table if exists ratings cascade;
 create table ratings (
-	client int references clients(id)
+	id serial primary key,
+	client_id int references clients(id)
 		on update cascade
 		on delete set null,
-	establishment int not null references establishments(id)
+	establishment_id int not null references establishments(id)
 		on update cascade
 		on delete cascade,
 	rating int not null check (rating between 1 and 5), --float per il mezzo punto non va bene
@@ -87,28 +98,30 @@ create table slots (
 
 	-- l'utente può lasciare le prenotazioni aperte a chiunque voglia, altrimenti può bloccarla con una password
 	-- che potrà poi condividere con chi vuole
-	password text,
-	owner int not null references appusers(id)
+	password_digest text,
+	app_user_id int not null references app_users(id)
 		on update cascade
 		on delete no action
 );
 
 drop table if exists reservations cascade;
 create table reservations (
-	slot int references slots(id)
+	id serial primary key,
+	slot_id int not null references slots(id)
 		on update cascade
 		on delete no action,
-	client int references clients(id)
+	client_id int not null references clients(id)
 		on update cascade
 		on delete no action,
-	primary key(slot, client)
+
+	unique(slot_id, client_id)
 );
 
 -- non possono essere allocate da sole, ma sono sempre allocate con la relativa periodicslotblueprint o manualslotblueprint
 drop table if exists slotblueprints cascade;
 create table slotblueprints (
 	id serial primary key,
-	establishment int not null references establishments(id),
+	establishment_id int not null references establishments(id),
 	weekdays bit(7) not null,
 	reservationlimit int check(reservationlimit is null or reservationlimit > 0),
 	fromdate date not null default NOW(), -- data e ora dopo la quale gli slot vengono programmati
@@ -121,7 +134,8 @@ create table slotblueprints (
 -- solo gli owner possono inserire le blueprints
 drop table if exists periodicslotblueprints cascade;
 create table periodicslotblueprints (
-	id int primary key references slotblueprints(id)
+	id serial primary key,
+	slotblueprint_id int not null references slotblueprints(id)
 		on update cascade
 		on delete cascade,
 	fromtime time not null,
@@ -130,7 +144,8 @@ create table periodicslotblueprints (
 
 drop table if exists manualslotblueprints cascade;
 create table manualslotblueprints (
-	id int primary key references slotblueprints(id)
+	id serial primary key,
+	slotblueprint_id int not null references slotblueprints(id)
 		on update cascade
 		on delete cascade,
 	opentime time not null,
@@ -141,10 +156,11 @@ create table manualslotblueprints (
 -- l'unica informazione che contraddistingue i periodicslots che fanno riferimento alla stessa blueprint è la data
 drop table if exists periodicslots cascade;
 create table periodicslots (
-	id int primary key references slots(id)
+	id serial primary key,
+	slot_id int not null references slots(id)
 		on update cascade
 		on delete cascade,
-	blueprint int not null references periodicslotblueprints(id)
+	periodicslotblueprint_id int not null references periodicslotblueprints(id)
 		on delete cascade
 		on update cascade
 );
@@ -155,10 +171,11 @@ create table periodicslots (
 -- in base alla reservation limit potranno prenotarsi altri utenti a quello slot
 drop table if exists manualslots cascade;
 create table manualslots (
-	id int primary key references slots(id)
+	id serial primary key,
+	slot_id int not null references slots(id)
 		on update cascade
 		on delete cascade,
-	blueprint int not null references manualslotblueprints(id)
+	manualslotblueprint_id int not null references manualslotblueprints(id)
 		on update cascade
 		on delete cascade,
 	fromtime time not null,

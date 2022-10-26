@@ -511,10 +511,10 @@ execute function trg_no_unmatched_slot_sub();
 
 
 -------------------------------
--- no unmatched appusers
+-- no unmatched app_users
 -------------------------------
 
-create or replace function trg_no_unmatched_appusers()
+create or replace function trg_no_unmatched_app_users()
 	returns trigger
 	language plpgsql
 as $$
@@ -526,42 +526,42 @@ begin
 		select * from providers where id = NEW.id
 	)
 	then
-		delete from appusers where id = NEW.id;
+		delete from app_users where id = NEW.id;
 		raise 'Cannot insert an unmatched appuser';
 	end if;
 
 	return NULL;
 end;$$;
 
-drop trigger if exists no_unmatched_appusers on appusers;
-create constraint trigger no_unmatched_appusers
-after insert on appusers
+drop trigger if exists no_unmatched_app_users on app_users;
+create constraint trigger no_unmatched_app_users
+after insert on app_users
 deferrable initially deferred
 for each row
-execute function trg_no_unmatched_appusers();
+execute function trg_no_unmatched_app_users();
 
 
-create or replace function trg_no_unmatched_appusers_sub()
+create or replace function trg_no_unmatched_app_users_sub()
 	returns trigger
 	language plpgsql
 as $$
 begin
-	delete from appusers where id = OLD.id;
+	delete from app_users where id = OLD.id;
 	return NULL;
 end;$$;
 
 
-drop trigger if exists no_unmatched_appusers on clients;
-create trigger no_unmatched_appusers
+drop trigger if exists no_unmatched_app_users on clients;
+create trigger no_unmatched_app_users
 after delete on clients
 for each row
-execute function trg_no_unmatched_appusers_sub();
+execute function trg_no_unmatched_app_users_sub();
 
-drop trigger if exists no_unmatched_appusers on providers;
-create trigger no_unmatched_appusers
+drop trigger if exists no_unmatched_app_users on providers;
+create trigger no_unmatched_app_users
 after delete on providers
 for each row
-execute function trg_no_unmatched_appusers_sub();
+execute function trg_no_unmatched_app_users_sub();
 
 
 
@@ -662,7 +662,7 @@ as $$
 	user_cellphone char(12);
 	provider_id int;
 begin
-	select cellphone into user_cellphone from appusers where id = NEW.client;
+	select cellphone into user_cellphone from app_users where id = NEW.client;
 	
 	select	e.owner
 	into	provider_id

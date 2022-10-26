@@ -176,3 +176,16 @@ begin
 
 	return base_blueprint;
 end;$$;
+
+
+create or replace function get_coordinates_distance(lat0 float, long0 float, lat1 float, long1 float)
+	returns float
+	language plpgsql
+as $$
+declare
+	p real = PI() / 180;
+begin
+	return 0.5 - c((lat1 - lat0) * p)/2 + 
+          c(lat0 * p) * c(lat1 * p) * 
+          (1 - c((lng1 - lng0) * p))/2;
+end;$$;
