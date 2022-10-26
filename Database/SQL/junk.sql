@@ -43,7 +43,7 @@ begin
     (establishment, weekdays, reservationlimit, fromdate, todate)
     returning id into blueprintid;
     
-    insert into periodicslotblueprints(id, fromtime, totime) values
+    insert into periodic_slotblueprints(id, fromtime, totime) values
     (blueprintid, fromtime, totime);
 
 end;$$;
@@ -64,8 +64,8 @@ begin
     (date, null, owner)
     returning id into slotid;
     
-    insert into periodicslots(id, blueprint) values
-    (slotid, (select id from periodicslotblueprints));
+    insert into periodic_slots(id, blueprint) values
+    (slotid, (select id from periodic_slotblueprints));
 
 end;$$;
 

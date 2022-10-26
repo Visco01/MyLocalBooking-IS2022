@@ -22,9 +22,14 @@ create table clients (
 	app_user_id int not null references app_users(id)
 		on update cascade
 		on delete cascade,
+
+	-- users may provide the application with their preferred static location
+	-- which will determine the establishments in their immediate distance
 	lat float,
 	lng float,
 
+	-- they may choose however to not provide a static location and activate the
+	-- geolocalization on their smartphone, which will be dynamic
 	check((lat is null and lng is null) or (lat is not null and lng is not null))
 );
 
@@ -34,7 +39,13 @@ create table providers (
 	app_user_id int not null references app_users(id)
 		on update cascade
 		on delete cascade,
+
+	-- verified providers are known to be trustable
+	-- the verification process takes place outside the application
 	isverified boolean not null default false,
+
+	-- each provider can decide how many strikes an attendant of their establishments can get before getting banned
+	-- they can however decide to ban them directly without going through the striking process
 	maxstrikes int not null default 1 check(maxstrikes > 0),
 	companyname text
 );
@@ -45,6 +56,8 @@ create table blacklist (
 	provider_id int not null references providers(id)
 		on update cascade
 		on delete cascade,
+
+	-- not a foreign key, to prevent users to delete their account to escape blacklists
 	usercellphone char(12),
 
 	unique(usercellphone, provider_id)
@@ -56,6 +69,8 @@ create table strikes (
 	provider_id int not null references providers(id)
 		on update cascade
 		on delete cascade,
+
+	-- not a foreign key, to prevent users to delete their account to erase their strikes history
 	usercellphone char(12),
 	count int not null default 1 check(count > 0),
 	
@@ -69,25 +84,32 @@ create table establishments (
 		on update cascade
 		on delete cascade,
     name text not null,
+	place_id text not null, -- can be useful for including additional info when hotfixing
+
+	-- the following properties are cached, however they can be retreived at any time
+	-- by submitting the place_id to the maps API
+	address text not null,
 	lat float not null,
 	lng float not null,
 
-	-- potrebbero essere due campetti da basket (nomi diversi)
-	-- ma con lo stesso indirizzo in quanto attaccati
-	unique(address, name),
-	check((lat is null and lng is null) or (lat is not null and lng is not null))
+	unique(address, name)
 );
 
 drop table if exists ratings cascade;
 create table ratings (
 	id serial primary key,
+
+	-- may be null, we want to keep the reviews even when users delete their account
+	-- needs a fix, users may still delete and recreate their account to keep cumulating feedbacks
 	client_id int references clients(id)
 		on update cascade
 		on delete set null,
 	establishment_id int not null references establishments(id)
 		on update cascade
 		on delete cascade,
-	rating int not null check (rating between 1 and 5), --float per il mezzo punto non va bene
+
+	-- at the moment ratings are any amount of "stars" between 1 and 5 without any half points
+	rating int not null check (rating between 1 and 5),
 	comment text
 );
 
@@ -96,8 +118,7 @@ create table slots (
 	id serial primary key,
 	date date not null,
 
-	-- l'utente può lasciare le prenotazioni aperte a chiunque voglia, altrimenti può bloccarla con una password
-	-- che potrà poi condividere con chi vuole
+	-- the slot owner can leave the reservations open for anyone, or lock them with a password
 	password_digest text,
 	app_user_id int not null references app_users(id)
 		on update cascade
@@ -117,35 +138,37 @@ create table reservations (
 	unique(slot_id, client_id)
 );
 
--- non possono essere allocate da sole, ma sono sempre allocate con la relativa periodicslotblueprint o manualslotblueprint
-drop table if exists slotblueprints cascade;
-create table slotblueprints (
+-- they're always associated with at least one periodic_blueprint or manual_blueprint
+-- can only be defined by providers
+drop table if exists blueprints cascade;
+create table blueprints (
 	id serial primary key,
 	establishment_id int not null references establishments(id),
 	weekdays bit(7) not null,
 	reservationlimit int check(reservationlimit is null or reservationlimit > 0),
-	fromdate date not null default NOW(), -- data e ora dopo la quale gli slot vengono programmati
-	todate date 	-- data e ora dopo la quale gli slot non vengono più programmati
-					-- se null sono programmati indefinitamente
+	fromdate date not null default NOW(), -- date after which slots are scheduled
+	todate date 	-- date after which slots stop being scheduled
+					-- if null slots are scheduled indefinitely
 );
 
--- serve per programmare slot periodici
--- al momento della prenotazione viene spawnato un periodicslot che punta alla sua blueprint
--- solo gli owner possono inserire le blueprints
-drop table if exists periodicslotblueprints cascade;
-create table periodicslotblueprints (
+-- needed to be able to schedule periodic slots
+-- can only be defined by providers
+drop table if exists periodic_blueprints cascade;
+create table periodic_blueprints (
 	id serial primary key,
-	slotblueprint_id int not null references slotblueprints(id)
+	blueprint_id int not null references blueprints(id)
 		on update cascade
 		on delete cascade,
 	fromtime time not null,
 	totime time not null check(totime > fromtime)
 );
 
-drop table if exists manualslotblueprints cascade;
-create table manualslotblueprints (
+-- needed to be able to schedule manual slots
+-- can only be defined by providers
+drop table if exists manual_blueprints cascade;
+create table manual_blueprints (
 	id serial primary key,
-	slotblueprint_id int not null references slotblueprints(id)
+	blueprint_id int not null references blueprints(id)
 		on update cascade
 		on delete cascade,
 	opentime time not null,
@@ -153,29 +176,33 @@ create table manualslotblueprints (
 	maxduration interval not null check(maxduration < (closetime - opentime))
 );
 
--- l'unica informazione che contraddistingue i periodicslots che fanno riferimento alla stessa blueprint è la data
-drop table if exists periodicslots cascade;
-create table periodicslots (
+-- these are periodic slot instances
+-- can be instantiated and owned by any user type
+drop table if exists periodic_slots cascade;
+create table periodic_slots (
 	id serial primary key,
 	slot_id int not null references slots(id)
 		on update cascade
 		on delete cascade,
-	periodicslotblueprint_id int not null references periodicslotblueprints(id)
+	periodic_blueprint_id int not null references periodic_blueprints(id)
 		on delete cascade
 		on update cascade
 );
 
--- il proprietario dello stabilimento potrebbe voler lasciare un certo grado di libertà agli utenti per quanto riguarda orari e date
--- nel momento in cui l'utente decide di occupare uno spazio per cui sono abilitati gli slot manuali, vengono creati al contempo
--- uno slot con gli orari desiderati e una prenotazione relativa a quello slot
--- in base alla reservation limit potranno prenotarsi altri utenti a quello slot
-drop table if exists manualslots cascade;
-create table manualslots (
+-- these are manual slot instances
+-- can be instantiated and owned by any user type
+-- the provider may want to give some degree of liberty to users when it comes to time and duration of slots
+-- when a client makes a reservation for a manual slot two things happen:
+--		1) a manual_slot instance with the desired starting and closing time is created
+--		2) a reservation is added for that slot
+-- depending on the relative base blueprint, other users may now be able to make reservations for that same slot instance
+drop table if exists manual_slots cascade;
+create table manual_slots (
 	id serial primary key,
 	slot_id int not null references slots(id)
 		on update cascade
 		on delete cascade,
-	manualslotblueprint_id int not null references manualslotblueprints(id)
+	manual_blueprint_id int not null references manual_blueprints(id)
 		on update cascade
 		on delete cascade,
 	fromtime time not null,

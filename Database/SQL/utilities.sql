@@ -7,6 +7,7 @@ begin
 end;
 $$;
 
+
 create or replace function timeframes_overlap(f0 date, t0 date, f1 date, t1 date)
     returns boolean
     language plpgsql
@@ -17,7 +18,7 @@ end;
 $$;
 
 
-create or replace function blueprints_overlap(a slotblueprints, b slotblueprints)
+create or replace function blueprints_overlap(a blueprints, b blueprints)
     returns boolean
     language plpgsql
 as $$
@@ -46,16 +47,16 @@ end;
 $$;
 
 
-create or replace function blueprints_overlap(a periodicslotblueprints, b periodicslotblueprints)
+create or replace function blueprints_overlap(a periodic_blueprints, b periodic_blueprints)
     returns boolean
     language plpgsql
 as $$
 declare
-	base_a slotblueprints;
-	base_b slotblueprints;
+	base_a blueprints;
+	base_b blueprints;
 begin
-	select * into base_a from slotblueprints where id = a.id;
-	select * into base_b from slotblueprints where id = b.id;
+	select * into base_a from blueprints where id = a.id;
+	select * into base_b from blueprints where id = b.id;
 
 	if
 		(a.id = b.id)
@@ -79,17 +80,16 @@ end;
 $$;
 
 
-
-create or replace function blueprints_overlap(a manualslotblueprints, b manualslotblueprints)
+create or replace function blueprints_overlap(a manual_blueprints, b manual_blueprints)
     returns boolean
     language plpgsql
 as $$
 declare
-	base_a slotblueprints;
-	base_b slotblueprints;
+	base_a blueprints;
+	base_b blueprints;
 begin
-	select * into base_a from slotblueprints where id = a.id;
-	select * into base_b from slotblueprints where id = b.id;
+	select * into base_a from blueprints where id = a.id;
+	select * into base_b from blueprints where id = b.id;
 
 	if 
 		(a.id = b.id)
@@ -112,7 +112,8 @@ begin
 end;
 $$;
 
-create or replace function slots_overlap(a periodicslots, b periodicslots)
+
+create or replace function slots_overlap(a periodic_slots, b periodic_slots)
     returns boolean
     language plpgsql
 as $$
@@ -124,7 +125,7 @@ begin
 	select * into base_a from slots where id = a.slot_id;
 	select * into base_b from slots where id = b.slot_id;
 
-	if base_a.date = base_b.date and a.periodicslotblueprint_id = b.periodicslotblueprint_id
+	if base_a.date = base_b.date and a.periodic_blueprint_id = b.periodic_blueprint_id
 	then
 		return TRUE;
 	end if;
@@ -134,7 +135,7 @@ end;
 $$;
 
 
-create or replace function slots_overlap(a manualslots, b manualslots)
+create or replace function slots_overlap(a manual_slots, b manual_slots)
     returns boolean
     language plpgsql
 as $$
@@ -148,7 +149,7 @@ begin
 	if
 		base_a.date = base_b.date
 		and
-		a.manualslotblueprint_id = b.manualslotblueprint_id
+		a.manual_blueprint_id = b.manual_blueprint_id
 		and
 		timeframes_overlap(
 			a.fromtime,
@@ -166,18 +167,18 @@ $$;
 
 
 create or replace function get_base_blueprint_by_slot_id(slot_id int)
-	returns slotblueprints
+	returns blueprints
 	language plpgsql
 as $$
 declare
-	base_blueprint slotblueprints;
+	base_blueprint blueprints;
 begin
 	select		b.*
 	into		base_blueprint
 	from		slots s
-				join periodicslots ps on ps.slot_id = s.id
-				join periodicslotblueprints pb on pb.id = ps.periodicslotblueprint_id
-				join slotblueprints b on b.id = pb.slotblueprint_id
+				join periodic_slots ps on ps.slot_id = s.id
+				join periodic_blueprints pb on pb.id = ps.periodic_blueprint_id
+				join blueprints b on b.id = pb.blueprint_id
 	where		s.id = slot_id;
 
 	if base_blueprint.id is NULL
@@ -185,9 +186,9 @@ begin
 		select		b.*
 		into		base_blueprint
 		from		slots s
-					join manualslots ms on ms.slot_id = s.id
-					join manualslotblueprints mb on mb.id = ms.manualslotblueprint_id
-					join slotblueprints b on b.id = mb.slotblueprint_id
+					join manual_slots ms on ms.slot_id = s.id
+					join manual_blueprints mb on mb.id = ms.manual_blueprint_id
+					join blueprints b on b.id = mb.blueprint_id
 		where		s.id = slot_id;
 	end if;
 
