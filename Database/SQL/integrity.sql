@@ -13,10 +13,10 @@ create or replace function trg_no_mixed_blueprints_periodic()
 	language plpgsql
 as $$
 declare
-	establishment_id int;
+	est_id int;
 begin
 	select		b.establishment_id
-	into		establishment_id
+	into		est_id
 	from		blueprints b
 	where		b.id = NEW.blueprint_id;
 
@@ -24,7 +24,7 @@ begin
 		select		*
 		from		manual_blueprints m
 					join blueprints b on b.id = m.blueprint_id
-		where		b.establishment_id = establishment_id
+		where		b.establishment_id = est_id
 	)
 	then 
 		raise 'Mixed blueprint types are not allowed';
@@ -51,10 +51,10 @@ create or replace function trg_no_mixed_blueprints_manual()
 	language plpgsql
 as $$
 declare
-	establishment_id int;
+	est_id int;
 begin
 	select		b.establishment_id
-	into		establishment_id
+	into		est_id
 	from		blueprints b
 	where		b.id = NEW.blueprint_id;
 
@@ -62,7 +62,7 @@ begin
 		select		*
 		from		periodic_blueprints p
 					join blueprints b on b.id = p.blueprint_id
-		where		b.establishment_id = establishment_id
+		where		b.establishment_id = est_id
 	)
 	then
 		raise 'Mixed blueprint types are not allowed';
@@ -86,14 +86,11 @@ create or replace function trg_no_mixed_blueprints()
 	returns trigger
 	language plpgsql
 as $$
+declare
+	old_bp boolean = has_establishment_periodic_policy(OLD.establishment_id);
+	new_bp boolean = has_establishment_periodic_policy(NEW.establishment_id);
 begin
-	if exists (
-		select		*
-		from		blueprints s
-					join manual_blueprints m on m.blueprint_id = s.id
-					join periodic_blueprints p on p.blueprint_id = s.id
-		where		s.establishment_id = NEW.establishment_id
-	)
+	if old_bp is distinct from new_bp
 	then
 		raise 'Mixed blueprint types are not allowed';
 		return NULL;
@@ -106,6 +103,7 @@ drop trigger if exists no_mixed_blueprints on blueprints;
 create trigger no_mixed_blueprints
 before update on blueprints
 for each row
+when (OLD.establishment_id <> NEW.establishment_id)
 execute function trg_no_mixed_blueprints();
 
 
@@ -232,18 +230,15 @@ create or replace function trg_slot_date_in_date_window()
 	language plpgsql
 as $$
 declare
-	isperiodic boolean;
 	blueprintid int;
 	from_date date;
 	to_date date;
 begin
-	isperiodic = exists (select * from periodic_slots p where p.slot_id = NEW.id);
-
 	select fromdate, todate into from_date, to_date from get_base_blueprint_by_slot_id(NEW.id);
 
-	if not (NEW.date between from_date and to_date)
+	if not is_date_between(NEW.date, from_date, to_date)
 	then
-		if isperiodic
+		if exists (select * from periodic_slots p where p.slot_id = NEW.id)
 		then
 			delete from periodic_slots where slot_id = NEW.id;
 		else
@@ -276,24 +271,24 @@ begin
 	select date into slot_date from slots where id = NEW.slot_id;
 	select fromdate, todate into from_date, to_date from get_base_blueprint_by_slot_id(NEW.slot_id);
 
-	if slot_date between from_date and to_date
+	if not is_date_between(slot_date, from_date, to_date)
 	then
-		return NEW;
+		raise 'Slot date does not fit its base blueprint''s recurrence time window';
+		return NULL;
 	end if;
 
-	raise 'Slot date does not fit its base blueprint''s recurrence time window';
-	return NULL;
+	return NEW;
 end;$$;
 
 drop trigger if exists slot_date_in_date_window on periodic_slots;
 create trigger slot_date_in_date_window
-before insert or update on periodic_slots
+before update on periodic_slots
 for each row
 execute function trg_slot_date_in_date_window_sub();
 
 drop trigger if exists slot_date_in_date_window on manual_slots;
 create trigger slot_date_in_date_window
-before insert or update on manual_slots
+before update on manual_slots
 for each row
 execute function trg_slot_date_in_date_window_sub();
 
@@ -472,13 +467,12 @@ create or replace function trg_no_unmatched_slot_sub()
 	language plpgsql
 as $$
 begin
-	with to_drop as (
-		select		distinct s.id
+	delete from slots where id in (
+		select		s.id
 		from		slots s
 		where		not exists (select * from manual_slots where slot_id = s.id) and
 					not exists (select * from periodic_slots where slot_id = s.id)
-	)
-	delete from slots where id in (select id from to_drop);
+	);
 	return NULL;
 end;$$;
 
@@ -634,13 +628,13 @@ execute function trg_reservation_limit();
 -------------------------------
 
 
-create or replace function blacklisted_user_reservations()
+create or replace function trg_blacklisted_user_reservations()
 	returns trigger
 	language plpgsql
 as $$
 declare
 	user_cellphone char(12);
-	provider_id int;
+	prov_id int;
 begin
 	select		a.cellphone
 	into		user_cellphone
@@ -649,14 +643,14 @@ begin
 	where		c.id = NEW.client_id;
 	
 	select	e.provider_id
-	into	provider_id
+	into	prov_id
 	from	get_base_blueprint_by_slot_id(NEW.slot_id) b
 			join establishments e on e.id = b.establishment_id;
 
 	if user_cellphone in (
 		select		b.usercellphone
 		from		blacklist b
-		where		b.provider_id = provider_id
+		where		b.provider_id = prov_id
 	)
 	then
 		raise 'User is not allowed to make reservations for this slot';
@@ -673,7 +667,7 @@ for each row
 execute function trg_blacklisted_user_reservations();
 
 
-create function trg_blacklisted_user_drop_reservations()
+create or replace function trg_blacklisted_user_reservations_blacklist()
 	returns trigger
 	language plpgsql
 as $$
@@ -691,4 +685,4 @@ drop trigger if exists blacklisted_user_reservations on blacklist;
 create trigger blacklisted_user_reservations
 after insert or update on blacklist
 for each row
-execute function trg_blacklisted_user_drop_reservations();
+execute function trg_blacklisted_user_reservations_blacklist();

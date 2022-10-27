@@ -1,7 +1,0 @@
-segnalare un utente
-
-
-password_digest anzi che password
-sdoppiare tutte le chiavi che sono pk e fk
-le fk sono <nome tabella esterna>_id
-rename appusers -> app_users

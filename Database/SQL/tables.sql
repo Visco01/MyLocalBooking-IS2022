@@ -130,10 +130,10 @@ create table reservations (
 	id serial primary key,
 	slot_id int not null references slots(id)
 		on update cascade
-		on delete no action,
+		on delete cascade,
 	client_id int not null references clients(id)
 		on update cascade
-		on delete no action,
+		on delete cascade,
 
 	unique(slot_id, client_id)
 );
