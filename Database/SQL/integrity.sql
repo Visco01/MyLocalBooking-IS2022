@@ -649,7 +649,7 @@ begin
 
 	if user_cellphone in (
 		select		b.usercellphone
-		from		blacklist b
+		from		blacklists b
 		where		b.provider_id = prov_id
 	)
 	then
@@ -681,8 +681,8 @@ begin
 	);
 end;$$;
 
-drop trigger if exists blacklisted_user_reservations on blacklist;
+drop trigger if exists blacklisted_user_reservations on blacklists;
 create trigger blacklisted_user_reservations
-after insert or update on blacklist
+after insert or update on blacklists
 for each row
 execute function trg_blacklisted_user_reservations_blacklist();

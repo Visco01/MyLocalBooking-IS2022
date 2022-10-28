@@ -50,8 +50,8 @@ create table providers (
 	companyname text
 );
 
-drop table if exists blacklist cascade;
-create table blacklist (
+drop table if exists blacklists cascade;
+create table blacklists (
 	id serial primary key,
 	provider_id int not null references providers(id)
 		on update cascade
