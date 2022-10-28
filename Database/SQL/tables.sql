@@ -138,13 +138,13 @@ create table reservations (
 	unique(slot_id, client_id)
 );
 
--- they're always associated with at least one periodic_blueprint or manual_blueprint
+-- they're always associated with at least one periodic_slot_blueprint or manual_slot_blueprint
 -- can only be defined by providers
-drop table if exists blueprints cascade;
-create table blueprints (
+drop table if exists slot_blueprints cascade;
+create table slot_blueprints (
 	id serial primary key,
 	establishment_id int not null references establishments(id),
-	weekdays bit(7) not null,
+	weekdays INT not null check (weekdays > 0 and weekdays <= (B'1111111')::INT),
 	reservationlimit int check(reservationlimit is null or reservationlimit > 0),
 	fromdate date not null default NOW(), -- date after which slots are scheduled
 	todate date 	-- date after which slots stop being scheduled
@@ -153,10 +153,10 @@ create table blueprints (
 
 -- needed to be able to schedule periodic slots
 -- can only be defined by providers
-drop table if exists periodic_blueprints cascade;
-create table periodic_blueprints (
+drop table if exists periodic_slot_blueprints cascade;
+create table periodic_slot_blueprints (
 	id serial primary key,
-	blueprint_id int not null references blueprints(id)
+	slot_blueprint_id int not null references slot_blueprints(id)
 		on update cascade
 		on delete cascade,
 	fromtime time not null,
@@ -165,10 +165,10 @@ create table periodic_blueprints (
 
 -- needed to be able to schedule manual slots
 -- can only be defined by providers
-drop table if exists manual_blueprints cascade;
-create table manual_blueprints (
+drop table if exists manual_slot_blueprints cascade;
+create table manual_slot_blueprints (
 	id serial primary key,
-	blueprint_id int not null references blueprints(id)
+	slot_blueprint_id int not null references slot_blueprints(id)
 		on update cascade
 		on delete cascade,
 	opentime time not null,
@@ -184,7 +184,7 @@ create table periodic_slots (
 	slot_id int not null references slots(id)
 		on update cascade
 		on delete cascade,
-	periodic_blueprint_id int not null references periodic_blueprints(id)
+	periodic_slot_blueprint_id int not null references periodic_slot_blueprints(id)
 		on delete cascade
 		on update cascade
 );
@@ -202,7 +202,7 @@ create table manual_slots (
 	slot_id int not null references slots(id)
 		on update cascade
 		on delete cascade,
-	manual_blueprint_id int not null references manual_blueprints(id)
+	manual_slot_blueprint_id int not null references manual_slot_blueprints(id)
 		on update cascade
 		on delete cascade,
 	fromtime time not null,

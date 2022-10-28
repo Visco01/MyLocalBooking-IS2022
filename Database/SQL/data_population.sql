@@ -3,7 +3,7 @@
 ----------------------------------
 delete from reservations;
 delete from slots;
-delete from blueprints;
+delete from slot_blueprints;
 delete from establishments;
 delete from app_users;
 
@@ -41,32 +41,32 @@ $$
 declare
     blueprintid int;
     
-    weekdays bit(7) = B'0000100';
+    weekdays INT = (B'0000100')::INT;
     reservationlimit int = 15;
     fromdate date = '10/06/21';
     todate date = '10/06/22';
 begin
-    insert into blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
+    insert into slot_blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
     ((select id from establishments where name ~ 'periodic'), weekdays, reservationlimit, fromdate, todate)
     returning id into blueprintid;
     
-    insert into periodic_blueprints(blueprint_id, fromtime, totime) values
+    insert into periodic_slot_blueprints(slot_blueprint_id, fromtime, totime) values
     (blueprintid, '10:00', '12:00'),
     (blueprintid, '12:00', '14:00');
 
 
-    insert into blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
+    insert into slot_blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
     ((select id from establishments where name ~ 'manual'), weekdays, null, fromdate, todate)
     returning id into blueprintid;
     
-    insert into manual_blueprints(blueprint_id, opentime, closetime, maxduration) values
+    insert into manual_slot_blueprints(slot_blueprint_id, opentime, closetime, maxduration) values
     (blueprintid, '08:00', '12:00', '03:00');
 
-    insert into blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
+    insert into slot_blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
     ((select id from establishments where name ~ 'manual'), weekdays, 50, fromdate, todate)
     returning id into blueprintid;
     
-    insert into manual_blueprints(blueprint_id, opentime, closetime, maxduration) values
+    insert into manual_slot_blueprints(slot_blueprint_id, opentime, closetime, maxduration) values
     (blueprintid, '15:30', '21:00', '03:00');
 end;$$;
 
@@ -106,9 +106,9 @@ begin
     ('10/06/21', null, (select id from app_users where firstname = 'user_2'))
     returning id into periodic1_base_id;
 
-    insert into periodic_slots(slot_id, periodic_blueprint_id) values
-    (periodic0_base_id, (select id from periodic_blueprints where fromtime = '10:00')),
-    (periodic1_base_id, (select id from periodic_blueprints where fromtime = '12:00'));
+    insert into periodic_slots(slot_id, periodic_slot_blueprint_id) values
+    (periodic0_base_id, (select id from periodic_slot_blueprints where fromtime = '10:00')),
+    (periodic1_base_id, (select id from periodic_slot_blueprints where fromtime = '12:00'));
 end;$$;
 
 
@@ -130,9 +130,9 @@ begin
     ('10/06/21', null, (select id from app_users where firstname = 'user_3'))
     returning id into periodic1_base_id;
 
-    insert into manual_slots(slot_id, fromtime, totime, manual_blueprint_id) values
-    (periodic0_base_id, '09:15', '12:00', (select id from manual_blueprints where opentime = '08:00')),
-    (periodic1_base_id, '15:30', '16:45', (select id from manual_blueprints where opentime = '15:30'));
+    insert into manual_slots(slot_id, fromtime, totime, manual_slot_blueprint_id) values
+    (periodic0_base_id, '09:15', '12:00', (select id from manual_slot_blueprints where opentime = '08:00')),
+    (periodic1_base_id, '15:30', '16:45', (select id from manual_slot_blueprints where opentime = '15:30'));
 end;$$;
 
 

@@ -3,7 +3,7 @@
 -------------------------------
 
 
--- manual blueprints already exists
+-- manual slot_blueprints already exists
 -- either inserting a periodic blueprint
 -- or matching a preexisting periodic blueprint (for a different establishment)
 -- which conflicts with the original establishment's blueprint policy
@@ -17,13 +17,13 @@ declare
 begin
 	select		b.establishment_id
 	into		est_id
-	from		blueprints b
-	where		b.id = NEW.blueprint_id;
+	from		slot_blueprints b
+	where		b.id = NEW.slot_blueprint_id;
 
 	if exists (
 		select		*
-		from		manual_blueprints m
-					join blueprints b on b.id = m.blueprint_id
+		from		manual_slot_blueprints m
+					join slot_blueprints b on b.id = m.slot_blueprint_id
 		where		b.establishment_id = est_id
 	)
 	then 
@@ -34,14 +34,14 @@ begin
 	return NEW;
 end;$$;
 
-drop trigger if exists no_mixed_blueprints on periodic_blueprints;
+drop trigger if exists no_mixed_blueprints on periodic_slot_blueprints;
 create trigger no_mixed_blueprints
-before insert or update on periodic_blueprints
+before insert or update on periodic_slot_blueprints
 for each row
 execute function trg_no_mixed_blueprints_periodic();
 
 
--- periodic blueprints already exists
+-- periodic slot_blueprints already exists
 -- either inserting a manual blueprint
 -- or changing a manual blueprint's base blueprint, which may point to a
 -- different establishment with a conflicting blueprint policy
@@ -55,13 +55,13 @@ declare
 begin
 	select		b.establishment_id
 	into		est_id
-	from		blueprints b
-	where		b.id = NEW.blueprint_id;
+	from		slot_blueprints b
+	where		b.id = NEW.slot_blueprint_id;
 
 	if exists (
 		select		*
-		from		periodic_blueprints p
-					join blueprints b on b.id = p.blueprint_id
+		from		periodic_slot_blueprints p
+					join slot_blueprints b on b.id = p.slot_blueprint_id
 		where		b.establishment_id = est_id
 	)
 	then
@@ -72,9 +72,9 @@ begin
 	return NEW;
 end;$$;
 
-drop trigger if exists no_mixed_blueprints on manual_blueprints;
+drop trigger if exists no_mixed_blueprints on manual_slot_blueprints;
 create trigger no_mixed_blueprints
-before insert or update on manual_blueprints
+before insert or update on manual_slot_blueprints
 for each row
 execute function trg_no_mixed_blueprints_manual();
 
@@ -99,9 +99,9 @@ begin
 	return NEW;
 end;$$;
 
-drop trigger if exists no_mixed_blueprints on blueprints;
+drop trigger if exists no_mixed_blueprints on slot_blueprints;
 create trigger no_mixed_blueprints
-before update on blueprints
+before update on slot_blueprints
 for each row
 when (OLD.establishment_id <> NEW.establishment_id)
 execute function trg_no_mixed_blueprints();
@@ -109,7 +109,7 @@ execute function trg_no_mixed_blueprints();
 
 
 -------------------------------
--- no overlapping blueprints
+-- no overlapping slot_blueprints
 -------------------------------
 
 
@@ -120,7 +120,7 @@ as $$
 begin
 	if exists (
 		select		*
-		from		periodic_blueprints p
+		from		periodic_slot_blueprints p
 		where		blueprints_overlap(p, NEW)
 	)
 	then
@@ -131,9 +131,9 @@ begin
 	return NEW;
 end;$$;
 
-drop trigger if exists no_overlapping_blueprints on periodic_blueprints;
+drop trigger if exists no_overlapping_blueprints on periodic_slot_blueprints;
 create trigger no_overlapping_blueprints
-before insert or update on periodic_blueprints
+before insert or update on periodic_slot_blueprints
 for each row
 execute function trg_no_overlapping_blueprints_periodic();
 
@@ -145,7 +145,7 @@ as $$
 begin
 	if exists (
 		select		*
-		from		manual_blueprints m
+		from		manual_slot_blueprints m
 		where		blueprints_overlap(m, NEW)
 	)
 	then
@@ -156,9 +156,9 @@ begin
 	return NEW;
 end;$$;
 
-drop trigger if exists no_overlapping_blueprints on manual_blueprints;
+drop trigger if exists no_overlapping_blueprints on manual_slot_blueprints;
 create trigger no_overlapping_blueprints
-before insert or update on manual_blueprints
+before insert or update on manual_slot_blueprints
 for each row
 execute function trg_no_overlapping_blueprints_manual();
 
@@ -312,8 +312,8 @@ declare
 begin
 	select		opentime, closetime, maxduration
 	into		open_time, close_time, max_duration
-	from		manual_blueprints
-	where		id = NEW.manual_blueprint_id;
+	from		manual_slot_blueprints
+	where		id = NEW.manual_slot_blueprint_id;
 
 	if (NEW.fromtime < open_time) or (NEW.totime > close_time)
 	then
@@ -345,7 +345,7 @@ begin
 	if exists (
 		select		*
 		from		manual_slots m
-		where		m.manual_blueprint_id = NEW.id and
+		where		m.manual_slot_blueprint_id = NEW.id and
 					(m.totime - m.fromtime) > NEW.maxduration
 	)
 	then
@@ -356,9 +356,9 @@ begin
 	return NEW;
 end;$$;
 
-drop trigger if exists fit_blueprint_timeframe on manual_blueprints;
+drop trigger if exists fit_blueprint_timeframe on manual_slot_blueprints;
 create trigger fit_blueprint_timeframe
-before update on manual_blueprints
+before update on manual_slot_blueprints
 for each row
 when (
 	NEW.maxduration < OLD.maxduration or
@@ -380,22 +380,22 @@ create or replace function trg_no_unmatched_slot_blueprint()
 as $$
 begin
 	if not exists (
-		select * from periodic_blueprints where blueprint_id = NEW.id
+		select * from periodic_slot_blueprints where slot_blueprint_id = NEW.id
 	)
 	and not exists (
-		select * from manual_blueprints where blueprint_id = NEW.id
+		select * from manual_slot_blueprints where slot_blueprint_id = NEW.id
 	)
 	then
-		delete from blueprints where id = NEW.id;
+		delete from slot_blueprints where id = NEW.id;
 		raise 'Cannot insert an unmatched blueprint';
 	end if;
 
 	return NULL;
 end;$$;
 
-drop trigger if exists no_unmatched_slot_blueprint on blueprints;
+drop trigger if exists no_unmatched_slot_blueprint on slot_blueprints;
 create constraint trigger no_unmatched_slot_blueprint
-after insert on blueprints
+after insert on slot_blueprints
 deferrable initially deferred
 for each row
 execute function trg_no_unmatched_slot_blueprint();
@@ -408,23 +408,23 @@ as $$
 begin
 	with to_drop as (
 		select		distinct b.id
-		from		blueprints b
-		where		not exists (select * from manual_blueprints where blueprint_id = b.id) and
-					not exists (select * from periodic_blueprints where blueprint_id = b.id)
+		from		slot_blueprints b
+		where		not exists (select * from manual_slot_blueprints where slot_blueprint_id = b.id) and
+					not exists (select * from periodic_slot_blueprints where slot_blueprint_id = b.id)
 	)
-	delete from blueprints where id in (select id from to_drop);
+	delete from slot_blueprints where id in (select id from to_drop);
 	return NULL;
 end;$$;
 
-drop trigger if exists no_unmatched_slot_blueprint on periodic_blueprints;
+drop trigger if exists no_unmatched_slot_blueprint on periodic_slot_blueprints;
 create trigger no_unmatched_slot_blueprint
-after delete on periodic_blueprints
+after delete on periodic_slot_blueprints
 for each statement
 execute function trg_no_unmatched_slot_blueprint_sub();
 
-drop trigger if exists no_unmatched_slot_blueprint on manual_blueprints;
+drop trigger if exists no_unmatched_slot_blueprint on manual_slot_blueprints;
 create trigger no_unmatched_slot_blueprint
-after delete on manual_blueprints
+after delete on manual_slot_blueprints
 for each statement
 execute function trg_no_unmatched_slot_blueprint_sub();
 
@@ -557,21 +557,21 @@ as $$
 begin
 	if exists (
 		select		s.id
-		from		periodic_blueprints pb
-					join periodic_slots p on p.periodic_blueprint_id = pb.id
+		from		periodic_slot_blueprints pb
+					join periodic_slots p on p.periodic_slot_blueprint_id = pb.id
 					join slots s on s.id = p.slot_id
 					join reservations r on r.slot_id = s.id
-		where		pb.blueprint_id = NEW.id
+		where		pb.slot_blueprint_id = NEW.id
 		group by	s.id
 		having		count(*) > NEW.reservationlimit -- unknown -> false
 	)
 	or exists (
 		select		s.id
-		from		manual_blueprints mb
-					join manual_slots m on m.periodic_blueprint_id = mb.id
+		from		manual_slot_blueprints mb
+					join manual_slots m on m.periodic_slot_blueprint_id = mb.id
 					join slots s on s.id = m.slot_id
 					join reservations r on r.slot_id = s.id
-		where		mb.blueprint_id = NEW.id
+		where		mb.slot_blueprint_id = NEW.id
 		group by	s.id
 		having		count(*) > NEW.reservationlimit -- unknown -> false
 	)
@@ -583,9 +583,9 @@ begin
 	return NEW;
 end;$$;
 
-drop trigger if exists reservation_limit on blueprints;
+drop trigger if exists reservation_limit on slot_blueprints;
 create trigger reservation_limit
-before update on blueprints
+before update on slot_blueprints
 for each row
 when (NEW.reservationlimit < OLD.reservationlimit)
 execute function trg_reservation_limit_blueprints();
