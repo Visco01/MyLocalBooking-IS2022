@@ -265,3 +265,140 @@ begin
 
 	return is_periodic;
 end;$$;
+
+
+create or replace procedure insert_client(
+	password_digest text, 
+	cellphone char(12),
+	email text,
+	firstname text,
+	lastname text,
+	dob date,
+	lat float default null,
+	lng float default null
+)
+	language plpgsql
+as $$
+declare
+	app_user_id bigint;
+begin
+	insert into app_users(password_digest, cellphone, email, firstname, lastname, dob)
+	values (password_digest, cellphone, email, firstname, lastname, dob)
+	returning id into app_user_id;
+
+	insert into clients(app_user_id, lat, lng)
+	values (app_user_id, lat, lng);
+end;$$;
+
+create or replace procedure insert_provider(
+	password_digest text, 
+	cellphone char(12),
+	email text,
+	firstname text,
+	lastname text,
+	dob date,
+	isverified boolean,
+	maxstrikes int,
+	companyname text
+)
+	language plpgsql
+as $$
+declare
+	app_user_id bigint;
+begin
+	insert into app_users(password_digest, cellphone, email, firstname, lastname, dob)
+	values (password_digest, cellphone, email, firstname, lastname, dob)
+	returning id into app_user_id;
+
+	insert into providers(app_user_id, isverified, maxstrikes, companyname)
+	values (app_user_id, isverified, maxstrikes, companyname);
+end;$$;
+
+
+create or replace procedure insert_manual_slot_blueprint(
+	establishment_id bigint,
+	weekdays int,
+	reservationlimit int,
+	fromdate date,
+	todate date,
+	opentime time,
+	closetime time,
+	maxduration interval
+)
+	language plpgsql
+as $$
+declare
+	slot_blueprint_id bigint;
+begin
+	insert into slot_blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate)
+	values (establishment_id, weekdays, reservationlimit, fromdate, todate)
+	returning id into slot_blueprint_id;
+
+	insert into manual_slot_blueprints(slot_blueprint_id, opentime, closetime, maxduration)
+	values (slot_blueprint_id, opentime, closetime, maxduration);
+end;$$;
+
+
+create or replace procedure insert_periodic_slot_blueprint(
+	establishment_id bigint,
+	weekdays int,
+	reservationlimit int,
+	fromdate date,
+	todate date,
+	fromtime time,
+	totime time
+)
+	language plpgsql
+as $$
+declare
+	slot_blueprint_id bigint;
+begin
+	insert into slot_blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate)
+	values (establishment_id, weekdays, reservationlimit, fromdate, todate)
+	returning id into slot_blueprint_id;
+
+	insert into periodic_slot_blueprints(slot_blueprint_id, fromtime, totime)
+	values (slot_blueprint_id, fromtime, totime);
+end;$$;
+
+
+create or replace procedure insert_manual_slot (
+	app_user_id bigint,
+	date date,
+	password_digest text,
+	manual_slot_blueprint_id bigint,
+	fromtime time,
+	totime time
+)
+	language plpgsql
+as $$
+declare
+	slot_id int;
+begin
+	insert into slots(app_user_id, date, password_digest)
+	values (app_user_id, date, password_digest)
+	returning id into slot_id;
+
+	insert into manual_slots(slot_id, manual_slot_blueprint_id, fromtime, totime)
+	values (slot_id, manual_slot_blueprint_id, fromtime, totime);
+end;$$;
+
+
+create or replace procedure insert_periodic_slot (
+	app_user_id bigint,
+	date date,
+	password_digest text,
+	periodic_slot_blueprint_id bigint
+)
+	language plpgsql
+as $$
+declare
+	slot_id int;
+begin
+	insert into slots(app_user_id, date, password_digest)
+	values (app_user_id, date, password_digest)
+	returning id into slot_id;
+
+	insert into periodic_slots(slot_id, periodic_slot_blueprint_id)
+	values (slot_id, periodic_slot_blueprint_id);
+end;$$;
