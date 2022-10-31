@@ -107,7 +107,7 @@ declare
 begin
 	for i in 1..100 loop
 		insert into app_users(password_digest, cellphone, firstname, lastname, dob) values
-		('', (base_cellphone::int + i)::char(12), 'user_' || i::text, 'user_' || i::text, '10/06/00')
+		('', (base_cellphone::bigint + i)::char(12), 'user_' || i::text, 'user_' || i::text, '10/06/00')
 		returning id into app_user_id;
 
 		insert into clients(app_user_id) values (app_user_id);
