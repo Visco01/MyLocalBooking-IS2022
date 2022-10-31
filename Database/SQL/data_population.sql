@@ -1,11 +1,37 @@
 ----------------------------------
 -- wipe tables
 ----------------------------------
+--
 delete from reservations;
+delete from periodic_slots;
+delete from manual_slots;
+--
 delete from slots;
+--
+delete from manual_slot_blueprints;
+delete from periodic_slot_blueprints;
 delete from slot_blueprints;
 delete from establishments;
+delete from clients;
+delete from providers;
+--
 delete from app_users;
+
+ALTER SEQUENCE app_users_id_seq RESTART WITH 1;
+ALTER SEQUENCE blacklists_id_seq RESTART WITH 1;
+ALTER SEQUENCE clients_id_seq RESTART WITH 1;
+ALTER SEQUENCE establishments_id_seq RESTART WITH 1;
+ALTER SEQUENCE manual_slot_blueprints_id_seq RESTART WITH 1;
+ALTER SEQUENCE manual_slots_id_seq RESTART WITH 1;
+ALTER SEQUENCE periodic_slot_blueprints_id_seq RESTART WITH 1;
+ALTER SEQUENCE periodic_slots_id_seq RESTART WITH 1;
+ALTER SEQUENCE providers_id_seq RESTART WITH 1;
+ALTER SEQUENCE ratings_id_seq RESTART WITH 1;
+ALTER SEQUENCE reservations_id_seq RESTART WITH 1;
+ALTER SEQUENCE slot_blueprints_id_seq RESTART WITH 1;
+ALTER SEQUENCE slots_id_seq RESTART WITH 1;
+ALTER SEQUENCE strikes_id_seq RESTART WITH 1;
+ALTER SEQUENCE users_id_seq RESTART WITH 1;
 
 
 ----------------------------------
