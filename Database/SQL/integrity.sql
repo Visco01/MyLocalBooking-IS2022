@@ -13,7 +13,7 @@ create or replace function trg_no_mixed_blueprints_periodic()
 	language plpgsql
 as $$
 declare
-	est_id int;
+	est_id bigint;
 begin
 	select		b.establishment_id
 	into		est_id
@@ -51,7 +51,7 @@ create or replace function trg_no_mixed_blueprints_manual()
 	language plpgsql
 as $$
 declare
-	est_id int;
+	est_id bigint;
 begin
 	select		b.establishment_id
 	into		est_id
@@ -230,7 +230,7 @@ create or replace function trg_slot_date_in_date_window()
 	language plpgsql
 as $$
 declare
-	blueprintid int;
+	blueprintid bigint;
 	from_date date;
 	to_date date;
 begin
@@ -634,7 +634,7 @@ create or replace function trg_blacklisted_user_reservations()
 as $$
 declare
 	user_cellphone char(12);
-	prov_id int;
+	prov_id bigint;
 begin
 	select		a.cellphone
 	into		user_cellphone

@@ -174,7 +174,7 @@ end;
 $$;
 
 
-create or replace function get_base_blueprint_by_slot_id(base_slot_id int)
+create or replace function get_base_blueprint_by_slot_id(base_slot_id bigint)
 	returns slot_blueprints
 	language plpgsql
 as $$
@@ -217,7 +217,7 @@ begin
 end;$$;
 
 
-create or replace function get_remaining_reservations(base_slot_id int)
+create or replace function get_remaining_reservations(base_slot_id bigint)
 	returns int
 	language plpgsql
 as $$
@@ -239,7 +239,7 @@ begin
 end;$$;
 
 
-create or replace function has_establishment_periodic_policy(establishmentid int)
+create or replace function has_establishment_periodic_policy(establishmentid bigint)
 	returns boolean
 	language plpgsql
 as $$
@@ -373,7 +373,7 @@ create or replace procedure insert_manual_slot (
 	language plpgsql
 as $$
 declare
-	slot_id int;
+	slot_id bigint;
 begin
 	insert into slots(app_user_id, date, password_digest)
 	values (app_user_id, date, password_digest)
@@ -393,7 +393,7 @@ create or replace procedure insert_periodic_slot (
 	language plpgsql
 as $$
 declare
-	slot_id int;
+	slot_id bigint;
 begin
 	insert into slots(app_user_id, date, password_digest)
 	values (app_user_id, date, password_digest)

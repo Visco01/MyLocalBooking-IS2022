@@ -41,8 +41,8 @@ ALTER SEQUENCE users_id_seq RESTART WITH 1;
 do
 $$
 declare
-	app_user_id int;
-	provider_id int;
+	app_user_id bigint;
+	provider_id bigint;
 begin
 	insert into app_users(password_digest, cellphone, firstname, lastname, dob) values
 	('', '393475322555', 'nicola', 'marizza', '10/06/00')
@@ -65,9 +65,9 @@ end;$$;
 do
 $$
 declare
-    blueprintid int;
+    blueprintid bigint;
     
-    weekdays INT = (B'0000100')::INT;
+    weekdays int = (B'0000100')::int;
     reservationlimit int = 15;
     fromdate date = '10/06/21';
     todate date = '10/06/22';
@@ -103,11 +103,11 @@ do
 $$
 declare
 	base_cellphone char(12) = '391000000000';
-	app_user_id int;
+	app_user_id bigint;
 begin
 	for i in 1..100 loop
 		insert into app_users(password_digest, cellphone, firstname, lastname, dob) values
-		('', (base_cellphone::bigint + i)::char(12), 'user_' || i::text, 'user_' || i::text, '10/06/00')
+		('', (base_cellphone::int + i)::char(12), 'user_' || i::text, 'user_' || i::text, '10/06/00')
 		returning id into app_user_id;
 
 		insert into clients(app_user_id) values (app_user_id);
@@ -121,8 +121,8 @@ end;$$;
 do
 $$
 declare
-    periodic0_base_id int;
-    periodic1_base_id int;
+    periodic0_base_id bigint;
+    periodic1_base_id bigint;
 begin
     insert into slots(date, password_digest, app_user_id) values
     ('10/06/21', null, (select id from app_users where firstname = 'user_1'))
@@ -145,8 +145,8 @@ end;$$;
 do
 $$
 declare
-    periodic0_base_id int;
-    periodic1_base_id int;
+    periodic0_base_id bigint;
+    periodic1_base_id bigint;
 begin
     insert into slots(date, password_digest, app_user_id) values
     ('10/06/21', null, (select id from app_users where firstname = 'user_2'))
@@ -174,7 +174,7 @@ do
 $$
 declare
     looped_slot record;
-	slot_owner_id int;
+	slot_owner_id bigint;
 begin
 	-- for every slot
     FOR looped_slot IN
