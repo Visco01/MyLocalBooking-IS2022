@@ -2,7 +2,6 @@ package uni.project.mylocalbooking.models;
 
 import java.util.Date;
 
-import uni.project.mylocalbooking.IMyLocalBookingAPI;
 
 public class Provider extends AppUser {
     private final Long id;

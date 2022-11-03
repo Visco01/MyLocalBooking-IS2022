@@ -2,8 +2,6 @@ package uni.project.mylocalbooking.models;
 
 import java.util.Date;
 
-import uni.project.mylocalbooking.IMyLocalBookingAPI;
-
 public abstract class AppUser implements IDatabaseModel {
     private final Long id;
     public final String cellphone;

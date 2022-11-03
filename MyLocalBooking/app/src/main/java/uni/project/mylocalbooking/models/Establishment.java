@@ -1,6 +1,5 @@
 package uni.project.mylocalbooking.models;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class Establishment implements IDatabaseModel {

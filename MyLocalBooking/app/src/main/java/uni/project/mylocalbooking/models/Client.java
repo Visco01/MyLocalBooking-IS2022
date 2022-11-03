@@ -2,8 +2,6 @@ package uni.project.mylocalbooking.models;
 
 import java.util.Date;
 
-import uni.project.mylocalbooking.IMyLocalBookingAPI;
-
 public class Client extends AppUser {
     private final Long id;
     public final Coordinates position;
