@@ -1,6 +1,7 @@
 package uni.project.mylocalbooking.models;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -16,11 +17,15 @@ public abstract class SlotBlueprint implements IDatabaseModel {
 
     public SlotBlueprint(Long id, Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, Date fromDate, Date toDate) {
         this.id = id;
-        this.establishment = establishment;
         this.weekdays = weekdays;
         this.reservationLimit = reservationLimit;
         this.fromDate = fromDate;
         this.toDate = toDate;
+        this.establishment = establishment;
+
+        if(establishment.blueprints == null)
+            establishment.blueprints = new ArrayList<>();
+        establishment.blueprints.add(this);
     }
 
     public SlotBlueprint(Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, Date fromDate, Date toDate) {

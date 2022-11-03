@@ -8,7 +8,8 @@ public class Establishment implements IDatabaseModel {
     public final String name;
     public final String address;
     public final Coordinates position;
-    public final Collection<SlotBlueprint> blueprints = new ArrayList<>();
+
+    public Collection<SlotBlueprint> blueprints;
 
     public Establishment(Long id, Provider provider, String name, String address, Coordinates position) {
         this.id = id;
