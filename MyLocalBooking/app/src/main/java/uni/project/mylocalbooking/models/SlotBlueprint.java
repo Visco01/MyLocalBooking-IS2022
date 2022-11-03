@@ -3,7 +3,7 @@ package uni.project.mylocalbooking.models;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 
 public abstract class SlotBlueprint implements IDatabaseModel {
@@ -11,12 +11,12 @@ public abstract class SlotBlueprint implements IDatabaseModel {
     public final Establishment establishment;
     public final HashSet<DayOfWeek> weekdays;
     public final Integer reservationLimit;
-    public final Date fromDate;
-    public final Date toDate;
+    public final LocalDate fromDate;
+    public final LocalDate toDate;
 
     public Collection<Slot> slots;
 
-    public SlotBlueprint(Long id, Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, Date fromDate, Date toDate) {
+    public SlotBlueprint(Long id, Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, LocalDate fromDate, LocalDate toDate) {
         this.id = id;
         this.weekdays = weekdays;
         this.reservationLimit = reservationLimit;
@@ -29,7 +29,7 @@ public abstract class SlotBlueprint implements IDatabaseModel {
         establishment.blueprints.add(this);
     }
 
-    public SlotBlueprint(Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, Date fromDate, Date toDate) {
+    public SlotBlueprint(Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, LocalDate fromDate, LocalDate toDate) {
         this(null, establishment, weekdays, reservationLimit, fromDate, toDate);
     }
 
