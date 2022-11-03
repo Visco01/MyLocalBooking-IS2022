@@ -13,7 +13,8 @@ public abstract class SlotBlueprint implements IDatabaseModel {
     public final Integer reservationLimit;
     public final Date fromDate;
     public final Date toDate;
-    public final Collection<Slot> slots = new HashSet<>();
+
+    public Collection<Slot> slots;
 
     public SlotBlueprint(Long id, Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, Date fromDate, Date toDate) {
         this.id = id;
