@@ -16,7 +16,7 @@ public abstract class SlotBlueprint implements IDatabaseModel {
 
     public Collection<Slot> slots;
 
-    public SlotBlueprint(Long id, Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, LocalDate fromDate, LocalDate toDate) {
+    public SlotBlueprint(Long id, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         this.id = id;
         this.weekdays = weekdays;
         this.reservationLimit = reservationLimit;
@@ -29,8 +29,8 @@ public abstract class SlotBlueprint implements IDatabaseModel {
         establishment.blueprints.add(this);
     }
 
-    public SlotBlueprint(Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, LocalDate fromDate, LocalDate toDate) {
-        this(null, establishment, weekdays, reservationLimit, fromDate, toDate);
+    public SlotBlueprint(Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
+        this(null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
     @Override

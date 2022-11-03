@@ -12,16 +12,16 @@ public class ManualSlotBlueprint extends SlotBlueprint {
     public final LocalTime closeTime;
     public final Duration maxDuration;
 
-    public ManualSlotBlueprint(Long id, LocalTime openTime, LocalTime closeTime, Duration maxDuration, Long slot_id, Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, LocalDate fromDate, LocalDate toDate) {
-        super(slot_id, establishment, weekdays, reservationLimit, fromDate, toDate);
+    public ManualSlotBlueprint(Long id, LocalTime openTime, LocalTime closeTime, Duration maxDuration, Long slot_id, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
+        super(slot_id, establishment, reservationLimit, weekdays, fromDate, toDate);
         this.id = id;
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.maxDuration = maxDuration;
     }
 
-    public ManualSlotBlueprint(LocalTime openTime, LocalTime closeTime, Duration maxDuration, Establishment establishment, HashSet<DayOfWeek> weekdays, Integer reservationLimit, LocalDate fromDate, LocalDate toDate) {
-        this(null, openTime, closeTime, maxDuration, null, establishment, weekdays, reservationLimit, fromDate, toDate);
+    public ManualSlotBlueprint(LocalTime openTime, LocalTime closeTime, Duration maxDuration, Establishment establishment,Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
+        this(null, openTime, closeTime, maxDuration, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
     @Override
