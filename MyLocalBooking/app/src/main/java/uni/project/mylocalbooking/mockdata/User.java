@@ -19,6 +19,12 @@ public class User {
         this.email = "mario.rossi97@gmail.com";
     }
 
+    public User(String who){
+        new User();
+        this.name = "Rettrice di Turno";
+        this.email = "cus@unive.it";
+    }
+
     public Integer getAge() {
         return age;
     }
