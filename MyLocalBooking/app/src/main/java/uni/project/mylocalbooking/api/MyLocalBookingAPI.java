@@ -1,9 +1,7 @@
 package uni.project.mylocalbooking.api;
 
-import android.util.Log;
-
+import com.android.volley.Request;
 import java.util.Collection;
-
 import uni.project.mylocalbooking.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
@@ -13,19 +11,18 @@ import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class MyLocalBookingAPI implements IMyLocalBookingAPI {
-    private final LoginAPI loginAPI;
-    private final String username = "admin";
-    private final String password = "$2a$12$3K1dWlkO3ZcKZfjUgvPbGeG83i6KxcITC7ap.D3/wq5/GHOhMuRZe";
+    private Request loginRequest = null;
 
     public MyLocalBookingAPI() {
-        loginAPI = new LoginAPI(new LoginResponseParser());
-        Log.i("MyLocalBookingAPI Constructor", "OK");
-        makeLoginRequest();
+        setLoginRequest();
     }
 
-    public void makeLoginRequest() {
-        String jsonBody = "{ \"auth\": { \"username\": \"" + this.username + "\", \"password\": \"" + this.password + "\" } }";
-        loginAPI.makeLoginRequest(jsonBody);
+    private void setLoginRequest(){
+        this.loginRequest = LoginAPI.getLoginRequest();
+    }
+
+    public Request getLoginRequest(){
+        return this.loginRequest;
     }
 
     @Override
