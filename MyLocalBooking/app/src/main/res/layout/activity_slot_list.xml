@@ -17,10 +17,10 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
-            android:name="uni.project.mylocalbooking.WeekdayPickerRecycleFragment"
+            android:name="uni.project.mylocalbooking.WeekdayPickerFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:layout="@layout/fragment_weekday_picker_recycle" />
+            tools:layout="@layout/weekday_picker" />
 
     </LinearLayout>
 

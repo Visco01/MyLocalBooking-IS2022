@@ -4,7 +4,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,21 +29,15 @@ public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdap
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_weekday_picker, parent, false);
+                .inflate(R.layout.week, parent, false);
         return new ViewHolder(view, viewModel);
     }
 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LocalDate startOfWeek = viewModel.getStartOfWeek().getValue().plusWeeks(position);
-        viewModel.setStartOfWeek(startOfWeek);
-
-        for(int i = 0; i < 7; i++) {
-            int dayOfMonth = startOfWeek.plusDays(i).getDayOfMonth();
-            TextView textView = ((TextView) holder.days.get(i).findViewById(R.id.weekday_number));
-            textView.setText(Integer.toString(dayOfMonth));
-        }
+        LocalDate startOfWeek = viewModel.getMinStartOfWeek().getValue().plusWeeks(position);
+        holder.setStartOfWeek(startOfWeek);
     }
 
     @Override
@@ -53,25 +46,32 @@ public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final LinearLayout pickerRoot;
-        public final List<ConstraintLayout> days = new ArrayList<>();
+        private final List<ConstraintLayout> days = new ArrayList<>();
 
         public ViewHolder(@NonNull View itemView, SlotListViewModel viewModel) {
             super(itemView);
-            this.pickerRoot = (LinearLayout) itemView.getRootView();
+            LinearLayout weekRoot = (LinearLayout) itemView.getRootView();
 
             for(int i = 1; i <= 7; i++) {
-                ConstraintLayout childView = (ConstraintLayout) LayoutInflater.from(pickerRoot.getContext())
-                        .inflate(R.layout.fragment_weekday, pickerRoot, false);
+                ConstraintLayout dayView = (ConstraintLayout) LayoutInflater.from(weekRoot.getContext())
+                        .inflate(R.layout.weekday, weekRoot, false);
 
                 final DayOfWeek dow = DayOfWeek.of(i);
                 String name = dow.getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
-                ((TextView) childView.findViewById(R.id.weekday_name)).setText(name);
-                ((Button) childView.findViewById(R.id.weekday_button)).setOnClickListener(view -> {
+                ((TextView) dayView.findViewById(R.id.weekday_name)).setText(name);
+                ((Button) dayView.findViewById(R.id.weekday_button)).setOnClickListener(view -> {
                     viewModel.setCurrentDay(dow);
                 });
-                days.add(childView);
-                pickerRoot.addView(childView);
+                days.add(dayView);
+                weekRoot.addView(dayView);
+            }
+        }
+
+        public void setStartOfWeek(LocalDate startOfWeek) {
+            for(int i = 0; i < 7; i++) {
+                int dayOfMonth = startOfWeek.plusDays(i).getDayOfMonth();
+                TextView textView = ((TextView) days.get(i).findViewById(R.id.weekday_number));
+                textView.setText(Integer.toString(dayOfMonth));
             }
         }
     }
