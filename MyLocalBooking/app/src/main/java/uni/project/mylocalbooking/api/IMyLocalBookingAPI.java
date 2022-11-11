@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking;
+package uni.project.mylocalbooking.api;
 
 import java.util.Collection;
 
@@ -10,7 +10,12 @@ import uni.project.mylocalbooking.models.Provider;
 import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
-public interface IMyLocalBookingAPI {
+public interface IMyLocalBookingAPI extends IRequests {
+
+    static IMyLocalBookingAPI getApiInstance(){
+        return new MyLocalBookingAPI();
+    }
+
     // GENERIC
     /*
      * pre:

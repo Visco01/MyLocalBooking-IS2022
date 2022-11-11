@@ -2,7 +2,7 @@ package uni.project.mylocalbooking.api;
 
 import com.android.volley.Request;
 import java.util.Collection;
-import uni.project.mylocalbooking.IMyLocalBookingAPI;
+
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
@@ -10,7 +10,7 @@ import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
-public class MyLocalBookingAPI implements IMyLocalBookingAPI {
+class MyLocalBookingAPI implements IMyLocalBookingAPI {
     private Request loginRequest = null;
 
     public MyLocalBookingAPI() {
