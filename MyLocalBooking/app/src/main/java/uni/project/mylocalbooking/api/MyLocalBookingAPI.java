@@ -1,33 +1,60 @@
 package uni.project.mylocalbooking.api;
 
+import android.util.Log;
 import com.android.volley.Request;
 import java.util.Collection;
-
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.Provider;
 import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 class MyLocalBookingAPI implements IMyLocalBookingAPI {
-    private Request loginRequest = null;
+    private static String jwt = null;
+
 
     public MyLocalBookingAPI() {
-        setLoginRequest();
+        loginAPI();
     }
 
-    private void setLoginRequest(){
-        this.loginRequest = LoginAPI.getLoginRequest();
+    private void loginAPI(){
+        RequestQueueSingleton.getInstance().add(LoginAPI.getLoginRequest());
     }
 
-    public Request getLoginRequest(){
-        return this.loginRequest;
+    public static void setJWT(String jwt){
+        MyLocalBookingAPI.jwt = jwt;
+        Log.i("auth request", MyLocalBookingAPI.jwt);
     }
 
     @Override
     public void register(AppUser user, String password) {
+        String requestBody = "{" +
+                "\"cellphone\": " + user.cellphone +
+                "\"firstname\": " + user.firstname +
+                "\"lastname\": " + user.lastname +
+                "\"dob\": " + user.dob +
+                "\"password_digest\": " + password;
 
+        if(user instanceof Client){
+            Client client = (Client) user;
+            requestBody += "\"Client\": {" +
+                    "\"lat\": " + client.position.latitude +
+                    "\"lng\": " + client.position.longitude +
+                    "}}";
+        } else {
+            Provider provider = (Provider) user;
+            requestBody += "\"Client\": {" +
+                    "\"isverified\": " + provider.verified +
+                    "\"maxstrikes\": " + provider.maxStrikes +
+                    "\"companyname\": " + provider.companyName +
+                    "}}";
+        }
+
+        APICall call = new APICall(MyLocalBookingAPI.jwt);
+        call.post(requestBody, "http://mylocalbooking-api-o1he.onrender.com/api/app_users");
+        RequestQueueSingleton.getInstance().add(call.getRequest());
     }
 
     @Override
