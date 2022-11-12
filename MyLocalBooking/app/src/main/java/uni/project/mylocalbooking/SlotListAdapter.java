@@ -52,12 +52,11 @@ public class SlotListAdapter extends BaseAdapter {
         ((TextView) slotRoot.findViewById(R.id.from_time)).setText(slot.getFromTime().toString());
         ((TextView) slotRoot.findViewById(R.id.to_time)).setText(slot.getToTime().toString());
 
-        Integer reservationLimit = slot.getReservationLimit() != null ? slot.getReservationLimit() : 0;
+        Integer reservationLimit = slot.getReservationLimit();
         int attending = slot.getAttending() != null ? slot.getAttending().size() : 0;
-        int available = reservationLimit - attending;
 
-        if(reservationLimit != 0) {
-            ((TextView) slotRoot.findViewById(R.id.available_reservations)).setText(Integer.toString(available));
+        if(reservationLimit != null) {
+            ((TextView) slotRoot.findViewById(R.id.available_reservations)).setText(Integer.toString(reservationLimit - attending));
             ((TextView) slotRoot.findViewById(R.id.places_text)).setText(R.string.places_available_of);
             ((TextView) slotRoot.findViewById(R.id.max_reservations)).setText(reservationLimit.toString());
         }
@@ -67,7 +66,8 @@ public class SlotListAdapter extends BaseAdapter {
             ((TextView) slotRoot.findViewById(R.id.available_reservations)).setText(Integer.toString(attending));
         }
 
-        slotRoot.findViewById(R.id.side_line).setBackgroundResource(!slot.isInstance() || available > 0 ?  R.color.slot_line_available : R.color.slot_line_unavailable);
+        boolean bookable = reservationLimit == null || attending < reservationLimit;
+        slotRoot.findViewById(R.id.side_line).setBackgroundResource(bookable ?  R.color.slot_line_available : R.color.slot_line_unavailable);
 
         return slotRoot;
     }
@@ -77,23 +77,24 @@ public class SlotListAdapter extends BaseAdapter {
 
         LocalDate weekStart = viewModel.getStartOfWeek().getValue();
         LocalDate selected = weekStart.plusDays(dow.getValue() - 1);
-        this.filteredSlots = viewModel.getBlueprints(selected).stream().filter(b -> b instanceof ISlotListElement)
+        filteredSlots.clear();
+        List<ISlotListElement> slotItems = viewModel.getBlueprints(selected).stream().filter(b -> b instanceof ISlotListElement)
                 .map(b -> (ISlotListElement) b).collect(Collectors.toList());
 
-        for(final SlotBlueprint bp : viewModel.getBlueprints(selected)) {
-            if(bp instanceof ManualSlotBlueprint) {
-                List<ManualSlot> scheduledForSelected = ((ManualSlotBlueprint) bp).slots.get(selected);
+        for(final ISlotListElement item : slotItems) {
+            if(item instanceof ManualSlotBlueprint) {
+                List<ManualSlot> scheduledForSelected = ((ManualSlotBlueprint) item).slots.get(selected);
                 if(scheduledForSelected == null)
                     continue;
 
                 filteredSlots.addAll(scheduledForSelected);
 
             } else {
-                PeriodicSlot scheduledForSelected = ((PeriodicSlotBlueprint) bp).slots.get(selected);
+                PeriodicSlot scheduledForSelected = ((PeriodicSlotBlueprint) item).slots.get(selected);
                 if(scheduledForSelected != null)
                     filteredSlots.add(scheduledForSelected);
                 else
-                    filteredSlots.add((PeriodicSlotBlueprint) bp);
+                    filteredSlots.add((PeriodicSlotBlueprint) item);
             }
         }
 
