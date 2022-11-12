@@ -9,6 +9,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import uni.project.mylocalbooking.MainActivity;
+
 class LoginAPI {
     private static final String username = "admin";
     private static final String password = "$2a$12$3K1dWlkO3ZcKZfjUgvPbGeG83i6KxcITC7ap.D3/wq5/GHOhMuRZe";
@@ -40,8 +42,7 @@ class LoginAPI {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            LoginAPI.jwt = response.getString("jwt");
-                            Log.i("auth request", LoginAPI.jwt);
+                            MyLocalBookingAPI.setJWT(response.getString("jwt"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
