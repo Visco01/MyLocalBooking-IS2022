@@ -1,25 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:top="1dp" android:left="1dp" android:right="1dp" android:bottom="1dp">
-    <shape android:shape="rectangle">
-        <solid android:color="#eeff0000" />
-        <corners android:bottomRightRadius="250dp"
-            android:bottomLeftRadius="250dp"
-            android:topRightRadius="250dp"
-            android:topLeftRadius="250dp"/>
-    </shape>
-    <shape android:shape="rectangle">
-        <solid android:color="#ffff0000" />
-        <size
-            android:width="0.5dp"
-            android:height="5dp" />
-    </shape>
-    <shape android:shape="rectangle">
-        <solid android:color="#ffffffff" />
-        <size
-            android:width="5dp"
-            android:height="0.5dp" />
+<item android:top="0dp" android:left="0dp" android:right="0dp" android:bottom="0dp">
+    <shape android:shape="oval">
+        <solid android:color="@color/reservation_button_available" />
     </shape>
 </item>
 </layer-list>

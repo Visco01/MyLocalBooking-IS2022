@@ -14,19 +14,22 @@
         app:layout_constraintStart_toEndOf="@+id/side_line"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/reservation_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="6dp"
             android:background="@drawable/rounded_button"
-            android:backgroundTint="#68CCB5B5"
+            android:backgroundTint="@color/reservation_button_available"
             android:contentDescription="@string/add_reservation_button_description"
-            android:src="@android:drawable/ic_menu_add"
+            android:text="+"
+            android:textColor="@color/white"
+            android:textSize="34sp"
             app:layout_constraintBottom_toTopOf="@+id/bottom_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="SpeakableTextPresentCheck"
+            tools:text="+" />
 
         <View
             android:id="@+id/bottom_line"
@@ -46,7 +49,8 @@
             android:layout_marginBottom="6dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="14" />
 
         <TextView
             android:id="@+id/from_time"
@@ -60,7 +64,8 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/bottom_line"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="12:15" />
 
         <TextView
             android:id="@+id/time_text"
@@ -85,7 +90,8 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/bottom_line"
             app:layout_constraintStart_toEndOf="@+id/time_text"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="13:45" />
 
         <TextView
             android:id="@+id/places_text"
@@ -103,7 +109,8 @@
             android:layout_marginStart="6dp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/places_text"
-            app:layout_constraintTop_toTopOf="@+id/available_reservations" />
+            app:layout_constraintTop_toTopOf="@+id/available_reservations"
+            tools:text="20" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
