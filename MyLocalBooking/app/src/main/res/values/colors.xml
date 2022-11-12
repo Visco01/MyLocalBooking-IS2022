@@ -13,6 +13,9 @@
     <color name="slot_line_unavailable">#DB6666</color>
     <color name="slot_line_unallocated">#68CCB5B5</color>
     <color name="slot_bottom_line">#70CFCFCF</color>
+    <color name="weekday_picker_activated">#FF000000</color>
+    <color name="weekday_picker_deactivated">#FFFFFFFF</color>
+
 
 
 </resources>

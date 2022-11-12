@@ -5,6 +5,7 @@
     android:id="@+id/weekday_picker_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/purple_500"
     tools:context=".WeekdayPickerFragment">
 
     <TextView
@@ -12,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
+        android:textColor="@color/weekday_picker_deactivated"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,7 +21,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/week_recycler"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="6dp"
         android:orientation="horizontal"
