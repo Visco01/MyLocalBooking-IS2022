@@ -4,5 +4,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_reservation_button_description">Add reservation</string>
     <string name="dash">-</string>
-    <string name="available_slot_reservations">places available of</string>
+    <string name="places_available_of">places available of</string>
+    <string name="people_attending">people attending</string>
 </resources>

@@ -1,10 +1,13 @@
 package uni.project.mylocalbooking.models;
 
 import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public abstract class SlotBlueprint implements IDatabaseModel {
     private final Long id;
@@ -14,7 +17,7 @@ public abstract class SlotBlueprint implements IDatabaseModel {
     public final LocalDate fromDate;
     public final LocalDate toDate;
 
-    public Collection<Slot> slots;
+    public List<Slot> slots;
 
     public SlotBlueprint(Long id, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         this.id = id;

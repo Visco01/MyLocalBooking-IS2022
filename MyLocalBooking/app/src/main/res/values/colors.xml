@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="reservation_button_available">#FFFA0000</color>
     <color name="reservation_button_unavailable">#68CCB5B5</color>
-    <color name="slot_line_available">#FF0A49EA</color>
+    <color name="slot_line_available">#4479FF</color>
     <color name="slot_line_unavailable">#FFE13C3C</color>
+    <color name="slot_line_unallocated">#68CCB5B5</color>
 </resources>
