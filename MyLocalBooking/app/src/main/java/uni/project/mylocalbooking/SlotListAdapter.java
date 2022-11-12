@@ -4,12 +4,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
+
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,6 @@ import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
-import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListAdapter extends BaseAdapter {
     private final SlotListViewModel viewModel;
@@ -68,7 +68,16 @@ public class SlotListAdapter extends BaseAdapter {
 
         boolean bookable = reservationLimit == null || attending < reservationLimit;
         slotRoot.findViewById(R.id.side_line).setBackgroundResource(bookable ?  R.color.slot_line_available : R.color.slot_line_unavailable);
-
+        if(!bookable) {
+            slotRoot.findViewById(R.id.reservation_button).setVisibility(View.GONE);
+            int color = 0x1F000000;
+            ((TextView) slotRoot.findViewById(R.id.from_time)).setTextColor(color);
+            ((TextView) slotRoot.findViewById(R.id.to_time)).setTextColor(color);
+            ((TextView) slotRoot.findViewById(R.id.time_text)).setTextColor(color);
+            ((TextView) slotRoot.findViewById(R.id.available_reservations)).setTextColor(color);
+            ((TextView) slotRoot.findViewById(R.id.places_text)).setTextColor(color);
+            ((TextView) slotRoot.findViewById(R.id.max_reservations)).setTextColor(color);
+        }
         return slotRoot;
     }
 
@@ -97,6 +106,8 @@ public class SlotListAdapter extends BaseAdapter {
                     filteredSlots.add((PeriodicSlotBlueprint) item);
             }
         }
+
+        filteredSlots.sort(Comparator.comparing(ISlotListElement::getFromTime));
 
         notifyDataSetChanged();
     }
