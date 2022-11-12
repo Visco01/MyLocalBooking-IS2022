@@ -10,7 +10,7 @@ import uni.project.mylocalbooking.models.Provider;
 import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
-public interface IMyLocalBookingAPI extends IRequests {
+public interface IMyLocalBookingAPI{
 
     static IMyLocalBookingAPI getApiInstance(){
         return new MyLocalBookingAPI();
