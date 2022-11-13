@@ -5,10 +5,12 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.common.api.Api;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import kotlin.Triple;
 import uni.project.mylocalbooking.MainActivity;
 
 class LoginAPI {
@@ -43,6 +45,7 @@ class LoginAPI {
                     public void onResponse(JSONObject response) {
                         try {
                             MyLocalBookingAPI.setJWT(response.getString("jwt"));
+                            freeRequests(response.getString("jwt"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -56,5 +59,16 @@ class LoginAPI {
                 }
         );
         return jsonRequest;
+    }
+
+    private static void freeRequests(String jwt){
+        for(Triple<String, String, String> elem : WaitingRequestsSingleton.getInstance()){
+            APICall call = new APICall(jwt, elem.component3(), elem.component1(), elem.component2());
+            RequestQueueSingleton.getInstance().add(call.getRequest());
+        }
+    }
+    
+    public static void addWaitingRequest(String requestBody, String url, String type){
+        WaitingRequestsSingleton.getInstance().add(new Triple<>(requestBody, url, type));
     }
 }
