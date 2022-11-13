@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyLocalBooking"
         android:name="uni.project.mylocalbooking.MyLocalBooking"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <!--
