@@ -68,6 +68,14 @@ public class SlotListAdapter extends BaseAdapter {
 
         boolean bookable = reservationLimit == null || attending < reservationLimit;
         slotRoot.findViewById(R.id.side_line).setBackgroundResource(bookable ?  R.color.slot_line_available : R.color.slot_line_unavailable);
+
+        if(slot.isPasswordProtected()) {
+            if(bookable)
+                slotRoot.findViewById(R.id.side_line).setBackgroundResource(R.color.slot_line_locked);
+        }
+        else
+            slotRoot.findViewById(R.id.slot_padlock).setVisibility(View.GONE);
+
         if(!bookable) {
             slotRoot.findViewById(R.id.reservation_button).setVisibility(View.GONE);
             int color = 0x1F000000;

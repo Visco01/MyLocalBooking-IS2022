@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@android:color/holo_green_light"
     android:dividerPadding="0dp"
     android:orientation="horizontal">
 
@@ -11,7 +12,7 @@
         android:id="@+id/side_line"
         android:layout_width="@dimen/reservation_side_line"
         android:layout_height="match_parent"
-        android:background="@color/slot_line_unavailable" />
+        android:background="@android:color/holo_orange_dark" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -123,6 +124,20 @@
                 android:text="@string/places_available_of"
                 app:layout_constraintStart_toEndOf="@+id/available_reservations"
                 app:layout_constraintTop_toTopOf="@+id/available_reservations" />
+
+            <ImageView
+                android:id="@+id/slot_padlock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:background="@android:drawable/ic_lock_idle_lock"
+                android:backgroundTintMode="add"
+                android:foregroundTintMode="src_atop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/ic_lock_lock"
+                app:tint="@android:color/holo_green_light" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
