@@ -30,31 +30,36 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public void register(AppUser user, String password) {
+        String url = "https://mylocalbooking-api-o1he.onrender.com/api/app_users";
         String requestBody = "{" +
-                "\"cellphone\": " + user.cellphone +
-                "\"firstname\": " + user.firstname +
-                "\"lastname\": " + user.lastname +
-                "\"dob\": " + user.dob +
-                "\"password_digest\": " + password;
+                "\"cellphone\": \"" + user.cellphone + "\", " +
+                "\"firstname\": \"" + user.firstname + "\", " +
+                "\"email\": \"" + user.email + "\", " +
+                "\"lastname\": \"" + user.lastname + "\", " +
+                "\"dob\": \"" + "2001-04-20" + "\", " +
+                "\"password_digest\": \"" + password + "\", ";
 
         if(user instanceof Client){
             Client client = (Client) user;
             requestBody += "\"Client\": {" +
-                    "\"lat\": " + client.position.latitude +
+                    "\"lat\": " + client.position.latitude + ", " +
                     "\"lng\": " + client.position.longitude +
                     "}}";
         } else {
             Provider provider = (Provider) user;
-            requestBody += "\"Client\": {" +
-                    "\"isverified\": " + provider.verified +
-                    "\"maxstrikes\": " + provider.maxStrikes +
-                    "\"companyname\": " + provider.companyName +
-                    "}}";
+            requestBody += "\"Provider\": {" +
+                    "\"isverified\": " + (provider.verified ? 1 : 0) + ", " +
+                    "\"maxstrikes\": " + provider.maxStrikes + ", " +
+                    "\"companyname\": \"" + provider.companyName +
+                    "\"}}";
         }
 
-        APICall call = new APICall(MyLocalBookingAPI.jwt);
-        call.post(requestBody, "http://mylocalbooking-api-o1he.onrender.com/api/app_users");
-        RequestQueueSingleton.getInstance().add(call.getRequest());
+        if(MyLocalBookingAPI.jwt != null){
+            APICall call = new APICall(MyLocalBookingAPI.jwt, "POST", requestBody, url);
+            RequestQueueSingleton.getInstance().add(call.getRequest());
+        }else{
+            LoginAPI.addWaitingRequest(requestBody, url, "POST");
+        }
     }
 
     @Override
