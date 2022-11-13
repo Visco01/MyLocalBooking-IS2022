@@ -49,12 +49,7 @@ public class ManualSlot extends Slot implements ISlotListElement {
     }
 
     @Override
-    public boolean isInstance() {
-        return true;
-    }
-
-    @Override
-    public Boolean isPasswordProtected() {
+    public boolean isPasswordProtected() {
         return super.passwordProtected;
     }
 

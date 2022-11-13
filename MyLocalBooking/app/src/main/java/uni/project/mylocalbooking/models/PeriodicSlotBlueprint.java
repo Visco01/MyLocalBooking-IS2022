@@ -41,13 +41,8 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISlotListEle
     }
 
     @Override
-    public boolean isInstance() {
+    public boolean isPasswordProtected() {
         return false;
-    }
-
-    @Override
-    public Boolean isPasswordProtected() {
-        return null;
     }
 
     @Override

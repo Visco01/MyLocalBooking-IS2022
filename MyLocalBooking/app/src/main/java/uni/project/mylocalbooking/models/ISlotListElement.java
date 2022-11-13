@@ -7,8 +7,7 @@ import java.util.Collection;
 public interface ISlotListElement {
     LocalTime getFromTime();
     LocalTime getToTime();
-    boolean isInstance();
-    Boolean isPasswordProtected();
+    boolean isPasswordProtected();
     Collection<Client> getAttending();
     Integer getReservationLimit();
 }
