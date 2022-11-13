@@ -34,12 +34,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/profileTextView"
             android:layout_width="219dp"
             android:layout_height="62dp"
             android:layout_marginStart="8dp"
             android:text="@string/profile"
             android:textAlignment="textStart"
             android:textSize="40sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,6 +58,7 @@
             app:layout_constraintTop_toTopOf="@+id/body" />
 
         <TextView
+            android:id="@+id/yourDataTextVIew"
             android:layout_width="155dp"
             android:layout_height="@dimen/intestation_1"
             android:layout_marginStart="8dp"
@@ -65,6 +68,28 @@
             android:textSize="34sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/topBar" />
+
+        <ImageButton
+            android:id="@+id/editDataButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:drawable/divider_horizontal_bright"
+            android:src="@android:drawable/ic_menu_edit"
+            app:layout_constraintStart_toEndOf="@+id/yourDataTextVIew"
+            app:layout_constraintTop_toTopOf="@+id/yourDataTextVIew" />
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:text="@string/logout"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/yourDataTextVIew" />
 
         <TextView
             android:id="@+id/userName"
@@ -103,7 +128,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/ageTextVeiw"
             android:layout_width="60dp"
             android:layout_height="@dimen/normal_text"
             android:layout_marginStart="296dp"
@@ -139,6 +164,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/defaultPositionTextView"
             android:layout_width="331dp"
             android:layout_height="@dimen/intestation_1"
             android:layout_marginStart="8dp"
@@ -151,7 +177,7 @@
 
         <TextView
             android:id="@+id/userAddress"
-            android:layout_width="351dp"
+            android:layout_width="380dp"
             android:layout_height="66dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="428dp"
@@ -160,30 +186,6 @@
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/editPositionButton"
-            android:layout_width="245dp"
-            android:layout_height="69dp"
-            android:layout_marginTop="508dp"
-            android:backgroundTint="@android:color/holo_orange_dark"
-            android:text="@string/edit"
-            android:textColor="@color/black"
-            app:iconTint="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/body" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:clickable="true"
-            app:backgroundTint="@android:color/holo_orange_light"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topBar" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/notiButtonProfile"
@@ -198,32 +200,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:useCompatPadding="false" />
 
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@android:color/holo_orange_light"
-            android:text="@string/report"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editPositionButton" />
-
-        <Button
-            android:id="@+id/button6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@android:color/holo_red_dark"
-            android:text="@string/logout"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editPositionButton" />
-
         <ImageView
             android:id="@+id/dangerAge"
             android:layout_width="wrap_content"
@@ -232,7 +208,31 @@
             android:rotationX="15"
             android:src="@android:drawable/ic_dialog_alert"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView5" />
+            app:layout_constraintTop_toTopOf="@+id/ageTextVeiw" />
+
+        <ImageButton
+            android:id="@+id/editPositionButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:drawable/divider_horizontal_bright"
+            android:src="@android:drawable/ic_menu_edit"
+            app:layout_constraintEnd_toEndOf="@+id/body"
+            app:layout_constraintTop_toTopOf="@+id/defaultPositionTextView" />
+
+        <Button
+            android:id="@+id/reportButton"
+            android:layout_width="378dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:text="@string/report"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/body"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/userAddress" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

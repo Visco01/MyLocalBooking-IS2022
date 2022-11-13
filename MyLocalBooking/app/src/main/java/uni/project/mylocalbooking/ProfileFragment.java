@@ -13,9 +13,7 @@ import uni.project.mylocalbooking.databinding.FragmentProfileBinding;
 import uni.project.mylocalbooking.mockdata.User;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Profile fragment
  */
 public class ProfileFragment extends Fragment {
 
@@ -39,21 +37,18 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //View view = binding.getRoot();
-        //return inflater.inflate(R.layout.fragment_profile, container, false);
+
         binding = FragmentProfileBinding.inflate(inflater, container, false);
 
-        /*
-        // Operazioni onCreate
+        // Binding Operations
         binding.userFullName.setText(user.fullName());
         binding.userName.setText(user.getName());
         binding.userLastname.setText(user.getLastname());
         binding.userAge.setText(user.getAge().toString());
         //binding.userAddress.setText(user.getAddress());
         binding.userAddress.setText(user.getLongAddress());
-        binding.userCellNumber.setText(user.getCellNumber());
-        binding.userEmail.setText(user.getEmail());
+        binding.userCellNumber.setText("Cell: " + user.getCellNumber());
+        binding.userEmail.setText("Email: " + user.getEmail());
 
         // Danger Age
         if (user.getAge() > 18){
@@ -63,21 +58,14 @@ public class ProfileFragment extends Fragment {
         else{
             System.out.println("Utente Minorenne, Attenzione");
         }
-        binding.dangerAge.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //binding.;
-                System.out.println("Click");
-            }
-        }); */
 
-
-        // Codice di return
+        // Return code
         View view = binding.getRoot();
         System.out.println("! VIEW CREATED !");
         return view;
     }
 
+    // Important for navigation, do not remove!
     @Override
     public void onDestroyView() {
         super.onDestroyView();

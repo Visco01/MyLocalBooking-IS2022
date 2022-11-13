@@ -26,6 +26,6 @@
     <string name="user_full_name">TBD - User Fullname</string>
     <string name="age">anni</string>
     <string name="fav_position">Posizione Predefinita</string>
-    <string name="report">Segnala</string>
+    <string name="report">Segnala un problema / Invia un feedback</string>
     <string name="logout">Logout</string>
 </resources>

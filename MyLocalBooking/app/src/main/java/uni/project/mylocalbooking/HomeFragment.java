@@ -34,11 +34,10 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_home, container, false);
+
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
-        // Operazioni binding
+        // Binding operations
         binding.establishmentAddress.setText(est.address);
         binding.establishmentName.setText(est.name);
         binding.establishmentOwner.setText(est.owner.fullName());
@@ -47,9 +46,18 @@ public class HomeFragment extends Fragment {
 
         binding.userFullName.setText(user.fullName());
 
-        // Codice di return
+        // Return code
         View view = binding.getRoot();
         System.out.println("! VIEW CREATED !");
         return view;
     }
+
+    // Important for navigation, do not remove!
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+        System.out.println("! VIEW DESTROYED !");
+    }
+
 }
