@@ -1,8 +1,12 @@
 package uni.project.mylocalbooking.api;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 import com.android.volley.Request;
 import java.util.Collection;
+import java.util.Map;
+
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
@@ -31,6 +35,13 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void register(AppUser user, String password) {
         String url = "https://mylocalbooking-api-o1he.onrender.com/api/app_users";
+
+        try {
+            password = AESCrypt.encrypt(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         String requestBody = "{" +
                 "\"cellphone\": \"" + user.cellphone + "\", " +
                 "\"firstname\": \"" + user.firstname + "\", " +
@@ -60,6 +71,9 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         }else{
             LoginAPI.addWaitingRequest(requestBody, url, "POST");
         }
+
+        //passare lambda come parametro di APICall.
+        SessionPreferences.setUserPrefs(user);
     }
 
     @Override
