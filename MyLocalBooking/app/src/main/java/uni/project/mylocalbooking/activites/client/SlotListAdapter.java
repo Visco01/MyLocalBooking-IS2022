@@ -6,45 +6,29 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-
-
-import androidx.fragment.app.FragmentActivity;
-
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.fragments.SlotPasswordDialogFragment;
-import uni.project.mylocalbooking.models.Client;
+import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
+import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListAdapter extends BaseAdapter {
-    public interface ISlotListElement {
-        LocalTime getFromTime();
-        LocalTime getToTime();
-        boolean isPasswordProtected();
-        Collection<Client> getAttending();
-        Integer getReservationLimit();
+    public interface ISlotListListener {
+        void onReservationToggled(ISelectableSlot slot);
     }
 
+    private final ISlotListListener listener;
+    private final List<ISelectableSlot> filteredSlots = new ArrayList<>();
 
-    private final SlotListViewModel viewModel;
-    private final FragmentActivity activity;
-    private final List<ISlotListElement> filteredSlots = new ArrayList<>();
-
-    public SlotListAdapter(FragmentActivity activity, SlotListViewModel viewModel) {
+    public SlotListAdapter(ISlotListListener listener) {
         super();
-        this.activity = activity;
-        this.viewModel = viewModel;
+        this.listener = listener;
     }
     @Override
     public int getCount() {
@@ -66,7 +50,7 @@ public class SlotListAdapter extends BaseAdapter {
         View slotRoot = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.slot, viewGroup, false);
 
-        ISlotListElement slot = filteredSlots.get(i);
+        ISelectableSlot slot = filteredSlots.get(i);
         ((TextView) slotRoot.findViewById(R.id.from_time)).setText(slot.getFromTime().toString());
         ((TextView) slotRoot.findViewById(R.id.to_time)).setText(slot.getToTime().toString());
 
@@ -109,35 +93,24 @@ public class SlotListAdapter extends BaseAdapter {
         // TODO: style button based on if the user is booked or not
 
         reservationButton.setOnClickListener(v -> {
-            //slot.toggleReservation();
-
-            if(slot.isPasswordProtected()) {
-                SlotPasswordDialogFragment dialog = new SlotPasswordDialogFragment();
-                dialog.show(activity.getSupportFragmentManager(), "NoticeDialogFragment");
-            }
-
             // TODO: toggle style
+            listener.onReservationToggled(slot);
         });
 
         return slotRoot;
     }
 
-    public void refresh(DayOfWeek dow) {
+    public void onRefresh(LocalDate selected, List<SlotBlueprint> blueprints) {
         filteredSlots.clear();
 
-        LocalDate weekStart = viewModel.getStartOfWeek().getValue();
-        LocalDate selected = weekStart.plusDays(dow.getValue() - 1);
-        filteredSlots.clear();
-        List<ISlotListElement> slotItems = viewModel.getBlueprints(selected).stream().filter(b -> b instanceof ISlotListElement)
-                .map(b -> (ISlotListElement) b).collect(Collectors.toList());
-
-        for(final ISlotListElement item : slotItems) {
+        for(final SlotBlueprint item : blueprints) {
             if(item instanceof ManualSlotBlueprint) {
                 List<ManualSlot> scheduledForSelected = ((ManualSlotBlueprint) item).slots.get(selected);
                 if(scheduledForSelected == null)
                     continue;
 
-                filteredSlots.addAll(scheduledForSelected);
+                for(ManualSlot slot : scheduledForSelected)
+                    filteredSlots.add(slot);
 
             } else {
                 PeriodicSlot scheduledForSelected = ((PeriodicSlotBlueprint) item).slots.get(selected);
@@ -148,7 +121,7 @@ public class SlotListAdapter extends BaseAdapter {
             }
         }
 
-        filteredSlots.sort(Comparator.comparing(ISlotListElement::getFromTime));
+        filteredSlots.sort(Comparator.comparing(ISelectableSlot::getFromTime));
 
         notifyDataSetChanged();
     }

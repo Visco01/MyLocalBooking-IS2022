@@ -28,20 +28,30 @@ import uni.project.mylocalbooking.activites.client.SlotListViewModel;
  * create an instance of this fragment.
  */
 public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdapter.IWeekdayPickerListener {
+    private static final String MIN_START_OF_WEEK_ARG = "minStartOfWeek";
     private SlotListViewModel viewModel;
+    private LocalDate minStartOfWeek;
 
     public WeekdayPickerFragment() {
-        // Required empty public constructor
     }
 
-    public static WeekdayPickerFragment newInstance() {
-        return new WeekdayPickerFragment();
+    public static WeekdayPickerFragment newInstance(LocalDate minStartOfWeek) {
+        WeekdayPickerFragment fragment = new WeekdayPickerFragment();
+        Bundle args = new Bundle();
+        args.putLong(MIN_START_OF_WEEK_ARG, minStartOfWeek.toEpochDay());
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(SlotListViewModel.class);
+
+        if(getArguments() != null)
+            minStartOfWeek = getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(MIN_START_OF_WEEK_ARG)));
+        else
+            minStartOfWeek = getFirstDayOfWeek(LocalDate.now());
     }
 
     @Override
@@ -52,7 +62,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.week_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        recyclerView.setAdapter(new WeekdayPickerAdapter(this, GetFirstDayOfWeek(LocalDate.now())));
+        recyclerView.setAdapter(new WeekdayPickerAdapter(this, minStartOfWeek));
         new PagerSnapHelper().attachToRecyclerView(recyclerView);
 
         TextView month = (TextView) view.findViewById(R.id.weekday_month);
@@ -65,8 +75,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
                 super.onScrolled(recyclerView, dx, dy);
                 int position = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                 if(position != -1) {
-                    LocalDate startOfWeek = viewModel.getMinStartOfWeek().getValue().plusWeeks(position);
-                    viewModel.setStartOfWeek(startOfWeek);
+                    viewModel.setStartOfWeek(minStartOfWeek.plusWeeks(position));
                 }
             }
         });
@@ -79,7 +88,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
         viewModel.setCurrentDay(dow);
     }
 
-    private LocalDate GetFirstDayOfWeek(LocalDate date) {
+    private LocalDate getFirstDayOfWeek(LocalDate date) {
         int current_dow = date.getDayOfWeek().getValue();
         int monday_dow = DayOfWeek.MONDAY.getValue();
 

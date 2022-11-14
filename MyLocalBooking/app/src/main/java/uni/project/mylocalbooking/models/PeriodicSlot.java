@@ -5,9 +5,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 
-import uni.project.mylocalbooking.activites.client.SlotListAdapter;
-
-public class PeriodicSlot extends Slot implements SlotListAdapter.ISlotListElement {
+public class PeriodicSlot extends Slot implements ISelectableSlot {
     private final Long id;
 
     public PeriodicSlot(Long id, Long slot_id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, PeriodicSlotBlueprint blueprint) {

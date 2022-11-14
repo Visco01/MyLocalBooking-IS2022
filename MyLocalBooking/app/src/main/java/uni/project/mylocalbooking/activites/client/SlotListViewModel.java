@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListViewModel extends ViewModel {
-    public final MutableLiveData<LocalDate> minStartOfWeek = new MutableLiveData<>();
     private final MutableLiveData<LocalDate> startOfWeek = new MutableLiveData<>();
     private final MutableLiveData<DayOfWeek> currentDay = new MutableLiveData<>();
     private final MutableLiveData<List<SlotBlueprint>> blueprints = new MutableLiveData<>();
@@ -27,10 +26,6 @@ public class SlotListViewModel extends ViewModel {
 
     public LiveData<LocalDate> getStartOfWeek() {
         return startOfWeek;
-    }
-
-    public LiveData<LocalDate> getMinStartOfWeek() {
-        return minStartOfWeek;
     }
 
     public void setStartOfWeek(LocalDate date) {
