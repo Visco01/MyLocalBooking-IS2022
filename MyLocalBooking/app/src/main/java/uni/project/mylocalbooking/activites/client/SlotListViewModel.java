@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking;
+package uni.project.mylocalbooking.activites.client;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -6,11 +6,9 @@ import androidx.lifecycle.ViewModel;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import uni.project.mylocalbooking.models.ISlotListElement;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListViewModel extends ViewModel {
@@ -19,30 +17,12 @@ public class SlotListViewModel extends ViewModel {
     private final MutableLiveData<DayOfWeek> currentDay = new MutableLiveData<>();
     private final MutableLiveData<List<SlotBlueprint>> blueprints = new MutableLiveData<>();
 
-    public static LocalDate GetFirstDayOfWeek(LocalDate date) {
-        int current_dow = date.getDayOfWeek().getValue();
-        int monday_dow = DayOfWeek.MONDAY.getValue();
-
-        if (current_dow > monday_dow)
-            return date.minusDays(current_dow - monday_dow);
-
-        return date;
-    }
-
     public void setBlueprints(List<SlotBlueprint> blueprints) {
         this.blueprints.setValue(blueprints);
     }
 
     public List<SlotBlueprint> getBlueprints(LocalDate date) {
         return blueprints.getValue().stream().filter(b -> b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0).collect(Collectors.toList());
-    }
-
-    public void setMinStartOfWeek(LocalDate minStart) {
-        LocalDate today = SlotListViewModel.GetFirstDayOfWeek(LocalDate.now());
-        if(minStart == null)
-            minStartOfWeek.setValue(today);
-
-        this.startOfWeek.setValue(today);
     }
 
     public LiveData<LocalDate> getStartOfWeek() {

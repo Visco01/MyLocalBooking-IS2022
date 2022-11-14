@@ -7,7 +7,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-public class ManualSlot extends Slot implements ISlotListElement {
+import uni.project.mylocalbooking.activites.client.SlotListAdapter;
+
+public class ManualSlot extends Slot implements SlotListAdapter.ISlotListElement {
     private final Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;

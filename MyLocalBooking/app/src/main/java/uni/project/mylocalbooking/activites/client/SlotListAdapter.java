@@ -1,31 +1,49 @@
-package uni.project.mylocalbooking;
+package uni.project.mylocalbooking.activites.client;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 
+import androidx.fragment.app.FragmentActivity;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import uni.project.mylocalbooking.models.ISlotListElement;
+import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.fragments.SlotPasswordDialogFragment;
+import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
 
 public class SlotListAdapter extends BaseAdapter {
-    private final SlotListViewModel viewModel;
-    private List<ISlotListElement> filteredSlots = new ArrayList<>();
+    public interface ISlotListElement {
+        LocalTime getFromTime();
+        LocalTime getToTime();
+        boolean isPasswordProtected();
+        Collection<Client> getAttending();
+        Integer getReservationLimit();
+    }
 
-    public SlotListAdapter(SlotListViewModel viewModel) {
+
+    private final SlotListViewModel viewModel;
+    private final FragmentActivity activity;
+    private final List<ISlotListElement> filteredSlots = new ArrayList<>();
+
+    public SlotListAdapter(FragmentActivity activity, SlotListViewModel viewModel) {
         super();
+        this.activity = activity;
         this.viewModel = viewModel;
     }
     @Override
@@ -86,6 +104,21 @@ public class SlotListAdapter extends BaseAdapter {
             ((TextView) slotRoot.findViewById(R.id.places_text)).setTextColor(color);
             ((TextView) slotRoot.findViewById(R.id.max_reservations)).setTextColor(color);
         }
+
+        Button reservationButton = ((Button) slotRoot.findViewById(R.id.reservation_button));
+        // TODO: style button based on if the user is booked or not
+
+        reservationButton.setOnClickListener(v -> {
+            //slot.toggleReservation();
+
+            if(slot.isPasswordProtected()) {
+                SlotPasswordDialogFragment dialog = new SlotPasswordDialogFragment();
+                dialog.show(activity.getSupportFragmentManager(), "NoticeDialogFragment");
+            }
+
+            // TODO: toggle style
+        });
+
         return slotRoot;
     }
 

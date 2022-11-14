@@ -1,5 +1,6 @@
-package uni.project.mylocalbooking;
+package uni.project.mylocalbooking.fragments;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdapter.ViewHolder> {
-    protected final SlotListViewModel viewModel;
+import uni.project.mylocalbooking.R;
 
-    public WeekdayPickerAdapter(SlotListViewModel viewModel) {
-        this.viewModel = viewModel;
+public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdapter.ViewHolder> {
+
+    private final IWeekdayPickerListener listener;
+    private final LocalDate minStartOfWeek;
+
+    public WeekdayPickerAdapter(IWeekdayPickerListener listener, LocalDate minStartOfWeek) {
+        this.listener = listener;
+        this.minStartOfWeek = minStartOfWeek;
     }
 
     @NonNull
@@ -30,13 +36,13 @@ public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdap
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.week, parent, false);
-        return new ViewHolder(view, viewModel);
+        return new ViewHolder(view, listener);
     }
 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LocalDate startOfWeek = viewModel.getMinStartOfWeek().getValue().plusWeeks(position);
+        LocalDate startOfWeek = minStartOfWeek.plusWeeks(position);
         holder.setStartOfWeek(startOfWeek);
     }
 
@@ -45,10 +51,15 @@ public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdap
         return Integer.MAX_VALUE;
     }
 
+
+    public interface IWeekdayPickerListener {
+        void onDaySelected(DayOfWeek dow);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final List<ConstraintLayout> days = new ArrayList<>();
 
-        public ViewHolder(@NonNull View itemView, SlotListViewModel viewModel) {
+        public ViewHolder(@NonNull View itemView, IWeekdayPickerListener listener) {
             super(itemView);
             LinearLayout weekRoot = (LinearLayout) itemView.getRootView();
 
@@ -60,7 +71,7 @@ public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdap
                 String name = dow.getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
                 ((TextView) dayView.findViewById(R.id.weekday_name)).setText(name);
                 ((Button) dayView.findViewById(R.id.weekday_button)).setOnClickListener(view -> {
-                    viewModel.setCurrentDay(dow);
+                    listener.onDaySelected(dow);
                 });
                 days.add(dayView);
                 weekRoot.addView(dayView);

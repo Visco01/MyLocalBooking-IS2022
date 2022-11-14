@@ -7,7 +7,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class PeriodicSlotBlueprint extends SlotBlueprint implements ISlotListElement {
+import uni.project.mylocalbooking.activites.client.SlotListAdapter;
+
+public class PeriodicSlotBlueprint extends SlotBlueprint implements SlotListAdapter.ISlotListElement {
     private final Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;

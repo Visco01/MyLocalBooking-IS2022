@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SlotListActivity">
+    tools:context=".activites.client.SlotListActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:name="uni.project.mylocalbooking.WeekdayPickerFragment"
+        android:name="uni.project.mylocalbooking.fragments.WeekdayPickerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"

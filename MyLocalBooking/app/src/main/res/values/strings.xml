@@ -7,4 +7,8 @@
     <string name="places_available_of">places available of</string>
     <string name="people_attending">people attending</string>
     <string name="plus">+</string>
+    <string name="password">Password</string>
+    <string name="slot_password_dialog_title">Slot password required</string>
+    <string name="confirm">confirm</string>
+    <string name="cancel">cancel</string>
 </resources>
