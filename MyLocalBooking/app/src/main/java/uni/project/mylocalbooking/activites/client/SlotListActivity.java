@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Random;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.fragments.SlotPasswordDialogFragment;
+import uni.project.mylocalbooking.fragments.ProvideSlotPasswordDialogFragment;
+import uni.project.mylocalbooking.fragments.SetSlotPasswordDialogFragment;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
@@ -27,7 +28,7 @@ import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
 import uni.project.mylocalbooking.models.Provider;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
-public class SlotListActivity extends AppCompatActivity implements SlotListAdapter.IListener, SlotPasswordDialogFragment.IListener {
+public class SlotListActivity extends AppCompatActivity implements SlotListAdapter.IListener {
     private SlotListViewModel viewModel;
     private final Random random = new Random();
 
@@ -54,19 +55,40 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
     }
 
     @Override
-    public void onSlotReservationToggled(ISelectableSlot slot) {
-        if(slot.isPasswordProtected()) {
-            SlotPasswordDialogFragment dialog = new SlotPasswordDialogFragment(this, slot);
+    public void onSlotReservationToggled(ISelectableSlot selectableSlot) {
+        if(selectableSlot instanceof SlotBlueprint) {
+            SetSlotPasswordDialogFragment dialog = new SetSlotPasswordDialogFragment(new SetSlotPasswordDialogFragment.IListener() {
+                @Override
+                public void onAccepted(ISelectableSlot slot) {
+                    showPasswordInputDialog(slot, R.string.choose_slot_password);
+                }
+
+                @Override
+                public void onRefused(ISelectableSlot slot) {
+                    makeReservation(slot, null);
+                }
+            }, selectableSlot);
             dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
+        } else if(selectableSlot.isPasswordProtected()) {
+            showPasswordInputDialog(selectableSlot, R.string.slot_password_required);
         }
         else {
-            // TODO: make reservation
+            makeReservation(selectableSlot, null);
         }
     }
 
-    @Override
-    public void onSlotPasswordSubmitted(ISelectableSlot slot, String password) {
-        // TODO: try making reservation with provided password
+    private void makeReservation(ISelectableSlot slot, String password) {
+        viewModel.makeReservation(slot, password);
+    }
+
+    private void showPasswordInputDialog(ISelectableSlot slot, int titleId) {
+        ProvideSlotPasswordDialogFragment dialog = new ProvideSlotPasswordDialogFragment(new ProvideSlotPasswordDialogFragment.IListener() {
+            @Override
+            public void onSlotPasswordSubmitted(ISelectableSlot slot, String password) {
+                makeReservation(slot, password);
+            }
+        }, slot, titleId);
+        dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
 
     private List<SlotBlueprint> generateSampleData() {

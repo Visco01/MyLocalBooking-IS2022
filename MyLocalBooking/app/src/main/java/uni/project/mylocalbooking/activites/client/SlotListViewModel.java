@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListViewModel extends ViewModel {
@@ -38,5 +39,9 @@ public class SlotListViewModel extends ViewModel {
 
     public void setCurrentDay(DayOfWeek dow) {
         currentDay.setValue(dow);
+    }
+
+    public void makeReservation(ISelectableSlot slot, String password) {
+        // TODO: make reservation
     }
 }

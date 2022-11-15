@@ -11,26 +11,28 @@ import androidx.fragment.app.DialogFragment;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 
-public class SlotPasswordDialogFragment extends DialogFragment {
+public class ProvideSlotPasswordDialogFragment extends DialogFragment {
     public interface IListener {
         void onSlotPasswordSubmitted(ISelectableSlot slot, String password);
     }
 
     private final IListener listener;
     private final ISelectableSlot slot;
+    private final int titleId;
 
-    public SlotPasswordDialogFragment(IListener listener, ISelectableSlot slot) {
+    public ProvideSlotPasswordDialogFragment(IListener listener, ISelectableSlot slot, int titleId) {
         super();
         this.listener = listener;
         this.slot = slot;
+        this.titleId = titleId;
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = requireActivity().getLayoutInflater().inflate(R.layout.slot_password_layout, null);
+        View view = requireActivity().getLayoutInflater().inflate(R.layout.input_slot_password_layout, null);
         builder.setView(view);
-        builder.setTitle(R.string.slot_password_dialog_title)
+        builder.setTitle(titleId)
                 .setPositiveButton(R.string.confirm, (dialog, id) -> {
                     listener.onSlotPasswordSubmitted(slot, ((EditText) view.findViewById(R.id.slot_password_field)).getText().toString());
                 })

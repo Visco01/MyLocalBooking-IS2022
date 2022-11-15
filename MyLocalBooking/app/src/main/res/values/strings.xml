@@ -8,7 +8,12 @@
     <string name="people_attending">people attending</string>
     <string name="plus">+</string>
     <string name="password">Password</string>
-    <string name="slot_password_dialog_title">Slot password required</string>
+    <string name="slot_password_required">Slot password required</string>
+    <string name="choose_slot_password">Choose a password</string>
     <string name="confirm">confirm</string>
     <string name="cancel">cancel</string>
+    <string name="question_set_slot_password">Do you wish to set a password for this slot?</string>
+    <string name="set_slot_password_title">Slot password</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
 </resources>
