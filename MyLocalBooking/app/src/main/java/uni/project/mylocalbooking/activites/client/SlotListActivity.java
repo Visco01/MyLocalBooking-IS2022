@@ -17,15 +17,17 @@ import java.util.List;
 import java.util.Random;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.fragments.SlotPasswordDialogFragment;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
 import uni.project.mylocalbooking.models.Provider;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
-public class SlotListActivity extends AppCompatActivity {
+public class SlotListActivity extends AppCompatActivity implements SlotListAdapter.IListener, SlotPasswordDialogFragment.IListener {
     private SlotListViewModel viewModel;
     private final Random random = new Random();
 
@@ -36,6 +38,38 @@ public class SlotListActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
 
+        viewModel.setBlueprints(generateSampleData());
+
+        SlotListAdapter adapter = new SlotListAdapter(this);
+
+        viewModel.getCurrentDay().observe(this, dow -> {
+            LocalDate weekStart = viewModel.getStartOfWeek().getValue();
+            LocalDate selected = weekStart.plusDays(dow.getValue() - 1);
+            List<SlotBlueprint> slotItems = viewModel.getBlueprints(selected);
+
+            adapter.onRefresh(selected, slotItems);
+        });
+
+        ((ListView) getWindow().getDecorView().getRootView().findViewById(R.id.slot_list)).setAdapter(adapter);
+    }
+
+    @Override
+    public void onSlotReservationToggled(ISelectableSlot slot) {
+        if(slot.isPasswordProtected()) {
+            SlotPasswordDialogFragment dialog = new SlotPasswordDialogFragment(this, slot);
+            dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
+        }
+        else {
+            // TODO: make reservation
+        }
+    }
+
+    @Override
+    public void onSlotPasswordSubmitted(ISelectableSlot slot, String password) {
+        // TODO: try making reservation with provided password
+    }
+
+    private List<SlotBlueprint> generateSampleData() {
         HashSet<DayOfWeek> weekdays = new HashSet<>();
         weekdays.add(DayOfWeek.FRIDAY);
         weekdays.add(DayOfWeek.SUNDAY);
@@ -44,39 +78,33 @@ public class SlotListActivity extends AppCompatActivity {
 
         List<SlotBlueprint> blueprints = new ArrayList<>();
         for (LocalTime start = LocalTime.of(8, 0); start.compareTo(LocalTime.of(22, 0)) < 0; start = start.plusMinutes(90)) {
-            Integer reservationLimit = random.nextInt(11) > 6 ? null : 1 + random.nextInt(30);
+            Integer reservationLimit = random.nextInt(11) > 6 ? null : random.nextInt(31);
 
             blueprints.add(new PeriodicSlotBlueprint(
                     start, start.plusMinutes(90), establishment, reservationLimit,
-                    weekdays, LocalDate.of(2022, 11, 11), LocalDate.of(2022, 11, 15)
+                    weekdays, LocalDate.of(2022, 11, 14), LocalDate.of(2022, 11, 20)
             ));
-
-
-            for (SlotBlueprint elem : selectRandom(blueprints))
-                for (int i = 0; i < elem.toDate.compareTo(elem.fromDate); i++) {
-                    PeriodicSlot slot = new PeriodicSlot(LocalDate.now().plusDays(i), provider, (PeriodicSlotBlueprint) elem);
-
-                    int amount = elem.reservationLimit != null ? elem.reservationLimit : 15;
-                    if(random.nextInt(10) > 6)
-                        amount = random.nextInt(amount + 1);
-                    if(amount > 0 && random.nextInt(10) > 5)
-                        slot.passwordProtected = true;
-
-                    for(int j = 0; j < amount; j++)
-                        slot.reservations.add(new Client(new Coordinates(1,1), "", "", "", "", LocalDate.now()));
-                }
-
-            viewModel.setBlueprints(blueprints);
-
-            SlotListAdapter adapter = new SlotListAdapter(this, viewModel);
-
-            viewModel.getCurrentDay().observe(this, adapter::refresh);
-
-            ((ListView) getWindow().getDecorView().getRootView().findViewById(R.id.slot_list)).setAdapter(adapter);
         }
+
+        for (SlotBlueprint instantiatedBlueprint : blueprints) {
+            for (int i = 0; i < instantiatedBlueprint.toDate.compareTo(instantiatedBlueprint.fromDate); i++) {
+                PeriodicSlot slot = new PeriodicSlot(LocalDate.now().plusDays(i), provider, (PeriodicSlotBlueprint) instantiatedBlueprint);
+
+                int bookedPeopleAmount = instantiatedBlueprint.reservationLimit != null ? instantiatedBlueprint.reservationLimit : 15;
+                if(random.nextInt(11) > 6)
+                    bookedPeopleAmount = random.nextInt(bookedPeopleAmount + 1);
+                if(bookedPeopleAmount > 0 && random.nextInt(11) > 5)
+                    slot.passwordProtected = true;
+
+                for(int j = 0; j < bookedPeopleAmount; j++)
+                    slot.reservations.add(new Client(new Coordinates(1,1), "", "", "", "", LocalDate.now()));
+            }
+        }
+
+        return blueprints;
     }
 
-    List<SlotBlueprint> selectRandom(List<SlotBlueprint> list) {
+    private List<SlotBlueprint> selectRandom(List<SlotBlueprint> list) {
         Collections.shuffle(list);
         int start = random.nextInt(list.size());
         int len = start + random.nextInt(list.size() - start);

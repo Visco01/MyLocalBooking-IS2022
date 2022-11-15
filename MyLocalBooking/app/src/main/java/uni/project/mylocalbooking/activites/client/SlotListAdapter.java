@@ -19,14 +19,14 @@ import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListAdapter extends BaseAdapter {
-    public interface ISlotListListener {
-        void onReservationToggled(ISelectableSlot slot);
+    public interface IListener {
+        void onSlotReservationToggled(ISelectableSlot slot);
     }
 
-    private final ISlotListListener listener;
+    private final IListener listener;
     private final List<ISelectableSlot> filteredSlots = new ArrayList<>();
 
-    public SlotListAdapter(ISlotListListener listener) {
+    public SlotListAdapter(IListener listener) {
         super();
         this.listener = listener;
     }
@@ -94,7 +94,7 @@ public class SlotListAdapter extends BaseAdapter {
 
         reservationButton.setOnClickListener(v -> {
             // TODO: toggle style
-            listener.onReservationToggled(slot);
+            listener.onSlotReservationToggled(slot);
         });
 
         return slotRoot;
