@@ -20,7 +20,7 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.activites.client.SlotListViewModel;
+import uni.project.mylocalbooking.activities.client.SlotListViewModel;
 
 /**
  * A simple {@link Fragment} subclass.

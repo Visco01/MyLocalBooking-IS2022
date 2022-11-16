@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking.activites.client;
+package uni.project.mylocalbooking.activities.client;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

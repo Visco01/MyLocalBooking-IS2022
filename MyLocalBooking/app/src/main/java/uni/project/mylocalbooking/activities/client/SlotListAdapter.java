@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking.activites.client;
+package uni.project.mylocalbooking.activities.client;
 
 import android.view.LayoutInflater;
 import android.view.View;
