@@ -1,6 +1,9 @@
 package uni.project.mylocalbooking.api;
 
 import android.util.Log;
+
+import org.slf4j.helpers.Util;
+
 import java.util.Collection;
 
 import uni.project.mylocalbooking.SessionPreferences;
@@ -32,43 +35,9 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void register(AppUser user, String password) {
         String url = "https://mylocalbooking-api-o1he.onrender.com/api/app_users";
-
-        try {
-            password = AESCrypt.encrypt(password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String requestBody = "{" +
-                "\"cellphone\": \"" + user.cellphone + "\", " +
-                "\"firstname\": \"" + user.firstname + "\", " +
-                "\"email\": \"" + user.email + "\", " +
-                "\"lastname\": \"" + user.lastname + "\", " +
-                "\"dob\": \"" + "2001-04-20" + "\", " +
-                "\"password_digest\": \"" + password + "\", ";
-
-        if(user instanceof Client){
-            Client client = (Client) user;
-            requestBody += "\"Client\": {" +
-                    "\"lat\": " + client.position.latitude + ", " +
-                    "\"lng\": " + client.position.longitude +
-                    "}}";
-        } else {
-            Provider provider = (Provider) user;
-            requestBody += "\"Provider\": {" +
-                    "\"isverified\": " + (provider.verified ? 1 : 0) + ", " +
-                    "\"maxstrikes\": " + provider.maxStrikes + ", " +
-                    "\"companyname\": \"" + provider.companyName +
-                    "\"}}";
-        }
-
-        if(MyLocalBookingAPI.jwt != null){
-            APICall call = new APICall(MyLocalBookingAPI.jwt, "POST", requestBody, url);
-            RequestQueueSingleton.getInstance().add(call.getRequest());
-        }else{
-            LoginAPI.addWaitingRequest(requestBody, url, "POST");
-        }
-
+        password = Utility.generateEncryptedPassword(password);
+        String requestBody = JSONBodyGenerator.generateRegisterBody(user, password);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST");
         //passare lambda come parametro di APICall.
         SessionPreferences.setUserPrefs(user);
     }
@@ -77,21 +46,9 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     public void changeUserPassword(String new_password) {
         String cellphone = (String) SessionPreferences.getUserPrefs().get("cellphone");
         String url = "https://mylocalbooking-api-o1he.onrender.com/api/change_user_password/" + cellphone;
-
-        try {
-            new_password = AESCrypt.encrypt(new_password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String requestBody = "{\"new_password\": \"" + new_password + "\"}";
-
-        if(MyLocalBookingAPI.jwt != null){
-            APICall call = new APICall(MyLocalBookingAPI.jwt, "PATCH", requestBody, url);
-            RequestQueueSingleton.getInstance().add(call.getRequest());
-        }else{
-            LoginAPI.addWaitingRequest(requestBody, url, "PATCH");
-        }
+        new_password = Utility.generateEncryptedPassword(new_password);
+        String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH");
     }
 
     //How to add new slots? How to get the id once the slot is created?
@@ -100,23 +57,11 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public Slot setSlotPassword(String new_password, Slot slot) {
         String url = "https://mylocalbooking-api-o1he.onrender.com/api/change_slot_password/" + slot.getId();
-
-        try {
-            new_password = AESCrypt.encrypt(new_password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String requestBody = "{\"new_password\": \"" + new_password + "\"}";
-
-        if(MyLocalBookingAPI.jwt != null){
-            APICall call = new APICall(MyLocalBookingAPI.jwt, "PATCH", requestBody, url);
-            RequestQueueSingleton.getInstance().add(call.getRequest());
-        }else{
-            LoginAPI.addWaitingRequest(requestBody, url, "PATCH");
-        }
-
-        return null;
+        new_password = Utility.generateEncryptedPassword(new_password);
+        String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH");
+        //Why return the slot?
+        return slot;
     }
 
     @Override
