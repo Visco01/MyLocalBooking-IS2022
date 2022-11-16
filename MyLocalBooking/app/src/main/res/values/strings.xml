@@ -16,4 +16,6 @@
     <string name="set_slot_password_title">Slot password</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
+    <string name="create_slot">create slot</string>
+    <string name="available_for_booking">Available for booking</string>
 </resources>

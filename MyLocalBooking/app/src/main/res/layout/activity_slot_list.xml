@@ -26,7 +26,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragmentContainerView"
-        android:dividerHeight="2dp"
-        tools:listitem="@layout/slot" />
+        android:dividerHeight="2dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
