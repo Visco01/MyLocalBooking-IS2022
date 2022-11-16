@@ -17,6 +17,7 @@ import uni.project.mylocalbooking.models.SlotBlueprint;
 
 class MyLocalBookingAPI implements IMyLocalBookingAPI {
     private static String jwt = null;
+    private static String apiPrefix = "https://mylocalbooking-api-o1he.onrender.com/api/";
 
 
     public MyLocalBookingAPI() {
@@ -34,7 +35,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public void register(AppUser user, String password) {
-        String url = "https://mylocalbooking-api-o1he.onrender.com/api/app_users";
+        String url = MyLocalBookingAPI.apiPrefix + "app_users";
         password = Utility.generateEncryptedPassword(password);
         String requestBody = JSONBodyGenerator.generateRegisterBody(user, password);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST");
@@ -45,7 +46,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void changeUserPassword(String new_password) {
         String cellphone = (String) SessionPreferences.getUserPrefs().get("cellphone");
-        String url = "https://mylocalbooking-api-o1he.onrender.com/api/change_user_password/" + cellphone;
+        String url = MyLocalBookingAPI.apiPrefix + "change_user_password/" + cellphone;
         new_password = Utility.generateEncryptedPassword(new_password);
         String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH");
@@ -56,7 +57,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public Slot setSlotPassword(String new_password, Slot slot) {
-        String url = "https://mylocalbooking-api-o1he.onrender.com/api/change_slot_password/" + slot.getId();
+        String url = MyLocalBookingAPI.apiPrefix + "change_slot_password/" + slot.getId();
         new_password = Utility.generateEncryptedPassword(new_password);
         String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH");
