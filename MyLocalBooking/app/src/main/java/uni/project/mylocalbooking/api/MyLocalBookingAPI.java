@@ -1,10 +1,7 @@
 package uni.project.mylocalbooking.api;
 
-import android.content.SharedPreferences;
 import android.util.Log;
-import com.android.volley.Request;
 import java.util.Collection;
-import java.util.Map;
 
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.models.AppUser;
@@ -77,8 +74,24 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void changeUserPassword(String password) {
+    public void changeUserPassword(String new_password) {
+        String cellphone = (String) SessionPreferences.getUserPrefs().get("cellphone");
+        String url = "https://mylocalbooking-api-o1he.onrender.com/api/change_user_password/" + cellphone;
 
+        try {
+            new_password = AESCrypt.encrypt(new_password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String requestBody = "{\"new_password\": \"" + new_password + "\"}";
+
+        if(MyLocalBookingAPI.jwt != null){
+            APICall call = new APICall(MyLocalBookingAPI.jwt, "PATCH", requestBody, url);
+            RequestQueueSingleton.getInstance().add(call.getRequest());
+        }else{
+            LoginAPI.addWaitingRequest(requestBody, url, "PATCH");
+        }
     }
 
     @Override
