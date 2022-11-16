@@ -94,8 +94,28 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         }
     }
 
+    //How to add new slots? How to get the id once the slot is created?
+    //I assume the slot's id is already given (?)
+
     @Override
-    public Slot setSlotPassword(String password, Slot slot) {
+    public Slot setSlotPassword(String new_password, Slot slot) {
+        String url = "https://mylocalbooking-api-o1he.onrender.com/api/change_slot_password/" + slot.getId();
+
+        try {
+            new_password = AESCrypt.encrypt(new_password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String requestBody = "{\"new_password\": \"" + new_password + "\"}";
+
+        if(MyLocalBookingAPI.jwt != null){
+            APICall call = new APICall(MyLocalBookingAPI.jwt, "PATCH", requestBody, url);
+            RequestQueueSingleton.getInstance().add(call.getRequest());
+        }else{
+            LoginAPI.addWaitingRequest(requestBody, url, "PATCH");
+        }
+
         return null;
     }
 
