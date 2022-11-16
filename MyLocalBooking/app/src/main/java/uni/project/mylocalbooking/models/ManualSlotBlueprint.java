@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class ManualSlotBlueprint extends SlotBlueprint {
+public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     private final Long id;
     public final LocalTime openTime;
     public final LocalTime closeTime;
@@ -31,5 +31,15 @@ public class ManualSlotBlueprint extends SlotBlueprint {
     @Override
     public Long getId() {
         return this.id;
+    }
+
+    @Override
+    public LocalTime getStart() {
+        return openTime;
+    }
+
+    @Override
+    public LocalTime getEnd() {
+        return closeTime;
     }
 }

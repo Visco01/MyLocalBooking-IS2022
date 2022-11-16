@@ -24,12 +24,12 @@ public class PeriodicSlot extends Slot implements ISelectableSlot {
     }
 
     @Override
-    public LocalTime getFromTime() {
+    public LocalTime getStart() {
         return ((PeriodicSlotBlueprint) super.blueprint).fromTime;
     }
 
     @Override
-    public LocalTime getToTime() {
+    public LocalTime getEnd() {
         return ((PeriodicSlotBlueprint) super.blueprint).toTime;
     }
 

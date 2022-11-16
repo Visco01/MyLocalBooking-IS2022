@@ -39,12 +39,12 @@ public class ManualSlot extends Slot implements ISelectableSlot {
     }
 
     @Override
-    public LocalTime getFromTime() {
+    public LocalTime getStart() {
         return fromTime;
     }
 
     @Override
-    public LocalTime getToTime() {
+    public LocalTime getEnd() {
         return toTime;
     }
 

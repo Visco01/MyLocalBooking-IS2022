@@ -31,12 +31,12 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
     }
 
     @Override
-    public LocalTime getFromTime() {
+    public LocalTime getStart() {
         return fromTime;
     }
 
     @Override
-    public LocalTime getToTime() {
+    public LocalTime getEnd() {
         return toTime;
     }
 
