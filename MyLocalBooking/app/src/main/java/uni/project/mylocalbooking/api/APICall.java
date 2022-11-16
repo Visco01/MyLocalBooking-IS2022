@@ -35,7 +35,7 @@ class APICall {
                 post(this.requestBody, this.url);
                 break;
             case "PATCH":
-                //TODO
+                patch(this.requestBody, this.url);
                 break;
             case "DELETE":
                 //TODO
@@ -55,11 +55,19 @@ class APICall {
         return jsonBody;
     }
 
-    private void post(String body, String url){
+    private void post(String requestBody, String url){
+        call(requestBody, url, Request.Method.POST);
+    }
+
+    private void patch(String requestBody, String url){
+        call(requestBody, url, Request.Method.PATCH);
+    }
+
+    private void call(String body, String url, int requestMethod){
         JSONObject jsonBody = getJsonBody(body);
         Log.i("post method", body);
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
-                Request.Method.POST,
+                requestMethod,
                 url,
                 jsonBody,
                 new Response.Listener<JSONObject>() {
