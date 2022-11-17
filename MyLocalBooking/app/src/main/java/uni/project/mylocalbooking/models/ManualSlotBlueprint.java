@@ -33,4 +33,8 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
     public void setSubclassId(Long id) {
         this.id = id;
     }
+
+    public void setId(Long id){
+        this.id = id;
+    }
 }

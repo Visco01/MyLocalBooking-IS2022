@@ -50,7 +50,7 @@ public interface IMyLocalBookingAPI{
     *       updates the slot's password_digest
     *       sets slot.passwordProtected to true
     * */
-    Slot setSlotPassword(String password, Slot slot);
+    void setSlotPassword(String password, Slot slot);
 
     // PROVIDER
     // all calls in this section implicitly have the precondition
@@ -63,7 +63,7 @@ public interface IMyLocalBookingAPI{
      *       updates the slot's password_digest
      *       sets slot.passwordProtected to true
      * */
-    long addBlueprint(SlotBlueprint blueprint);
+    void addBlueprint(SlotBlueprint blueprint);
     /*
      * pre:
      *      establishment.id == null

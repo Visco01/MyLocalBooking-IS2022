@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.time.LocalDate;
 import java.util.HashSet;
 
+
 public abstract class SlotBlueprint extends DatabaseModel {
     public final Establishment establishment;
     public final HashSet<DayOfWeek> weekdays;
