@@ -17,7 +17,7 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.models.ITimeFrame;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 
-public class CreateManualSlotDialog extends DialogFragment {
+public class ManualSlotCreationDialogFragment extends DialogFragment {
     public interface IListener {
         void onManualSlotCreated(FreeManualTimeWindow timeWindow);
     }
@@ -52,7 +52,7 @@ public class CreateManualSlotDialog extends DialogFragment {
     private final FreeManualTimeWindow timeWindow;
     private final IListener listener;
 
-    public CreateManualSlotDialog(FreeManualTimeWindow timeWindow, IListener listener) {
+    public ManualSlotCreationDialogFragment(FreeManualTimeWindow timeWindow, IListener listener) {
         this.timeWindow = timeWindow;
         this.listener = listener;
     }

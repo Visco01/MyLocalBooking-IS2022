@@ -11,13 +11,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+import uni.project.mylocalbooking.MockAPI;
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.fragments.ProvideSlotPasswordDialogFragment;
-import uni.project.mylocalbooking.fragments.SetSlotPasswordDialogFragment;
+import uni.project.mylocalbooking.fragments.PasswordInputDialogFragment;
+import uni.project.mylocalbooking.fragments.PasswordRequestDialogFragment;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
@@ -33,19 +32,13 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
 
         // TODO: get blueprints
-        List<SlotBlueprint> blueprints = new ArrayList<>();
+        List<SlotBlueprint> blueprints = MockAPI.generateManualData();
 
         viewModel.setBlueprints(blueprints);
 
         SlotListAdapter adapter = new SlotListAdapter(this);
 
-        viewModel.getCurrentDay().observe(this, dow -> {
-            LocalDate weekStart = viewModel.getStartOfWeek().getValue();
-            LocalDate selected = weekStart.plusDays(dow.getValue() - 1);
-            List<SlotBlueprint> slotItems = viewModel.getBlueprints(selected);
-
-            adapter.onRefresh(selected, slotItems);
-        });
+        viewModel.getCurrentDay().observe(this, date -> adapter.onRefresh(date, viewModel.getBlueprints(date)));
 
         ((ListView) getWindow().getDecorView().getRootView().findViewById(R.id.slot_list)).setAdapter(adapter);
     }
@@ -59,7 +52,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
     @Override
     public void onSlotReservationToggled(ISelectableSlot selectableSlot) {
         if(selectableSlot instanceof SlotBlueprint) {
-            SetSlotPasswordDialogFragment dialog = new SetSlotPasswordDialogFragment(new SetSlotPasswordDialogFragment.IListener() {
+            PasswordRequestDialogFragment dialog = new PasswordRequestDialogFragment(new PasswordRequestDialogFragment.IListener() {
                 @Override
                 public void onAccepted() {
                     showPasswordInputDialog(selectableSlot, R.string.choose_slot_password, null);
@@ -67,7 +60,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
                 @Override
                 public void onRefused() {
-                    makeReservation(selectableSlot, null);
+                    viewModel.makeReservation(selectableSlot, null);
                 }
             });
             dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
@@ -75,13 +68,13 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
             showPasswordInputDialog(selectableSlot, R.string.slot_password_required, null);
         }
         else {
-            makeReservation(selectableSlot, null);
+            viewModel.makeReservation(selectableSlot, null);
         }
     }
 
     @Override
-    public void onManualSlotCreate(CreateManualSlotDialog.FreeManualTimeWindow timeWindow) {
-        CreateManualSlotDialog slotCreationDialog = new CreateManualSlotDialog(timeWindow, newTimeWindow -> {
+    public void onManualSlotCreate(ManualSlotCreationDialogFragment.FreeManualTimeWindow timeWindow) {
+        ManualSlotCreationDialogFragment slotCreationDialog = new ManualSlotCreationDialogFragment(timeWindow, newTimeWindow -> {
             ManualSlot slot = new ManualSlot(
                     newTimeWindow.fromTime,
                     newTimeWindow.toTime,
@@ -89,32 +82,28 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
                     null, // TODO: owner!
                     newTimeWindow.blueprint
             );
-            requestPasswordConfirmation(slot, timeWindow);
+            requestPasswordConfirmation(slot);
         });
         slotCreationDialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
 
-    private void requestPasswordConfirmation(ManualSlot slot, CreateManualSlotDialog.FreeManualTimeWindow timeWindow) {
-        SetSlotPasswordDialogFragment wishToSetPasswordDialog = new SetSlotPasswordDialogFragment(new SetSlotPasswordDialogFragment.IListener() {
+    private void requestPasswordConfirmation(ManualSlot slot) {
+        PasswordRequestDialogFragment wishToSetPasswordDialog = new PasswordRequestDialogFragment(new PasswordRequestDialogFragment.IListener() {
             @Override
             public void onAccepted() {
-                showPasswordInputDialog(slot, R.string.choose_slot_password, () -> requestPasswordConfirmation(slot, timeWindow));
+                showPasswordInputDialog(slot, R.string.choose_slot_password, () -> requestPasswordConfirmation(slot));
             }
 
             @Override
             public void onRefused() {
-                makeReservation(slot, null);
+                viewModel.makeReservation(slot.blueprint, slot.fromTime, slot.toTime, null);
             }
         });
         wishToSetPasswordDialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
 
-    private void makeReservation(Object slot, String password) {
-        // TODO: rethink interface system
-    }
-
-    private void showPasswordInputDialog(ISelectableSlot slot, int titleId, ProvideSlotPasswordDialogFragment.ICancelListener cancelListener) {
-        ProvideSlotPasswordDialogFragment dialog = new ProvideSlotPasswordDialogFragment(password -> makeReservation(slot, password), cancelListener, titleId);
+    private void showPasswordInputDialog(ISelectableSlot slot, int titleId, PasswordInputDialogFragment.ICancelListener cancelListener) {
+        PasswordInputDialogFragment dialog = new PasswordInputDialogFragment(password -> viewModel.makeReservation(slot, password), cancelListener, titleId);
         dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
 }

@@ -23,7 +23,7 @@ import uni.project.mylocalbooking.models.SlotBlueprint;
 public class SlotListAdapter extends BaseAdapter {
     public interface IListener {
         void onSlotReservationToggled(ISelectableSlot slot);
-        void onManualSlotCreate(CreateManualSlotDialog.FreeManualTimeWindow timeWindow);
+        void onManualSlotCreate(ManualSlotCreationDialogFragment.FreeManualTimeWindow timeWindow);
     }
 
     private static final int TYPE_SLOT = 0;
@@ -112,7 +112,7 @@ public class SlotListAdapter extends BaseAdapter {
         for(ManualSlot slot : slots) {
             if(previous.compareTo(slot.fromTime) < 0) {
                 long nano = previous.toNanoOfDay();
-                results.add(new CreateManualSlotDialog.FreeManualTimeWindow(
+                results.add(new ManualSlotCreationDialogFragment.FreeManualTimeWindow(
                         blueprint,
                         date,
                         LocalTime.ofNanoOfDay(nano),
@@ -125,7 +125,7 @@ public class SlotListAdapter extends BaseAdapter {
 
         long nano = previous.toNanoOfDay();
         if(previous.compareTo(blueprint.closeTime) < 0)
-            results.add(new CreateManualSlotDialog.FreeManualTimeWindow(
+            results.add(new ManualSlotCreationDialogFragment.FreeManualTimeWindow(
                     blueprint,
                     date,
                     LocalTime.ofNanoOfDay(nano),
@@ -189,13 +189,13 @@ public class SlotListAdapter extends BaseAdapter {
 
         if(timeFrame instanceof ManualSlotBlueprint) {
             ManualSlotBlueprint blueprint = (ManualSlotBlueprint) timeFrame;
-            timeFrame = new CreateManualSlotDialog.FreeManualTimeWindow(blueprint, currentDate, blueprint.openTime, blueprint.closeTime);
+            timeFrame = new ManualSlotCreationDialogFragment.FreeManualTimeWindow(blueprint, currentDate, blueprint.openTime, blueprint.closeTime);
         }
 
         ((TextView) viewRoot.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
         ((TextView) viewRoot.findViewById(R.id.close_time)).setText(timeFrame.getEnd().toString());
 
-        final CreateManualSlotDialog.FreeManualTimeWindow window = (CreateManualSlotDialog.FreeManualTimeWindow) timeFrame;
+        final ManualSlotCreationDialogFragment.FreeManualTimeWindow window = (ManualSlotCreationDialogFragment.FreeManualTimeWindow) timeFrame;
         ((Button) viewRoot.findViewById(R.id.create_slot_button)).setOnClickListener(view -> listener.onManualSlotCreate(window));
     }
 }

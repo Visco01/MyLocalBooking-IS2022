@@ -7,10 +7,12 @@ import java.util.HashSet;
 
 public class PeriodicSlot extends Slot implements ISelectableSlot {
     private final Long id;
+    private final PeriodicSlotBlueprint blueprint;
 
     public PeriodicSlot(Long id, Long slot_id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, PeriodicSlotBlueprint blueprint) {
         super(slot_id, date, owner, passwordProtected, reservations, blueprint);
         this.id = id;
+        this.blueprint = blueprint;
         blueprint.slots.put(super.date, this);
     }
 

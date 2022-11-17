@@ -7,9 +7,8 @@ import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.models.ISelectableSlot;
 
-public class SetSlotPasswordDialogFragment extends DialogFragment {
+public class PasswordRequestDialogFragment extends DialogFragment {
     public interface IListener {
         void onAccepted();
         void onRefused();
@@ -17,7 +16,7 @@ public class SetSlotPasswordDialogFragment extends DialogFragment {
 
     private final IListener listener;
 
-    public SetSlotPasswordDialogFragment(IListener listener) {
+    public PasswordRequestDialogFragment(IListener listener) {
         super();
         this.listener = listener;
     }

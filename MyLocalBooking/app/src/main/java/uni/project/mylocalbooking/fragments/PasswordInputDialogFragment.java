@@ -9,9 +9,8 @@ import android.widget.EditText;
 import androidx.fragment.app.DialogFragment;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.models.ISelectableSlot;
 
-public class ProvideSlotPasswordDialogFragment extends DialogFragment {
+public class PasswordInputDialogFragment extends DialogFragment {
     public interface IConfirmListener {
         void onSlotPasswordSubmitted(String password);
     }
@@ -23,18 +22,18 @@ public class ProvideSlotPasswordDialogFragment extends DialogFragment {
     private final ICancelListener cancelListener;
     private final int titleId;
 
-    public ProvideSlotPasswordDialogFragment(IConfirmListener confirmListener, ICancelListener cancelListener, int titleId) {
+    public PasswordInputDialogFragment(IConfirmListener confirmListener, ICancelListener cancelListener, int titleId) {
         super();
         this.confirmListener = confirmListener;
         this.cancelListener = cancelListener;
         this.titleId = titleId;
     }
 
-    public ProvideSlotPasswordDialogFragment(IConfirmListener confirmListener, int titleId) {
+    public PasswordInputDialogFragment(IConfirmListener confirmListener, int titleId) {
         this(confirmListener, null, titleId);
     }
 
-    public ProvideSlotPasswordDialogFragment(ICancelListener cancelListener, int titleId) {
+    public PasswordInputDialogFragment(ICancelListener cancelListener, int titleId) {
         this(null, cancelListener, titleId);
     }
 
