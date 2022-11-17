@@ -29,4 +29,9 @@ public class ManualSlot extends Slot implements IDatabaseSubclassModel {
     public void setSubclassId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
