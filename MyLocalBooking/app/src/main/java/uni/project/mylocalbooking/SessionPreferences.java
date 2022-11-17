@@ -27,11 +27,11 @@ public class SessionPreferences {
 
     public static void setUserPrefs(AppUser user){
         SharedPreferences.Editor editor = getEditor();
+        if(user.getId() != null)
+            editor.putInt("id", Math.toIntExact(user.getId()));
         editor.putString("cellphone", user.cellphone);
         editor.putString("username", user.firstname);
         editor.putString("lastname", user.lastname);
-        //Adding the date of birth causes a crash
-        //editor.putString("dob", user.dob.toString());
 
         if(user instanceof Client){
             Client client = (Client) user;
