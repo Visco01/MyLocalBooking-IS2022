@@ -2,16 +2,16 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 
-import org.slf4j.helpers.Util;
-
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.Collection;
-
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
-import uni.project.mylocalbooking.models.Provider;
+import uni.project.mylocalbooking.models.ManualSlotBlueprint;
+import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
 import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
@@ -38,9 +38,12 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String url = MyLocalBookingAPI.apiPrefix + "app_users";
         password = Utility.generateEncryptedPassword(password);
         String requestBody = JSONBodyGenerator.generateRegisterBody(user, password);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST");
-        //passare lambda come parametro di APICall.
-        SessionPreferences.setUserPrefs(user);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", new RunOnResponse<JSONObject>() {
+            @Override
+            public void apply(JSONObject response) {
+                SessionPreferences.setUserPrefs(user);
+            }
+        });
     }
 
     @Override
@@ -49,25 +52,44 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String url = MyLocalBookingAPI.apiPrefix + "change_user_password/" + cellphone;
         new_password = Utility.generateEncryptedPassword(new_password);
         String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH");
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", null);
     }
 
-    //How to add new slots? How to get the id once the slot is created?
-    //I assume the slot's id is already given (?)
-
     @Override
-    public Slot setSlotPassword(String new_password, Slot slot) {
+    public void setSlotPassword(String new_password, Slot slot) {
         String url = MyLocalBookingAPI.apiPrefix + "change_slot_password/" + slot.getId();
         new_password = Utility.generateEncryptedPassword(new_password);
         String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH");
-        //Why return the slot?
-        return slot;
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", new RunOnResponse<JSONObject>() {
+            @Override
+            public void apply(JSONObject response) {
+                slot.passwordProtected = true;
+                Log.i("passwordProtected", String.valueOf(slot.passwordProtected));
+            }
+        });
     }
 
     @Override
-    public long addBlueprint(SlotBlueprint blueprint) {
-        return 0;
+    public void addBlueprint(SlotBlueprint blueprint) {
+        String url = MyLocalBookingAPI.apiPrefix + "slot_blueprints";
+        String requestBody = JSONBodyGenerator.generateAddBlueprintBody(blueprint);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", new RunOnResponse<JSONObject>() {
+            @Override
+            public void apply(JSONObject response) {
+                try {
+                    blueprint.setId(Long.valueOf(response.getString("slot_blueprint_id")));
+                    if(blueprint instanceof PeriodicSlotBlueprint){
+                        PeriodicSlotBlueprint pBlueprint = (PeriodicSlotBlueprint) blueprint;
+                        pBlueprint.setId(Long.valueOf(response.getString("concrete_blueprint_id")));
+                    }else{
+                        ManualSlotBlueprint mBlueprint = (ManualSlotBlueprint) blueprint;
+                        mBlueprint.setId(Long.valueOf(response.getString("concrete_blueprint_id")));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -100,11 +122,13 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     }
 
+    // X
     @Override
     public void addReservation(Slot slot, String password) {
 
     }
 
+    // X
     @Override
     public void cancelReservation(Slot slot) {
 

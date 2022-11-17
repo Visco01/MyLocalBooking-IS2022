@@ -1,41 +1,51 @@
 package uni.project.mylocalbooking.api;
 
 import android.util.Log;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
 class APICall {
     private String jwt = null;
     private JsonObjectRequest request = null;
-    private String type = null;
+    private String method = null;
     private String requestBody = null;
     private String url = null;
+    private RunOnResponse<JSONObject> runOnResponse = null;
 
-    public APICall(String jwt, String type, String requestBody, String url){
+    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<JSONObject> runOnResponse){
         this.jwt = jwt;
-        this.type = type;
+        this.method = method;
         this.requestBody = requestBody;
         this.url = url;
+        this.runOnResponse = runOnResponse;
+        init();
+    }
 
-        switch (this.type){
+    public APICall(String jwt, String method, String requestBody, String url){
+        this.jwt = jwt;
+        this.method = method;
+        this.requestBody = requestBody;
+        this.url = url;
+        init();
+    }
+
+    private void init(){
+        switch (this.method){
             case "GET":
                 //TODO
                 break;
             case "POST":
-                post(this.requestBody, this.url);
+                post();
                 break;
             case "PATCH":
-                patch(this.requestBody, this.url);
+                patch();
                 break;
             case "DELETE":
                 //TODO
@@ -55,31 +65,31 @@ class APICall {
         return jsonBody;
     }
 
-    private void post(String requestBody, String url){
-        call(requestBody, url, Request.Method.POST);
+    private void post(){
+        call(Request.Method.POST);
     }
 
-    private void patch(String requestBody, String url){
-        call(requestBody, url, Request.Method.PATCH);
+    private void patch(){
+        call(Request.Method.PATCH);
     }
 
-    private void call(String body, String url, int requestMethod){
-        JSONObject jsonBody = getJsonBody(body);
-        Log.i("post method", body);
+    private void call(int requestMethod){
+        JSONObject jsonBody = getJsonBody(this.requestBody);
+        Log.i("post method", this.requestBody);
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
                 requestMethod,
-                url,
+                this.url,
                 jsonBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.i("test post", response.toString());
+                        if(runOnResponse != null) runOnResponse.apply(response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("post error", error.toString());
+                        Log.i("APICall error", error.toString());
                     }
                 }
         ) {
@@ -103,7 +113,7 @@ class APICall {
         return this.request;
     }
 
-    public String getType(){
-        return this.type;
+    public String getMethod(){
+        return this.method;
     }
 }

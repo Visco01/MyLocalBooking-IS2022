@@ -62,13 +62,13 @@ class LoginAPI {
     }
 
     private static void freeRequests(String jwt){
-        for(Triple<String, String, String> elem : WaitingRequestsSingleton.getInstance()){
-            APICall call = new APICall(jwt, elem.component3(), elem.component1(), elem.component2());
+        for(WaitingRequest elem : WaitingRequestsSingleton.getInstance()){
+            APICall call = new APICall(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), elem.getRunOnResponse());
             RequestQueueSingleton.getInstance().add(call.getRequest());
         }
     }
     
-    public static void addWaitingRequest(String requestBody, String url, String type){
-        WaitingRequestsSingleton.getInstance().add(new Triple<>(requestBody, url, type));
+    public static void addWaitingRequest(String requestBody, String url, String method, RunOnResponse<JSONObject> runOnResponse){
+        WaitingRequestsSingleton.getInstance().add(new WaitingRequest(url, requestBody, method, runOnResponse));
     }
 }

@@ -1,6 +1,8 @@
 package uni.project.mylocalbooking.api;
 
- class Utility {
+import org.json.JSONObject;
+
+class Utility {
 
     public static String generateEncryptedPassword(String password){
         try {
@@ -11,12 +13,16 @@ package uni.project.mylocalbooking.api;
         return password;
     }
 
-    public static void callAPI(String jwt, String requestBody, String url, String method){
+    public static void callAPI(String jwt, String requestBody, String url, String method, RunOnResponse<JSONObject> runOnResponse){
         if(jwt != null){
-            APICall call = new APICall(jwt, method, requestBody, url);
+            APICall call;
+            if(runOnResponse != null)
+                call = new APICall(jwt, method, requestBody, url, runOnResponse);
+            else
+                call = new APICall(jwt, method, requestBody, url);
             RequestQueueSingleton.getInstance().add(call.getRequest());
         }else{
-            LoginAPI.addWaitingRequest(requestBody, url, method);
+            LoginAPI.addWaitingRequest(requestBody, url, method, runOnResponse);
         }
     }
  }

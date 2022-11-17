@@ -2,7 +2,10 @@ package uni.project.mylocalbooking.api;
 
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
+import uni.project.mylocalbooking.models.ManualSlotBlueprint;
+import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
 import uni.project.mylocalbooking.models.Provider;
+import uni.project.mylocalbooking.models.SlotBlueprint;
 
 class JSONBodyGenerator {
 
@@ -34,7 +37,31 @@ class JSONBodyGenerator {
     }
 
     public static String generateNewPasswordBody(String new_password){
-        String jsonBody = "{\"new_password\": \"" + new_password + "\"}";
+        return "{\"new_password\": \"" + new_password + "\"}";
+    }
+
+    public static String generateAddBlueprintBody(SlotBlueprint blueprint){
+        String jsonBody = "{" +
+                "\"establishment_id\": " + blueprint.establishment.getId() + ", " +
+                "\"weekdays\": " + blueprint.weekdays.size() + ", " +
+                "\"reservationlimit\": " + blueprint.reservationLimit + ", " +
+                "\"fromdate\": \"" + blueprint.fromDate.toString() + "\", " +
+                "\"todate\": \"" + blueprint.toDate.toString() + "\", ";
+
+        if(blueprint instanceof PeriodicSlotBlueprint){
+            PeriodicSlotBlueprint pBlueprint = (PeriodicSlotBlueprint) blueprint;
+            jsonBody += "\"PeriodicSlotBlueprint\": {" +
+                    "\"fromtime\": \"" + pBlueprint.fromTime.getHour() + ":" + pBlueprint.fromTime.getMinute() + "\", " +
+                    "\"totime\": \"" + pBlueprint.toTime.getHour() + ":" + pBlueprint.toTime.getMinute() +
+                    "\"}}";
+        } else {
+            ManualSlotBlueprint mBlueprint = (ManualSlotBlueprint) blueprint;
+            jsonBody += "\"ManualSlotBlueprint\": {" +
+                    "\"opentime\": \"" + mBlueprint.openTime.toString() + "\", " +
+                    "\"closetime\": \"" + mBlueprint.closeTime.toString() + "\"" +
+                    "\"}}";
+        }
+
         return jsonBody;
     }
 }
