@@ -32,7 +32,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
 
         // TODO: get blueprints
-        List<SlotBlueprint> blueprints = MockAPI.generateManualData();
+        List<SlotBlueprint> blueprints = MockAPI.generatePeriodicData();
 
         viewModel.setBlueprints(blueprints);
 
@@ -55,7 +55,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
             PasswordRequestDialogFragment dialog = new PasswordRequestDialogFragment(new PasswordRequestDialogFragment.IListener() {
                 @Override
                 public void onAccepted() {
-                    showPasswordInputDialog(selectableSlot, R.string.choose_slot_password, null);
+                    showPasswordInputDialog(selectableSlot, R.string.choose_slot_password, () -> onSlotReservationToggled(selectableSlot));
                 }
 
                 @Override
