@@ -18,4 +18,5 @@
     <string name="yes">Yes</string>
     <string name="create_slot">create slot</string>
     <string name="available_for_booking">Available for booking</string>
+    <string name="create_manual_slot_dialog_title">Choose your slot</string>
 </resources>
