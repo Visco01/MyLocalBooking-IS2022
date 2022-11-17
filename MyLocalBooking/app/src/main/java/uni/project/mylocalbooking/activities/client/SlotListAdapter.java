@@ -26,6 +26,9 @@ public class SlotListAdapter extends BaseAdapter {
         void onManualSlotCreate(ITimeFrame timeFrame);
     }
 
+    private static final int TYPE_SLOT = 0;
+    private static final int TYPE_TIMEFRAME = 1;
+
     private final IListener listener;
     private final List<ITimeFrame> filteredSlots = new ArrayList<>();
 
@@ -62,7 +65,7 @@ public class SlotListAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int i) {
-        return filteredSlots.get(i) instanceof ISelectableSlot ? R.layout.manual_blueprint_list_item : R.layout.slot_list_item;
+        return filteredSlots.get(i) instanceof ISelectableSlot ? TYPE_SLOT : TYPE_TIMEFRAME;
     }
 
     @Override
@@ -82,10 +85,11 @@ public class SlotListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        int viewType = getItemViewType(i);
         View viewRoot = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.manual_blueprint_list_item, viewGroup, false);
+                .inflate(viewType == TYPE_SLOT ? R.layout.slot_list_item : R.layout.manual_blueprint_list_item, viewGroup, false);
 
-        if(getItemViewType(i) == R.layout.slot_list_item)
+        if(viewType == TYPE_SLOT)
             createSlotElement(i, viewRoot);
         else
             createAvailableTimeWindow(i, viewRoot);
@@ -191,8 +195,8 @@ public class SlotListAdapter extends BaseAdapter {
     private void createAvailableTimeWindow(int i, View viewRoot) {
         ITimeFrame timeFrame = filteredSlots.get(i);
 
-        ((TextView) viewRoot.findViewById(R.id.from_time)).setText(timeFrame.getStart().toString());
-        ((TextView) viewRoot.findViewById(R.id.to_time)).setText(timeFrame.getEnd().toString());
+        ((TextView) viewRoot.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
+        ((TextView) viewRoot.findViewById(R.id.close_time)).setText(timeFrame.getEnd().toString());
         ((Button) viewRoot.findViewById(R.id.create_slot_button)).setOnClickListener(view -> listener.onManualSlotCreate(timeFrame));
     }
 }
