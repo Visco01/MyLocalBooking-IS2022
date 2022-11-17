@@ -5,6 +5,9 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
@@ -12,6 +15,7 @@ import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
+import uni.project.mylocalbooking.models.Provider;
 import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
@@ -41,6 +45,20 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", new RunOnResponse<JSONObject>() {
             @Override
             public void apply(JSONObject response) {
+                try {
+                    Log.i("bea", "bea");
+                    user.setId(Long.valueOf(response.getString("app_user_id")));
+                    if(user instanceof Client){
+                        Client client = (Client) user;
+                        client.setId(Long.valueOf(response.getString("concrete_user_id")));
+                    }else{
+                        Provider provider = (Provider) user;
+                        provider.setId(Long.valueOf(response.getString("concrete_user_id")));
+                        Log.i("provider_id", String.valueOf(provider.getId()));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 SessionPreferences.setUserPrefs(user);
             }
         });
@@ -64,7 +82,6 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             @Override
             public void apply(JSONObject response) {
                 slot.passwordProtected = true;
-                Log.i("passwordProtected", String.valueOf(slot.passwordProtected));
             }
         });
     }
@@ -125,7 +142,10 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     // X
     @Override
     public void addReservation(Slot slot, String password) {
-
+        if(slot.getId() != null){
+            Map<String, ?> prefs = SessionPreferences.getUserPrefs();
+            //if(prefs.get(""))
+        }
     }
 
     // X
