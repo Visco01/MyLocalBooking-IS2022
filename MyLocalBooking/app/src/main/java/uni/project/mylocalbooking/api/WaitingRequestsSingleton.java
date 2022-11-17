@@ -8,13 +8,13 @@ import java.util.Collection;
 import kotlin.Triple;
 
 public class WaitingRequestsSingleton {
-    private static Collection<Triple<String, String, String>> theInstance = null;
+    private static Collection<WaitingRequest> theInstance = null;
 
     private WaitingRequestsSingleton(){
 
     }
 
-    public static Collection<Triple<String, String, String>> getInstance(){
+    public static Collection<WaitingRequest> getInstance(){
         if(theInstance == null){
             theInstance = new ArrayList<>();
         }
