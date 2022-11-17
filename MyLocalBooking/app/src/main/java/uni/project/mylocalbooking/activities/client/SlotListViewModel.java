@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.models.ISelectableSlot;
+import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListViewModel extends ViewModel {
@@ -41,7 +42,7 @@ public class SlotListViewModel extends ViewModel {
         currentDay.setValue(dow);
     }
 
-    public void makeReservation(ISelectableSlot slot, String password) {
+    public void makeReservation(Slot slot, String password) {
         // TODO: make reservation
     }
 }

@@ -19,7 +19,7 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.fragments.ProvideSlotPasswordDialogFragment;
 import uni.project.mylocalbooking.fragments.SetSlotPasswordDialogFragment;
 import uni.project.mylocalbooking.models.ISelectableSlot;
-import uni.project.mylocalbooking.models.ITimeFrame;
+import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListActivity extends AppCompatActivity implements SlotListAdapter.IListener {
@@ -61,18 +61,18 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         if(selectableSlot instanceof SlotBlueprint) {
             SetSlotPasswordDialogFragment dialog = new SetSlotPasswordDialogFragment(new SetSlotPasswordDialogFragment.IListener() {
                 @Override
-                public void onAccepted(ISelectableSlot slot) {
-                    showPasswordInputDialog(slot, R.string.choose_slot_password);
+                public void onAccepted() {
+                    showPasswordInputDialog(selectableSlot, R.string.choose_slot_password, null);
                 }
 
                 @Override
-                public void onRefused(ISelectableSlot slot) {
-                    makeReservation(slot, null);
+                public void onRefused() {
+                    makeReservation(selectableSlot, null);
                 }
-            }, selectableSlot);
+            });
             dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
         } else if(selectableSlot.isPasswordProtected()) {
-            showPasswordInputDialog(selectableSlot, R.string.slot_password_required);
+            showPasswordInputDialog(selectableSlot, R.string.slot_password_required, null);
         }
         else {
             makeReservation(selectableSlot, null);
@@ -80,22 +80,41 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
     }
 
     @Override
-    public void onManualSlotCreate(ITimeFrame timeFrame) {
-        // TODO: launch activity for creating a manual slot
+    public void onManualSlotCreate(CreateManualSlotDialog.FreeManualTimeWindow timeWindow) {
+        CreateManualSlotDialog slotCreationDialog = new CreateManualSlotDialog(timeWindow, newTimeWindow -> {
+            ManualSlot slot = new ManualSlot(
+                    newTimeWindow.fromTime,
+                    newTimeWindow.toTime,
+                    newTimeWindow.date,
+                    null, // TODO: owner!
+                    newTimeWindow.blueprint
+            );
+            requestPasswordConfirmation(slot, timeWindow);
+        });
+        slotCreationDialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
 
-    private void makeReservation(ISelectableSlot slot, String password) {
-        viewModel.makeReservation(slot, password);
-    }
-
-    private void showPasswordInputDialog(ISelectableSlot slot, int titleId) {
-        ProvideSlotPasswordDialogFragment dialog = new ProvideSlotPasswordDialogFragment(new ProvideSlotPasswordDialogFragment.IListener() {
+    private void requestPasswordConfirmation(ManualSlot slot, CreateManualSlotDialog.FreeManualTimeWindow timeWindow) {
+        SetSlotPasswordDialogFragment wishToSetPasswordDialog = new SetSlotPasswordDialogFragment(new SetSlotPasswordDialogFragment.IListener() {
             @Override
-            public void onSlotPasswordSubmitted(ISelectableSlot slot, String password) {
-                makeReservation(slot, password);
+            public void onAccepted() {
+                showPasswordInputDialog(slot, R.string.choose_slot_password, () -> requestPasswordConfirmation(slot, timeWindow));
             }
-        }, slot, titleId);
+
+            @Override
+            public void onRefused() {
+                makeReservation(slot, null);
+            }
+        });
+        wishToSetPasswordDialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
+    }
+
+    private void makeReservation(Object slot, String password) {
+        // TODO: rethink interface system
+    }
+
+    private void showPasswordInputDialog(ISelectableSlot slot, int titleId, ProvideSlotPasswordDialogFragment.ICancelListener cancelListener) {
+        ProvideSlotPasswordDialogFragment dialog = new ProvideSlotPasswordDialogFragment(password -> makeReservation(slot, password), cancelListener, titleId);
         dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
-
 }

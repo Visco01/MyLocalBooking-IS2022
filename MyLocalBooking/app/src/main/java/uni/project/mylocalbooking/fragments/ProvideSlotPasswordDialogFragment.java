@@ -12,20 +12,32 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 
 public class ProvideSlotPasswordDialogFragment extends DialogFragment {
-    public interface IListener {
-        void onSlotPasswordSubmitted(ISelectableSlot slot, String password);
+    public interface IConfirmListener {
+        void onSlotPasswordSubmitted(String password);
+    }
+    public interface ICancelListener {
+        void onSlotPasswordCanceled();
     }
 
-    private final IListener listener;
-    private final ISelectableSlot slot;
+    private final IConfirmListener confirmListener;
+    private final ICancelListener cancelListener;
     private final int titleId;
 
-    public ProvideSlotPasswordDialogFragment(IListener listener, ISelectableSlot slot, int titleId) {
+    public ProvideSlotPasswordDialogFragment(IConfirmListener confirmListener, ICancelListener cancelListener, int titleId) {
         super();
-        this.listener = listener;
-        this.slot = slot;
+        this.confirmListener = confirmListener;
+        this.cancelListener = cancelListener;
         this.titleId = titleId;
     }
+
+    public ProvideSlotPasswordDialogFragment(IConfirmListener confirmListener, int titleId) {
+        this(confirmListener, null, titleId);
+    }
+
+    public ProvideSlotPasswordDialogFragment(ICancelListener cancelListener, int titleId) {
+        this(null, cancelListener, titleId);
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
@@ -34,9 +46,9 @@ public class ProvideSlotPasswordDialogFragment extends DialogFragment {
         builder.setView(view);
         builder.setTitle(titleId)
                 .setPositiveButton(R.string.confirm, (dialog, id) -> {
-                    listener.onSlotPasswordSubmitted(slot, ((EditText) view.findViewById(R.id.slot_password_field)).getText().toString());
+                    confirmListener.onSlotPasswordSubmitted(((EditText) view.findViewById(R.id.slot_password_field)).getText().toString());
                 })
-                .setNegativeButton(R.string.cancel, null);
+                .setNegativeButton(R.string.cancel, (dialog, id) -> cancelListener.onSlotPasswordCanceled());
         return builder.create();
     }
 }

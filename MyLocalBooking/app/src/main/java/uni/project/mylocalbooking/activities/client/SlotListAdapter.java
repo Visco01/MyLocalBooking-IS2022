@@ -23,7 +23,7 @@ import uni.project.mylocalbooking.models.SlotBlueprint;
 public class SlotListAdapter extends BaseAdapter {
     public interface IListener {
         void onSlotReservationToggled(ISelectableSlot slot);
-        void onManualSlotCreate(ITimeFrame timeFrame);
+        void onManualSlotCreate(CreateManualSlotDialog.FreeManualTimeWindow timeWindow);
     }
 
     private static final int TYPE_SLOT = 0;
@@ -31,6 +31,7 @@ public class SlotListAdapter extends BaseAdapter {
 
     private final IListener listener;
     private final List<ITimeFrame> filteredSlots = new ArrayList<>();
+    private LocalDate currentDate;
 
     public SlotListAdapter(IListener listener) {
         super();
@@ -98,6 +99,7 @@ public class SlotListAdapter extends BaseAdapter {
     }
 
     private List<ITimeFrame> extractTimeframes(ManualSlotBlueprint blueprint, LocalDate date) {
+        currentDate = date;
         List<ManualSlot> slots = blueprint.slots.get(date);
         List<ITimeFrame> results = new ArrayList<>();
 
@@ -110,17 +112,12 @@ public class SlotListAdapter extends BaseAdapter {
         for(ManualSlot slot : slots) {
             if(previous.compareTo(slot.fromTime) < 0) {
                 long nano = previous.toNanoOfDay();
-                results.add(new ITimeFrame() {
-                    @Override
-                    public LocalTime getStart() {
-                        return LocalTime.ofNanoOfDay(nano);
-                    }
-
-                    @Override
-                    public LocalTime getEnd() {
-                        return slot.fromTime;
-                    }
-                });
+                results.add(new CreateManualSlotDialog.FreeManualTimeWindow(
+                        blueprint,
+                        date,
+                        LocalTime.ofNanoOfDay(nano),
+                        slot.fromTime
+                ));
             }
             results.add(slot);
             previous = slot.toTime;
@@ -128,17 +125,12 @@ public class SlotListAdapter extends BaseAdapter {
 
         long nano = previous.toNanoOfDay();
         if(previous.compareTo(blueprint.closeTime) < 0)
-            results.add(new ITimeFrame() {
-                @Override
-                public LocalTime getStart() {
-                    return LocalTime.ofNanoOfDay(nano);
-                }
-
-                @Override
-                public LocalTime getEnd() {
-                    return blueprint.closeTime;
-                }
-            });
+            results.add(new CreateManualSlotDialog.FreeManualTimeWindow(
+                    blueprint,
+                    date,
+                    LocalTime.ofNanoOfDay(nano),
+                    blueprint.closeTime
+            ));
 
         return results;
     }
@@ -195,8 +187,15 @@ public class SlotListAdapter extends BaseAdapter {
     private void createAvailableTimeWindow(int i, View viewRoot) {
         ITimeFrame timeFrame = filteredSlots.get(i);
 
+        if(timeFrame instanceof ManualSlotBlueprint) {
+            ManualSlotBlueprint blueprint = (ManualSlotBlueprint) timeFrame;
+            timeFrame = new CreateManualSlotDialog.FreeManualTimeWindow(blueprint, currentDate, blueprint.openTime, blueprint.closeTime);
+        }
+
         ((TextView) viewRoot.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
         ((TextView) viewRoot.findViewById(R.id.close_time)).setText(timeFrame.getEnd().toString());
-        ((Button) viewRoot.findViewById(R.id.create_slot_button)).setOnClickListener(view -> listener.onManualSlotCreate(timeFrame));
+
+        final CreateManualSlotDialog.FreeManualTimeWindow window = (CreateManualSlotDialog.FreeManualTimeWindow) timeFrame;
+        ((Button) viewRoot.findViewById(R.id.create_slot_button)).setOnClickListener(view -> listener.onManualSlotCreate(window));
     }
 }

@@ -11,17 +11,15 @@ import uni.project.mylocalbooking.models.ISelectableSlot;
 
 public class SetSlotPasswordDialogFragment extends DialogFragment {
     public interface IListener {
-        void onAccepted(ISelectableSlot slot);
-        void onRefused(ISelectableSlot slot);
+        void onAccepted();
+        void onRefused();
     }
 
     private final IListener listener;
-    private final ISelectableSlot slot;
 
-    public SetSlotPasswordDialogFragment(IListener listener, ISelectableSlot slot) {
+    public SetSlotPasswordDialogFragment(IListener listener) {
         super();
         this.listener = listener;
-        this.slot = slot;
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -30,10 +28,10 @@ public class SetSlotPasswordDialogFragment extends DialogFragment {
         builder.setTitle(R.string.set_slot_password_title)
                 .setMessage(R.string.question_set_slot_password)
                 .setPositiveButton(R.string.yes, (dialog, id) -> {
-                    listener.onAccepted(slot);
+                    listener.onAccepted();
                 })
                 .setNegativeButton(R.string.no, (dialog, id) -> {
-                    listener.onRefused(slot);
+                    listener.onRefused();
                 });
         return builder.create();
     }
