@@ -12,7 +12,7 @@
         android:id="@+id/side_line"
         android:layout_width="@dimen/reservation_side_line"
         android:layout_height="match_parent"
-        android:background="@android:color/holo_orange_dark" />
+        android:background="@color/slot_line_free" />
 
     <LinearLayout
         android:layout_width="match_parent"

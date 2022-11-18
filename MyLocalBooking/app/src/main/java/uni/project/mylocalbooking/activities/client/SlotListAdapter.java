@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -38,15 +39,17 @@ public class SlotListAdapter extends BaseAdapter {
         this.listener = listener;
     }
 
-    public void onRefresh(LocalDate selected, List<SlotBlueprint> blueprints) {
+    public void onRefresh(LocalDate currentDate, List<SlotBlueprint> blueprints) {
+        this.currentDate = currentDate;
+
         filteredSlots.clear();
 
         for(final SlotBlueprint item : blueprints) {
             if(item instanceof ManualSlotBlueprint) {
                 ManualSlotBlueprint blueprint = (ManualSlotBlueprint) item;
-                filteredSlots.addAll(extractTimeframes(blueprint, selected));
+                filteredSlots.addAll(extractTimeframes(blueprint));
             } else {
-                PeriodicSlot scheduledForSelected = ((PeriodicSlotBlueprint) item).slots.get(selected);
+                PeriodicSlot scheduledForSelected = ((PeriodicSlotBlueprint) item).slots.get(currentDate);
                 if(scheduledForSelected != null)
                     filteredSlots.add(scheduledForSelected);
                 else
@@ -98,9 +101,8 @@ public class SlotListAdapter extends BaseAdapter {
         return viewRoot;
     }
 
-    private List<ITimeFrame> extractTimeframes(ManualSlotBlueprint blueprint, LocalDate date) {
-        currentDate = date;
-        List<ManualSlot> slots = blueprint.slots.get(date);
+    private List<ITimeFrame> extractTimeframes(ManualSlotBlueprint blueprint) {
+        List<ManualSlot> slots = blueprint.slots.get(currentDate);
         List<ITimeFrame> results = new ArrayList<>();
 
         if(slots == null) {
@@ -114,7 +116,7 @@ public class SlotListAdapter extends BaseAdapter {
                 long nano = previous.toNanoOfDay();
                 results.add(new ManualSlotCreationDialogFragment.FreeManualTimeWindow(
                         blueprint,
-                        date,
+                        currentDate,
                         LocalTime.ofNanoOfDay(nano),
                         slot.fromTime
                 ));
@@ -127,7 +129,7 @@ public class SlotListAdapter extends BaseAdapter {
         if(previous.compareTo(blueprint.closeTime) < 0)
             results.add(new ManualSlotCreationDialogFragment.FreeManualTimeWindow(
                     blueprint,
-                    date,
+                    currentDate,
                     LocalTime.ofNanoOfDay(nano),
                     blueprint.closeTime
             ));
@@ -154,8 +156,19 @@ public class SlotListAdapter extends BaseAdapter {
             ((TextView) slotRoot.findViewById(R.id.available_reservations)).setText(Integer.toString(attending));
         }
 
-        boolean bookable = reservationLimit == null || attending < reservationLimit;
-        slotRoot.findViewById(R.id.side_line).setBackgroundResource(bookable ?  R.color.slot_line_available : R.color.slot_line_unavailable);
+        LocalDateTime slotStart = LocalDateTime.of(currentDate, slot.getStart());
+        LocalDateTime now = LocalDateTime.now();
+        boolean future = now.compareTo(slotStart) < 0;
+        boolean bookable = future && (reservationLimit == null || attending < reservationLimit);
+
+        if(!future)
+            slotRoot.findViewById(R.id.side_line).setBackgroundResource(R.color.slot_line_expired);
+        else {
+            int colorId = bookable ? R.color.slot_line_available : R.color.slot_line_unavailable;
+            if(bookable && attending == 0)
+                colorId = R.color.slot_line_free;
+            slotRoot.findViewById(R.id.side_line).setBackgroundResource(colorId);
+        }
 
         if(slot.isPasswordProtected()) {
             if(bookable)
