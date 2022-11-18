@@ -30,7 +30,7 @@ public class SlotListAdapter extends BaseAdapter {
     private static final int TYPE_TIMEFRAME = 1;
 
     private final IListener listener;
-    private final List<ITimeFrame> filteredSlots = new ArrayList<>();
+    public final List<ITimeFrame> filteredSlots = new ArrayList<>();
     private LocalDate currentDate;
 
     public SlotListAdapter(IListener listener) {

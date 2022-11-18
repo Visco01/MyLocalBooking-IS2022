@@ -38,7 +38,10 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
         SlotListAdapter adapter = new SlotListAdapter(this);
 
-        viewModel.getCurrentDay().observe(this, date -> adapter.onRefresh(date, viewModel.getBlueprints(date)));
+        viewModel.getCurrentDay().observe(this, date -> {
+            adapter.onRefresh(date, viewModel.getBlueprints(date));
+            findViewById(R.id.no_available_slots).setVisibility(adapter.filteredSlots.isEmpty() ? View.VISIBLE : View.GONE);
+        });
 
         ((ListView) getWindow().getDecorView().getRootView().findViewById(R.id.slot_list)).setAdapter(adapter);
     }
