@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-public class ManualSlot extends Slot implements ISelectableSlot {
+public class ManualSlot extends Slot implements ISelectableSlot, Comparable<ManualSlot> {
     private final Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;
@@ -20,10 +22,10 @@ public class ManualSlot extends Slot implements ISelectableSlot {
         this.toTime = toTime;
         this.blueprint = blueprint;
 
-        List<ManualSlot> slots = blueprint.slots.get(super.date);
+        SortedSet<ManualSlot> slots = blueprint.slots.get(super.date);
         boolean firstInsert = slots == null;
         if(firstInsert)
-            slots = new ArrayList<>();
+            slots = new TreeSet<>();
 
         slots.add(this);
 
@@ -63,5 +65,14 @@ public class ManualSlot extends Slot implements ISelectableSlot {
     @Override
     public Integer getReservationLimit() {
         return super.blueprint.reservationLimit;
+    }
+
+    @Override
+    public int compareTo(ManualSlot other) {
+        int dateDiff = date.compareTo(other.date);
+        if(dateDiff != 0)
+            return dateDiff;
+
+        return fromTime.compareTo(other.fromTime);
     }
 }

@@ -12,6 +12,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ITimeFrame;
@@ -102,7 +104,7 @@ public class SlotListAdapter extends BaseAdapter {
     }
 
     private List<ITimeFrame> extractTimeframes(ManualSlotBlueprint blueprint) {
-        List<ManualSlot> slots = blueprint.slots.get(currentDate);
+        SortedSet<ManualSlot> slots = blueprint.slots.get(currentDate);
         List<ITimeFrame> results = new ArrayList<>();
 
         if(slots == null) {
