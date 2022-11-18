@@ -5,8 +5,10 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
 
 import java.time.Duration;
@@ -83,12 +85,13 @@ public class ManualSlotCreationDialogFragment extends DialogFragment {
         slider.setStepSize(TIME_GRANULARITY_MINUTES);
         slider.setMinSeparationValue(TIME_GRANULARITY_MINUTES);
 
-        int deltaSeconds = (int) Duration.between(timeWindow.getStart(), timeWindow.getEnd()).getSeconds();
+        LocalTime start = timeWindow.getStart();
+        int deltaSeconds = (int) Duration.between(start, timeWindow.getEnd()).getSeconds();
         int maxVal = deltaSeconds / 60;
         slider.setValueFrom(0);
         slider.setValueTo(maxVal);
 
         slider.setValues((float) 0, (float) maxVal);
-
+        slider.setLabelFormatter(value -> start.plusMinutes((int) value).toString());
     }
 }
