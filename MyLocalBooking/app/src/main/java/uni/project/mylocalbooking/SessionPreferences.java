@@ -26,25 +26,29 @@ public class SessionPreferences {
     }
 
     public static void setUserPrefs(AppUser user){
-        SharedPreferences.Editor editor = getEditor();
-        if(user.getId() != null)
-            editor.putInt("id", Math.toIntExact(user.getId()));
-        editor.putString("cellphone", user.cellphone);
-        editor.putString("username", user.firstname);
-        editor.putString("lastname", user.lastname);
+        try {
+            SharedPreferences.Editor editor = getEditor();
+            if(user.getId() != null)
+                editor.putInt("id", Math.toIntExact(user.getId()));
+            editor.putString("cellphone", user.cellphone);
+            editor.putString("username", user.firstname);
+            editor.putString("lastname", user.lastname);
 
-        if(user instanceof Client){
-            Client client = (Client) user;
-            editor.putString("usertype", "client");
-            editor.putFloat("lat", client.position.latitude);
-            editor.putFloat("lng", client.position.longitude);
-        }else if(user instanceof Provider){
-            Provider provider = (Provider) user;
-            editor.putString("usertype", "provider");
-            editor.putString("companyname", provider.companyName);
-            editor.putInt("maxstrikes", provider.maxStrikes);
+            if(user instanceof Client){
+                Client client = (Client) user;
+                editor.putString("usertype", "client");
+                editor.putFloat("lat", client.position.latitude);
+                editor.putFloat("lng", client.position.longitude);
+            }else if(user instanceof Provider){
+                Provider provider = (Provider) user;
+                editor.putString("usertype", "provider");
+                editor.putString("companyname", provider.companyName);
+                editor.putInt("maxstrikes", provider.maxStrikes);
+            }
+            editor.commit();
+        } catch (NullPointerException e){
+            e.printStackTrace();
         }
-        editor.commit();
     }
 
     public static Map<String, ?> getUserPrefs(){

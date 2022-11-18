@@ -23,6 +23,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     private static String jwt = null;
     private static String apiPrefix = "https://mylocalbooking-api-o1he.onrender.com/api/";
 
+    //TODO WRAPPER ID
 
     public MyLocalBookingAPI() {
         loginAPI();
@@ -35,6 +36,24 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     public static void setJWT(String jwt){
         MyLocalBookingAPI.jwt = jwt;
         Log.i("auth request", MyLocalBookingAPI.jwt);
+    }
+
+    @Override
+    public Long getUserIdByCellphone(String cellphone){
+        final Long[] id = {null};
+        String url = MyLocalBookingAPI.apiPrefix + "app_user_by_cellphone/" + cellphone;
+        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", new RunOnResponse<JSONObject>() {
+            @Override
+            public void apply(JSONObject response) {
+                Log.i("TEST GET", response.toString());
+                /*try {
+                    id[0] = Long.valueOf(response.getString("app_user_id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
+            }
+        });
+        return id[0];
     }
 
     @Override
@@ -143,7 +162,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void addReservation(Slot slot, String password) {
         if(slot.getId() != null){
-            Map<String, ?> prefs = SessionPreferences.getUserPrefs();
+            //Map<String, ?> prefs = SessionPreferences.getUserPrefs();
             //if(prefs.get(""))
         }
     }

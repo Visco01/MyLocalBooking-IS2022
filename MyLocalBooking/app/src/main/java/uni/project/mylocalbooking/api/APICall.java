@@ -39,7 +39,7 @@ class APICall {
     private void init(){
         switch (this.method){
             case "GET":
-                //TODO
+                get();
                 break;
             case "POST":
                 post();
@@ -65,6 +65,10 @@ class APICall {
         return jsonBody;
     }
 
+    private void get(){
+        call(Request.Method.GET);
+    }
+
     private void post(){
         call(Request.Method.POST);
     }
@@ -74,8 +78,10 @@ class APICall {
     }
 
     private void call(int requestMethod){
-        JSONObject jsonBody = getJsonBody(this.requestBody);
-        Log.i("post method", this.requestBody);
+        JSONObject jsonBody = null;
+        if(requestMethod != Request.Method.GET){
+            jsonBody = getJsonBody(this.requestBody);
+        }
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
                 requestMethod,
                 this.url,
@@ -97,7 +103,8 @@ class APICall {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + jwt);
-                headers.put("Content-Type", "application/json");
+                if(requestMethod != Request.Method.GET)
+                    headers.put("Content-Type", "application/json");
                 headers.put("User-Agent", "Mozilla/5.0");
                 headers.put("Accept", "*/*");
                 headers.put("Accept-Encoding", "gzip, deflate, br");

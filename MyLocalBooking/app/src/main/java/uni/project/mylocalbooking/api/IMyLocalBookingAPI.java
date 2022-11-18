@@ -16,6 +16,7 @@ public interface IMyLocalBookingAPI{
         return new MyLocalBookingAPI();
     }
 
+    Long getUserIdByCellphone(String cellphone);
     // GENERIC
     /*
      * pre:
