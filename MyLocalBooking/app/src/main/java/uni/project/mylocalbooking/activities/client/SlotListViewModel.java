@@ -29,7 +29,10 @@ public class SlotListViewModel extends ViewModel {
     }
 
     public List<SlotBlueprint> getBlueprints(LocalDate date) {
-        return blueprints.getValue().stream().filter(b -> b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0).collect(Collectors.toList());
+        return blueprints.getValue().stream().filter(b ->
+                b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
+                b.weekdays.contains(date.getDayOfWeek())
+        ).collect(Collectors.toList());
     }
 
     public LiveData<LocalDate> getStartOfWeek() {
