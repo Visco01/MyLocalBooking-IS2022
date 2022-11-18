@@ -29,16 +29,19 @@ import uni.project.mylocalbooking.activities.client.SlotListViewModel;
  */
 public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdapter.IWeekdayPickerListener {
     private static final String MIN_START_OF_WEEK_ARG = "minStartOfWeek";
+    private static final String INITIAL_WEEK_ARG = "initialWeek";
     private SlotListViewModel viewModel;
     private LocalDate minStartOfWeek;
+    private LocalDate initialWeek;
 
     public WeekdayPickerFragment() {
     }
 
-    public static WeekdayPickerFragment newInstance(LocalDate minStartOfWeek) {
+    public static WeekdayPickerFragment newInstance(LocalDate minStartOfWeek, LocalDate initialWeek) {
         WeekdayPickerFragment fragment = new WeekdayPickerFragment();
         Bundle args = new Bundle();
         args.putLong(MIN_START_OF_WEEK_ARG, minStartOfWeek.toEpochDay());
+        args.putLong(INITIAL_WEEK_ARG, initialWeek.toEpochDay());
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,10 +51,14 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(SlotListViewModel.class);
 
-        if(getArguments() != null)
+        if(getArguments() != null) {
             minStartOfWeek = getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(MIN_START_OF_WEEK_ARG)));
-        else
+            initialWeek = getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(INITIAL_WEEK_ARG)));
+        }
+        else {
             minStartOfWeek = getFirstDayOfWeek(LocalDate.now());
+            initialWeek = getFirstDayOfWeek(minStartOfWeek);
+        }
     }
 
     @Override
@@ -79,6 +86,9 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
                 }
             }
         });
+
+        viewModel.setStartOfWeek(initialWeek);
+        viewModel.setCurrentDayOfWeek(LocalDate.now().getDayOfWeek());
 
         return view;
     }
