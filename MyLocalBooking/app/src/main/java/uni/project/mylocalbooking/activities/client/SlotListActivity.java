@@ -82,7 +82,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
                     newTimeWindow.fromTime,
                     newTimeWindow.toTime,
                     newTimeWindow.date,
-                    null, // TODO: owner!
+                    null,
                     newTimeWindow.blueprint
             );
             requestPasswordConfirmation(slot);
@@ -99,7 +99,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
             @Override
             public void onRefused() {
-                viewModel.makeReservation(slot.blueprint, slot.fromTime, slot.toTime, null);
+                viewModel.makeReservation(slot, null);
             }
         });
         wishToSetPasswordDialog.show(getSupportFragmentManager(), "NoticeDialogFragment");

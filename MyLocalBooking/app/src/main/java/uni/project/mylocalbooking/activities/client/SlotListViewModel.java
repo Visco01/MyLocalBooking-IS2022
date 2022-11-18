@@ -55,7 +55,11 @@ public class SlotListViewModel extends ViewModel {
     }
 
     private void makeReservation(Slot slot, String password) {
+        // TODO: set slot owner if null
         // TODO: make reservation via API
+
+        // if no error refresh, otherwise unbind slot from blueprint
+        currentDay.setValue(currentDay.getValue());
     }
 
     private void makeReservation(PeriodicSlotBlueprint blueprint, String password) {
