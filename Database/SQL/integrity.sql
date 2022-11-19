@@ -1,4 +1,118 @@
 -------------------------------
+-- tuple constraints
+-------------------------------
+
+alter table users 
+	drop constraint if exists unique_name,
+	alter column name set not null,
+	alter column password_digest set not null,
+	add constraint unique_name unique(name);
+
+alter table app_users
+	drop constraint if exists unique_cellphone,
+	alter column password_digest set not null,
+	alter column cellphone set not null,
+	alter column firstname set not null,
+	alter column lastname set not null,
+	alter column dob set not null,
+	add constraint unique_cellphone unique(cellphone);
+
+alter table clients
+	drop constraint if exists both_coordinates_provided,
+
+	alter column app_user_id set not null,
+	add constraint both_coordinates_provided check((lat is null and lng is null) or (lat is not null and lng is not null));
+
+alter table providers
+	drop constraint if exists maxstrikes_constraint,
+	alter column app_user_id set not null,
+	alter column isverified set not null,
+	alter column isverified set default false,
+	alter column maxstrikes set not null,
+	alter column maxstrikes set default 1,
+	add constraint maxstrikes_constraint check(maxstrikes > 0);
+
+alter table blacklists
+	drop constraint if exists one_per_client_provider_blacklists,
+	alter column provider_id set not null,
+	add constraint one_per_client_provider_blacklists unique(usercellphone, provider_id);
+
+alter table strikes
+	drop constraint if exists strike_count_constraint,
+	drop constraint if exists one_per_client_provider_strikes,
+	alter column provider_id set not null,
+	alter column count set not null,
+	alter column count set default 1,
+	add constraint strike_count_constraint check(count > 0),
+	add constraint one_per_client_provider_strikes unique(usercellphone, provider_id);
+
+alter table establishments
+	drop constraint if exists unique_address_name,
+	alter column provider_id set not null,
+	alter column name set not null,
+	alter column place_id set not null,
+	alter column address set not null,
+	alter column lat set not null,
+	alter column lng set not null,
+	add constraint unique_address_name unique(address, name);
+
+
+alter table ratings
+	drop constraint if exists rating_constraint,
+	alter column establishment_id set not null,
+	alter column rating set not null,
+	add constraint rating_constraint check (rating between 1 and 5);
+
+alter table slots
+	alter column date set not null,
+	alter column app_user_id set not null;
+
+alter table reservations
+	drop constraint if exists one_per_client,
+	alter column slot_id set not null,
+	alter column client_id set not null,
+	add constraint one_per_client unique(slot_id, client_id);
+
+alter table slot_blueprints
+	drop constraint if exists valid_limit,
+	drop constraint if exists valid_weekdays,
+	alter column establishment_id set not null,
+	alter column weekdays set not null,
+	alter column fromdate set not null,
+	alter column fromdate set default NOW(),
+	add constraint valid_limit check(reservationlimit is null or reservationlimit > 0),
+	add constraint valid_weekdays check (weekdays > 0 and weekdays <= (B'1111111')::INT);
+
+alter table periodic_slot_blueprints
+	drop constraint if exists time_order,
+	alter column slot_blueprint_id set not null,
+	alter column fromtime set not null,
+	alter column totime set not null,
+	add constraint time_order check(totime > fromtime);
+
+alter table manual_slot_blueprints 
+	drop constraint if exists time_order,
+	drop constraint if exists valid_duration,
+	alter column slot_blueprint_id set not null,
+	alter column opentime set not null,
+	alter column closetime set not null,
+	alter column maxduration set not null,
+	add constraint time_order check (closetime > opentime),
+	add constraint valid_duration check(maxduration < (closetime - opentime));
+
+alter table periodic_slots
+	alter column slot_id set not null,
+	alter column periodic_slot_blueprint_id set not null;
+
+alter table manual_slots 
+	drop constraint if exists time_order,
+	alter column slot_id set not null,
+	alter column manual_slot_blueprint_id set not null,
+	alter column fromtime set not null,
+	alter column totime set not null,
+	add constraint time_order check(totime > fromtime);
+
+-------------------------------
 -- no mixed blueprint policies
 -------------------------------
 
