@@ -103,12 +103,13 @@ class APICall {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + jwt);
-                if(requestMethod != Request.Method.GET)
+                if(requestMethod != Request.Method.GET){
                     headers.put("Content-Type", "application/json");
-                headers.put("User-Agent", "Mozilla/5.0");
-                headers.put("Accept", "*/*");
-                headers.put("Accept-Encoding", "gzip, deflate, br");
-                headers.put("Connection", "keep-alive");
+                    headers.put("User-Agent", "Mozilla/5.0");
+                    headers.put("Accept", "*/*");
+                    headers.put("Accept-Encoding", "gzip, deflate, br");
+                    headers.put("Connection", "keep-alive");
+                }
                 return headers;
             }
         };
