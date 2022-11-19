@@ -31,7 +31,7 @@ create or replace function blueprints_overlap(a slot_blueprints, b slot_blueprin
     language plpgsql
 as $$
 begin
-	if
+	return
 		(a.id = b.id)
 		or 
 		(
@@ -45,12 +45,7 @@ begin
 				b.fromdate,
 				b.todate
 			)
-		)
-	then
-		return TRUE;
-	end if;
-
-	return FALSE;
+		);
 end;
 $$;
 
@@ -66,7 +61,7 @@ begin
 	select * into base_a from slot_blueprints where id = a.slot_blueprint_id;
 	select * into base_b from slot_blueprints where id = b.slot_blueprint_id;
 
-	if
+	return
 		(a.id = b.id)
 		or
 		(
@@ -78,12 +73,7 @@ begin
 				b.fromtime,
 				b.totime
 			)
-		)
-	then
-		return TRUE;
-	end if;
-
-	return FALSE;
+		);
 end;
 $$;
 
@@ -99,7 +89,7 @@ begin
 	select * into base_a from slot_blueprints where id = a.slot_blueprint_id;
 	select * into base_b from slot_blueprints where id = b.slot_blueprint_id;
 
-	if 
+	return 
 		(a.id = b.id)
 		or 
 		(
@@ -111,12 +101,7 @@ begin
 				b.opentime,
 				b.closetime
 			)
-		)
-	then
-		return TRUE;
-	end if;
-
-	return FALSE;
+		);
 end;
 $$;
 
@@ -133,12 +118,7 @@ begin
 	select * into base_a from slots where id = a.slot_id;
 	select * into base_b from slots where id = b.slot_id;
 
-	if base_a.date = base_b.date and a.periodic_slot_blueprint_id = b.periodic_slot_blueprint_id
-	then
-		return TRUE;
-	end if;
-
-	return FALSE;
+	return base_a.date = base_b.date and a.periodic_slot_blueprint_id = b.periodic_slot_blueprint_id;
 end;
 $$;
 
@@ -154,7 +134,7 @@ begin
 	select * into base_a from slots where id = a.slot_id;
 	select * into base_b from slots where id = b.slot_id;
 
-	if
+	return
 		base_a.date = base_b.date
 		and
 		a.manual_slot_blueprint_id = b.manual_slot_blueprint_id
@@ -164,12 +144,7 @@ begin
 			a.totime,
 			b.fromtime,
 			b.totime
-		)
-	then
-		return TRUE;
-	end if;
-
-	return FALSE;
+		);
 end;
 $$;
 
