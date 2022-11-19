@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.HashSet;
 
-public abstract class Slot implements IDatabaseModel  {
-    private final Long id;
+public abstract class Slot extends DatabaseModel {
     public final LocalDate date;
     public boolean passwordProtected;
     public final AppUser owner;
@@ -13,7 +12,7 @@ public abstract class Slot implements IDatabaseModel  {
     public final SlotBlueprint blueprint;
 
     public Slot(Long id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, SlotBlueprint blueprint) {
-        this.id = id;
+        super(id);
         this.date = date;
         this.owner = owner;
         this.passwordProtected = passwordProtected;
@@ -27,10 +26,5 @@ public abstract class Slot implements IDatabaseModel  {
 
     public Slot(LocalDate date, AppUser owner, SlotBlueprint blueprint) {
         this(null, date, owner, false, new HashSet<>(), blueprint);
-    }
-
-    @Override
-    public Long getId() {
-        return this.id;
     }
 }

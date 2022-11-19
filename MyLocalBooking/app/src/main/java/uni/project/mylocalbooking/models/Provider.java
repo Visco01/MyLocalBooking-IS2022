@@ -3,8 +3,8 @@ package uni.project.mylocalbooking.models;
 import java.time.LocalDate;
 import java.util.HashMap;
 
-public class Provider extends AppUser {
-    private final Long id;
+public class Provider extends AppUser implements IDatabaseSubclassModel {
+    private Long id;
     public final boolean verified;
     public final int maxStrikes;
     public final String companyName;
@@ -26,7 +26,12 @@ public class Provider extends AppUser {
     }
 
     @Override
-    public Long getId() {
-        return this.id;
+    public Long getSubclassId() {
+        return id;
+    }
+
+    @Override
+    public void setSubclassId(Long id) {
+        this.id = id;
     }
 }

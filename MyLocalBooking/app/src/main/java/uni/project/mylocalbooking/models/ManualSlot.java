@@ -4,8 +4,8 @@ import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.HashSet;
 
-public class ManualSlot extends Slot {
-    private final Long id;
+public class ManualSlot extends Slot implements IDatabaseSubclassModel {
+    private Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;
 
@@ -21,7 +21,12 @@ public class ManualSlot extends Slot {
     }
 
     @Override
-    public Long getId() {
-        return this.id;
+    public Long getSubclassId() {
+        return id;
+    }
+
+    @Override
+    public void setSubclassId(Long id) {
+        this.id = id;
     }
 }

@@ -2,8 +2,8 @@ package uni.project.mylocalbooking.models;
 
 import java.time.LocalDate;
 
-public class Client extends AppUser {
-    private final Long id;
+public class Client extends AppUser implements IDatabaseSubclassModel {
+    private Long id;
     public final Coordinates position;
 
     public Client(Long id, Coordinates position, Long app_user_id, String cellphone, String email, String firstname, String lastname, LocalDate dob) {
@@ -17,7 +17,12 @@ public class Client extends AppUser {
     }
 
     @Override
-    public Long getId() {
-        return this.id;
+    public Long getSubclassId() {
+        return id;
+    }
+
+    @Override
+    public void setSubclassId(Long id) {
+        this.id = id;
     }
 }

@@ -2,8 +2,7 @@ package uni.project.mylocalbooking.models;
 
 import java.util.Collection;
 
-public class Establishment implements IDatabaseModel {
-    private final Long id;
+public class Establishment extends DatabaseModel {
     public final Provider provider;
     public final String name;
     public final String address;
@@ -12,7 +11,7 @@ public class Establishment implements IDatabaseModel {
     public Collection<SlotBlueprint> blueprints;
 
     public Establishment(Long id, Provider provider, String name, String address, Coordinates position) {
-        this.id = id;
+        super(id);
         this.provider = provider;
         this.name = name;
         this.address = address;
@@ -21,10 +20,5 @@ public class Establishment implements IDatabaseModel {
 
     public Establishment(Provider provider, String name, String address, Coordinates position) {
         this(null, provider, name, address, position);
-    }
-
-    @Override
-    public Long getId() {
-        return this.id;
     }
 }

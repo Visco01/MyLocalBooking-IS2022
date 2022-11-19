@@ -6,8 +6,8 @@ import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.HashSet;
 
-public class ManualSlotBlueprint extends SlotBlueprint {
-    private final Long id;
+public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel {
+    private Long id;
     public final LocalTime openTime;
     public final LocalTime closeTime;
     public final Duration maxDuration;
@@ -25,7 +25,12 @@ public class ManualSlotBlueprint extends SlotBlueprint {
     }
 
     @Override
-    public Long getId() {
-        return this.id;
+    public Long getSubclassId() {
+        return id;
+    }
+
+    @Override
+    public void setSubclassId(Long id) {
+        this.id = id;
     }
 }
