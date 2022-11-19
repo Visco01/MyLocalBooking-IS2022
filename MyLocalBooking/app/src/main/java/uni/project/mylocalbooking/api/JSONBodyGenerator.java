@@ -1,10 +1,20 @@
 package uni.project.mylocalbooking.api;
 
+import android.util.Log;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
+import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
+import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
 import uni.project.mylocalbooking.models.Provider;
+import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 class JSONBodyGenerator {
@@ -61,7 +71,37 @@ class JSONBodyGenerator {
                     "\"closetime\": \"" + mBlueprint.closeTime.toString() + "\"" +
                     "\"}}";
         }
+        return jsonBody;
+    }
 
+    public static String generateAddSlotBody(Slot slot, String password){
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String jsonBody = "{" +
+                "\"app_user_id\": " + slot.owner.getId() + ", " +
+                "\"date\": \"" + date + "\", " +
+                "\"password_digest\": ";
+        jsonBody += password != null ? ("\"" + password + "\", ") : "null, ";
+
+        if(slot instanceof PeriodicSlot){
+            PeriodicSlot pSlot = (PeriodicSlot) slot;
+            PeriodicSlotBlueprint psBlueprint = (PeriodicSlotBlueprint) slot.blueprint;
+            jsonBody += "\"PeriodicSlot\": {" +
+                    "\"periodic_slot_blueprint_id\": " + psBlueprint.getSubclassId() + "}}";
+        } else {
+            ManualSlot mSlot = (ManualSlot) slot;
+            ManualSlotBlueprint msBlueprint = (ManualSlotBlueprint) slot.blueprint;
+            jsonBody += "\"fromtime\": \"" + mSlot.fromTime.toString() + "\", " +
+                    "\"totime\": \"" + mSlot.toTime.toString() + "\", ";
+            jsonBody += "\"PeriodicSlot\": {" +
+                    "\"periodic_slot_blueprint_id\": " + msBlueprint.getSubclassId() + "}}";
+        }
+        return jsonBody;
+    }
+
+    public static String generateAddReservationBody(Long clientId, Long slotId){
+        String jsonBody = "{" +
+                "\"client_id\": " + clientId + ", " +
+                "\"slot_id\": " + slotId + "}";
         return jsonBody;
     }
 }
