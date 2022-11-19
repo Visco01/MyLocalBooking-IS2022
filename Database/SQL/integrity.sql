@@ -98,7 +98,7 @@ alter table manual_slot_blueprints
 	alter column closetime set not null,
 	alter column maxduration set not null,
 	add constraint time_order check (closetime > opentime),
-	add constraint valid_duration check(maxduration < (closetime - opentime));
+	add constraint valid_duration check(maxduration <= (closetime - opentime));
 
 alter table periodic_slots
 	alter column slot_id set not null,
