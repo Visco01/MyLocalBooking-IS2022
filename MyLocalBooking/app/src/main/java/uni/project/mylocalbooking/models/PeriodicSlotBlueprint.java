@@ -30,8 +30,4 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
     public void setSubclassId(Long id) {
         this.id = id;
     }
-
-    public void setId(Long id){
-        this.id = id;
-    }
 }
