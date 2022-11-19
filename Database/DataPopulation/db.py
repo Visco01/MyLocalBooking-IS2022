@@ -5,9 +5,14 @@ from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.ext.declarative import declarative_base
 
+HOST_VAR_NAME = 'MLB_DB_HOST'
+PWD_VAR_NAME = 'MLB_DB_PWD'
+host = os.environ.get(HOST_VAR_NAME)
+pwd = os.environ.get(PWD_VAR_NAME)
 
-host = os.environ['dbHost']
-pwd = os.environ['dbPassword']
+if host is None or pwd is None:
+	raise Exception(f'\'{HOST_VAR_NAME}\' and \'{PWD_VAR_NAME}\' environment variables are required to run this script')
+
 engine = create_engine(f'postgresql://admin:{pwd}@{host}:5432/mylocalbooking_db')
 
 metadata = MetaData(bind=engine)

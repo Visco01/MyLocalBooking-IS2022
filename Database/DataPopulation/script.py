@@ -190,3 +190,43 @@ def generatePeriodicBlueprints():
         if len(base.periodicBlueprints) == 0:
             base.establishment = None
 
+
+def subtractTimes(open, close):
+    open = datetime(2000, 1, 1, open.hour, open.minute)
+    close = datetime(2000, 1, 1, close.hour, close.minute)
+
+    return close - open
+
+def randomDurationBetween(open, close):
+    diff = subtractTimes(open, close)
+    mults = diff.seconds / (60 * SLOT_GRANULARITY_MINUTES)
+
+    return timedelta(minutes=randint(1, mults) * SLOT_GRANULARITY_MINUTES)
+
+def generateManualBlueprints():
+    for est in manual_establishments:
+        base = generateBaseBlueprint()
+        end = time(0, 0)
+        start = time(8, 0)
+
+        while start > end:
+            end = addToTime(start, timedelta(minutes=randint(1, MAX_MANUAL_SLOT_DURATION_MULT) * SLOT_GRANULARITY_MINUTES))
+
+            if start < end:
+                bp = db.ManualBlueprint(
+                    opentime=start, 
+                    closetime=end, 
+                    maxduration=randomDurationBetween(start, end)
+                )
+                base.establishment = est
+                bp.blueprint = base
+
+                if len(list(filter(lambda b : manualBlueprintsOverlap(b,bp), manual_blueprints))) > 0:
+                    bp.blueprint = None
+                else:
+                    manual_blueprints.append(bp)
+            
+            start = addToTime(end, timedelta(minutes=randint(0, MAX_DEAD_TIME_MULT) * SLOT_GRANULARITY_MINUTES))
+
+        if len(base.manualBlueprints) == 0:
+            base.establishment = None
