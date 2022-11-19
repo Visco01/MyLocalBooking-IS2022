@@ -131,7 +131,7 @@ public interface IMyLocalBookingAPI{
      *   post:
      *       removes the reservation if exists
      */
-    void cancelReservation(Slot slot);
+    void cancelReservation(Slot slot, APICallBack<Void> callBack);
     Collection<Establishment> getClosestEstablishments();
     void setPreferredPosition(Coordinates position);
     void rateEstablishment(Establishment establishment, int rating, String comment/*, boolean anonymous*/);

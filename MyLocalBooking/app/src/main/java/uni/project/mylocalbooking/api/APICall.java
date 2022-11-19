@@ -48,7 +48,7 @@ class APICall {
                 patch();
                 break;
             case "DELETE":
-                //TODO
+                delete();
                 break;
             default:
                 Log.e("APICall constructor error", "Missing type");
@@ -75,6 +75,10 @@ class APICall {
 
     private void patch(){
         call(Request.Method.PATCH);
+    }
+
+    private void delete(){
+        call(Request.Method.DELETE);
     }
 
     private void call(int requestMethod){

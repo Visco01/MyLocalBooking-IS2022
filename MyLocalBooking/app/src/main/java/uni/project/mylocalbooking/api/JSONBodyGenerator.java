@@ -98,7 +98,7 @@ class JSONBodyGenerator {
         return jsonBody;
     }
 
-    public static String generateAddReservationBody(Long clientId, Long slotId){
+    public static String generateReservationBody(Long clientId, Long slotId){
         String jsonBody = "{" +
                 "\"client_id\": " + clientId + ", " +
                 "\"slot_id\": " + slotId + "}";

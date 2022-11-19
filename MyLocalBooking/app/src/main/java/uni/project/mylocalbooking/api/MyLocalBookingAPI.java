@@ -3,6 +3,9 @@ package uni.project.mylocalbooking.api;
 import android.util.Log;
 
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.helpers.Util;
+
 import java.util.Collection;
 import java.util.Map;
 import uni.project.mylocalbooking.SessionPreferences;
@@ -154,7 +157,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     public void setMaxStrikes(int max) {
 
     }
-    
+
     @Override
     public void addReservation(Slot slot, String password, APICallBack<Void> callBack) {
         Map<String, ?> prefs = SessionPreferences.getUserPrefs();
@@ -180,7 +183,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     private void callAddReservation(Long clientId, Long slotId){
         String url = MyLocalBookingAPI.apiPrefix + "reservations";
-        String requestBody = JSONBodyGenerator.generateAddReservationBody(clientId, slotId);
+        String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slotId);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", null);
     }
 
@@ -206,10 +209,26 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         });
     }
 
-    // X
     @Override
-    public void cancelReservation(Slot slot) {
+    public void cancelReservation(Slot slot, APICallBack<Void> callBack) {
+        Map<String, ?> prefs = SessionPreferences.getUserPrefs();
+        int currentUserId = (int) prefs.get("id");
 
+        getClientByAppUserId(Long.valueOf(currentUserId), new APICallBack<Long>() {
+            @Override
+            public void apply(Long clientId) {
+                String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
+                String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
+                Log.i("delete body", requestBody);
+                Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", new RunOnResponse<JSONObject>() {
+                    @Override
+                    public void apply(JSONObject response) {
+                        Log.i("delete", "delete");
+                        if(callBack != null) callBack.apply(null);
+                    }
+                });
+            }
+        });
     }
 
     @Override
