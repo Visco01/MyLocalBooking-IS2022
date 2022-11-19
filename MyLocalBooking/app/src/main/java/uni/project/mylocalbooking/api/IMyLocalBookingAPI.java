@@ -16,7 +16,7 @@ public interface IMyLocalBookingAPI{
         return new MyLocalBookingAPI();
     }
 
-    Long getUserIdByCellphone(String cellphone);
+    void getUserIdByCellphone(String cellphone, AppUser user, APICallBack<Void> callBack);
     // GENERIC
     /*
      * pre:
@@ -26,7 +26,7 @@ public interface IMyLocalBookingAPI{
      *       registers the user in the db with password_digest as the encrypted password
      *       sets the CURRENT_USER to the inserted user
      * */
-    void register(AppUser user, String password);
+    void register(AppUser user, String password, APICallBack<Void> callBack);
 
     /*
      * pre:
@@ -34,7 +34,7 @@ public interface IMyLocalBookingAPI{
      * post:
      *       updates the app_user's password_digest to the encrypted password
      * */
-    void changeUserPassword(String password);
+    void changeUserPassword(String password, APICallBack<Void> callBack);
 
 
 
@@ -51,7 +51,7 @@ public interface IMyLocalBookingAPI{
     *       updates the slot's password_digest
     *       sets slot.passwordProtected to true
     * */
-    void setSlotPassword(String password, Slot slot);
+    void setSlotPassword(String password, Slot slot, APICallBack<Void> callBack);
 
     // PROVIDER
     // all calls in this section implicitly have the precondition
@@ -64,7 +64,10 @@ public interface IMyLocalBookingAPI{
      *       updates the slot's password_digest
      *       sets slot.passwordProtected to true
      * */
-    void addBlueprint(SlotBlueprint blueprint);
+    void addBlueprint(SlotBlueprint blueprint, APICallBack<Void> callBack);
+
+    void addSlot(Slot slot, String password, APICallBack<Void> callBack);
+
     /*
      * pre:
      *      establishment.id == null
@@ -123,7 +126,7 @@ public interface IMyLocalBookingAPI{
     *               1.2) slot.passwordProtected and valid password and password matches
     *                   insert reservation in the db
     */
-    void addReservation(Slot slot, String password);
+    void addReservation(Slot slot, String password, APICallBack<Void> callBack);
     /*
      *   post:
      *       removes the reservation if exists
