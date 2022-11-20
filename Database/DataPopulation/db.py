@@ -31,12 +31,24 @@ Base = automap_base(DeclBase)
 class AppUser(Base):
 	__tablename__ = 'app_users'
 
+	client = relationship(
+		"Client",
+		back_populates='appUser',
+        uselist=False
+	)
+
+	provider = relationship(
+		"Provider",
+		back_populates='appUser',
+        uselist=False
+	)
+
 class Client(Base):
 	__tablename__ = 'clients'
 
 	appUser = relationship(
 		"AppUser",
-		backref='client',
+		back_populates='client',
         uselist=False
 	)
 
@@ -45,7 +57,7 @@ class Provider(Base):
 
 	appUser = relationship(
 		"AppUser",
-		backref='provider',
+		back_populates='provider',
         uselist=False
 	)
 
@@ -65,22 +77,6 @@ class SlotBlueprint(Base):
 		backref='blueprints'
 	)
 
-class PeriodicBlueprint(Base):
-	__tablename__ = 'periodic_slot_blueprints'
-
-	blueprint = relationship(
-		"SlotBlueprint",
-		backref='periodicBlueprints'
-	)
-
-class ManualBlueprint(Base):
-	__tablename__ = 'manual_slot_blueprints'
-
-	blueprint = relationship(
-		"SlotBlueprint",
-		backref='manualBlueprints'
-	)
-
 class Slot(Base):
 	__tablename__ = 'slots'
 
@@ -97,23 +93,26 @@ class Slot(Base):
 		backref='bookedSlots'
 	)
 
-class PeriodicSlot(Base):
-	__tablename__ = 'periodic_slots'
-
-	slot = relationship(
-		"Slot",
-		backref='periodicSlots'
-	)
+class PeriodicBlueprint(Base):
+	__tablename__ = 'periodic_slot_blueprints'
 
 	blueprint = relationship(
-		"PeriodicBlueprint",
-		backref='periodicSlots'
+		"SlotBlueprint",
+		backref='periodicBlueprints'
+	)
+
+class ManualBlueprint(Base):
+	__tablename__ = 'manual_slot_blueprints'
+
+	blueprint = relationship(
+		"SlotBlueprint",
+		backref='manualBlueprints'
 	)
 
 class ManualSlot(Base):
 	__tablename__ = 'manual_slots'
 
-	slot = relationship(
+	baseSlot = relationship(
 		"Slot",
 		backref='manualSlots'
 	)
@@ -121,6 +120,19 @@ class ManualSlot(Base):
 	blueprint = relationship(
 		"ManualBlueprint",
 		backref='manualSlots'
+	)
+
+class PeriodicSlot(Base):
+	__tablename__ = 'periodic_slots'
+
+	baseSlot = relationship(
+		"Slot",
+		backref='periodicSlots'
+	)
+
+	blueprint = relationship(
+		"PeriodicBlueprint",
+		backref='periodicSlots'
 	)
 
 class Blacklist(Base):

@@ -3,13 +3,13 @@ from faker import Faker
 from random import randint
 from datetime import date, time, timedelta, datetime
 
-N_CLIENTS = 200
-N_PROVIDERS = 25
-EMAIL_PERCENTAGE=60
-POSITION_PERCENTAGE=30
-RATING_COMMENTS_PERCENTAGE=20
-COMPANY_PERCENTAGE=50
-RESERVATION_LIMIT_PERCENTAGE=50
+N_CLIENTS = 50
+N_PROVIDERS = 5
+EMAIL_PERCENTAGE =60
+POSITION_PERCENTAGE =30
+RATING_COMMENTS_PERCENTAGE =20
+COMPANY_PERCENTAGE =50
+RESERVATION_LIMIT_PERCENTAGE =50
 MAX_ESTABLISHMENTS_PER_PROVIDER=4
 MAX_RESERVATION_LIMIT = 20
 PERIODIC_PERCENTAGE = 50
@@ -18,6 +18,8 @@ SLOT_GRANULARITY_MINUTES = 15
 MAX_MANUAL_SLOT_DURATION_MULT = 20
 MAX_PERIODIC_SLOT_DURATION_MULT = 8
 MAX_DEAD_TIME_MULT = 16
+LOCKED_SLOT_PERCENTAGE = 20
+SLOT_DENSITY_PERCENTAGE = 70
 
 fake = Faker(['it_IT'])
 app_users = []
@@ -48,12 +50,15 @@ def testPercentage(percentage, trueval, falseval=None):
         return trueval
     return falseval
 
+def generateRandomPassword(len):
+    return ''.join(fake.random_letters(len))
+
 def generateAppUser():
     firstname = fake.first_name()
     lastname = fake.last_name()
     email = testPercentage(EMAIL_PERCENTAGE, f'{firstname}.{lastname}@gmail.com')
     user = db.AppUser(
-        password_digest=''.join(fake.random_letters(15)),
+        password_digest=generateRandomPassword(15),
         cellphone=f'039{fake.msisdn()[3:]}',
         email=email,
         firstname=firstname,
@@ -88,7 +93,7 @@ def generateEstablishments():
         for i in range(1, MAX_ESTABLISHMENTS_PER_PROVIDER + 1):
             est = db.Establishment(
                     name=generateEstablishmentName(),
-                    place_id=f''.join(fake.random_letters(20)),
+                    place_id=generateRandomPassword(20),
                     address=fake.address(),
                     lat=fake.latitude(),
                     lng=fake.longitude()
@@ -230,3 +235,27 @@ def generateManualBlueprints():
 
         if len(base.manualBlueprints) == 0:
             base.establishment = None
+
+
+def generateBaseSlot(date):
+    slot = db.Slot(
+        date=date,
+        password_digest=testPercentage(LOCKED_SLOT_PERCENTAGE, generateRandomPassword(15))
+    )
+    slot.owner = fake.random_element(app_users)
+
+    if slot.owner.client != None:
+        slot.reservations.append(slot.owner.client)
+
+    return slot
+
+def generatePeriodicSlots():
+    today = datetime.now()
+
+    for bp in periodic_blueprints:
+        for i in range(-6, 6):
+            if randint(1,100) <= SLOT_DENSITY_PERCENTAGE:
+                day = today + i * timedelta(days=1)
+                periodicSlot = db.PeriodicSlot()
+                periodicSlot.baseSlot = generateBaseSlot(day)
+                periodicSlot.blueprint = bp
