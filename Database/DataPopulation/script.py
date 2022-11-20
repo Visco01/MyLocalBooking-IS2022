@@ -20,6 +20,8 @@ MAX_PERIODIC_SLOT_DURATION_MULT = 8
 MAX_DEAD_TIME_MULT = 16
 LOCKED_SLOT_PERCENTAGE = 20
 SLOT_DENSITY_PERCENTAGE = 70
+BLUEPRINTS_DAYS_OFFSET = 14
+SLOTS_DAYS_OFFSET = 7
 
 fake = Faker(['it_IT'])
 app_users = []
@@ -116,11 +118,12 @@ def generateEstablishments():
 
 
 def generateBaseBlueprint():
+    today = datetime.now()
     return db.SlotBlueprint (
         weekdays=randint(1, 127),
         reservationlimit=testPercentage(RESERVATION_LIMIT_PERCENTAGE, randint(1, MAX_RESERVATION_LIMIT), None),
-        fromdate=fake.past_date(),
-        todate=fake.future_date()
+        fromdate=today - timedelta(days=BLUEPRINTS_DAYS_OFFSET),
+        todate=today + timedelta(days=BLUEPRINTS_DAYS_OFFSET)
     )
 
 def addToTime(timeval, deltaval):
@@ -196,17 +199,16 @@ def generatePeriodicBlueprints():
             base.establishment = None
 
 
-def subtractTimes(open, close):
-    open = datetime(2000, 1, 1, open.hour, open.minute)
-    close = datetime(2000, 1, 1, close.hour, close.minute)
+def subtractTimes(start, end):
+    start = datetime(2000, 1, 1, start.hour, start.minute)
+    end = datetime(2000, 1, 1, end.hour, end.minute)
 
-    return close - open
+    return end - start
 
-def randomDurationBetween(open, close):
+def randomDurationBetweenTimes(open, close):
     diff = subtractTimes(open, close)
-    mults = diff.seconds / (60 * SLOT_GRANULARITY_MINUTES)
-
-    return timedelta(minutes=randint(1, mults) * SLOT_GRANULARITY_MINUTES)
+    mults = (int) (diff.seconds / (60 * SLOT_GRANULARITY_MINUTES))
+    return timedelta(minutes=randint(1,mults)*SLOT_GRANULARITY_MINUTES)
 
 def generateManualBlueprints():
     for est in manual_establishments:
@@ -221,7 +223,7 @@ def generateManualBlueprints():
                 bp = db.ManualBlueprint(
                     opentime=start, 
                     closetime=end, 
-                    maxduration=randomDurationBetween(start, end)
+                    maxduration=randomDurationBetweenTimes(start, end)
                 )
                 base.establishment = est
                 bp.blueprint = base
@@ -253,9 +255,37 @@ def generatePeriodicSlots():
     today = datetime.now()
 
     for bp in periodic_blueprints:
-        for i in range(-6, 6):
+        for i in range(-SLOTS_DAYS_OFFSET, SLOTS_DAYS_OFFSET):
             if randint(1,100) <= SLOT_DENSITY_PERCENTAGE:
                 day = today + i * timedelta(days=1)
                 periodicSlot = db.PeriodicSlot()
                 periodicSlot.baseSlot = generateBaseSlot(day)
                 periodicSlot.blueprint = bp
+
+def randomDurationBetweenDurations(min, max):
+    mults = (int) (randint(min.seconds, max.seconds) / (60 * SLOT_GRANULARITY_MINUTES))
+    return timedelta(minutes=mults * SLOT_GRANULARITY_MINUTES)
+
+def generateManualSlots():
+    today = datetime.now()
+
+    for bp in manual_blueprints:
+        for i in range(-6, 6):
+            if randint(1,100) <= SLOT_DENSITY_PERCENTAGE:
+                start = bp.opentime
+                looped = False
+
+                while not looped:
+                    end = addToTime(start, randomDurationBetweenDurations(timedelta(minutes=SLOT_GRANULARITY_MINUTES), bp.maxduration))
+
+                    if start >= bp.opentime and start < end and end <= bp.closetime:
+                        manualSlot = db.ManualSlot(
+                            fromtime=start, 
+                            totime=end
+                        )
+                        manualSlot.baseSlot = generateBaseSlot(today + i * timedelta(days=1))
+                        manualSlot.blueprint = bp
+                    
+                    newstart = addToTime(end, timedelta(minutes=randint(0, MAX_DEAD_TIME_MULT) * SLOT_GRANULARITY_MINUTES))
+                    looped = newstart < start
+                    start = newstart
