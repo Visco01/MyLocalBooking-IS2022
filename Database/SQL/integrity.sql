@@ -747,7 +747,7 @@ create or replace function trg_blacklisted_user_reservations()
 	language plpgsql
 as $$
 declare
-	user_cellphone char(12);
+	user_cellphone char(13);
 	prov_id bigint;
 begin
 	select		a.cellphone

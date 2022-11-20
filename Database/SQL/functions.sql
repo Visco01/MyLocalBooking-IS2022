@@ -244,7 +244,7 @@ end;$$;
 
 create or replace procedure insert_client(
 	password_digest text, 
-	cellphone char(12),
+	cellphone char(13),
 	email text,
 	firstname text,
 	lastname text,
@@ -267,7 +267,7 @@ end;$$;
 
 create or replace procedure insert_provider(
 	password_digest text, 
-	cellphone char(12),
+	cellphone char(13),
 	email text,
 	firstname text,
 	lastname text,

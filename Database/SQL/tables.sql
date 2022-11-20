@@ -9,7 +9,7 @@ drop table if exists app_users cascade;
 create table app_users (
 	id serial primary key,
     password_digest text not null,
-    cellphone char(12) not null unique,
+    cellphone char(13) not null unique,
     email varchar(320),
     firstname text not null,
     lastname text not null,
@@ -58,7 +58,7 @@ create table blacklists (
 		on delete cascade,
 
 	-- not a foreign key, to prevent users to delete their account to escape blacklists
-	usercellphone char(12),
+	usercellphone char(13),
 
 	unique(usercellphone, provider_id)
 );
@@ -71,7 +71,7 @@ create table strikes (
 		on delete cascade,
 
 	-- not a foreign key, to prevent users to delete their account to erase their strikes history
-	usercellphone char(12),
+	usercellphone char(13),
 	count int not null default 1 check(count > 0),
 	
 	unique(usercellphone, provider_id)
