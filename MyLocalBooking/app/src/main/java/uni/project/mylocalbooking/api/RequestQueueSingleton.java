@@ -2,7 +2,6 @@ package uni.project.mylocalbooking.api;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-
 import uni.project.mylocalbooking.MyLocalBooking;
 
 class RequestQueueSingleton {

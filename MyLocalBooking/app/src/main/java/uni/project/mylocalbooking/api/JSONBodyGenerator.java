@@ -1,8 +1,5 @@
 package uni.project.mylocalbooking.api;
 
-import android.util.Log;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -83,7 +80,6 @@ class JSONBodyGenerator {
         jsonBody += password != null ? ("\"" + password + "\", ") : "null, ";
 
         if(slot instanceof PeriodicSlot){
-            PeriodicSlot pSlot = (PeriodicSlot) slot;
             PeriodicSlotBlueprint psBlueprint = (PeriodicSlotBlueprint) slot.blueprint;
             jsonBody += "\"PeriodicSlot\": {" +
                     "\"periodic_slot_blueprint_id\": " + psBlueprint.getSubclassId() + "}}";
@@ -99,9 +95,8 @@ class JSONBodyGenerator {
     }
 
     public static String generateReservationBody(Long clientId, Long slotId){
-        String jsonBody = "{" +
+        return "{" +
                 "\"client_id\": " + clientId + ", " +
                 "\"slot_id\": " + slotId + "}";
-        return jsonBody;
     }
 }

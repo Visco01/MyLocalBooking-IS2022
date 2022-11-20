@@ -1,11 +1,7 @@
 package uni.project.mylocalbooking.api;
 
 import android.util.Log;
-
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.helpers.Util;
-
 import java.util.Collection;
 import java.util.Map;
 import uni.project.mylocalbooking.SessionPreferences;
@@ -57,7 +53,6 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String requestBody = JSONBodyGenerator.generateRegisterBody(user, password);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", response -> {
             try {
-                Log.i("bea", "bea");
                 user.setId(Long.valueOf(response.getString("app_user_id")));
                 if(user instanceof Client){
                     Client client = (Client) user;
@@ -65,7 +60,6 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 }else{
                     Provider provider = (Provider) user;
                     provider.setId(Long.valueOf(response.getString("concrete_user_id")));
-                    Log.i("provider_id", String.valueOf(provider.getId()));
                 }
                 if(callBack != null) callBack.apply(null);
             } catch (Exception e) {
@@ -122,7 +116,6 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     public void addSlot(Slot slot, String password, APICallBack<Void> callBack){
         String url = MyLocalBookingAPI.apiPrefix + "slots";
         String requestBody = JSONBodyGenerator.generateAddSlotBody(slot, password);
-        Log.i("Json Body", requestBody);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", response -> {
             if(callBack != null) callBack.apply(null);
         });
@@ -214,20 +207,12 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         Map<String, ?> prefs = SessionPreferences.getUserPrefs();
         int currentUserId = (int) prefs.get("id");
 
-        getClientByAppUserId(Long.valueOf(currentUserId), new APICallBack<Long>() {
-            @Override
-            public void apply(Long clientId) {
-                String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
-                String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
-                Log.i("delete body", requestBody);
-                Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", new RunOnResponse<JSONObject>() {
-                    @Override
-                    public void apply(JSONObject response) {
-                        Log.i("delete", "delete");
-                        if(callBack != null) callBack.apply(null);
-                    }
-                });
-            }
+        getClientByAppUserId((long) currentUserId, clientId -> {
+            String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
+            String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
+            Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", response -> {
+                if(callBack != null) callBack.apply(null);
+            });
         });
     }
 

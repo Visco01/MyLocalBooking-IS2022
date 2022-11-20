@@ -1,10 +1,7 @@
 package uni.project.mylocalbooking.api;
 
 import android.util.Log;
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,11 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 class APICall {
-    private String jwt = null;
+    private final String jwt;
     private JsonObjectRequest request = null;
-    private String method = null;
-    private String requestBody = null;
-    private String url = null;
+    private final String method;
+    private final String requestBody;
+    private final String url;
     private RunOnResponse<JSONObject> runOnResponse = null;
 
     public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<JSONObject> runOnResponse){
@@ -86,28 +83,21 @@ class APICall {
         if(requestMethod != Request.Method.GET){
             jsonBody = getJsonBody(this.requestBody);
         }
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(
+
+        this.request = new JsonObjectRequest(
                 requestMethod,
-                this.url,
+                APICall.this.url,
                 jsonBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if(runOnResponse != null) runOnResponse.apply(response);
-                    }
+                response -> {
+                    if(runOnResponse != null) runOnResponse.apply(response);
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("APICall error", error.toString());
-                    }
-                }
+                error -> Log.i("APICall error", error.toString())
         ) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + jwt);
-                if(requestMethod != Request.Method.GET){
+                if(requestMethod != Method.GET){
                     headers.put("Content-Type", "application/json");
                     headers.put("User-Agent", "Mozilla/5.0");
                     headers.put("Accept", "*/*");
@@ -117,15 +107,9 @@ class APICall {
                 return headers;
             }
         };
-
-        this.request = jsonRequest;
     }
 
     public JsonObjectRequest getRequest(){
         return this.request;
-    }
-
-    public String getMethod(){
-        return this.method;
     }
 }
