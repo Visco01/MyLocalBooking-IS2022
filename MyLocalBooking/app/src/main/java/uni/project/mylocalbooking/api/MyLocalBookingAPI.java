@@ -228,7 +228,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", response -> {
                 try {
                     boolean slot_id = Long.valueOf(response.getString("slot_id")) != -1;
-                    if(slot_id) slot.setId(null);
+                    if(!slot_id) slot.setId(null);
                     if(callBack != null) callBack.apply(slot);
                 } catch (JSONException e) {
                     e.printStackTrace();
