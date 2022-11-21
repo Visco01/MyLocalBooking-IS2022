@@ -2,6 +2,8 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Collection;
 import java.util.Map;
 import uni.project.mylocalbooking.SessionPreferences;
@@ -9,7 +11,9 @@ import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
+import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
 import uni.project.mylocalbooking.models.Provider;
 import uni.project.mylocalbooking.models.Slot;
@@ -47,7 +51,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void register(AppUser user, String password, APICallBack<Void> callBack) {
+    public void register(AppUser user, String password, APICallBack<AppUser> callBack) {
         String url = MyLocalBookingAPI.apiPrefix + "app_users";
         password = Utility.generateEncryptedPassword(password);
         String requestBody = JSONBodyGenerator.generateRegisterBody(user, password);
@@ -56,12 +60,12 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 user.setId(Long.valueOf(response.getString("app_user_id")));
                 if(user instanceof Client){
                     Client client = (Client) user;
-                    client.setId(Long.valueOf(response.getString("concrete_user_id")));
+                    client.setSubclassId(Long.valueOf(response.getString("concrete_user_id")));
                 }else{
                     Provider provider = (Provider) user;
-                    provider.setId(Long.valueOf(response.getString("concrete_user_id")));
+                    provider.setSubclassId(Long.valueOf(response.getString("concrete_user_id")));
                 }
-                if(callBack != null) callBack.apply(null);
+                if(callBack != null) callBack.apply(user);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -81,18 +85,18 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void setSlotPassword(String new_password, Slot slot, APICallBack<Void> callBack) {
+    public void setSlotPassword(String new_password, Slot slot, APICallBack<Slot> callBack) {
         String url = MyLocalBookingAPI.apiPrefix + "change_slot_password/" + slot.getId();
         new_password = Utility.generateEncryptedPassword(new_password);
         String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", response -> {
             slot.passwordProtected = true;
-            if(callBack != null) callBack.apply(null);
+            if(callBack != null) callBack.apply(slot);
         });
     }
 
     @Override
-    public void addBlueprint(SlotBlueprint blueprint, APICallBack<Void> callBack) {
+    public void addBlueprint(SlotBlueprint blueprint, APICallBack<SlotBlueprint> callBack) {
         String url = MyLocalBookingAPI.apiPrefix + "slot_blueprints";
         String requestBody = JSONBodyGenerator.generateAddBlueprintBody(blueprint);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", response -> {
@@ -100,24 +104,35 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 blueprint.setId(Long.valueOf(response.getString("slot_blueprint_id")));
                 if(blueprint instanceof PeriodicSlotBlueprint){
                     PeriodicSlotBlueprint pBlueprint = (PeriodicSlotBlueprint) blueprint;
-                    pBlueprint.setId(Long.valueOf(response.getString("concrete_blueprint_id")));
+                    pBlueprint.setSubclassId(Long.valueOf(response.getString("concrete_blueprint_id")));
                 }else{
                     ManualSlotBlueprint mBlueprint = (ManualSlotBlueprint) blueprint;
-                    mBlueprint.setId(Long.valueOf(response.getString("concrete_blueprint_id")));
+                    mBlueprint.setSubclassId(Long.valueOf(response.getString("concrete_blueprint_id")));
                 }
-                if(callBack != null) callBack.apply(null);
+                if(callBack != null) callBack.apply(blueprint);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         });
     }
 
-    @Override
-    public void addSlot(Slot slot, String password, APICallBack<Void> callBack){
+    private void addSlot(Slot slot, String password, APICallBack<Slot> callBack){
         String url = MyLocalBookingAPI.apiPrefix + "slots";
         String requestBody = JSONBodyGenerator.generateAddSlotBody(slot, password);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", response -> {
-            if(callBack != null) callBack.apply(null);
+            try {
+                slot.setId(Long.valueOf(response.getString("slot_id")));
+                if(slot instanceof PeriodicSlot){
+                    PeriodicSlot pSlot = (PeriodicSlot) slot;
+                    pSlot.setSubclassId(Long.valueOf(response.getString("concrete_slot_id")));
+                }else{
+                    ManualSlot mSlot = (ManualSlot) slot;
+                    mSlot.setSubclassId(Long.valueOf(response.getString("concrete_slot_id")));
+                }
+                if(callBack != null) callBack.apply(slot);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -152,7 +167,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void addReservation(Slot slot, String password, APICallBack<Void> callBack) {
+    public void addReservation(Slot slot, String password, APICallBack<Slot> callBack) {
         Map<String, ?> prefs = SessionPreferences.getUserPrefs();
         int currentUserId = (int) prefs.get("id");
 
@@ -164,20 +179,25 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         } else {
             if(slot.passwordProtected){
                 getSlotPasswordById(slot.getId(), data -> {
-                    if(data.equals(password)){
-                        getClientByAppUserId((long) currentUserId, clientId -> callAddReservation(clientId, slot.getId()));
+                    if(data.equals(Utility.generateEncryptedPassword(password))){
+                        getClientByAppUserId((long) currentUserId, clientId -> callAddReservation(clientId, slot, callBack));
                     }
                 });
             } else {
-                getClientByAppUserId((long) currentUserId, clientId -> callAddReservation(clientId, slot.getId()));
+                getClientByAppUserId((long) currentUserId, clientId -> callAddReservation(clientId, slot, callBack));
             }
         }
     }
 
-    private void callAddReservation(Long clientId, Long slotId){
+    private void callAddReservation(Long clientId, Slot slot, APICallBack<Slot> callBack){
         String url = MyLocalBookingAPI.apiPrefix + "reservations";
-        String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slotId);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", null);
+        String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", new RunOnResponse<JSONObject>() {
+            @Override
+            public void apply(JSONObject response) {
+                if(callBack != null) callBack.apply(slot);
+            }
+        });
     }
 
     private void getClientByAppUserId(Long appUserId, APICallBack<Long> callBack){
@@ -195,7 +215,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String url = MyLocalBookingAPI.apiPrefix + "slots/" + slotId;
         Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", response -> {
             try {
-                if(callBack != null) callBack.apply(AESCrypt.decrypt(response.getString("password_digest")));
+                if(callBack != null) callBack.apply(response.getString("password_digest"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -203,7 +223,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void cancelReservation(Slot slot, APICallBack<Void> callBack) {
+    public void cancelReservation(Slot slot, APICallBack<Slot> callBack) {
         Map<String, ?> prefs = SessionPreferences.getUserPrefs();
         int currentUserId = (int) prefs.get("id");
 
@@ -211,7 +231,8 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
             String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
             Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", response -> {
-                if(callBack != null) callBack.apply(null);
+                slot.setId(null);
+                if(callBack != null) callBack.apply(slot);
             });
         });
     }

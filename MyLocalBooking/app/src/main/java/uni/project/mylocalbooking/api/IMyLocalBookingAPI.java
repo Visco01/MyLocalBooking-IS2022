@@ -26,7 +26,7 @@ public interface IMyLocalBookingAPI{
      *       registers the user in the db with password_digest as the encrypted password
      *       sets the CURRENT_USER to the inserted user
      * */
-    void register(AppUser user, String password, APICallBack<Void> callBack);
+    void register(AppUser user, String password, APICallBack<AppUser> callBack);
 
     /*
      * pre:
@@ -51,7 +51,7 @@ public interface IMyLocalBookingAPI{
     *       updates the slot's password_digest
     *       sets slot.passwordProtected to true
     * */
-    void setSlotPassword(String password, Slot slot, APICallBack<Void> callBack);
+    void setSlotPassword(String password, Slot slot, APICallBack<Slot> callBack);
 
     // PROVIDER
     // all calls in this section implicitly have the precondition
@@ -64,9 +64,7 @@ public interface IMyLocalBookingAPI{
      *       updates the slot's password_digest
      *       sets slot.passwordProtected to true
      * */
-    void addBlueprint(SlotBlueprint blueprint, APICallBack<Void> callBack);
-
-    void addSlot(Slot slot, String password, APICallBack<Void> callBack);
+    void addBlueprint(SlotBlueprint blueprint, APICallBack<SlotBlueprint> callBack);
 
     /*
      * pre:
@@ -126,12 +124,12 @@ public interface IMyLocalBookingAPI{
     *               1.2) slot.passwordProtected and valid password and password matches
     *                   insert reservation in the db
     */
-    void addReservation(Slot slot, String password, APICallBack<Void> callBack);
+    void addReservation(Slot slot, String password, APICallBack<Slot> callBack);
     /*
      *   post:
      *       removes the reservation if exists
      */
-    void cancelReservation(Slot slot, APICallBack<Void> callBack);
+    void cancelReservation(Slot slot, APICallBack<Slot> callBack);
     Collection<Establishment> getClosestEstablishments();
     void setPreferredPosition(Coordinates position);
     void rateEstablishment(Establishment establishment, int rating, String comment/*, boolean anonymous*/);

@@ -22,7 +22,7 @@ class AESCrypt {
 
     }
 
-    public static String decrypt(String value) throws Exception
+    /*public static String decrypt(String value) throws Exception
     {
         Key key = generateKey();
         Cipher cipher = Cipher.getInstance(AESCrypt.ALGORITHM);
@@ -32,7 +32,7 @@ class AESCrypt {
         String decryptedValue = new String(decryptedByteValue,"utf-8");
         return decryptedValue;
 
-    }
+    }*/
 
     private static Key generateKey() throws Exception
     {
