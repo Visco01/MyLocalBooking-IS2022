@@ -2,8 +2,6 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Collection;
 import java.util.Map;
 import uni.project.mylocalbooking.SessionPreferences;
@@ -192,11 +190,8 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     private void callAddReservation(Long clientId, Slot slot, APICallBack<Slot> callBack){
         String url = MyLocalBookingAPI.apiPrefix + "reservations";
         String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", new RunOnResponse<JSONObject>() {
-            @Override
-            public void apply(JSONObject response) {
-                if(callBack != null) callBack.apply(slot);
-            }
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", response -> {
+            if(callBack != null) callBack.apply(slot);
         });
     }
 
@@ -231,8 +226,13 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
             String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
             Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", response -> {
-                slot.setId(null);
-                if(callBack != null) callBack.apply(slot);
+                try {
+                    boolean slot_id = Long.valueOf(response.getString("slot_id")) != -1;
+                    if(slot_id) slot.setId(null);
+                    if(callBack != null) callBack.apply(slot);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             });
         });
     }
