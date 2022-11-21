@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="uni.project.mylocalbooking">
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,6 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyLocalBooking"
+        android:name="uni.project.mylocalbooking.MyLocalBooking"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <!--
