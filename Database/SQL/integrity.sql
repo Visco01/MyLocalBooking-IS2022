@@ -800,3 +800,31 @@ create trigger blacklisted_user_reservations
 after insert or update on blacklists
 for each row
 execute function trg_blacklisted_user_reservations_blacklist();
+
+
+
+-------------------------------
+-- slot instance should be deleted when there are no reservations left
+-------------------------------
+
+
+create function trg_no_reservations_left()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if not exists (
+		select * from reservations where slot_id = OLD.slot_id
+	)
+	then
+		delete from slots where id = OLD.slot_id;
+	end if;
+
+	return NULL;
+end;$$;
+
+drop trigger if exists no_reservations_left on reservations;
+create trigger no_reservations_left
+after delete on reservations
+for each row
+execute function trg_no_reservations_left();
