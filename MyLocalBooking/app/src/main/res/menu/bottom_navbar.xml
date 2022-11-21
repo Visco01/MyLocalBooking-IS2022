@@ -12,4 +12,8 @@
         android:id="@+id/resevations"
         android:title="Resevations"
         android:icon="@drawable/ic_launcher_foreground"/>
+    <item
+        android:id="@+id/homeProvider"
+        android:title="Home Provider"
+        android:icon="@drawable/ic_home_foreground"/>
 </menu>

@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
     HomeFragment homeFragment = new HomeFragment();
     ProfileFragment profileFragment = new ProfileFragment();
-
+    HomeProvider homeProviderFragment = new HomeProvider();
     //private ActivityMainBinding binding;
 
     @Override
@@ -22,6 +22,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // ----- Navigation ----- //
+        /* TO-DO:
+        * Depending on the AppUser.type, set the right icons and paths on the
+        * bottomNav bar.
+        * E.g:
+        * A Client will have in his bottom bar [Home, Profile, My Reservations]
+        * Else a Provider will have [Home, Profile, My Establishments]
+        * */
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()){
@@ -31,9 +38,18 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.profile:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, profileFragment).commit();
                     return true;
+                // Only for testing!!!
+                case R.id.homeProvider:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, homeProviderFragment).commit();
+                    return  true;
+                /*
+                * case R.id.myReservations:
+                * cas R.id.myEstablishments:
+                * */
             }
             return false;
         });
+        // Default position
         bottomNavigationView.setSelectedItemId(R.id.home);
         // ----- End of Navigation ----- //
 
