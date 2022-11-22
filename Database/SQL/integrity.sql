@@ -781,34 +781,14 @@ for each row
 execute function trg_blacklisted_user_reservations();
 
 
-create or replace function trg_blacklisted_user_reservations_blacklist()
-	returns trigger
-	language plpgsql
-as $$
-begin
-	delete from reservations
-	where client_id in (
-		select		c.id
-		from		clients c
-					join appusers a on a.id = c.app_user_id
-		where		a.cellphone = NEW.usercellphone
-	);
-end;$$;
-
-drop trigger if exists blacklisted_user_reservations on blacklists;
-create trigger blacklisted_user_reservations
-after insert or update on blacklists
-for each row
-execute function trg_blacklisted_user_reservations_blacklist();
-
-
 
 -------------------------------
--- slot instance should be deleted when there are no reservations left
+-- when reservation is deleted, slot instance should be deleted if there are no reservations left
+-- otherwise slot ownership should be transferred to the establishment owner
 -------------------------------
 
 
-create function trg_no_reservations_left()
+create or replace function trg_no_reservations_left()
 	returns trigger
 	language plpgsql
 as $$
@@ -818,6 +798,13 @@ begin
 	)
 	then
 		delete from slots where id = OLD.slot_id;
+	else
+		update slots set app_user_id = (
+			select		p.app_user_id
+			from		get_base_blueprint_by_slot_id(OLD.slot_id) b
+						join establishments e on e.id = b.establishment_id
+						join providers p on p.id = e.provider_id
+		);
 	end if;
 
 	return NULL;
@@ -828,3 +815,37 @@ create trigger no_reservations_left
 after delete on reservations
 for each row
 execute function trg_no_reservations_left();
+
+
+
+-------------------------------
+-- reservations of blacklisted users should be removed
+-------------------------------
+
+
+create or replace function trg_remove_reservation_on_blacklist()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	delete from reservations where
+	slot_id in (
+		select		s.id
+		from		slots s
+					cross join get_base_blueprint_by_slot_id(s.id) b
+					join establishments e on e.id = b.establishment_id
+		where		e.provider_id = NEW.provider_id
+	)
+	and client_id = (
+		select		c.id
+		from		app_users a
+					join clients c on c.app_user_id = a.id
+		where		a.cellphone = NEW.usercellphone
+	);
+end;$$;
+
+drop trigger if exists remove_reservation_on_blacklist on blacklists;
+create trigger remove_reservation_on_blacklist
+after insert or update on blacklists
+for each row
+execute function trg_remove_reservation_on_blacklist();
