@@ -849,3 +849,52 @@ create trigger remove_reservation_on_blacklist
 after insert or update on blacklists
 for each row
 execute function trg_remove_reservation_on_blacklist();
+
+
+
+-------------------------------
+-- add user to blacklist when maxstrikes is reached
+-------------------------------
+
+
+create or replace function trg_maxstrikes_reached()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if NEW.count = (
+		select maxstrikes from providers where id = NEW.provider_id
+	)
+	then
+		insert into blacklists(provider_id, usercellphone) values (NEW.provider_id, NEW.usercellphone);
+		delete from strikes where id = NEW.id;
+	end if;
+
+	return NULL;
+end;$$;
+
+drop trigger if exists maxstrikes_reached on strikes;
+create trigger maxstrikes_reached
+after insert or update on strikes
+for each row
+execute function trg_maxstrikes_reached();
+
+
+create or replace function trg_maxstrikes_reached_provider()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	update strikes
+	set count = NEW.maxstrikes
+	where provider_id = NEW.id and count >= NEW.maxstrikes;
+
+	return NULL;
+end;$$;
+
+drop trigger if exists maxstrikes_reached on providers;
+create trigger maxstrikes_reached
+after update on providers
+for each row
+when (NEW.maxstrikes < OLD.maxstrikes)
+execute function trg_maxstrikes_reached_provider();
