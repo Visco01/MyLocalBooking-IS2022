@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public abstract class SlotBlueprint implements IDatabaseModel {
-    private final Long id;
+
+public abstract class SlotBlueprint extends DatabaseModel {
     public final Establishment establishment;
     public final HashSet<DayOfWeek> weekdays;
     public final Integer reservationLimit;
@@ -20,7 +20,7 @@ public abstract class SlotBlueprint implements IDatabaseModel {
     public List<Slot> slots;
 
     public SlotBlueprint(Long id, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
-        this.id = id;
+        super(id);
         this.weekdays = weekdays;
         this.reservationLimit = reservationLimit;
         this.fromDate = fromDate;
@@ -34,10 +34,5 @@ public abstract class SlotBlueprint implements IDatabaseModel {
 
     public SlotBlueprint(Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         this(null, establishment, reservationLimit, weekdays, fromDate, toDate);
-    }
-
-    @Override
-    public Long getId() {
-        return this.id;
     }
 }

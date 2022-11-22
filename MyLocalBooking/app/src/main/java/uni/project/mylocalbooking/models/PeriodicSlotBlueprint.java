@@ -7,8 +7,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableSlot {
-    private final Long id;
+public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ISelectableSlot {
+    private Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;
 
@@ -26,8 +26,13 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
     }
 
     @Override
-    public Long getId() {
-        return this.id;
+    public Long getSubclassId() {
+        return id;
+    }
+
+    @Override
+    public void setSubclassId(Long id) {
+        this.id = id;
     }
 
     @Override

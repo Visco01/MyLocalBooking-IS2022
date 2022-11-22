@@ -9,8 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.SortedSet;
 
-public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
-    private final Long id;
+public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ITimeFrame {
+    private Long id;
     public final LocalTime openTime;
     public final LocalTime closeTime;
     public final Duration maxDuration;
@@ -30,8 +30,13 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     }
 
     @Override
-    public Long getId() {
-        return this.id;
+    public Long getSubclassId() {
+        return id;
+    }
+
+    @Override
+    public void setSubclassId(Long id) {
+        this.id = id;
     }
 
     @Override
