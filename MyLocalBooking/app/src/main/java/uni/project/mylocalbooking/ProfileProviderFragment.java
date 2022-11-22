@@ -8,19 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import uni.project.mylocalbooking.databinding.FragmentHomeProviderBinding;
+import uni.project.mylocalbooking.databinding.FragmentProfileProviderBinding;
 
+public class ProfileProviderFragment extends Fragment {
 
-public class HomeProvider extends Fragment {
+    private FragmentProfileProviderBinding binding;
 
-    private FragmentHomeProviderBinding binding;
-
-    public HomeProvider() {
+    public ProfileProviderFragment() {
         // Required empty public constructor
     }
 
-    public static HomeProvider newInstance(String param1, String param2) {
-        HomeProvider fragment = new HomeProvider();
+    public static ProfileProviderFragment newInstance(String param1, String param2) {
+        ProfileProviderFragment fragment = new ProfileProviderFragment();
         return fragment;
     }
 
@@ -32,8 +31,7 @@ public class HomeProvider extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = uni.project.mylocalbooking.databinding.FragmentHomeProviderBinding.inflate(inflater, container, false);
-
+        binding = FragmentProfileProviderBinding.inflate(inflater, container, false);
         // Return code
         View view = binding.getRoot();
         System.out.println("! VIEW CREATED !");

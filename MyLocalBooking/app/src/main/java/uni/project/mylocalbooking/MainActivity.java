@@ -12,7 +12,8 @@ public class MainActivity extends AppCompatActivity {
 
     HomeFragment homeFragment = new HomeFragment();
     ProfileFragment profileFragment = new ProfileFragment();
-    HomeProvider homeProviderFragment = new HomeProvider();
+    HomeProviderFragment homeProviderFragment = new HomeProviderFragment();
+    ProfileProviderFragment profileProviderFragment = new ProfileProviderFragment();
     //private ActivityMainBinding binding;
 
     @Override
@@ -41,7 +42,10 @@ public class MainActivity extends AppCompatActivity {
                 // Only for testing!!!
                 case R.id.homeProvider:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, homeProviderFragment).commit();
-                    return  true;
+                    return true;
+                case R.id.profileProvider:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, profileProviderFragment).commit();
+                    return true;
                 /*
                 * case R.id.myReservations:
                 * cas R.id.myEstablishments:
