@@ -16,7 +16,6 @@ public interface IMyLocalBookingAPI{
         return new MyLocalBookingAPI();
     }
 
-    void getUserIdByCellphone(String cellphone, AppUser user, APICallBack<Void> callBack);
     // GENERIC
     /*
      * pre:
@@ -28,6 +27,7 @@ public interface IMyLocalBookingAPI{
      * */
     void register(AppUser user, String password, APICallBack<AppUser> callBack);
 
+    void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<String> onError);
     /*
      * pre:
      *       CURRENT_USER.id != null

@@ -2,6 +2,8 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 import org.json.JSONException;
+
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 import uni.project.mylocalbooking.SessionPreferences;
@@ -34,15 +36,38 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         Log.i("auth request", MyLocalBookingAPI.jwt);
     }
 
-    @Override
-    public void getUserIdByCellphone(String cellphone, AppUser user, APICallBack<Void> callBack){
+    private void getUserByCellphone(String cellphone, APICallBack<AppUser> onSuccess, APICallBack<String> onError){
         String url = MyLocalBookingAPI.apiPrefix + "app_user_by_cellphone/" + cellphone;
         Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", response -> {
             try {
-                String response_id = response.getString("app_user_id");
-                user.setId(Long.valueOf(response_id));
-                if(callBack != null) callBack.apply(null);
+                String status = response.getString("status");
+                if(status.equals("OK")){
+                    AppUser user;
+                    String category = response.getString("category");
+                    String appUserId = response.getString("app_user_id");
+                    String concreteUserId = response.getString("concrete_user_id");
+                    String password = response.getString("password_digest");
+                    String email = response.getString("email");
+                    String firstName = response.getString("firstname");
+                    String lastName = response.getString("lastname");
+                    String[] dob = response.getString("dob").split("-");
+                    if(category.equals("client")){
+                        String lat = response.getString("lat");
+                        String lng = response.getString("lng");
+                        user = new Client(Long.valueOf(concreteUserId), new Coordinates(Float.valueOf(lat), Float.valueOf(lng)), Long.valueOf(appUserId), cellphone, email, firstName, lastName, LocalDate.of(Integer.valueOf(dob[0]), Integer.valueOf(dob[1]), Integer.valueOf(dob[2])), password);
+                    }else{
+                        String isVerified = response.getString("isverified");
+                        String maxStrikes = response.getString("maxstrikes");
+                        String companyName = response.getString("companyname");
+                        user = new Provider(Long.valueOf(concreteUserId), Boolean.valueOf(isVerified), companyName, Integer.valueOf(maxStrikes), null, Long.valueOf(appUserId), cellphone, email, firstName, lastName, LocalDate.of(Integer.valueOf(dob[0]), Integer.valueOf(dob[1]), Integer.valueOf(dob[2])), password);
+                    }
+                    Log.i("user login", user.toString());
+                    if(onSuccess != null) onSuccess.apply(user);
+                }else{
+                    if(onError != null) onError.apply("user with cellphone " + cellphone + " not found");
+                }
             } catch (Exception e) {
+                if(onError != null) onError.apply(e.getMessage());
                 e.printStackTrace();
             }
         });
@@ -68,6 +93,24 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 e.printStackTrace();
             }
             SessionPreferences.setUserPrefs(user);
+        });
+    }
+
+    @Override
+    public void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<String> onError){
+        getUserByCellphone(cellphone, data -> {
+            try {
+                if(AESCrypt.encrypt(password).equals(data.password)){
+                    SessionPreferences.setUserPrefs(data);
+                    if(onSuccess != null) onSuccess.apply(data);
+                }else{
+                    if(onError != null) onError.apply("given password is not valid");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, data -> {
+            if(onError != null) onError.apply(data);
         });
     }
 
