@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mirco.ProfileFragment">
+    tools:context=".mirco.ProfileProviderFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
             android:id="@+id/body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_dark"
+            android:background="@android:color/holo_blue_light"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -27,19 +27,21 @@
             android:id="@+id/topBar"
             android:layout_width="410dp"
             android:layout_height="130dp"
-            android:background="@android:color/holo_orange_dark"
+            android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/profileTextView"
             android:layout_width="219dp"
             android:layout_height="62dp"
             android:layout_marginStart="8dp"
             android:text="@string/profile"
             android:textAlignment="textStart"
             android:textSize="40sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,6 +58,7 @@
             app:layout_constraintTop_toTopOf="@+id/body" />
 
         <TextView
+            android:id="@+id/yourDataTextVIew"
             android:layout_width="155dp"
             android:layout_height="@dimen/intestation_1"
             android:layout_marginStart="8dp"
@@ -65,6 +68,39 @@
             android:textSize="34sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/topBar" />
+
+        <ImageButton
+            android:id="@+id/editDataButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:background="@android:drawable/divider_horizontal_bright"
+            android:src="@android:drawable/ic_menu_edit"
+            app:layout_constraintStart_toEndOf="@+id/yourDataTextVIew"
+            app:layout_constraintTop_toTopOf="@+id/yourDataTextVIew" />
+
+        <ImageButton
+            android:id="@+id/editDataButton2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="32dp"
+            android:background="@android:drawable/divider_horizontal_bright"
+            android:src="@android:drawable/ic_menu_edit"
+            app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintStart_toEndOf="@+id/userAge2"
+            app:layout_constraintTop_toTopOf="@+id/textView" />
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:text="@string/logout"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/yourDataTextVIew" />
 
         <TextView
             android:id="@+id/userName"
@@ -103,7 +139,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/ageTextVeiw"
             android:layout_width="60dp"
             android:layout_height="@dimen/normal_text"
             android:layout_marginStart="296dp"
@@ -138,55 +174,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="331dp"
-            android:layout_height="@dimen/intestation_1"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="244dp"
-            android:text="@string/fav_position"
-            android:textAlignment="textStart"
-            android:textSize="34sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topBar" />
-
-        <TextView
-            android:id="@+id/userAddress"
-            android:layout_width="351dp"
-            android:layout_height="66dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="428dp"
-            android:text="Indirizzo"
-            android:textAlignment="textStart"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/editPositionButton"
-            android:layout_width="245dp"
-            android:layout_height="69dp"
-            android:layout_marginTop="508dp"
-            android:backgroundTint="@android:color/holo_orange_dark"
-            android:text="@string/edit"
-            android:textColor="@color/black"
-            app:icon="@drawable/ic_edit_foreground"
-            app:iconTint="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/body" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:clickable="true"
-            android:src="@drawable/ic_edit_foreground"
-            app:backgroundTint="@android:color/holo_orange_light"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topBar" />
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/notiButtonProfile"
             android:layout_width="wrap_content"
@@ -194,7 +181,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:clickable="true"
-            android:src="@drawable/ic_notification_bell_foreground"
             app:backgroundTint="@android:color/holo_orange_light"
             app:fabSize="auto"
             app:layout_constraintEnd_toEndOf="parent"
@@ -202,40 +188,107 @@
             app:useCompatPadding="false" />
 
         <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:id="@+id/reportButton"
+            android:layout_width="378dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="120dp"
             android:backgroundTint="@android:color/holo_orange_light"
             android:text="@string/report"
             android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/body"
+            app:layout_constraintEnd_toEndOf="@+id/body"
+            app:layout_constraintHorizontal_bias="0.515"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/line12" />
+
+        <TextView
+            android:id="@+id/blacklistedTextView"
+            android:layout_width="275dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="476dp"
+            android:text="Blacklisted Users"
+            android:textAlignment="viewStart"
+            android:textSize="34sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editPositionButton" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/button6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@android:color/holo_red_dark"
-            android:text="@string/logout"
-            android:textColor="@color/black"
-            android:textStyle="bold"
+        <ImageButton
+            android:id="@+id/blacklistedButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="32dp"
+            android:background="@android:color/transparent"
+            android:src="@android:drawable/ic_media_play"
+            app:layout_constraintBottom_toBottomOf="@+id/blacklistedTextView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editPositionButton" />
+            app:layout_constraintStart_toEndOf="@+id/blacklistedTextView"
+            app:layout_constraintTop_toTopOf="@+id/blacklistedTextView"
+            app:layout_constraintVertical_bias="0.0"
+            app:tint="@color/black" />
 
-        <ImageView
-            android:id="@+id/dangerAge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:rotationX="15"
-            android:src="@android:drawable/ic_dialog_alert"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="233dp"
+            android:layout_height="@dimen/normal_text"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="396dp"
+            android:text="n° Strikes to Blacklist "
+            android:textAlignment="textStart"
+            android:textSize="24sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintStart_toStartOf="@+id/body"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/userAge2"
+            android:layout_width="30dp"
+            android:layout_height="@dimen/normal_text"
+            android:layout_marginStart="16dp"
+            android:text="2"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="@+id/textView" />
+
+        <View
+            android:id="@+id/line12"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/teal_700"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView5" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/blacklistedTextView" />
+
+        <View
+            android:id="@+id/line11"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/teal_700"
+            app:layout_constraintBottom_toTopOf="@+id/blacklistedTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editDataButton2" />
+
+        <View
+            android:id="@+id/line10"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/teal_700"
+            app:layout_constraintBottom_toTopOf="@+id/editDataButton2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/userEmail" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
