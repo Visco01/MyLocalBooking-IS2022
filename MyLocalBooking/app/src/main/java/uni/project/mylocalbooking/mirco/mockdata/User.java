@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking.mockdata;
+package uni.project.mylocalbooking.mirco.mockdata;
 
 public class User {
     private String name;

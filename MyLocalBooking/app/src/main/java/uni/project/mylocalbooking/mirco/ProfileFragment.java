@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking;
+package uni.project.mylocalbooking.mirco;
 
 import android.os.Bundle;
 
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import uni.project.mylocalbooking.databinding.FragmentProfileBinding;
 
-import uni.project.mylocalbooking.mockdata.User;
+import uni.project.mylocalbooking.mirco.mockdata.User;
 
 /**
  * Profile fragment

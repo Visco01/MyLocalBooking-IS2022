@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking.mockdata;
+package uni.project.mylocalbooking.mirco.mockdata;
 
 public class Establishment {
     public String name;

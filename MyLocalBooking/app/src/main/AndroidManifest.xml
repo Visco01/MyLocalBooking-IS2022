@@ -30,7 +30,7 @@
             android:value="${MAPS_API_KEY}" />
         -->
         <activity
-            android:name=".MainActivity"
+            android:name=".mirco.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

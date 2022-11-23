@@ -1,10 +1,12 @@
-package uni.project.mylocalbooking;
+package uni.project.mylocalbooking.mirco;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import uni.project.mylocalbooking.R;
 
 public class MainActivity extends AppCompatActivity {
 
