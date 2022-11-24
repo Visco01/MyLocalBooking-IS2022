@@ -1,4 +1,4 @@
-package com.example.mylocalbooking;
+package uni.project.mylocalbooking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class IntermediateRegistration extends AppCompatActivity {
+import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.activities.provider.ProviderRegistrationActivity;
+import uni.project.mylocalbooking.activities.client.ClientRegistrationActivity;
+
+
+public class IntermediateRegistrationActivity extends AppCompatActivity {
 
     private Button bookerRegistration;
     private Button ownerRegistration;
@@ -37,12 +42,12 @@ public class IntermediateRegistration extends AppCompatActivity {
     }
 
     protected void openBookerRegistration() {
-        Intent intent = new Intent(this, BookerActivityRegistration.class);
+        Intent intent = new Intent(this, ClientRegistrationActivity.class);
         startActivity(intent);
     }
 
     protected void openOwnerRegistration() {
-        Intent intent = new Intent(this, OwnerActivityRegistration.class);
+        Intent intent = new Intent(this, ProviderRegistrationActivity.class);
         startActivity(intent);
     }
 

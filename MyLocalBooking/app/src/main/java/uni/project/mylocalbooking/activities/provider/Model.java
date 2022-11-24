@@ -1,4 +1,4 @@
-package com.example.mylocalbooking;
+package uni.project.mylocalbooking.activities.provider;
 
 public class Model {
 

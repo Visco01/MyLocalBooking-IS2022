@@ -1,21 +1,22 @@
-package com.example.mylocalbooking;
+package uni.project.mylocalbooking.activities.provider;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlackList extends AppCompatActivity {
+import uni.project.mylocalbooking.R;
+
+public class BlackListActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
     List<Model> blackList;
-    Adapter adapter;
+    BlacklistAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class BlackList extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new Adapter(blackList);
+        adapter = new BlacklistAdapter(blackList);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

@@ -1,4 +1,4 @@
-package com.example.mylocalbooking;
+package uni.project.mylocalbooking.activities.client;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,17 +12,19 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class OwnerActivityRegistration extends AppCompatActivity {
+import uni.project.mylocalbooking.R;
 
-    private EditText ownerDateOfBorn;
+public class ClientRegistrationActivity extends AppCompatActivity {
+
+    private EditText bookerDateBorn;
     private Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_owner_registration);
+        setContentView(R.layout.activity_booker_registration);
 
-        ownerDateOfBorn = findViewById(R.id.owner_registration_dateBorn);
+        bookerDateBorn = findViewById(R.id.booker_registration_dateBorn);
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -37,14 +39,15 @@ public class OwnerActivityRegistration extends AppCompatActivity {
                 String format = "MM/dd/yy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 
-                ownerDateOfBorn.setText(sdf.format(calendar.getTime()));
+                bookerDateBorn.setText(sdf.format(calendar.getTime()));
             }
+
         };
 
-        ownerDateOfBorn.setOnClickListener(new View.OnClickListener() {
+        bookerDateBorn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(OwnerActivityRegistration.this, date, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(ClientRegistrationActivity.this, date, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 

@@ -1,4 +1,4 @@
-package com.example.mylocalbooking;
+package uni.project.mylocalbooking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class Home extends AppCompatActivity {
+import uni.project.mylocalbooking.activities.client.LandReviewActivity;
+import uni.project.mylocalbooking.activities.provider.BlackListActivity;
+
+import uni.project.mylocalbooking.R;
+
+public class HomeActivity extends AppCompatActivity {
 
     private Button changePwdBtn;
     private Button reviewBtn;
@@ -66,27 +71,27 @@ public class Home extends AppCompatActivity {
     }
 
     protected void openBlackListActivity() {
-        Intent intent = new Intent(this, BlackList.class);
+        Intent intent = new Intent(this, BlackListActivity.class);
         startActivity(intent);
     }
 
     protected void openChangePwd() {
-        Intent intent = new Intent(this, ChangePassword.class);
+        Intent intent = new Intent(this, ChangePasswordActivity.class);
         startActivity(intent);
     }
 
     protected void openReview() {
-        Intent intent = new Intent(this, LandReview.class);
+        Intent intent = new Intent(this, LandReviewActivity.class);
         startActivity(intent);
     }
 
     protected void openChangePhoneNumber() {
-        Intent intent = new Intent(this, ChangePhoneNumber.class);
+        Intent intent = new Intent(this, ChangePhoneNumberActivity.class);
         startActivity(intent);
     }
 
     protected void openChangeDataOfBorn() {
-        Intent intent = new Intent(this, ChangeData.class);
+        Intent intent = new Intent(this, ChangeDataActivity.class);
         startActivity(intent);
     }
 

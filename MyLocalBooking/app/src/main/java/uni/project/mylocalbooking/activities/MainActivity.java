@@ -1,4 +1,4 @@
-package com.example.mylocalbooking;
+package uni.project.mylocalbooking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import uni.project.mylocalbooking.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     mSlideViewPager.setCurrentItem(1, true);
                 }
                 else {
-                    Intent intent = new Intent(MainActivity.this, LoginOrRegistration.class);
+                    Intent intent = new Intent(MainActivity.this, LoginOrRegistrationActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         skipBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, LoginOrRegistration.class);
+                Intent intent = new Intent(MainActivity.this, LoginOrRegistrationActivity.class);
                 startActivity(intent);
                 finish();
             }

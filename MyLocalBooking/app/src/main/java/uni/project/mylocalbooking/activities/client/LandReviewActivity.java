@@ -1,10 +1,12 @@
-package com.example.mylocalbooking;
+package uni.project.mylocalbooking.activities.client;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class LandReview extends AppCompatActivity {
+import uni.project.mylocalbooking.R;
+
+public class LandReviewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

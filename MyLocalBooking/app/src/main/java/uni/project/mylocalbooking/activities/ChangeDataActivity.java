@@ -1,4 +1,4 @@
-package com.example.mylocalbooking;
+package uni.project.mylocalbooking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,7 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class ChangeData extends AppCompatActivity {
+import uni.project.mylocalbooking.R;
+
+public class ChangeDataActivity extends AppCompatActivity {
 
     private EditText oldBornDate;
     private EditText newBornDate;
@@ -48,7 +50,7 @@ public class ChangeData extends AppCompatActivity {
         oldBornDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(ChangeData.this, date, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(ChangeDataActivity.this, date, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
@@ -74,7 +76,7 @@ public class ChangeData extends AppCompatActivity {
         newBornDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(ChangeData.this, date2, calendar2.get(Calendar.YEAR), calendar2.get(Calendar.MONTH), calendar2.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(ChangeDataActivity.this, date2, calendar2.get(Calendar.YEAR), calendar2.get(Calendar.MONTH), calendar2.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
@@ -101,7 +103,7 @@ public class ChangeData extends AppCompatActivity {
         confirmNewBornDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(ChangeData.this, date3, calendar3.get(Calendar.YEAR), calendar3.get(Calendar.MONTH), calendar3.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(ChangeDataActivity.this, date3, calendar3.get(Calendar.YEAR), calendar3.get(Calendar.MONTH), calendar3.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 

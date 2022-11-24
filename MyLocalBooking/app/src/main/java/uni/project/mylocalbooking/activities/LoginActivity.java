@@ -1,4 +1,4 @@
-package com.example.mylocalbooking;
+package uni.project.mylocalbooking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import uni.project.mylocalbooking.R;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -27,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     protected void openMenuActivity() {
-        Intent intent = new Intent(this, Home.class);
+        Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
     }
 
