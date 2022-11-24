@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking.mirco;
+package uni.project.mylocalbooking.fragments;
 
 import android.os.Bundle;
 
@@ -8,18 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import uni.project.mylocalbooking.databinding.FragmentProfileProviderBinding;
+import uni.project.mylocalbooking.databinding.FragmentHomeProviderBinding;
 
-public class ProfileProviderFragment extends Fragment {
 
-    private FragmentProfileProviderBinding binding;
+public class HomeProviderFragment extends Fragment {
 
-    public ProfileProviderFragment() {
+    private FragmentHomeProviderBinding binding;
+
+    public HomeProviderFragment() {
         // Required empty public constructor
     }
 
-    public static ProfileProviderFragment newInstance(String param1, String param2) {
-        ProfileProviderFragment fragment = new ProfileProviderFragment();
+    public static HomeProviderFragment newInstance(String param1, String param2) {
+        HomeProviderFragment fragment = new HomeProviderFragment();
         return fragment;
     }
 
@@ -31,7 +32,8 @@ public class ProfileProviderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentProfileProviderBinding.inflate(inflater, container, false);
+        binding = uni.project.mylocalbooking.databinding.FragmentHomeProviderBinding.inflate(inflater, container, false);
+
         // Return code
         View view = binding.getRoot();
         System.out.println("! VIEW CREATED !");

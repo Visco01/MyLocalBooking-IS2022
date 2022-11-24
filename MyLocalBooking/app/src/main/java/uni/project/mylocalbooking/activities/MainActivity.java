@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking.mirco;
+package uni.project.mylocalbooking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,10 @@ import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.fragments.HomeFragment;
+import uni.project.mylocalbooking.fragments.HomeProviderFragment;
+import uni.project.mylocalbooking.fragments.ProfileFragment;
+import uni.project.mylocalbooking.fragments.ProfileProviderFragment;
 
 public class MainActivity extends AppCompatActivity {
 
