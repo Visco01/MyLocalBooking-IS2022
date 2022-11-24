@@ -86,3 +86,4 @@ lint/tmp/
 
 #MacOS stuff
 .DS_Store
+MyLocalBooking/.idea/deploymentTargetDropDown.xml
