@@ -173,7 +173,7 @@ create table manual_slot_blueprints (
 		on delete cascade,
 	opentime time not null,
 	closetime time not null check (closetime > opentime),
-	maxduration interval not null check(maxduration < (closetime - opentime))
+	maxduration interval not null check(maxduration <= (closetime - opentime))
 );
 
 -- these are periodic slot instances
