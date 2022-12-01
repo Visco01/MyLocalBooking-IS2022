@@ -52,7 +52,7 @@ class LoginAPI {
         }
     }
     
-    public static void addWaitingRequest(String requestBody, String url, String method, RunOnResponse<JSONObject> runOnResponse){
-        WaitingRequestsSingleton.getInstance().add(new WaitingRequest(url, requestBody, method, runOnResponse));
+    public static <T> void addWaitingRequest(String requestBody, String url, String method, RunOnResponse<T> runOnResponse){
+        WaitingRequestsSingleton.getInstance().add(new WaitingRequest<T>(url, requestBody, method, runOnResponse));
     }
 }
