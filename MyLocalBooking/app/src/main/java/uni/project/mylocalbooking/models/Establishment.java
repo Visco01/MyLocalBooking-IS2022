@@ -18,6 +18,14 @@ public class Establishment extends DatabaseModel {
         this.position = position;
     }
 
+    public Establishment(Long id, String name, String address, Coordinates position) {
+        super(id);
+        this.provider = null;
+        this.name = name;
+        this.address = address;
+        this.position = position;
+    }
+
     public Establishment(Provider provider, String name, String address, Coordinates position) {
         this(null, provider, name, address, position);
     }
