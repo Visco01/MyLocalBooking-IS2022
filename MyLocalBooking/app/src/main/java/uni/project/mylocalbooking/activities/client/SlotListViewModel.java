@@ -4,12 +4,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.maps.model.OpeningHours;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import uni.project.mylocalbooking.MyLocalBooking;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
@@ -55,11 +60,18 @@ public class SlotListViewModel extends ViewModel {
     }
 
     private void makeReservation(Slot slot, String password) {
-        // TODO: set slot owner if null
-        // TODO: make reservation via API
+        if(slot instanceof PeriodicSlot)
+            slot.owner = slot.blueprint.establishment.provider;
+        else
+            slot.owner = MyLocalBooking.getCurrentUser();
 
-        // if no error refresh, otherwise unbind slot from blueprint
-        currentDay.setValue(currentDay.getValue());
+        IMyLocalBookingAPI.getApiInstance().addReservation(slot, password, s -> {
+            currentDay.setValue(currentDay.getValue());
+        },
+        code -> {
+            slot.blueprint.slots.remove(slot);
+            // TODO: print error
+        });
     }
 
     private void makeReservation(PeriodicSlotBlueprint blueprint, String password) {
