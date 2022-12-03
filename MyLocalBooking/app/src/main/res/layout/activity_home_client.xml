@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.client.HomeClient">
+
+    <View
+        android:id="@+id/body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <View
+        android:id="@+id/topBar"
+        android:layout_width="410dp"
+        android:layout_height="130dp"
+        android:background="@android:color/holo_orange_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/homeTextView"
+        android:layout_width="219dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="8dp"
+        android:text="Home"
+        android:textAlignment="textStart"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userFullName"
+        android:layout_width="404dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="68dp"
+        android:text="User Fullname"
+        android:textAlignment="textStart"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/body" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/notiButtonProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        app:backgroundTint="@android:color/holo_orange_light"
+        app:fabSize="auto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:useCompatPadding="false" />
+
+    <Switch
+        android:id="@+id/posAttualeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toEndOf="@+id/currentPosition"
+        app:layout_constraintTop_toTopOf="@+id/currentPosition" />
+
+    <TextView
+        android:id="@+id/currentPosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Posizione Attuale"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.196"
+        app:layout_constraintStart_toStartOf="@+id/body"
+        app:layout_constraintTop_toBottomOf="@+id/topBar" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="311dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="60dp"
+        app:cardBackgroundColor="@color/teal_200"
+        app:cardCornerRadius="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topBar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/establishmentName"
+                android:layout_width="222dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Nome Establishment"
+                android:textAlignment="textStart"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/establishmentOwner"
+                android:layout_width="222dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:text="Proprietario"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/establishmentName" />
+
+            <TextView
+                android:id="@+id/establishmentAddress"
+                android:layout_width="222dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:text="Indirizzo"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/establishmentOwner" />
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="204dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Costo"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/establishmentAddress" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/reserveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:contentDescription="Prenota"
+                android:src="@android:drawable/ic_input_add"
+                app:backgroundTint="@android:color/holo_green_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/starImage"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="8dp"
+                android:src="@android:drawable/btn_star"
+                app:layout_constraintEnd_toEndOf="@+id/reserveButton"
+                app:layout_constraintStart_toStartOf="@+id/reserveButton"
+                app:layout_constraintTop_toBottomOf="@+id/reserveButton" />
+
+            <TextView
+                android:id="@+id/reviewScore"
+                android:layout_width="44dp"
+                android:layout_height="15dp"
+                android:text="0.0/5.0"
+                android:textAlignment="center"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/starImage"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/starImage"
+                app:layout_constraintTop_toBottomOf="@+id/starImage" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,8 +5,8 @@ import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.HashSet;
 
-public class PeriodicSlotBlueprint extends SlotBlueprint {
-    private final Long id;
+public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel {
+    private Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;
 
@@ -22,7 +22,12 @@ public class PeriodicSlotBlueprint extends SlotBlueprint {
     }
 
     @Override
-    public Long getId() {
-        return this.id;
+    public Long getSubclassId() {
+        return id;
+    }
+
+    @Override
+    public void setSubclassId(Long id) {
+        this.id = id;
     }
 }

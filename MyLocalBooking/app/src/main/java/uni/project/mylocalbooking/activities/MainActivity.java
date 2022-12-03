@@ -1,68 +1,129 @@
 package uni.project.mylocalbooking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.text.Html;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.fragments.HomeFragment;
-import uni.project.mylocalbooking.fragments.HomeProviderFragment;
-import uni.project.mylocalbooking.fragments.ProfileFragment;
-import uni.project.mylocalbooking.fragments.ProfileProviderFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView bottomNavigationView;
+    ViewPager mSlideViewPager;
+    LinearLayout mDotLayout;
+    Button nextBtn, backBtn, skipBtn;
 
-    HomeFragment homeFragment = new HomeFragment();
-    ProfileFragment profileFragment = new ProfileFragment();
-    HomeProviderFragment homeProviderFragment = new HomeProviderFragment();
-    ProfileProviderFragment profileProviderFragment = new ProfileProviderFragment();
-    //private ActivityMainBinding binding;
+    TextView[] dots;
+    ViewPageAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // ----- Navigation ----- //
-        /* TO-DO:
-        * Depending on the AppUser.type, set the right icons and paths on the
-        * bottomNav bar.
-        * E.g:
-        * A Client will have in his bottom bar [Home, Profile, My Reservations]
-        * Else a Provider will have [Home, Profile, My Establishments]
-        * */
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()){
-                case R.id.home:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, homeFragment).commit();
-                    return true;
-                case R.id.profile:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, profileFragment).commit();
-                    return true;
-                // Only for testing!!!
-                case R.id.homeProvider:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, homeProviderFragment).commit();
-                    return true;
-                case R.id.profileProvider:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, profileProviderFragment).commit();
-                    return true;
-                /*
-                * case R.id.myReservations:
-                * cas R.id.myEstablishments:
-                * */
-            }
-            return false;
-        });
-        // Default position
-        bottomNavigationView.setSelectedItemId(R.id.home);
-        // ----- End of Navigation ----- //
+        nextBtn = findViewById(R.id.next_btn_landing_page);
+        backBtn = findViewById(R.id.back_btn_landing_page);
+        skipBtn = findViewById(R.id.skip_btn_landing_page);
 
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getItem(0) < 3) {
+                    mSlideViewPager.setCurrentItem(1, true);
+                }
+                else {
+                    Intent intent = new Intent(MainActivity.this, LoginOrRegistrationActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (getItem(0) > 0) {
+                    mSlideViewPager.setCurrentItem(getItem(-1), true);
+                }
+            }
+        });
+
+        skipBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, LoginOrRegistrationActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        mSlideViewPager = (ViewPager) findViewById(R.id.slideViewPager);
+        mDotLayout = (LinearLayout) findViewById(R.id.indicator_landing_page);
+
+        viewPagerAdapter = new ViewPageAdapter(this);
+
+        mSlideViewPager.setAdapter(viewPagerAdapter);
+
+        setUpIndicator(0);
+        mSlideViewPager.addOnPageChangeListener(viewListener);
+
+    }
+
+    public void setUpIndicator(int position) {
+        dots = new TextView[4];
+        mDotLayout.removeAllViews();
+
+        for (int i = 0; i < 4; ++i) {
+            dots[i] = new TextView(this);
+            dots[i].setText(Html.fromHtml("&#8226"));
+            dots[i].setTextSize(35);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                dots[i].setTextColor(getResources().getColor(R.color.grey, getApplication().getTheme()));
+            }
+            mDotLayout.addView(dots[i]);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            dots[position].setTextColor(getResources().getColor(R.color.booking_color, getApplication().getTheme()));
+        }
+
+    }
+
+    ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            setUpIndicator(position);
+
+            if (position > 0) {
+                backBtn.setVisibility(View.VISIBLE);
+            }
+            else {
+                backBtn.setVisibility(View.INVISIBLE);
+            }
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
+    private int getItem(int i) {
+        return mSlideViewPager.getCurrentItem() + i;
     }
 
 }
