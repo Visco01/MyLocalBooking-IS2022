@@ -20,4 +20,6 @@
     <string name="available_for_booking">Available for booking</string>
     <string name="create_manual_slot_dialog_title">Choose your slot</string>
     <string name="no_available_slots">No available slots for this day</string>
+    <string name="reservation_error">Reservation error</string>
+    <string name="reservation_error_generic_message">An error occurred while trying to make this reservation, please try again.</string>
 </resources>

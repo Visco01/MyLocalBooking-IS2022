@@ -2,6 +2,7 @@ package uni.project.mylocalbooking.activities.client;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -22,14 +23,21 @@ import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListActivity extends AppCompatActivity implements SlotListAdapter.IListener {
-    private SlotListViewModel viewModel;
+    private SlotListViewModelFactory.SlotListViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slot_list);
 
-        viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
+        SlotListViewModelFactory viewModelFactory = new SlotListViewModelFactory((slot, code) -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            // TODO: be more specific with error message
+            builder.setMessage(R.string.reservation_error_generic_message)
+                    .setTitle(R.string.reservation_error);
+            builder.create();
+        });
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(SlotListViewModelFactory.SlotListViewModel.class);
 
         // TODO: get blueprints
         List<SlotBlueprint> blueprints = MockAPI.generatePeriodicData();
