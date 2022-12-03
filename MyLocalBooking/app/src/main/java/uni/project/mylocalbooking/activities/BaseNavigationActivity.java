@@ -4,11 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.client.HomeClient;
+import uni.project.mylocalbooking.activities.client.ProfileClient;
 
 public abstract class BaseNavigationActivity extends AppCompatActivity {
 
@@ -17,42 +20,38 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // AppCompact super
         super.onCreate(savedInstanceState);
+
+        // Set the layout of the corresponding Activity
         setContentView(getContentViewId());
 
-        System.out.println("View: " + getContentViewId());
-        System.out.println("R.id.navView " + R.id.navView);
-        System.out.println("findView: " + findViewById(R.id.navView));
+        navigationView = (BottomNavigationView) findViewById(R.id.navigation);
 
-        System.out.println("T1: " + R.layout.activity_base_navigation);
-        System.out.println("T2: " + getParent());
+        // Default position
+        navigationView.setSelectedItemId(R.id.homeClient);
 
-
-        // --> null # DA FIXARE #
-        navigationView = (BottomNavigationView) findViewById(R.id.navView);
-        System.out.println(navigationView); // --> null # DA FIXARE #
-        // navigationView.setOnNavigationItemSelectedListener(this); --> Deprecato
-
-        if (navigationView != null) {
-            navigationView.setOnItemSelectedListener(item -> {
-                switch (item.getItemId()) {
-                    case R.id.homeClient:
-                        intent = new Intent(getBaseContext(), HomeClient.class);
-                        startActivity(intent);
-                        return true;
-                }
-                return false;
-            });
-            // Default position
-            navigationView.setSelectedItemId(R.id.homeClient);
-        }
-        else{
-            System.out.println("DEBUG: null navigationView");
-        }
-
+        // Listener
+        navigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                // Home Client
+                case R.id.homeClient:
+                    intent = new Intent(getBaseContext(), HomeClient.class);
+                    startActivity(intent);
+                    return true;
+                // Profile Client
+                case R.id.profileClient:
+                    intent = new Intent(getBaseContext(), ProfileClient.class);
+                    startActivity(intent);
+                    return true;
+                /* Other cases*/
+            }finish();
+            return false;
+        });
     }
-/*
 
+    // Highlights the current item on the NavBar the first time the user launches the app
     @Override
     protected void onStart() {
         super.onStart();
@@ -66,46 +65,31 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
     }
 
-
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        navigationView.postDelayed(() -> {
-            int itemId = item.getItemId();
-            System.out.println(itemId);
-            if (itemId == R.id.homeClient) {
-                System.out.println("itemId correct");
-                startActivity(new Intent(this, HomeClient.class));
-            } else if (itemId == R.id.profile) {
-                startActivity(new Intent(this, Profile.class));
-            } else if (itemId == R.id.navigation_notifications) {
-                startActivity(new Intent(this, NotificationsActivity.class));
-            } finish();
-}, 300);
-        return true;
-        }
-
-private void updateNavigationBarState(){
+    private void updateNavigationBarState(){
         int actionId = getNavigationMenuItemId();
         selectBottomNavigationBarItem(actionId);
-        }
+    }
 
-        void selectBottomNavigationBarItem(int itemId) {
+    // Highlight the right element, based on the item, which depends on the Activity
+    void selectBottomNavigationBarItem(int itemId) {
         Menu menu = navigationView.getMenu();
         for (int i = 0, size = menu.size(); i < size; i++) {
-        MenuItem item = menu.getItem(i);
-        boolean shouldBeChecked = item.getItemId() == itemId;
-        if (shouldBeChecked) {
-        item.setChecked(true);
-        break;
+            MenuItem item = menu.getItem(i);
+            boolean shouldBeChecked = item.getItemId() == itemId;
+            if (shouldBeChecked) {
+                item.setChecked(true);
+                break;
+            }
         }
-        }
-        }
-
-*
-* */
+    }
+    /*
+     ## These methods MUST BE implemented in EVERY SINGLE ONE of its subclasses, which
+     means in EVERY Activity!! ##
+    */
+    // // Returns the layout id, that is used to manage the "inflation"
     public abstract int getContentViewId();
 
+    // Returns the id in the navigation menu, used to set the correct item in the navbar
     protected abstract int getNavigationMenuItemId();
 
 }

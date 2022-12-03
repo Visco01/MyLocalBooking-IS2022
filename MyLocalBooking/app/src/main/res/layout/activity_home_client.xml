@@ -185,4 +185,12 @@
 
     </androidx.cardview.widget.CardView>
 
+    <include
+        android:id="@+id/navigation"
+        layout="@layout/element_bottom_navbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="@+id/body" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

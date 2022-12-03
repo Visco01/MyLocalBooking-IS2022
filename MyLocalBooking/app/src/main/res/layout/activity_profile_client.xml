@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.client.ProfileClient">
+
+    <View
+        android:id="@+id/body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <View
+        android:id="@+id/topBar"
+        android:layout_width="410dp"
+        android:layout_height="130dp"
+        android:background="@android:color/holo_orange_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/profileTextView"
+        android:layout_width="219dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/profile"
+        android:textAlignment="textStart"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userFullName"
+        android:layout_width="404dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="68dp"
+        android:text="User Fullname"
+        android:textAlignment="textStart"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/body" />
+
+    <TextView
+        android:id="@+id/yourDataTextVIew"
+        android:layout_width="155dp"
+        android:layout_height="@dimen/intestation_1"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/anagraphic_data"
+        android:textAlignment="textStart"
+        android:textSize="34sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topBar" />
+
+    <ImageButton
+        android:id="@+id/editDataButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:background="@android:drawable/divider_horizontal_bright"
+        android:src="@android:drawable/ic_menu_edit"
+        app:layout_constraintStart_toEndOf="@+id/yourDataTextVIew"
+        app:layout_constraintTop_toTopOf="@+id/yourDataTextVIew" />
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@android:color/holo_red_light"
+        android:text="@string/logout"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/yourDataTextVIew" />
+
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="222dp"
+        android:layout_height="@dimen/normal_text"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="200dp"
+        android:text="User name"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userLastname"
+        android:layout_width="222dp"
+        android:layout_height="@dimen/normal_text"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="232dp"
+        android:text="User Lastname"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userAge"
+        android:layout_width="30dp"
+        android:layout_height="@dimen/normal_text"
+        android:layout_marginStart="268dp"
+        android:layout_marginTop="232dp"
+        android:text="00"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ageTextVeiw"
+        android:layout_width="60dp"
+        android:layout_height="@dimen/normal_text"
+        android:layout_marginStart="296dp"
+        android:layout_marginTop="232dp"
+        android:text="@string/age"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userCellNumber"
+        android:layout_width="222dp"
+        android:layout_height="@dimen/normal_text"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="284dp"
+        android:text="Cell number"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userEmail"
+        android:layout_width="369dp"
+        android:layout_height="@dimen/normal_text"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="316dp"
+        android:text="mockup@example.com"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/defaultPositionTextView"
+        android:layout_width="331dp"
+        android:layout_height="@dimen/intestation_1"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="244dp"
+        android:text="@string/fav_position"
+        android:textAlignment="textStart"
+        android:textSize="34sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topBar" />
+
+    <TextView
+        android:id="@+id/userAddress"
+        android:layout_width="380dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="428dp"
+        android:text="Indirizzo"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/notiButtonProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        app:backgroundTint="@android:color/holo_orange_light"
+        app:fabSize="auto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:useCompatPadding="false" />
+
+    <ImageView
+        android:id="@+id/dangerAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:rotationX="15"
+        android:src="@android:drawable/ic_dialog_alert"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ageTextVeiw" />
+
+    <ImageButton
+        android:id="@+id/editPositionButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:drawable/divider_horizontal_bright"
+        android:src="@android:drawable/ic_menu_edit"
+        app:layout_constraintEnd_toEndOf="@+id/body"
+        app:layout_constraintTop_toTopOf="@+id/defaultPositionTextView" />
+
+    <Button
+        android:id="@+id/reportButton"
+        android:layout_width="378dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/holo_orange_light"
+        android:text="@string/report"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/body"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userAddress" />
+
+    <include
+        android:id="@+id/navigation"
+        layout="@layout/element_bottom_navbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="@+id/body" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
