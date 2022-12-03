@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import uni.project.mylocalbooking.activities.client.HomeClient;
 import uni.project.mylocalbooking.activities.client.LandReviewActivity;
 import uni.project.mylocalbooking.activities.provider.BlackListActivity;
 
@@ -19,6 +20,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button changePhone;
     private Button changeDataOfBorn;
     private Button blackListBtn;
+    private Button comirsHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
         changePwdBtn = findViewById(R.id.change_pwd);
         reviewBtn = findViewById(R.id.make_review);
         changeDataOfBorn = findViewById(R.id.btn_change_DataOfBorn);
+        comirsHome = findViewById(R.id.btn_comirs_home);
 
         blackListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +69,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        comirsHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { openHomeClient(); }
+        });
+
 
 
     }
@@ -92,6 +100,12 @@ public class HomeActivity extends AppCompatActivity {
 
     protected void openChangeDataOfBorn() {
         Intent intent = new Intent(this, ChangeDataActivity.class);
+        startActivity(intent);
+    }
+
+    protected void openHomeClient(){
+        Intent intent = new Intent(this, HomeClient.class);
+        System.out.println("Opening Home Client Comir");
         startActivity(intent);
     }
 

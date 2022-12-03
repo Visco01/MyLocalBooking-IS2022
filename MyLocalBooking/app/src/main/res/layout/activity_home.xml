@@ -71,7 +71,19 @@
         app:layout_constraintHorizontal_bias="0.771"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.604">
+        app:layout_constraintVertical_bias="0.604"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_comirs_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comir's Home Client"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.758"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.872">
 
 
     </androidx.appcompat.widget.AppCompatButton>
