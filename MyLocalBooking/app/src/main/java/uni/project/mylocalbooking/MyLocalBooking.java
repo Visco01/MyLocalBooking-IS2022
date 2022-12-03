@@ -39,14 +39,14 @@ public class MyLocalBooking extends Application {
             Float lng = (Float) prefs.get("lng");
 
             Coordinates coordinates = lat == null || lng == null ? null : new Coordinates(lat, lng);
-            currentUser = new Client(subclassId, coordinates, id, cellphone, email, firstname, lastname, dob);
+            currentUser = new Client(subclassId, coordinates, id, cellphone, email, firstname, lastname, dob, null);
         }
         else {
             Boolean verified = (Boolean) prefs.get("verified");
             String company = (String) prefs.get("companyname");
             Integer maxStrikes = (Integer) prefs.get("maxstrikes");
 
-            currentUser = new Provider(subclassId, verified, company, maxStrikes, null, id, cellphone, email, firstname, lastname, dob);
+            currentUser = new Provider(subclassId, verified, company, maxStrikes, null, id, cellphone, email, firstname, lastname, dob, null);
         }
 
         return currentUser;
