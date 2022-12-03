@@ -11,8 +11,8 @@ public class Provider extends AppUser implements IDatabaseSubclassModel {
 
     public HashMap<Client, Integer> strikedUsers;
 
-    public Provider(Long id, boolean verified, String companyName, Integer maxStrikes, HashMap<Client, Integer> strikedUsers, Long app_user_id, String cellphone, String email, String firstname, String lastname, LocalDate dob) {
-        super(app_user_id, cellphone, email, firstname, lastname, dob);
+    public Provider(Long id, boolean verified, String companyName, Integer maxStrikes, HashMap<Client, Integer> strikedUsers, Long app_user_id, String cellphone, String email, String firstname, String lastname, LocalDate dob, String password) {
+        super(app_user_id, cellphone, email, firstname, lastname, dob, password);
         this.id = id;
         this.verified = verified;
         this.maxStrikes = maxStrikes;
@@ -21,8 +21,8 @@ public class Provider extends AppUser implements IDatabaseSubclassModel {
         this.strikedUsers = strikedUsers;
     }
 
-    public Provider(boolean verified, String companyName, Integer maxStrikes, HashMap<Client, Integer> strikedUsers, String cellphone, String email, String firstname, String lastname, LocalDate dob) {
-        this(null, verified, companyName, maxStrikes, strikedUsers, null, cellphone, email, firstname, lastname, dob);
+    public Provider(boolean verified, String companyName, Integer maxStrikes, HashMap<Client, Integer> strikedUsers, String cellphone, String email, String firstname, String lastname, LocalDate dob, String password) {
+        this(null, verified, companyName, maxStrikes, strikedUsers, null, cellphone, email, firstname, lastname, dob, password);
     }
 
     @Override

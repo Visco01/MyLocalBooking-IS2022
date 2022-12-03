@@ -2,21 +2,26 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-class APICall {
+class APICall<T> {
     private final String jwt;
-    private JsonObjectRequest request = null;
+    private boolean isArrayRequest = false;
+    private JsonObjectRequest objectRequest = null;
+    private JsonArrayRequest arrayRequest = null;
     private final String method;
     private final String requestBody;
     private final String url;
-    private RunOnResponse<JSONObject> runOnResponse = null;
+    private RunOnResponse<T> runOnResponse = null;
 
-    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<JSONObject> runOnResponse){
+    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> runOnResponse){
         this.jwt = jwt;
         this.method = method;
         this.requestBody = requestBody;
@@ -84,12 +89,12 @@ class APICall {
             jsonBody = getJsonBody(this.requestBody);
         }
 
-        this.request = new JsonObjectRequest(
+        this.objectRequest = new JsonObjectRequest(
                 requestMethod,
                 APICall.this.url,
                 jsonBody,
                 response -> {
-                    if(runOnResponse != null) runOnResponse.apply(response);
+                    if(runOnResponse != null) runOnResponse.apply((T) response);
                 },
                 error -> Log.i("APICall error", error.toString())
         ) {
@@ -109,7 +114,26 @@ class APICall {
         };
     }
 
+    private void call(){
+        this.arrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                APICall.this.url,
+                null,
+                response -> {
+                    if(runOnResponse != null) runOnResponse.apply((T) response);
+                },
+                error -> Log.i("APICall error", error.toString())
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + jwt);
+                return headers;
+            }
+        };
+    }
+
     public JsonObjectRequest getRequest(){
-        return this.request;
+        return this.objectRequest;
     }
 }

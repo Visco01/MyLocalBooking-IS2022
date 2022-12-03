@@ -1,6 +1,11 @@
 package uni.project.mylocalbooking.api;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.Collection;
+
+import uni.project.mylocalbooking.models.Establishment;
 
 class Utility {
 
@@ -13,7 +18,7 @@ class Utility {
         return password;
     }
 
-    public static void callAPI(String jwt, String requestBody, String url, String method, RunOnResponse<JSONObject> runOnResponse){
+    public static <T> void callAPI(String jwt, String requestBody, String url, String method, RunOnResponse<T> runOnResponse){
         if(jwt != null){
             APICall call;
             if(runOnResponse != null)
@@ -25,4 +30,8 @@ class Utility {
             LoginAPI.addWaitingRequest(requestBody, url, method, runOnResponse);
         }
     }
- }
+
+    public static Collection<Establishment> getOwnedEstablishmentData(JSONArray response) {
+        return null;
+    }
+}
