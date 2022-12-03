@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BlackList">
+    tools:context=".activities.provider.BlackListActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
@@ -14,5 +14,13 @@
 
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <include
+        android:id="@+id/navigation"
+        layout="@layout/element_bottom_navbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="@+id/recycleReview_blackList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.client.HomeClient;
 import uni.project.mylocalbooking.activities.client.ProfileClient;
+import uni.project.mylocalbooking.activities.provider.HomeProvider;
+import uni.project.mylocalbooking.activities.provider.ProfileProvider;
 
 public abstract class BaseNavigationActivity extends AppCompatActivity {
 
@@ -45,7 +47,18 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
                     intent = new Intent(getBaseContext(), ProfileClient.class);
                     startActivity(intent);
                     return true;
-                /* Other cases*/
+                // Reservations
+                case R.id.reservations:
+                    //intent = new Intent(getBaseContext(), TO-DO);
+                    return true;
+                case R.id.homeProvider:
+                    intent = new Intent(getBaseContext(), HomeProvider.class);
+                    startActivity(intent);
+                    return true;
+                case R.id.profileProvider:
+                    intent = new Intent(getBaseContext(), ProfileProvider.class);
+                    startActivity(intent);
+                    return true;
             }finish();
             return false;
         });
@@ -82,14 +95,20 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             }
         }
     }
-    /*
-     ## These methods MUST BE implemented in EVERY SINGLE ONE of its subclasses, which
-     means in EVERY Activity!! ##
+
+    /*                              !IMPORTANT!
+            ## These methods MUST BE implemented in EVERY SINGLE ONE of its subclasses, which
+            means in EVERY Activity!! ##
     */
-    // // Returns the layout id, that is used to manage the "inflation"
+
+    // Returns the layout id, that is used to manage the "inflation"
+    // As an example, return R.layout.activity_`class_name`
     public abstract int getContentViewId();
 
     // Returns the id in the navigation menu, used to set the correct item in the navbar
+    // If you are in the Change Credentials as a Client, you should put R.id.profileClient for example
+    // If you are making a reservation, the R.id.homeClient
+    // Else if you are writing a review, R.id.reservations
     protected abstract int getNavigationMenuItemId();
 
 }
