@@ -222,8 +222,8 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError) {
-        int appUserId = -1;
-        appUserId = (int) SessionPreferences.getUserPrefs().get("id");
+        long appUserId = -1;
+        appUserId = (Long) SessionPreferences.getUserPrefs().get("id");
         if(appUserId == -1 && onError != null){
             onError.apply(StatusCode.SESSION_PREFERENCES_NOT_FOUND);
             return;
@@ -236,11 +236,8 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
                     getSlotsByBlueprint(elem.blueprints, data1 -> {
 
-                    }, new APICallBack<StatusCode>() {
-                        @Override
-                        public void apply(StatusCode data) {
-                            if(onError != null) onError.apply(data);
-                        }
+                    }, data12 -> {
+                        if(onError != null) onError.apply(data12);
                     });
                 }
 
