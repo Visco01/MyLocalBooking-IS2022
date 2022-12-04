@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.models.AppUser;
@@ -233,11 +234,8 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 Collection<Establishment> ownedEstablishments = Utility.getOwnedEstablishmentData(response);
                 for(Establishment elem : ownedEstablishments){
 
-                    getSlotsByBlueprint(elem.blueprints, new APICallBack<Collection<SlotBlueprint>>() {
-                        @Override
-                        public void apply(Collection<SlotBlueprint> data) {
+                    getSlotsByBlueprint(elem.blueprints, data1 -> {
 
-                        }
                     }, new APICallBack<StatusCode>() {
                         @Override
                         public void apply(StatusCode data) {
@@ -253,7 +251,6 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         });
     }
 
-    //MANCANO LE RESERVATIONS
     private void getSlotsByBlueprint(Collection<SlotBlueprint> blueprints, APICallBack<Collection<SlotBlueprint>> onSuccess, APICallBack<StatusCode> onError){
         for(SlotBlueprint elem : blueprints){
             boolean isPeriodic = true;
@@ -275,8 +272,21 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 @Override
                 public void apply(JSONArray response) {
                     elem.slots = Utility.getSlots(response, elem);
-                    Log.i("slots", elem.slots.toString());
+                    getReservationsBySlot(elem.slots, data -> Log.i("reservations", data.toString()), data -> {
+                        if(onError != null) onError.apply(data);
+                    });
                 }
+            }, true);
+        }
+        if(onSuccess != null) onSuccess.apply(blueprints);
+    }
+
+    private void getReservationsBySlot(Collection<Slot> slots, APICallBack<HashSet<Client>> onSuccess, APICallBack<StatusCode> onError){
+        for(Slot elem : slots){
+            String url = MyLocalBookingAPI.apiPrefix + "reservations_by_slot_id/" + elem.getId();
+            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONArray>) response -> {
+                elem.reservations = Utility.getReservations(response);
+                if(onSuccess != null) onSuccess.apply(elem.reservations);
             }, true);
         }
     }

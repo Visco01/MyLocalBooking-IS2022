@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ManualSlot;
@@ -54,7 +55,7 @@ class Utility {
         }
     }
 
-    //mancano hashset weekdays
+    //mancano hashset weekdays, owner establishment
 
     public static Collection<Establishment> getOwnedEstablishmentData(JSONArray response) {
         Collection<Establishment> ownedEstablishments = new ArrayList<>();
@@ -164,5 +165,42 @@ class Utility {
             result = new ManualSlot(id, getTimeByString(fromTime), getTimeByString(toTime), slotId, LocalDate.of(Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2])), null, passwordProtected, null, blueprint);
         }
         return result;
+    }
+
+    public static HashSet<Client> getReservations(JSONArray response) {
+        HashSet<Client> reservations = new HashSet<>();
+        try {
+            for(int i = 0; i < response.length(); i++){
+                JSONObject jsonReservation = response.getJSONObject(i);
+                reservations.add(getReservation(jsonReservation));
+            }
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+        return reservations;
+    }
+
+    private static Client getReservation(JSONObject object) throws JSONException {
+        Long clientId = object.getLong("client_id");
+        JSONObject client = object.getJSONObject("client");
+        Float lat = null;
+        Float lng = null;
+
+        if(!client.isNull("lat"))
+            lat = (float) client.getDouble("lat");
+        if(!client.isNull("lng"))
+            lng = (float) client.getDouble("lng");
+
+        Coordinates coordinates = null;
+        if(lng != null && lat != null) coordinates = new Coordinates(lat, lng);
+        JSONObject appUser = client.getJSONObject("app_user");
+        Long appUserId = appUser.getLong("id");
+        String cellphone = appUser.getString("cellphone");
+        String password = appUser.getString("password_digest");
+        String email = appUser.getString("email");
+        String firstName = appUser.getString("firstname");
+        String lastName = appUser.getString("lastname");
+        String[] dob = appUser.getString("dob").split("-");
+        return new Client(clientId, coordinates, appUserId, cellphone, email, firstName, lastName, LocalDate.of(Integer.valueOf(dob[0]), Integer.valueOf(dob[1]), Integer.valueOf(dob[2])), password);
     }
 }
