@@ -216,8 +216,24 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public Establishment addEstablishment(Establishment establishment) {
-        return null;
+    public void addEstablishment(Establishment establishment, APICallBack<Establishment> onSuccess, APICallBack<StatusCode> onError) {
+        String url = MyLocalBookingAPI.apiPrefix + "create_establishments";
+        String requestBody = JSONBodyGenerator.generateAddEstablishmentBody(establishment);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", new RunOnResponse<JSONObject>() {
+            @Override
+            public void apply(JSONObject data){
+                try {
+                    String status = data.getString("status");
+                    if(status.equals("Created")){
+                        if(onSuccess != null) onSuccess.apply(establishment);
+                    }else{
+                        if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+                    }
+                } catch (JSONException e) {
+                    if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+                }
+            }
+        }, false);
     }
 
     @Override

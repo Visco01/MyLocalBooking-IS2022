@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
+import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlot;
@@ -98,5 +99,16 @@ class JSONBodyGenerator {
         return "{" +
                 "\"client_id\": " + clientId + ", " +
                 "\"slot_id\": " + slotId + "}";
+    }
+
+    //CHIEDERE PLACE_ID
+    public static String generateAddEstablishmentBody(Establishment establishment) {
+        return "{" +
+                "\"name\": \"" + establishment.name + "\", " +
+                "\"provider_id\": " + establishment.provider.getSubclassId() + ", " +
+                "\"lat\": " + establishment.position.latitude + ", " +
+                "\"lng\": " + establishment.position.longitude + ", " +
+                "\"place_id\": \"" + "place_id" + "\", " +
+                "\"address\": \"" + establishment.address + "\"" + "}";
     }
 }

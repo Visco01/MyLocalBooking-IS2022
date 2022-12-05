@@ -73,7 +73,7 @@ public interface IMyLocalBookingAPI{
      *       inserts the establishment in the db
      *       returns inserted establishment
      * */
-    Establishment addEstablishment(Establishment establishment);
+    void addEstablishment(Establishment establishment, APICallBack<Establishment> onSuccess, APICallBack<StatusCode> onError);
     void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError);
 
     /*
