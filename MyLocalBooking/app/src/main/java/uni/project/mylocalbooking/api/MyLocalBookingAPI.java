@@ -106,7 +106,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     public void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError){
         getUserByCellphone(cellphone, data -> {
             try {
-                if(AESCrypt.encrypt(password).equals(data.password + "\n")){
+                if(AESCrypt.encrypt(password).equals(data.password)){
                     SessionPreferences.setUserPrefs(data);
                     if(onSuccess != null) onSuccess.apply(data);
                 }else{
