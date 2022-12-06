@@ -225,6 +225,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 try {
                     String status = data.getString("status");
                     if(status.equals("Created")){
+                        establishment.setId(data.getLong("establishment_id"));
                         if(onSuccess != null) onSuccess.apply(establishment);
                     }else{
                         if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
