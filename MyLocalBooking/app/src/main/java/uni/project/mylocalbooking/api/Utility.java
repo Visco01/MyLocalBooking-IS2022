@@ -1,7 +1,5 @@
 package uni.project.mylocalbooking.api;
 
-import android.util.Log;
-
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -78,8 +76,9 @@ class Utility {
         float lat = (float) object.getDouble("lat");
         float lng = (float) object.getDouble("lng");
         String address = object.getString("address");
+        String placeId = object.getString("place_id");
 
-        newEstablishment = new Establishment(establishmentId, name, address, new Coordinates(lat, lng));
+        newEstablishment = new Establishment(establishmentId, name, address, new Coordinates(lat, lng), placeId);
         newEstablishment.blueprints = new ArrayList<>();
 
         JSONArray slotBlueprints = object.getJSONArray("slot_blueprints");
