@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/successHeader"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_margin="0dp"
+        android:background="@color/booking_color"
+        android:gravity="center"
+        android:text="Success"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/successMessage"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:layout_margin="0dp"
+        android:gravity="center"
+        android:text="@string/addedEst"
+        android:textAlignment="center" />
+
+</LinearLayout>
