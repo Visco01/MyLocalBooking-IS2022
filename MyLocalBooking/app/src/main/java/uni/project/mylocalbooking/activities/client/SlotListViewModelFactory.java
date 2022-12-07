@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,7 @@ public class SlotListViewModelFactory implements ViewModelProvider.Factory {
         private final MutableLiveData<LocalDate> startOfWeek = new MutableLiveData<>();
         private final MutableLiveData<DayOfWeek> currentDayOfWeek = new MutableLiveData<>();
         private final MutableLiveData<LocalDate> currentDay = new MutableLiveData<>();
-        private final MutableLiveData<List<SlotBlueprint>> blueprints = new MutableLiveData<>();
+        private final MutableLiveData<Collection<SlotBlueprint>> blueprints = new MutableLiveData<>();
 
         private final SlotListViewModelFactory.IReservationErrorListener reservationErrorListener;
 
@@ -51,7 +52,7 @@ public class SlotListViewModelFactory implements ViewModelProvider.Factory {
             this.reservationErrorListener = reservationErrorListener;
         }
 
-        public void setBlueprints(List<SlotBlueprint> blueprints) {
+        public void setBlueprints(Collection<SlotBlueprint> blueprints) {
             this.blueprints.setValue(blueprints);
         }
 
