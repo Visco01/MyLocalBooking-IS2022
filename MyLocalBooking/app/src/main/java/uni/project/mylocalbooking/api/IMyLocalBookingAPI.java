@@ -131,7 +131,7 @@ public interface IMyLocalBookingAPI{
      */
     void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
     Collection<Establishment> getClosestEstablishments();
-    void setPreferredPosition(Coordinates position);
+    void setPreferredPosition(Coordinates position, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError);
     void rateEstablishment(Establishment establishment, int rating, String comment/*, boolean anonymous*/);
 
 

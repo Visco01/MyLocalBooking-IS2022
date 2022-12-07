@@ -444,8 +444,27 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void setPreferredPosition(Coordinates position) {
-
+    public void setPreferredPosition(Coordinates position, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError) {
+        Long clientId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
+        if(clientId == -1 && onError != null){
+            onError.apply(StatusCode.SESSION_PREFERENCES_NOT_FOUND);
+            return;
+        }
+        String url = MyLocalBookingAPI.apiPrefix + "set_preferred_position/" + clientId;
+        String requestBody = JSONBodyGenerator.getSetPreferredPositionBody(position);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", new RunOnResponse<JSONObject>() {
+            @Override
+            public void apply(JSONObject data){
+                try {
+                    String status = data.getString("status");
+                    Log.i("client id on set position", String.valueOf(clientId));
+                    if(status.equals("OK") && onSuccess != null) onSuccess.apply(null);
+                    else if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+                } catch (JSONException e) {
+                    if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+                }
+            }
+        }, false);
     }
 
     @Override
