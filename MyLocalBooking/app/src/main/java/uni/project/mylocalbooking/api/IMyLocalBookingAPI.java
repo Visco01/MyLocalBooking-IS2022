@@ -16,7 +16,6 @@ public interface IMyLocalBookingAPI{
         return new MyLocalBookingAPI();
     }
 
-    void getUserIdByCellphone(String cellphone, AppUser user, APICallBack<Void> callBack);
     // GENERIC
     /*
      * pre:
@@ -26,15 +25,16 @@ public interface IMyLocalBookingAPI{
      *       registers the user in the db with password_digest as the encrypted password
      *       sets the CURRENT_USER to the inserted user
      * */
-    void register(AppUser user, String password, APICallBack<AppUser> callBack);
+    void register(AppUser user, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError);
 
+    void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError);
     /*
      * pre:
      *       CURRENT_USER.id != null
      * post:
      *       updates the app_user's password_digest to the encrypted password
      * */
-    void changeUserPassword(String password, APICallBack<Void> callBack);
+    void changeUserPassword(String password, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError);
 
 
 
@@ -51,7 +51,7 @@ public interface IMyLocalBookingAPI{
     *       updates the slot's password_digest
     *       sets slot.passwordProtected to true
     * */
-    void setSlotPassword(String password, Slot slot, APICallBack<Slot> callBack);
+    void setSlotPassword(String password, Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
 
     // PROVIDER
     // all calls in this section implicitly have the precondition
@@ -64,7 +64,7 @@ public interface IMyLocalBookingAPI{
      *       updates the slot's password_digest
      *       sets slot.passwordProtected to true
      * */
-    void addBlueprint(SlotBlueprint blueprint, APICallBack<SlotBlueprint> callBack);
+    void addBlueprint(SlotBlueprint blueprint, APICallBack<SlotBlueprint> onSuccess, APICallBack<StatusCode> onError);
 
     /*
      * pre:
@@ -73,8 +73,8 @@ public interface IMyLocalBookingAPI{
      *       inserts the establishment in the db
      *       returns inserted establishment
      * */
-    Establishment addEstablishment(Establishment establishment);
-    Collection<Establishment> GetOwnedEstablishments();
+    void addEstablishment(Establishment establishment, APICallBack<Establishment> onSuccess, APICallBack<StatusCode> onError);
+    void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError);
 
     /*
      * pre:
@@ -124,12 +124,12 @@ public interface IMyLocalBookingAPI{
     *               1.2) slot.passwordProtected and valid password and password matches
     *                   insert reservation in the db
     */
-    void addReservation(Slot slot, String password, APICallBack<Slot> callBack);
+    void addReservation(Slot slot, String password, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
     /*
      *   post:
      *       removes the reservation if exists
      */
-    void cancelReservation(Slot slot, APICallBack<Slot> callBack);
+    void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
     Collection<Establishment> getClosestEstablishments();
     void setPreferredPosition(Coordinates position);
     void rateEstablishment(Establishment establishment, int rating, String comment/*, boolean anonymous*/);

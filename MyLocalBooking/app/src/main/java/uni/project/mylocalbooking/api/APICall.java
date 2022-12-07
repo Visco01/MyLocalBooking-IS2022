@@ -2,35 +2,33 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-class APICall {
+class APICall<T, K> {
     private final String jwt;
-    private JsonObjectRequest request = null;
+    private boolean isArrayRequest = false;
+    private K request = null;
     private final String method;
     private final String requestBody;
     private final String url;
-    private RunOnResponse<JSONObject> runOnResponse = null;
+    private RunOnResponse<T> runOnResponse = null;
 
-    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<JSONObject> runOnResponse){
+    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> runOnResponse, boolean isArray){
         this.jwt = jwt;
         this.method = method;
         this.requestBody = requestBody;
         this.url = url;
         this.runOnResponse = runOnResponse;
-        init();
-    }
 
-    public APICall(String jwt, String method, String requestBody, String url){
-        this.jwt = jwt;
-        this.method = method;
-        this.requestBody = requestBody;
-        this.url = url;
-        init();
+        if(isArray) call();
+        else init();
     }
 
     private void init(){
@@ -84,12 +82,12 @@ class APICall {
             jsonBody = getJsonBody(this.requestBody);
         }
 
-        this.request = new JsonObjectRequest(
+        this.request = (K) new JsonObjectRequest(
                 requestMethod,
                 APICall.this.url,
                 jsonBody,
                 response -> {
-                    if(runOnResponse != null) runOnResponse.apply(response);
+                    if(runOnResponse != null) runOnResponse.apply((T) response);
                 },
                 error -> Log.i("APICall error", error.toString())
         ) {
@@ -109,7 +107,26 @@ class APICall {
         };
     }
 
-    public JsonObjectRequest getRequest(){
+    private void call(){
+        this.request = (K) new JsonArrayRequest(
+                Request.Method.GET,
+                APICall.this.url,
+                null,
+                (JSONArray response) -> {
+                    if(runOnResponse != null) runOnResponse.apply((T) response);
+                },
+                error -> Log.i("APICall error", error.toString())
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + jwt);
+                return headers;
+            }
+        };
+    }
+
+    public K getRequest(){
         return this.request;
     }
 }

@@ -35,6 +35,7 @@ public class SessionPreferences {
             editor.putString("lastname", user.lastname);
             editor.putString("email", user.email);
             editor.putLong("dob", user.dob.toEpochDay());
+            editor.putString("password", user.password);
 
             if(user instanceof Client){
                 Client client = (Client) user;
