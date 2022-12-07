@@ -16,8 +16,8 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <include
-        android:id="@+id/navigation"
-        layout="@layout/element_bottom_navbar"
+        android:id="@+id/navigationProvider"
+        layout="@layout/element_bottom_navbar_provider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

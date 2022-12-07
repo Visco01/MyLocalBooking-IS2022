@@ -23,45 +23,74 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        System.out.println(UserTest.getType());
+
         // AppCompact super
         super.onCreate(savedInstanceState);
 
         // Set the layout of the corresponding Activity
         setContentView(getContentViewId());
 
-        navigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        if (UserTest.getType() == "Client"){
+            navigationView = (BottomNavigationView) findViewById(R.id.navigationClient);
+            // Default position
+            navigationView.setSelectedItemId(R.id.homeClient);
 
-        // Default position
-        navigationView.setSelectedItemId(R.id.homeClient);
+            // Listener
+            navigationView.setOnItemSelectedListener(item -> {
+                switch (item.getItemId()) {
+                    // Home Client
+                    case R.id.homeClient:
+                        intent = new Intent(getBaseContext(), HomeClientActivity.class);
+                        startActivity(intent);
+                        return true;
+                    // Profile Client
+                    case R.id.profileClient:
+                        intent = new Intent(getBaseContext(), ProfileClientActivity.class);
+                        startActivity(intent);
+                        return true;
+                    // Reservations
+                    case R.id.reservations:
+                        //intent = new Intent(getBaseContext(), TO-DO);
+                        return true;
+                }finish();
+                return false;
+            });
+        }
 
-        // Listener
-        navigationView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                // Home Client
-                case R.id.homeClient:
-                    intent = new Intent(getBaseContext(), HomeClientActivity.class);
-                    startActivity(intent);
-                    return true;
-                // Profile Client
-                case R.id.profileClient:
-                    intent = new Intent(getBaseContext(), ProfileClientActivity.class);
-                    startActivity(intent);
-                    return true;
-                // Reservations
-                case R.id.reservations:
-                    //intent = new Intent(getBaseContext(), TO-DO);
-                    return true;
-                case R.id.homeProvider:
-                    intent = new Intent(getBaseContext(), HomeProviderActivity.class);
-                    startActivity(intent);
-                    return true;
-                case R.id.profileProvider:
-                    intent = new Intent(getBaseContext(), ProfileProviderActivity.class);
-                    startActivity(intent);
-                    return true;
-            }finish();
-            return false;
-        });
+        else if (UserTest.getType() == "Provider"){
+
+            navigationView = (BottomNavigationView) findViewById(R.id.navigationProvider);
+
+            System.out.println(navigationView);
+            System.out.println(R.id.navigationProvider);
+            // Default position
+            navigationView.setSelectedItemId(R.id.homeProvider);
+
+            // Listener
+            navigationView.setOnItemSelectedListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.homeProvider:
+                        intent = new Intent(getBaseContext(), HomeProviderActivity.class);
+                        startActivity(intent);
+                        return true;
+                    case R.id.profileProvider:
+                        intent = new Intent(getBaseContext(), ProfileProviderActivity.class);
+                        startActivity(intent);
+                        return true;
+                    case R.id.establishments:
+                        // TO-DO
+                        return true;
+                }finish();
+                return false;
+            });
+        }
+
+        else{
+            System.out.println("User Type Error");
+        }
+
+
     }
 
     // Highlights the current item on the NavBar the first time the user launches the app

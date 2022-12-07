@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
+import uni.project.mylocalbooking.activities.UserTest;
 
 public class HomeClientActivity extends BaseNavigationActivity {
 
@@ -12,6 +13,8 @@ public class HomeClientActivity extends BaseNavigationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        UserTest.setType("Client");
+        System.out.println(UserTest.getType());
         super.onCreate(savedInstanceState);
         username = findViewById(R.id.userFullName);
         username.setText("Ciccio pasticcio");

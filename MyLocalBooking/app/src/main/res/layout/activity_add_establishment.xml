@@ -129,8 +129,8 @@
         app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
 
     <include
-        android:id="@+id/navigation"
-        layout="@layout/element_bottom_navbar"
+        android:id="@+id/navigationProvider"
+        layout="@layout/element_bottom_navbar_provider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent" />

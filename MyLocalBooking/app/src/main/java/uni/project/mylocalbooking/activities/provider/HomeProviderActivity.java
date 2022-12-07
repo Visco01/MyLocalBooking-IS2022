@@ -8,6 +8,7 @@ import android.widget.Button;
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
+import uni.project.mylocalbooking.activities.UserTest;
 
 public class HomeProviderActivity extends BaseNavigationActivity {
 
@@ -15,7 +16,9 @@ public class HomeProviderActivity extends BaseNavigationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        UserTest.setType("Provider");
         super.onCreate(savedInstanceState);
+
         addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override

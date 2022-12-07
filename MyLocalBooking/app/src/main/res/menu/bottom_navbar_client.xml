@@ -2,26 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/homeClient"
-        android:title="Home Client"
+        android:title="Home"
         android:icon="@drawable/ic_baseline_home_24"/>
 
     <item
         android:id="@+id/profileClient"
-        android:title="Profile Client"
+        android:title="Profile"
         android:icon="@drawable/ic_baseline_person_24"/>
 
     <item
         android:id="@+id/reservations"
         android:title="Reservations"
         android:icon="@drawable/ic_baseline_dynamic_feed_24"/>
-
-    <item
-        android:id="@+id/homeProvider"
-        android:title="Home Provider"
-        android:icon="@drawable/ic_baseline_home_24"/>
-
-    <item
-        android:id="@+id/profileProvider"
-        android:title="Profile Provider"
-        android:icon="@drawable/ic_baseline_person_24"/>
 </menu>
