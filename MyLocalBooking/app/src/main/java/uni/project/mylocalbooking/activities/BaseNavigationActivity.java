@@ -10,10 +10,10 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.activities.client.HomeClient;
-import uni.project.mylocalbooking.activities.client.ProfileClient;
-import uni.project.mylocalbooking.activities.provider.HomeProvider;
-import uni.project.mylocalbooking.activities.provider.ProfileProvider;
+import uni.project.mylocalbooking.activities.client.HomeClientActivity;
+import uni.project.mylocalbooking.activities.client.ProfileClientActivity;
+import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
+import uni.project.mylocalbooking.activities.provider.ProfileProviderActivity;
 
 public abstract class BaseNavigationActivity extends AppCompatActivity {
 
@@ -39,12 +39,12 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 // Home Client
                 case R.id.homeClient:
-                    intent = new Intent(getBaseContext(), HomeClient.class);
+                    intent = new Intent(getBaseContext(), HomeClientActivity.class);
                     startActivity(intent);
                     return true;
                 // Profile Client
                 case R.id.profileClient:
-                    intent = new Intent(getBaseContext(), ProfileClient.class);
+                    intent = new Intent(getBaseContext(), ProfileClientActivity.class);
                     startActivity(intent);
                     return true;
                 // Reservations
@@ -52,11 +52,11 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
                     //intent = new Intent(getBaseContext(), TO-DO);
                     return true;
                 case R.id.homeProvider:
-                    intent = new Intent(getBaseContext(), HomeProvider.class);
+                    intent = new Intent(getBaseContext(), HomeProviderActivity.class);
                     startActivity(intent);
                     return true;
                 case R.id.profileProvider:
-                    intent = new Intent(getBaseContext(), ProfileProvider.class);
+                    intent = new Intent(getBaseContext(), ProfileProviderActivity.class);
                     startActivity(intent);
                     return true;
             }finish();

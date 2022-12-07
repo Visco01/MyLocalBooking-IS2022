@@ -18,21 +18,28 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activities.provider.ProfileProvider"
+            android:name=".activities.provider.AddEstablishmentActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".activities.provider.HomeProvider"
+            android:name=".activities.provider.ProfileProviderActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".activities.client.ProfileClient"
+            android:name=".activities.provider.HomeProviderActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.client.ProfileClientActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -46,7 +53,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".activities.client.HomeClient"
+            android:name=".activities.client.HomeClientActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

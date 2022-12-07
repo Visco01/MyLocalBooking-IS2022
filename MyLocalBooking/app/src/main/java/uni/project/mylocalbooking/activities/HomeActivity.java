@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import uni.project.mylocalbooking.activities.client.HomeClient;
+import uni.project.mylocalbooking.activities.client.HomeClientActivity;
 import uni.project.mylocalbooking.activities.client.LandReviewActivity;
 import uni.project.mylocalbooking.activities.provider.BlackListActivity;
 
@@ -104,7 +104,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     protected void openHomeClient(){
-        Intent intent = new Intent(this, HomeClient.class);
+        Intent intent = new Intent(this, HomeClientActivity.class);
         System.out.println("Opening Home Client Comir");
         startActivity(intent);
     }

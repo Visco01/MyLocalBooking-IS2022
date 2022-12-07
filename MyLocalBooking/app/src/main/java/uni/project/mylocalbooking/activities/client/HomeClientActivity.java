@@ -6,7 +6,7 @@ import android.widget.TextView;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 
-public class HomeClient extends BaseNavigationActivity {
+public class HomeClientActivity extends BaseNavigationActivity {
 
     private TextView username; // Testing
 
