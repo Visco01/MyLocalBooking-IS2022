@@ -7,12 +7,14 @@ public class WaitingRequest<T> {
     private final String requestBody;
     private final String method;
     private final RunOnResponse<T> runOnResponse;
+    private final boolean isArray;
 
-    public WaitingRequest(String url, String requestBody, String method, RunOnResponse<T> runOnResponse) {
+    public WaitingRequest(String url, String requestBody, String method, RunOnResponse<T> runOnResponse, boolean isArray) {
         this.url = url;
         this.requestBody = requestBody;
         this.method = method;
         this.runOnResponse = runOnResponse;
+        this.isArray = isArray;
     }
 
     public String getUrl(){
@@ -30,4 +32,6 @@ public class WaitingRequest<T> {
     public RunOnResponse<T> getRunOnResponse(){
         return this.runOnResponse;
     }
+
+    public boolean isArray(){ return this.isArray; }
 }

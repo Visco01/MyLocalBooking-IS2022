@@ -8,7 +8,7 @@ public abstract class Slot extends DatabaseModel {
     public final LocalDate date;
     public boolean passwordProtected;
     public AppUser owner;
-    public final HashSet<Client> reservations;
+    public HashSet<Client> reservations;
     public final SlotBlueprint blueprint;
 
     public Slot(Long id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, SlotBlueprint blueprint) {

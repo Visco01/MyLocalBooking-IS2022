@@ -9,12 +9,14 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.IDatabaseSubclassModel;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlot;
@@ -74,7 +76,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 if (onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
                 e.printStackTrace();
             }
-        });
+        }, false);
     }
 
     @Override
@@ -97,10 +99,9 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
             }
             SessionPreferences.setUserPrefs(user);
-        });
+        }, false);
     }
 
-    //dato id est popolare collection
     @Override
     public void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError){
         getUserByCellphone(cellphone, data -> {
@@ -119,6 +120,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         });
     }
 
+    //dato id est popolare collection
     @Override
     public void changeUserPassword(String new_password, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError) {
         String cellphone = (String) SessionPreferences.getUserPrefs().get("cellphone");
@@ -140,7 +142,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             } catch (JSONException e) {
                 if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
             }
-        });
+        }, false);
     }
 
     @Override
@@ -160,7 +162,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             } catch (JSONException e) {
                 if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
             }
-        });
+        }, false);
     }
 
     @Override
@@ -186,7 +188,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             } catch (JSONException e) {
                 if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
             }
-        });
+        }, false);
     }
 
     private void addSlot(Slot slot, String password, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError){
@@ -211,30 +213,97 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             } catch (JSONException e) {
                 if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
             }
-        });
+        }, false);
     }
 
     @Override
-    public Establishment addEstablishment(Establishment establishment) {
-        return null;
+    public void addEstablishment(Establishment establishment, APICallBack<Establishment> onSuccess, APICallBack<StatusCode> onError) {
+        String url = MyLocalBookingAPI.apiPrefix + "create_establishments";
+        String requestBody = JSONBodyGenerator.generateAddEstablishmentBody(establishment);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", new RunOnResponse<JSONObject>() {
+            @Override
+            public void apply(JSONObject data){
+                try {
+                    String status = data.getString("status");
+                    if(status.equals("Created")){
+                        establishment.setId(data.getLong("establishment_id"));
+                        if(onSuccess != null) onSuccess.apply(establishment);
+                    }else{
+                        if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+                    }
+                } catch (JSONException e) {
+                    if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+                }
+            }
+        }, false);
     }
 
     @Override
     public void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError) {
-        /*int provider_id = -1;
-        provider_id = (int) SessionPreferences.getUserPrefs().get("id");
-        if(provider_id == -1 && onError != null){
+        long appUserId = -1;
+        appUserId = (Long) SessionPreferences.getUserPrefs().get("id");
+        if(appUserId == -1 && onError != null){
             onError.apply(StatusCode.SESSION_PREFERENCES_NOT_FOUND);
             return;
         }
-        String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + provider_id;
-        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", new RunOnResponse<JSONArray>() {
-            @Override
-            public void apply(JSONArray response) {
-                Collection<Establishment> ownedEstablishments = new ArrayList<>();
-                ownedEstablishments = Utility.getOwnedEstablishmentData(response);
+        getProviderByAppUserId((long) appUserId, data -> {
+            String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + data;
+            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONArray>) response -> {
+                Collection<Establishment> ownedEstablishments = Utility.getOwnedEstablishmentData(response);
+                for(Establishment elem : ownedEstablishments){
+
+                    getSlotsByBlueprint(elem.blueprints, data1 -> {
+
+                    }, data12 -> {
+                        if(onError != null) onError.apply(data12);
+                    });
+                }
+
+                if(onSuccess != null) onSuccess.apply(ownedEstablishments);
+            }, true);
+        }, data -> {
+            if(onError != null) onError.apply(data);
+        });
+    }
+
+    private void getSlotsByBlueprint(Collection<SlotBlueprint> blueprints, APICallBack<Collection<SlotBlueprint>> onSuccess, APICallBack<StatusCode> onError){
+        for(SlotBlueprint elem : blueprints){
+            boolean isPeriodic = true;
+            if(elem instanceof ManualSlotBlueprint) isPeriodic = false;
+
+            SlotBlueprint temp;
+            String type = "";
+            if(isPeriodic){
+                temp = (PeriodicSlotBlueprint) elem;
+                type = "periodic";
             }
-        });*/
+            else {
+                temp = (ManualSlotBlueprint) elem;
+                type = "manual";
+            }
+
+            String url = MyLocalBookingAPI.apiPrefix + "concrete_slot_by_blueprint_id/" + type + "/" + ((IDatabaseSubclassModel) temp).getSubclassId();
+            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", new RunOnResponse<JSONArray>() {
+                @Override
+                public void apply(JSONArray response) {
+                    elem.slots = Utility.getSlots(response, elem);
+                    getReservationsBySlot(elem.slots, data -> Log.i("reservations", data.toString()), data -> {
+                        if(onError != null) onError.apply(data);
+                    });
+                }
+            }, true);
+        }
+        if(onSuccess != null) onSuccess.apply(blueprints);
+    }
+
+    private void getReservationsBySlot(Collection<Slot> slots, APICallBack<HashSet<Client>> onSuccess, APICallBack<StatusCode> onError){
+        for(Slot elem : slots){
+            String url = MyLocalBookingAPI.apiPrefix + "reservations_by_slot_id/" + elem.getId();
+            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONArray>) response -> {
+                elem.reservations = Utility.getReservations(response);
+                if(onSuccess != null) onSuccess.apply(elem.reservations);
+            }, true);
+        }
     }
 
     @Override
@@ -294,7 +363,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             } catch (JSONException e) {
                 if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
             }
-        });
+        }, false);
     }
 
     private void getClientByAppUserId(Long appUserId, APICallBack<Long> onSuccess, APICallBack<StatusCode> onError){
@@ -310,7 +379,23 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             } catch (JSONException e) {
                 if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
             }
-        });
+        }, false);
+    }
+
+    private void getProviderByAppUserId(Long appUserId, APICallBack<Long> onSuccess, APICallBack<StatusCode> onError){
+        String url = MyLocalBookingAPI.apiPrefix + "provider_by_app_user_id/" + appUserId.toString();
+        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONObject>) response -> {
+            try {
+                String status = response.getString("status");
+                if(status.equals("OK")){
+                    if(onSuccess != null) onSuccess.apply(Long.valueOf(response.getString("provider_id")));
+                }else{
+                    if(onError != null) onError.apply(StatusCode.NOT_FOUND);
+                }
+            } catch (JSONException e) {
+                if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+            }
+        }, false);
     }
 
     private void getSlotPasswordById(Long slotId, APICallBack<String> onSuccess, APICallBack<StatusCode> onError){
@@ -326,7 +411,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             } catch (JSONException e) {
                 if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
             }
-        });
+        }, false);
     }
 
     @Override
@@ -350,7 +435,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                 } catch (JSONException e) {
                     if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
                 }
-            });
+            }, false);
         }, onError);
     }
 

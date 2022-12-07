@@ -11,31 +11,24 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-class APICall<T> {
+class APICall<T, K> {
     private final String jwt;
     private boolean isArrayRequest = false;
-    private JsonObjectRequest objectRequest = null;
-    private JsonArrayRequest arrayRequest = null;
+    private K request = null;
     private final String method;
     private final String requestBody;
     private final String url;
     private RunOnResponse<T> runOnResponse = null;
 
-    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> runOnResponse){
+    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> runOnResponse, boolean isArray){
         this.jwt = jwt;
         this.method = method;
         this.requestBody = requestBody;
         this.url = url;
         this.runOnResponse = runOnResponse;
-        init();
-    }
 
-    public APICall(String jwt, String method, String requestBody, String url){
-        this.jwt = jwt;
-        this.method = method;
-        this.requestBody = requestBody;
-        this.url = url;
-        init();
+        if(isArray) call();
+        else init();
     }
 
     private void init(){
@@ -89,7 +82,7 @@ class APICall<T> {
             jsonBody = getJsonBody(this.requestBody);
         }
 
-        this.objectRequest = new JsonObjectRequest(
+        this.request = (K) new JsonObjectRequest(
                 requestMethod,
                 APICall.this.url,
                 jsonBody,
@@ -115,11 +108,11 @@ class APICall<T> {
     }
 
     private void call(){
-        this.arrayRequest = new JsonArrayRequest(
+        this.request = (K) new JsonArrayRequest(
                 Request.Method.GET,
                 APICall.this.url,
                 null,
-                response -> {
+                (JSONArray response) -> {
                     if(runOnResponse != null) runOnResponse.apply((T) response);
                 },
                 error -> Log.i("APICall error", error.toString())
@@ -133,7 +126,7 @@ class APICall<T> {
         };
     }
 
-    public JsonObjectRequest getRequest(){
-        return this.objectRequest;
+    public K getRequest(){
+        return this.request;
     }
 }
