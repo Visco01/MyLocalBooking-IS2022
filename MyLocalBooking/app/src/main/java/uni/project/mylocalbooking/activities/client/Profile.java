@@ -9,16 +9,24 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.ChangePasswordActivity;
 
-public class Profile extends AppCompatActivity {
+public class Profile extends BaseNavigationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
     }
 
+    // Returns the layout id, that is used by the super-class to manage the inflation
+    public int getContentViewId(){
+        return R.layout.activity_profile;
+    }
+
+    // Returns the id in the navigation menu
+    public int getNavigationMenuItemId(){
+        return R.id.profileClient;
+    }
 
 }

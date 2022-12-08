@@ -12,7 +12,7 @@ import java.util.List;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 
-public class BlackListActivity extends BaseNavigationActivity {
+public class BlackListActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
@@ -22,7 +22,7 @@ public class BlackListActivity extends BaseNavigationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_black_list);
         initData();
         initRecycleReview();
 
@@ -48,9 +48,6 @@ public class BlackListActivity extends BaseNavigationActivity {
         adapter.notifyDataSetChanged();
     }
 
-    public int getContentViewId(){ return R.layout.activity_black_list;}
-
-    protected int getNavigationMenuItemId(){ return R.id.profileProvider;}
 
 
 }

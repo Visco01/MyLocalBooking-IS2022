@@ -7,16 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import uni.project.mylocalbooking.activities.client.HomeClientActivity;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.client.LandReviewActivity;
-import uni.project.mylocalbooking.activities.client.MyBookings;
-import uni.project.mylocalbooking.activities.client.Profile;
 import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
 import uni.project.mylocalbooking.activities.provider.BlackListActivity;
-import uni.project.mylocalbooking.activities.provider.ProviderHomeActivity;
 
-import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 
 public class HomeActivity extends AppCompatActivity {
@@ -28,7 +23,6 @@ public class HomeActivity extends AppCompatActivity {
     private Button blackListBtn;
     private Button comirsHome;
     private Button comirsHome2;
-    private Button goMircosHome;
     private Button goHome;
     private Button goProfile;
     private Button goMyBookings;
@@ -43,34 +37,9 @@ public class HomeActivity extends AppCompatActivity {
         changePwdBtn = findViewById(R.id.change_pwd);
         reviewBtn = findViewById(R.id.make_review);
         changeDataOfBorn = findViewById(R.id.btn_change_DataOfBorn);
-        comirsHome = findViewById(R.id.btn_comirs_home_client);
         comirsHome2 = findViewById(R.id.btn_comirs_home_provider);
-        goMircosHome = findViewById(R.id.go_mirco_home);
         goHome = findViewById(R.id.go_client_home);
-        goProfile = findViewById(R.id.go_profile);
-        goMyBookings = findViewById(R.id.go_myBookings);
 
-        goMyBookings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openMyBookings();
-            }
-        });
-
-        goProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openProfile();
-            }
-        });
-
-        goMircosHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, ProviderHomeActivity.class);
-                startActivity(intent);
-            }
-        });
 
         goHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,21 +83,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        comirsHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { openHomeClient(); }
-        });
-
         comirsHome2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { openHomeProvider(); }
         });
     }
 
-    protected void openProfile() {
-        Intent intent = new Intent(HomeActivity.this, Profile.class);
-        startActivity(intent);
-    }
 
     protected void openHome() {
         Intent intent = new Intent(this, RecycleRview_establishment.class);
@@ -160,19 +120,10 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected void openHomeClient(){
-        Intent intent = new Intent(this, HomeClientActivity.class);
-        startActivity(intent);
-    }
-
     protected void openHomeProvider(){
         Intent intent = new Intent(this, HomeProviderActivity.class);
         startActivity(intent);
     }
 
-    protected void openMyBookings() {
-        Intent intent = new Intent(this, MyBookings.class);
-        startActivity(intent);
-    }
 
 }

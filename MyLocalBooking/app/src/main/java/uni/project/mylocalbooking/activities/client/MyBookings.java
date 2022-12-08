@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 
-public class MyBookings extends AppCompatActivity {
+public class MyBookings extends BaseNavigationActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
@@ -21,7 +22,6 @@ public class MyBookings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_bookings);
 
         initData();
         initRecyckeRview();
@@ -47,5 +47,15 @@ public class MyBookings extends AppCompatActivity {
         myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "In cueo da to mare", "10.00"));
         myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "In cueo da to mare", "10.00"));
 
+    }
+
+    // Returns the layout id, that is used by the super-class to manage the inflation
+    public int getContentViewId(){
+        return R.layout.activity_my_bookings;
+    }
+
+    // Returns the id in the navigation menu
+    public int getNavigationMenuItemId(){
+        return R.id.reservations;
     }
 }

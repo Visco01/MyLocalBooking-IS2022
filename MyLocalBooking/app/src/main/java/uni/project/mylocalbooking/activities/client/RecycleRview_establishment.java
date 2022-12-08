@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.activities.BaseNavigationActivity;
+import uni.project.mylocalbooking.activities.UserTest;
 
-public class RecycleRview_establishment extends AppCompatActivity {
+public class RecycleRview_establishment extends BaseNavigationActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
@@ -20,8 +22,8 @@ public class RecycleRview_establishment extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        UserTest.setType("Client");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycle_rview_establishment);
 
         initData();
         initRecycleRview();
@@ -51,4 +53,14 @@ public class RecycleRview_establishment extends AppCompatActivity {
 
 
     }
+
+    public int getContentViewId(){
+        return R.layout.activity_recycle_rview_establishment;
+    }
+
+    // Returns the id in the navigation menu
+    public int getNavigationMenuItemId(){
+        return R.id.homeClient;
+    }
+
 }
