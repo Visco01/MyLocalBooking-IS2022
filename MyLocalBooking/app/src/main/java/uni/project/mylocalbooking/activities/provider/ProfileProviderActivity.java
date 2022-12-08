@@ -1,13 +1,11 @@
-package uni.project.mylocalbooking.activities.client;
-
-import androidx.appcompat.app.AppCompatActivity;
+package uni.project.mylocalbooking.activities.provider;
 
 import android.os.Bundle;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 
-public class LandReviewActivity extends BaseNavigationActivity {
+public class ProfileProviderActivity extends BaseNavigationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,10 +13,10 @@ public class LandReviewActivity extends BaseNavigationActivity {
     }
 
     public int getContentViewId(){
-        return R.layout.activity_land_review;
+        return R.layout.activity_profile_provider;
     }
 
     public int getNavigationMenuItemId(){
-        return R.id.reservations;
+        return R.id.profileProvider;
     }
 }

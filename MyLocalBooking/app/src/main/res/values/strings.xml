@@ -39,5 +39,7 @@
     <string name="desc_two">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
     <string name="desc_three">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
     <string name="desc_fourth">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
+    <string name="addedEst">Your establishment was successfully added! Click anywhere to go back to your home</string>
+    <string name="info">Se devi testare una funzionalità da questo menù e l\'app crasha/fallisce, clicca sui pulsanti in fondo e visita una delle home! Se con una fallisce, prova con l\'altra</string>
 
 </resources>

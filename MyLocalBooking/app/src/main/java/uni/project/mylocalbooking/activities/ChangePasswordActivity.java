@@ -6,11 +6,20 @@ import android.os.Bundle;
 
 import uni.project.mylocalbooking.R;
 
-public class ChangePasswordActivity extends AppCompatActivity {
+public class ChangePasswordActivity extends BaseNavigationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_password);
     }
+
+    public int getContentViewId(){ return R.layout.activity_change_password;}
+
+    protected int getNavigationMenuItemId(){
+        // if user.type == client
+            // return R.id.profileClient
+        // else
+            return R.id.profileProvider;
+    }
+
 }

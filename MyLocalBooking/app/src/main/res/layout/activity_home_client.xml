@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.client.HomeClient">
+    tools:context=".activities.client.HomeClientActivity">
 
     <View
         android:id="@+id/body"
@@ -184,5 +184,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <include
+        android:id="@+id/navigationClient"
+        layout="@layout/element_bottom_navbar_client"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="@+id/body" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

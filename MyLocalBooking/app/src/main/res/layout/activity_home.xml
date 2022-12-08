@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".Home">
 
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="41dp"
+        android:text="@string/info"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/change_pwd"
         android:layout_width="wrap_content"
@@ -13,10 +25,10 @@
         android:text="change password"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.857"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.09"></androidx.appcompat.widget.AppCompatButton>
+        app:layout_constraintVertical_bias="0.421"></androidx.appcompat.widget.AppCompatButton>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/make_review"
@@ -25,10 +37,10 @@
         android:text="Make a review"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.361"
+        app:layout_constraintHorizontal_bias="0.187"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45">
+        app:layout_constraintVertical_bias="0.499">
 
     </androidx.appcompat.widget.AppCompatButton>
 
@@ -74,7 +86,7 @@
         app:layout_constraintVertical_bias="0.604"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_comirs_home"
+        android:id="@+id/btn_comirs_home_client"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Comir's Home Client"
@@ -84,6 +96,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.872">
+
+
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_comirs_home_provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comir's Home Provider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.216"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.976">
 
 
     </androidx.appcompat.widget.AppCompatButton>

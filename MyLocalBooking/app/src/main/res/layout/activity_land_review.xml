@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/sfondo_local_booking"
-    tools:context=".LoginActivity">
+    tools:context=".activities.client.LandReviewActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -74,5 +74,17 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <include
+        android:id="@+id/navigationClient"
+        layout="@layout/element_bottom_navbar_client"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
 
 </LinearLayout>
