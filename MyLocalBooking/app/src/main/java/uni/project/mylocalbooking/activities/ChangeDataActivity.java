@@ -14,7 +14,7 @@ import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
 
-public class ChangeDataActivity extends BaseNavigationActivity {
+public class ChangeDataActivity extends AppCompatActivity {
 
     private EditText oldBornDate;
     private EditText newBornDate;
@@ -26,6 +26,7 @@ public class ChangeDataActivity extends BaseNavigationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_change_data);
 
         oldBornDate = findViewById(R.id.old_input_data);
         calendar = Calendar.getInstance();
@@ -108,12 +109,4 @@ public class ChangeDataActivity extends BaseNavigationActivity {
 
     }
 
-    public int getContentViewId(){ return R.layout.activity_change_data;}
-
-    protected int getNavigationMenuItemId(){
-        // if user.type == client
-            // return R.id.profileClient
-        // else
-            return R.id.profileProvider;
-    }
 }

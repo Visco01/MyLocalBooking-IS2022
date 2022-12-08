@@ -10,8 +10,9 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.activities.client.HomeClientActivity;
-import uni.project.mylocalbooking.activities.client.ProfileClientActivity;
+import uni.project.mylocalbooking.activities.client.MyBookings;
+import uni.project.mylocalbooking.activities.client.Profile;
+import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 import uni.project.mylocalbooking.activities.provider.ProfileProviderActivity;
 
@@ -41,17 +42,18 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     // Home Client
                     case R.id.homeClient:
-                        intent = new Intent(getBaseContext(), HomeClientActivity.class);
+                        intent = new Intent(getBaseContext(), RecycleRview_establishment.class);
                         startActivity(intent);
                         return true;
                     // Profile Client
                     case R.id.profileClient:
-                        intent = new Intent(getBaseContext(), ProfileClientActivity.class);
+                        intent = new Intent(getBaseContext(), Profile.class);
                         startActivity(intent);
                         return true;
                     // Reservations
                     case R.id.reservations:
-                        //intent = new Intent(getBaseContext(), TO-DO);
+                        intent = new Intent(getBaseContext(), MyBookings.class);
+                        startActivity(intent);
                         return true;
                 }finish();
                 return false;

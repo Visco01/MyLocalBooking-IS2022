@@ -1,32 +1,32 @@
 package uni.project.mylocalbooking.activities.client;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
-import uni.project.mylocalbooking.activities.UserTest;
+import uni.project.mylocalbooking.activities.ChangePasswordActivity;
 
-public class HomeClientActivity extends BaseNavigationActivity {
-
-    private TextView username; // Testing
+public class Profile extends BaseNavigationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        UserTest.setType("Client");
-        System.out.println(UserTest.getType());
         super.onCreate(savedInstanceState);
-        username = findViewById(R.id.userFullName);
-        username.setText("Ciccio pasticcio");
     }
 
     // Returns the layout id, that is used by the super-class to manage the inflation
     public int getContentViewId(){
-        return R.layout.activity_home_client;
+        return R.layout.activity_profile;
     }
 
     // Returns the id in the navigation menu
     public int getNavigationMenuItemId(){
-        return R.id.homeClient;
+        return R.id.profileClient;
     }
+
 }

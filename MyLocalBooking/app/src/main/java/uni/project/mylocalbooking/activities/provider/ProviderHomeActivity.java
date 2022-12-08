@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking.activities;
+package uni.project.mylocalbooking.activities.provider;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,12 +6,11 @@ import android.os.Bundle;
 
 import uni.project.mylocalbooking.R;
 
-public class ChangePasswordActivity extends AppCompatActivity {
+public class ProviderHomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_password);
+        setContentView(R.layout.activity_provider_home);
     }
-
 }

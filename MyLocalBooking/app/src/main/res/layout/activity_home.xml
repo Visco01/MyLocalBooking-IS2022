@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home">
+    tools:context="uni.project.mylocalbooking.activities.HomeActivity">
 
     <TextView
         android:id="@+id/info"
@@ -86,21 +86,6 @@
         app:layout_constraintVertical_bias="0.604"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_comirs_home_client"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Comir's Home Client"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.758"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.872">
-
-
-    </androidx.appcompat.widget.AppCompatButton>
-
-    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_comirs_home_provider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -112,6 +97,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.976">
 
+    </androidx.appcompat.widget.AppCompatButton>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/go_client_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="client home"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.228"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.604">
 
     </androidx.appcompat.widget.AppCompatButton>
 
