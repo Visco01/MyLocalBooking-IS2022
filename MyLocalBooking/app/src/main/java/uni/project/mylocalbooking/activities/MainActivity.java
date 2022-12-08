@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import uni.project.mylocalbooking.R;
 
+
 public class MainActivity extends AppCompatActivity {
 
     ViewPager mSlideViewPager;
