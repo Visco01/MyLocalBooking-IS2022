@@ -12,12 +12,17 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
 
+import java.util.Collection;
 import java.util.List;
 
 import uni.project.mylocalbooking.MockAPI;
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.PasswordInputDialogFragment;
 import uni.project.mylocalbooking.fragments.PasswordRequestDialogFragment;
+import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
@@ -39,8 +44,8 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         });
         viewModel = new ViewModelProvider(this, viewModelFactory).get(SlotListViewModelFactory.SlotListViewModel.class);
 
-        // TODO: get blueprints
-        List<SlotBlueprint> blueprints = MockAPI.generatePeriodicData();
+        Establishment currentEstablishment = ((MyLocalBooking) getApplication()).establishments.get(savedInstanceState.getLong("establishment_id"));
+        Collection<SlotBlueprint> blueprints = currentEstablishment.blueprints;
 
         viewModel.setBlueprints(blueprints);
 

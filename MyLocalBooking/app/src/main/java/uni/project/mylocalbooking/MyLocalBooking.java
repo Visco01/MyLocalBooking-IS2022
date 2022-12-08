@@ -9,11 +9,13 @@ import java.util.Map;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
+import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.Provider;
 
 public class MyLocalBooking extends Application {
     private static Context context;
     private static AppUser currentUser;
+    public static Map<Long, Establishment> establishments;
 
     public void onCreate() {
         super.onCreate();
