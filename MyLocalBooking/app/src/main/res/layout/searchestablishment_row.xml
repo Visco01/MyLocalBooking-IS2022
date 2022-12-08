@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/inactive"
+        >
+        
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="40dp"
+            android:background="@drawable/button_begin"
+            android:backgroundTint="@color/white"
+            android:layout_margin="8dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewBackground"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="6dp"
+                app:cardCornerRadius="20dp">
+
+                <ImageView
+                    android:id="@+id/imageView1_se"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_baseline_event_note_24">
+
+                </ImageView>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tittle_se"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tittle"
+                android:textColor="@color/light_purple"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="100dp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/location_se"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location"
+                android:textColor="@color/light_purple"
+                android:textSize="17dp"
+                android:textStyle="bold"
+                android:layout_marginTop="35dp"
+                android:layout_marginLeft="100dp">
+
+            </TextView>
+
+        </androidx.cardview.widget.CardView>
+
+        
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -40,4 +40,8 @@
     <string name="desc_three">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
     <string name="desc_fourth">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
 
+    <string name="home_text">Home</string>
+    <string name="profile_text">Profile</string>
+    <string name="Available_Booking">Available Booking</string>
+
 </resources>

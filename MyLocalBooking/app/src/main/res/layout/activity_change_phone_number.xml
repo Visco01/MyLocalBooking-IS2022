@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/sfondo_local_booking"
-    tools:context=".ChangePhoneNumber">
+    tools:context="uni.project.mylocalbooking.activities.ChangePhoneNumberActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

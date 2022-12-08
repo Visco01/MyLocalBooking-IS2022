@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/navbar_client_home"
+        android:title="Home"
+        android:icon="@drawable/ic_navbar_client_home">
+    </item>
+
+    <item android:id="@+id/navbar_client_prenotationsearch"
+        android:title="Search"
+        android:icon="@drawable/ic_navbar_client_prenotationsearch">
+    </item>
+
+    <item android:id="@+id/navbar_client_profile"
+        android:title="Profile"
+        android:icon="@drawable/ic_navbar_client_profile">
+    </item>
+
+</menu>

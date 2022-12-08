@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/sfondo_local_booking"
-    tools:context=".LoginActivity">
+    tools:context="uni.project.mylocalbooking.activities.client.ClientRegistrationActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

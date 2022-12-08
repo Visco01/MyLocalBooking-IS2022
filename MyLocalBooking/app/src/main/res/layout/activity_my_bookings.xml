@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="uni.project.mylocalbooking.activities.provider.BlackListActivity">
+    android:background="@drawable/sfondo_my_bookings"
+    tools:context=".activities.client.MyBookings">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
+        android:id="@+id/my_bookings_recyclerView"
         android:layout_height="match_parent"
-        android:id="@+id/recycleReview_blackList"
-        >
-
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="200dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
