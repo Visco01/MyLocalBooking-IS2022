@@ -20,7 +20,7 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.activities.client.SlotListViewModelFactory;
+import uni.project.mylocalbooking.activities.client.SlotListViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +30,7 @@ import uni.project.mylocalbooking.activities.client.SlotListViewModelFactory;
 public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdapter.IWeekdayPickerListener {
     private static final String MIN_START_OF_WEEK_ARG = "minStartOfWeek";
     private static final String INITIAL_WEEK_ARG = "initialWeek";
-    private SlotListViewModelFactory.SlotListViewModel viewModel;
+    private SlotListViewModel viewModel;
     private LocalDate minStartOfWeek;
     private LocalDate initialWeek;
 
@@ -49,7 +49,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(requireActivity()).get(SlotListViewModelFactory.SlotListViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(SlotListViewModel.class);
 
         if(getArguments() != null) {
             minStartOfWeek = getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(MIN_START_OF_WEEK_ARG)));

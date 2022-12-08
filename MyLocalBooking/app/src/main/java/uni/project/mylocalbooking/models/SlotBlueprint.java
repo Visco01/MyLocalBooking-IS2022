@@ -1,13 +1,10 @@
 package uni.project.mylocalbooking.models;
 
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 
 public abstract class SlotBlueprint extends DatabaseModel {
