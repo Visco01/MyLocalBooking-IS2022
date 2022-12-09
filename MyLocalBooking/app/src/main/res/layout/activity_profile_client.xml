@@ -116,7 +116,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_margin="8dp"
                                 android:layout_marginBottom="8dp"
-                                android:text="Settings"
+                                android:text="Edit"
                                 android:textAlignment="center"
                                 android:textColor="@color/black"
                                 android:textSize="13dp"
@@ -355,7 +355,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="TopoGigioArrosto@youporn.it"
+                            android:text="GinoRossi@gmail.com"
                             android:textAlignment="viewEnd"
                             android:textSize="18dp"></TextView>
 

@@ -31,7 +31,6 @@ public class BlackListActivity extends AppCompatActivity {
     private void initData() {
         blackList = new ArrayList<>();
 
-        //blackList.add(new Model(R.drawable.ic_baseline_person_24, "Antonio Labranca", "sonoUnaMerda@gmail.com"));
         blackList.add(new Model(R.drawable.ic_baseline_person_24, "Pietro Visconti", "visco00@gmail.com"));
         blackList.add(new Model(R.drawable.ic_baseline_person_24, "Pietro Donega", "pdonega2000@gmail.com"));
         blackList.add(new Model(R.drawable.ic_baseline_person_24, "Nicola Marizza", "marizzaNicola@gmail.com"));
