@@ -29,10 +29,10 @@
                 android:id="@+id/loginText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Owner Registration"
+                android:text="Provider Registration"
                 android:textAlignment="center"
                 android:textColor="@color/booking_color"
-                android:textSize="36sp"
+                android:textSize="30sp"
                 android:textStyle="bold"></TextView>
 
             <EditText
@@ -54,6 +54,17 @@
                 android:drawableLeft="@drawable/ic_baseline_person_24"
                 android:drawablePadding="8dp"
                 android:hint="Surname"
+                android:padding="8dp"
+                android:textColor="@color/black"></EditText>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/button_begin"
+                android:drawableLeft="@drawable/ic_baseline_date_range_24"
+                android:drawablePadding="8dp"
+                android:hint="company name"
                 android:padding="8dp"
                 android:textColor="@color/black"></EditText>
 
@@ -89,7 +100,7 @@
                 android:drawableLeft="@drawable/ic_baseline_date_range_24"
                 android:drawablePadding="8dp"
                 android:padding="9dp"
-                android:hint="Date of born"
+                android:hint="Birthday"
                 android:inputType="date"
                 android:textColor="@color/black"
                 android:clickable="false"
@@ -117,7 +128,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/button_confirm"
-                android:text="Conferm"
+                android:text="Confirm"
                 android:textColor="@color/white">
 
             </androidx.appcompat.widget.AppCompatButton>

@@ -28,7 +28,7 @@
                 android:id="@+id/ChangeDataOfBorn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Change Born data"
+                android:text="Change birthday"
                 android:textAlignment="center"
                 android:textColor="@color/booking_color"
                 android:textSize="36sp"

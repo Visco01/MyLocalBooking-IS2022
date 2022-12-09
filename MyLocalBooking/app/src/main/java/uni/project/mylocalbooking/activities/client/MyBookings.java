@@ -41,11 +41,10 @@ public class MyBookings extends BaseNavigationActivity {
     private void initData() {
 
         myBookingsList = new ArrayList<>();
-        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "In cueo da to mare", "10.00"));
-        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "In cueo da to mare", "10.00"));
-        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "In cueo da to mare", "10.00"));
-        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "In cueo da to mare", "10.00"));
-        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "In cueo da to mare", "10.00"));
+        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
+        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
+        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
+        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
 
     }
 

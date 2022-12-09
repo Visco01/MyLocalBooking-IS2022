@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Booker Registration"
+                android:text="Client Registration"
                 android:textAlignment="center"
                 android:textColor="@color/booking_color"
                 android:textSize="36sp"
@@ -115,7 +115,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/button_confirm"
-                android:text="Conferm"
+                android:text="Confirm"
                 android:textColor="@color/white">
 
             </androidx.appcompat.widget.AppCompatButton>
