@@ -10,40 +10,30 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ListView;
 
-import java.util.List;
 
-import uni.project.mylocalbooking.MockAPI;
+import java.util.ArrayList;
+
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.fragments.PasswordInputDialogFragment;
 import uni.project.mylocalbooking.fragments.PasswordRequestDialogFragment;
+import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListActivity extends AppCompatActivity implements SlotListAdapter.IListener {
-    private SlotListViewModelFactory.SlotListViewModel viewModel;
+    private SlotListViewModel viewModel;
+    private Establishment currentEstablishment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slot_list);
 
-        SlotListViewModelFactory viewModelFactory = new SlotListViewModelFactory((slot, code) -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // TODO: be more specific with error message
-            builder.setMessage(R.string.reservation_error_generic_message)
-                    .setTitle(R.string.reservation_error);
-            builder.create();
-        });
-        viewModel = new ViewModelProvider(this, viewModelFactory).get(SlotListViewModelFactory.SlotListViewModel.class);
-
-        // TODO: get blueprints
-        List<SlotBlueprint> blueprints = MockAPI.generatePeriodicData();
-
-        viewModel.setBlueprints(blueprints);
-
+        viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
+        viewModel.setBlueprints(new ArrayList<>());
         SlotListAdapter adapter = new SlotListAdapter(this);
 
         viewModel.getCurrentDay().observe(this, date -> {
@@ -51,7 +41,23 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
             findViewById(R.id.no_available_slots).setVisibility(adapter.filteredSlots.isEmpty() ? View.VISIBLE : View.GONE);
         });
 
-        ((ListView) getWindow().getDecorView().getRootView().findViewById(R.id.slot_list)).setAdapter(adapter);
+        viewModel.getReservationOutcome().observe(this, code -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            // TODO: be more specific with error message
+            builder.setMessage(R.string.reservation_error_generic_message)
+                    .setTitle(R.string.reservation_error);
+            builder.create();
+
+        });
+
+        currentEstablishment = ((MyLocalBooking) getApplication()).establishments.get(savedInstanceState.getLong("current_establishment"));
+        viewModel.setBlueprints(currentEstablishment.blueprints);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong("current_establishment", currentEstablishment.getId());
     }
 
     @Nullable
