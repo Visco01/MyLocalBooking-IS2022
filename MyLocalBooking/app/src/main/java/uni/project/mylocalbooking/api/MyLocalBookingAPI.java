@@ -249,16 +249,15 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + data;
             Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONArray>) response -> {
                 Collection<Establishment> ownedEstablishments = Utility.getOwnedEstablishmentData(response);
-                for(Establishment elem : ownedEstablishments){
+                for(Establishment establishment : ownedEstablishments){
 
-                    getSlotsByBlueprint(elem.blueprints, data1 -> {
-
-                    }, data12 -> {
-                        if(onError != null) onError.apply(data12);
+                    getSlotsByBlueprint(establishment.blueprints, blueprints -> {
+                        establishment.blueprints.addAll(blueprints);
+                    }, statusCode -> {
+                        if(onError != null) onError.apply(statusCode);
                     });
+                    if(onSuccess != null) onSuccess.apply(ownedEstablishments);
                 }
-
-                if(onSuccess != null) onSuccess.apply(ownedEstablishments);
             }, true);
         }, data -> {
             if(onError != null) onError.apply(data);
