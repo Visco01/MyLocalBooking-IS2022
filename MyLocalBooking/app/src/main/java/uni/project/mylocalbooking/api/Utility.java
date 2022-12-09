@@ -53,8 +53,6 @@ class Utility {
         }
     }
 
-    //mancano hashset weekdays, owner establishment
-
     public static Collection<Establishment> getOwnedEstablishmentData(JSONArray response) {
         Collection<Establishment> ownedEstablishments = new ArrayList<>();
         try {

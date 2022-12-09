@@ -265,32 +265,17 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     private void getSlotsByBlueprint(Collection<SlotBlueprint> blueprints, APICallBack<Collection<SlotBlueprint>> onSuccess, APICallBack<StatusCode> onError){
-        for(SlotBlueprint elem : blueprints){
-            boolean isPeriodic = true;
-            if(elem instanceof ManualSlotBlueprint) isPeriodic = false;
-
-            SlotBlueprint temp;
-            String type = "";
-            if(isPeriodic){
-                temp = (PeriodicSlotBlueprint) elem;
-                type = "periodic";
-            }
-            else {
-                temp = (ManualSlotBlueprint) elem;
-                type = "manual";
-            }
-
-            String url = MyLocalBookingAPI.apiPrefix + "concrete_slot_by_blueprint_id/" + type + "/" + ((IDatabaseSubclassModel) temp).getSubclassId();
-            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", new RunOnResponse<JSONArray>() {
-                @Override
-                public void apply(JSONArray response) {
-                    elem.slots = Utility.getSlots(response, elem);
-                    getReservationsBySlot(elem.slots, data -> Log.i("reservations", data.toString()), data -> {
-                        if(onError != null) onError.apply(data);
-                    });
-                }
+        for(SlotBlueprint blueprint : blueprints){
+            String type = (blueprint instanceof ManualSlotBlueprint) ? "periodic" : "manual";
+            String url = MyLocalBookingAPI.apiPrefix + "concrete_slot_by_blueprint_id/" + type + "/" + ((IDatabaseSubclassModel) blueprint).getSubclassId();
+            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONArray>) response -> {
+                blueprint.slots = Utility.getSlots(response, blueprint);
+                getReservationsBySlot(blueprint.slots, data -> Log.i("reservations", data.toString()), data -> {
+                    if(onError != null) onError.apply(data);
+                });
             }, true);
         }
+
         if(onSuccess != null) onSuccess.apply(blueprints);
     }
 
