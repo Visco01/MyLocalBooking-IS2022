@@ -156,12 +156,12 @@ class Utility {
         if(password != null) passwordProtected = true;
         if(blueprint instanceof PeriodicSlotBlueprint){
             Long id = object.getLong("id");
-            result = new PeriodicSlot(id, slotId, LocalDate.of(Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2])), null, passwordProtected, null, blueprint);
+            result = new PeriodicSlot(id, slotId, LocalDate.of(Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2])), null, passwordProtected, null, (PeriodicSlotBlueprint) blueprint);
         }else{
             Long id = object.getLong("id");
             String fromTime = object.getString("fromtime");
             String toTime = object.getString("totime");
-            result = new ManualSlot(id, getTimeByString(fromTime), getTimeByString(toTime), slotId, LocalDate.of(Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2])), null, passwordProtected, null, blueprint);
+            result = new ManualSlot(id, getTimeByString(fromTime), getTimeByString(toTime), slotId, LocalDate.of(Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2])), null, passwordProtected, null, (ManualSlotBlueprint) blueprint);
         }
         return result;
     }

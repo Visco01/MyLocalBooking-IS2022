@@ -120,6 +120,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         });
     }
 
+    //dato id est popolare collection
     @Override
     public void changeUserPassword(String new_password, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError) {
         String cellphone = (String) SessionPreferences.getUserPrefs().get("cellphone");

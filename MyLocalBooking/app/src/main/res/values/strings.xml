@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">MyLocalBooking</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_reservation_button_description">Add reservation</string>
+    <string name="dash">-</string>
+    <string name="places_available_of">places available of</string>
+    <string name="people_attending">people attending</string>
+    <string name="plus">+</string>
+    <string name="password">Password</string>
+    <string name="slot_password_required">Slot password required</string>
+    <string name="choose_slot_password">Choose a password</string>
+    <string name="confirm">confirm</string>
+    <string name="cancel">cancel</string>
+    <string name="question_set_slot_password">Do you wish to set a password for this slot?</string>
+    <string name="set_slot_password_title">Slot password</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="create_slot">create slot</string>
+    <string name="available_for_booking">Available for booking</string>
+    <string name="create_manual_slot_dialog_title">Choose your slot</string>
+    <string name="no_available_slots">No available slots for this day</string>
+    <string name="reservation_error">Reservation error</string>
+    <string name="reservation_error_generic_message">An error occurred while trying to make this reservation, please try again.</string>
 </resources>
