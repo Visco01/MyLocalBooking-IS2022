@@ -132,9 +132,9 @@ class Utility {
 
     private static HashSet<DayOfWeek> getDaysOfWeek(int weekDays){
         HashSet<DayOfWeek> map = new HashSet<>();
-        for(int i = 1; i <= 64; i*=2){
-            if((i & weekDays) != 0)
-                map.add(DayOfWeek.of(6 - i));
+        for(int i = 0; i < 7; i++){
+            if(((int)Math.pow(2, i) & weekDays) != 0)
+                map.add(DayOfWeek.of(7 - i));
         }
         return map;
     }
