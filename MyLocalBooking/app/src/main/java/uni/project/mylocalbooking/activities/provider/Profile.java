@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking.activities.client;
+package uni.project.mylocalbooking.activities.provider;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
-import uni.project.mylocalbooking.activities.ChangePasswordActivity;
 
 public class Profile extends BaseNavigationActivity {
 
@@ -16,14 +15,13 @@ public class Profile extends BaseNavigationActivity {
 
     }
 
-    // Returns the layout id, that is used by the super-class to manage the inflation
-    public int getContentViewId(){
-        return R.layout.activity_profile_client;
+    @Override
+    public int getContentViewId() {
+        return R.layout.activity_profile_provider;
     }
 
-    // Returns the id in the navigation menu
-    public int getNavigationMenuItemId(){
+    @Override
+    protected int getNavigationMenuItemId() {
         return R.id.profileClient;
     }
-
 }
