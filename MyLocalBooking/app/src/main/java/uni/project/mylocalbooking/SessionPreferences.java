@@ -29,18 +29,24 @@ public class SessionPreferences {
         try {
             SharedPreferences.Editor editor = getEditor();
             if(user.getId() != null)
-                editor.putInt("id", Math.toIntExact(user.getId()));
+                editor.putLong("id", user.getId());
             editor.putString("cellphone", user.cellphone);
-            editor.putString("username", user.firstname);
+            editor.putString("firstname", user.firstname);
             editor.putString("lastname", user.lastname);
+            editor.putString("email", user.email);
+            editor.putLong("dob", user.dob.toEpochDay());
+            editor.putString("password", user.password);
 
             if(user instanceof Client){
                 Client client = (Client) user;
+                editor.putLong("subclass_id", client.getSubclassId());
                 editor.putString("usertype", "client");
                 editor.putFloat("lat", client.position.latitude);
                 editor.putFloat("lng", client.position.longitude);
             }else if(user instanceof Provider){
                 Provider provider = (Provider) user;
+                editor.putLong("subclass_id", provider.getSubclassId());
+                editor.putBoolean("verified", provider.verified);
                 editor.putString("usertype", "provider");
                 editor.putString("companyname", provider.companyName);
                 editor.putInt("maxstrikes", provider.maxStrikes);
