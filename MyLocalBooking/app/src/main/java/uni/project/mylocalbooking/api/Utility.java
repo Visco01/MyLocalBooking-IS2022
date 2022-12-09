@@ -92,27 +92,36 @@ class Utility {
     private static SlotBlueprint getSlotBlueprintByJSONObject(JSONObject object, Establishment establishment) throws JSONException{
         SlotBlueprint result;
         Long slotBlueprintId = object.getLong("id");
-        int weekDays = object.getInt("weekdays");
-        int reservationLimit = object.getInt("reservationlimit");
-        String[] fromDate = object.getString("fromdate").split("-");
-        String[] toDate = object.getString("todate").split("-");
+        HashSet<DayOfWeek> weekDays = getDaysOfWeek(object.getInt("weekdays"));
+        Integer reservationLimit = object.optInt("reservationlimit", -1);
+        if (reservationLimit < 0)
+            reservationLimit = null;
+        LocalDate fromDate = extractDate(object, "fromdate");
+        LocalDate toDate = extractDate(object, "todate");
 
-        JSONObject concreteBlueprint = object.getJSONObject("periodic_slot_blueprint");
-
-        Long concreteBlueprintId = concreteBlueprint.getLong("id");
-        if(concreteBlueprintId != null){
+        JSONObject concreteBlueprint = object.optJSONObject("periodic_slot_blueprint");
+        if(concreteBlueprint != null){
+            Long concreteBlueprintId = concreteBlueprint.getLong("id");
             String fromTime = concreteBlueprint.getString("fromtime");
             String toTime = concreteBlueprint.getString("totime");
-            result = new PeriodicSlotBlueprint(concreteBlueprintId, getTimeByString(fromTime), getTimeByString(toTime), slotBlueprintId, establishment, reservationLimit, /*getDaysOfWeek(weekDays)*/null, LocalDate.of(Integer.valueOf(fromDate[0]), Integer.valueOf(fromDate[1]), Integer.valueOf(fromDate[2])), LocalDate.of(Integer.valueOf(toDate[0]), Integer.valueOf(toDate[1]), Integer.valueOf(toDate[2])));
+            result = new PeriodicSlotBlueprint(concreteBlueprintId, getTimeByString(fromTime), getTimeByString(toTime), slotBlueprintId, establishment, reservationLimit, weekDays, fromDate, toDate);
         } else {
             concreteBlueprint = object.getJSONObject("manual_slot_blueprint");
-            concreteBlueprintId = concreteBlueprint.getLong("id");
+            Long concreteBlueprintId = concreteBlueprint.getLong("id");
             String openTime = concreteBlueprint.getString("opentime");
             String closeTime = concreteBlueprint.getString("closetime");
             int maxDuration = concreteBlueprint.getInt("maxduration");
-            result = new ManualSlotBlueprint(concreteBlueprintId, getTimeByString(openTime), getTimeByString(closeTime), Duration.ofMinutes(maxDuration), slotBlueprintId, establishment, reservationLimit, /*getDaysOfWeek(weekDays)*/null, LocalDate.of(Integer.valueOf(fromDate[0]), Integer.valueOf(fromDate[1]), Integer.valueOf(fromDate[2])), LocalDate.of(Integer.valueOf(toDate[0]), Integer.valueOf(toDate[1]), Integer.valueOf(toDate[2])));
+            result = new ManualSlotBlueprint(concreteBlueprintId, getTimeByString(openTime), getTimeByString(closeTime), Duration.ofMinutes(maxDuration), slotBlueprintId, establishment, reservationLimit, weekDays, fromDate, toDate);
         }
         return result;
+    }
+
+    private static LocalDate extractDate(JSONObject jsonBlueprint, String key) {
+        String strDate = jsonBlueprint.optString(key, "");
+        if (strDate.isEmpty())
+            return null;
+        String[] arrDate = strDate.split("-");
+        return LocalDate.of(Integer.valueOf(arrDate[0]), Integer.valueOf(arrDate[1]), Integer.valueOf(arrDate[2]));
     }
 
     private static LocalTime getTimeByString(String time){
@@ -149,11 +158,10 @@ class Utility {
         //Long id, LocalTime fromTime, LocalTime toTime, Long slot_id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, SlotBlueprint blueprint
         JSONObject slot = object.getJSONObject("slot");
         Long slotId = slot.getLong("id");
-        String password = slot.getString("password_digest");
         String[] date = slot.getString("date").split("-");
-        boolean passwordProtected = false;
+        String password = slot.optString("password_digest", "");
+        boolean passwordProtected = !password.isEmpty();
 
-        if(password != null) passwordProtected = true;
         if(blueprint instanceof PeriodicSlotBlueprint){
             Long id = object.getLong("id");
             result = new PeriodicSlot(id, slotId, LocalDate.of(Integer.valueOf(date[0]), Integer.valueOf(date[1]), Integer.valueOf(date[2])), null, passwordProtected, null, blueprint);
