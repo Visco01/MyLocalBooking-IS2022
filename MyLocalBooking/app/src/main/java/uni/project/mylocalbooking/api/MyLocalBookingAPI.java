@@ -2,6 +2,8 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 
+import com.android.volley.toolbox.JsonArrayRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -250,13 +252,11 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONArray>) response -> {
                 Collection<Establishment> ownedEstablishments = Utility.getOwnedEstablishmentData(response);
                 for(Establishment establishment : ownedEstablishments){
-
                     getSlotsByBlueprint(establishment.blueprints, blueprints -> {
                         establishment.blueprints.addAll(blueprints);
                     }, statusCode -> {
                         if(onError != null) onError.apply(statusCode);
                     });
-                    if(onSuccess != null) onSuccess.apply(ownedEstablishments);
                 }
             }, true);
         }, data -> {
@@ -265,27 +265,38 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     private void getSlotsByBlueprint(Collection<SlotBlueprint> blueprints, APICallBack<Collection<SlotBlueprint>> onSuccess, APICallBack<StatusCode> onError){
-        for(SlotBlueprint blueprint : blueprints){
+        BatchApiCall<JSONArray, JsonArrayRequest> batch = new BatchApiCall<>();
+        for(SlotBlueprint blueprint : blueprints) {
             String type = (blueprint instanceof ManualSlotBlueprint) ? "periodic" : "manual";
             String url = MyLocalBookingAPI.apiPrefix + "concrete_slot_by_blueprint_id/" + type + "/" + ((IDatabaseSubclassModel) blueprint).getSubclassId();
-            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONArray>) response -> {
+            batch.add(new APICall<>(MyLocalBookingAPI.jwt, null, url, "GET", response -> {
                 blueprint.slots = Utility.getSlots(response, blueprint);
-                getReservationsBySlot(blueprint.slots, data -> Log.i("reservations", data.toString()), data -> {
-                    if(onError != null) onError.apply(data);
-                });
-            }, true);
+                getReservationsBySlot(blueprint.slots, onError);
+            }));
         }
 
-        if(onSuccess != null) onSuccess.apply(blueprints);
+        try {batch.run();} catch (Exception e) {
+            onError.apply(StatusCode.REQUEST_INTERRUPTED);
+            return;
+        }
+
+        onSuccess.apply(blueprints);
     }
 
-    private void getReservationsBySlot(Collection<Slot> slots, APICallBack<HashSet<Client>> onSuccess, APICallBack<StatusCode> onError){
+    private void getReservationsBySlot(Collection<Slot> slots, APICallBack<StatusCode> onError){
+        BatchApiCall<JSONArray, JsonArrayRequest> batch = new BatchApiCall<>();
+
         for(Slot elem : slots){
             String url = MyLocalBookingAPI.apiPrefix + "reservations_by_slot_id/" + elem.getId();
-            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONArray>) response -> {
+            batch.add(new APICall<>(MyLocalBookingAPI.jwt, "GET", null, url, response -> {
                 elem.reservations = Utility.getReservations(response);
-                if(onSuccess != null) onSuccess.apply(elem.reservations);
-            }, true);
+            }));
+        }
+
+        try {
+            batch.run();
+        } catch (Exception e) {
+            onError.apply(StatusCode.REQUEST_INTERRUPTED);
         }
     }
 
