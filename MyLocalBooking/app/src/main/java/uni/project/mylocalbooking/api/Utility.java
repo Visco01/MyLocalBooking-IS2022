@@ -1,8 +1,13 @@
 package uni.project.mylocalbooking.api;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
@@ -38,19 +44,10 @@ class Utility {
     }
 
     public static <T> void callAPI(String jwt, String requestBody, String url, String method, RunOnResponse<T> runOnResponse, boolean isArray){
-        if(jwt != null){
-            APICall call;
-            if(isArray){
-                call = new APICall<JSONArray, JsonArrayRequest>(jwt, method, requestBody, url, (RunOnResponse<JSONArray>) runOnResponse, true);
-                RequestQueueSingleton.getInstance().add((Request<JsonArrayRequest>) call.getRequest());
-            }
-            else{
-                call = new APICall<JSONObject, JsonObjectRequest>(jwt, method, requestBody, url, (RunOnResponse<JSONObject>) runOnResponse, false);
-                RequestQueueSingleton.getInstance().add((Request<JsonObjectRequest>) call.getRequest());
-            }
-        }else{
-            LoginAPI.addWaitingRequest(requestBody, url, method, runOnResponse, isArray);
-        }
+        if (isArray)
+            new APICall<T, JsonArrayRequest>(jwt, method, requestBody, url, runOnResponse).call();
+        else
+            new APICall<T, JsonObjectRequest>(jwt, method, requestBody, url, runOnResponse).call();
     }
 
     public static Collection<Establishment> getOwnedEstablishmentData(JSONArray response) {
