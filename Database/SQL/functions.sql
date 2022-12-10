@@ -179,17 +179,20 @@ begin
 end;$$;
 
 
-create or replace function get_coordinates_distance(lat0 float, lng0 float, lat1 float, lng1 float)
-	returns float
+create or replace function get_coordinates_distance_meters(lat0 real, lng0 real, lat1 real, lng1 real)
+	returns int
 	language plpgsql
 as $$
 declare
-	p real = PI() / 180;
+	radius int = 6371;
+	multiplier real = PI()/180;
+	latDiff real = (MIN(lat0)-lat1) * multiplier;
+	lonDiff real = (MIN(lng0)-lng1) * multiplier;
+	formula1 real = SIN(latDiff/2) * SIN(latDiff/2) + COS(MIN(lat0) * multiplier) * COS(lat1 * multiplier) * SIN(lonDiff/2) * SIN(lonDiff/2);
+	formula2 real = 2 * ATAN(SQRT(formula1)/SQRT(1-formula1));
 begin
-	return 0.5 - c((lat1 - lat0) * p)/2 + 
-          c(lat0 * p) * c(lat1 * p) * 
-          (1 - c((lng1 - lng0) * p))/2;
-end;$$;
+	return radius * formula2 * 1000;
+end; $$;
 
 
 create or replace function get_remaining_reservations(base_slot_id bigint)
