@@ -45,9 +45,9 @@ class Utility {
 
     public static <T> void callAPI(String jwt, String requestBody, String url, String method, RunOnResponse<T> runOnResponse, boolean isArray){
         if (isArray)
-            new APICall<T, JsonArrayRequest>(jwt, method, requestBody, url, runOnResponse).call();
+            new APICall<T, JsonArrayRequest>(jwt, method, requestBody, url, runOnResponse, true).call();
         else
-            new APICall<T, JsonObjectRequest>(jwt, method, requestBody, url, runOnResponse).call();
+            new APICall<T, JsonObjectRequest>(jwt, method, requestBody, url, runOnResponse, false).call();
     }
 
     public static Collection<Establishment> getOwnedEstablishmentData(JSONArray response) {

@@ -4,4 +4,5 @@ import com.android.volley.toolbox.JsonRequest;
 
 public interface IBatchNode <T,K extends JsonRequest<?>> {
     void run() throws InterruptedException;
+    void waitNode() throws InterruptedException;
 }

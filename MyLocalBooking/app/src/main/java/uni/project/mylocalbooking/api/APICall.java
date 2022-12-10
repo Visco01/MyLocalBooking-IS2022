@@ -14,27 +14,31 @@ import java.util.Map;
 
 class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
     private final String jwt;
-    private K request = null;
-    private RunOnResponse<T> runOnResponse;
+    private K request;
+    private final RunOnResponse<T> runOnResponse;
     private final String method;
     private final String requestBody;
     private final String url;
     private final Boolean isArray;
+    private Boolean callLock = false;
 
-    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> runOnResponse){
+    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> ror, boolean isArray){
         this.jwt = jwt;
         this.method = method;
         this.requestBody = requestBody;
         this.url = url;
 
         this.runOnResponse = (response) -> {
-            if (runOnResponse != null)
-                runOnResponse.apply(response);
+            if (ror != null)
+                ror.apply(response);
 
-            this.notify();
+            synchronized (this) {
+                callLock = true;
+                notify();
+            }
         };
 
-        this.isArray = request instanceof JsonArrayRequest;
+        this.isArray = isArray;
 
         if (isArray)
             generateRequest();
@@ -87,13 +91,13 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
         generateRequest(Request.Method.DELETE);
     }
 
-    private void generateRequest(int requestMethod){
+    private K generateRequest(int requestMethod){
         JSONObject jsonBody = null;
         if(requestMethod != Request.Method.GET){
             jsonBody = getJsonBody(this.requestBody);
         }
 
-        this.request = (K) new JsonObjectRequest(
+        return (K) new JsonObjectRequest(
                 requestMethod,
                 APICall.this.url,
                 jsonBody,
@@ -118,8 +122,8 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
         };
     }
 
-    private void generateRequest(){
-        this.request = (K) new JsonArrayRequest(
+    private K generateRequest(){
+        return (K) new JsonArrayRequest(
                 Request.Method.GET,
                 APICall.this.url,
                 null,
@@ -155,7 +159,13 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
     }
 
     @Override
-    public void run() throws InterruptedException {
+    public void run() {
         call();
+    }
+
+    @Override
+    public synchronized void waitNode() throws InterruptedException {
+        while(!callLock)
+            wait();
     }
 }

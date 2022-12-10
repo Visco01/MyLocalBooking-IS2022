@@ -3,6 +3,7 @@ package uni.project.mylocalbooking.api;
 import android.util.Log;
 
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -243,7 +244,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError) {
         long appUserId = -1;
-        appUserId = (Long) SessionPreferences.getUserPrefs().get("id");
+        appUserId = (Long) 1901L;
         if(appUserId == -1 && onError != null){
             onError.apply(StatusCode.SESSION_PREFERENCES_NOT_FOUND);
             return;
@@ -268,15 +269,15 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     private void getSlotsByBlueprint(Collection<SlotBlueprint> blueprints, APICallBack<Collection<SlotBlueprint>> onSuccess, APICallBack<StatusCode> onError){
         BatchApiCall<JSONArray, JsonArrayRequest> batch = new BatchApiCall<>();
         for(SlotBlueprint blueprint : blueprints) {
-            String type = (blueprint instanceof ManualSlotBlueprint) ? "periodic" : "manual";
+            String type = (blueprint instanceof ManualSlotBlueprint) ? "manual" : "periodic";
             String url = MyLocalBookingAPI.apiPrefix + "concrete_slot_by_blueprint_id/" + type + "/" + ((IDatabaseSubclassModel) blueprint).getSubclassId();
-            batch.add(new APICall<>(MyLocalBookingAPI.jwt, null, url, "GET", response -> {
+            batch.add(new APICall<>(MyLocalBookingAPI.jwt, "GET", null, url, (RunOnResponse<JSONArray>) response -> {
                 blueprint.slots = Utility.getSlots(response, blueprint);
                 getReservationsBySlot(blueprint.slots, onError);
-            }));
+            }, true));
         }
 
-        try {batch.run();} catch (Exception e) {
+        try {batch.run();} catch (InterruptedException e) {
             onError.apply(StatusCode.REQUEST_INTERRUPTED);
             return;
         }
@@ -291,12 +292,12 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             String url = MyLocalBookingAPI.apiPrefix + "reservations_by_slot_id/" + elem.getId();
             batch.add(new APICall<>(MyLocalBookingAPI.jwt, "GET", null, url, response -> {
                 elem.reservations = Utility.getReservations(response);
-            }));
+            }, true));
         }
 
         try {
             batch.run();
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             onError.apply(StatusCode.REQUEST_INTERRUPTED);
         }
     }

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class BatchApiCall<T,K extends JsonRequest<?>> implements IBatchNode<T,K> {
     private final List<IBatchNode<T,K>> batch = new ArrayList<>();
+    private Boolean lock = false;
 
     public void add(IBatchNode<T,K> node) {
         batch.add(node);
@@ -14,14 +15,21 @@ public class BatchApiCall<T,K extends JsonRequest<?>> implements IBatchNode<T,K>
 
     @Override
     public void run() throws InterruptedException {
-        for(int i = 0; i < batch.size(); i++) {
-            IBatchNode<T,K> call = batch.get(i);
-            call.run();
-        }
+        for(IBatchNode<T,K> node : batch)
+            node.run();
 
         for(IBatchNode<T,K> node : batch)
-            node.wait();
+            node.waitNode();
 
-        this.notify();
+        synchronized (this) {
+            lock = true;
+            notify();
+        }
+    }
+
+    @Override
+    public synchronized void waitNode() throws InterruptedException {
+        while(!lock)
+            wait();
     }
 }

@@ -52,11 +52,11 @@ class LoginAPI {
         for(WaitingRequest elem : WaitingRequestsSingleton.getInstance()){
             APICall call;
             if(elem.isArray()){
-                call = new APICall<JSONArray, JsonArrayRequest>(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), elem.getRunOnResponse(), true);
+                call = new APICall<JSONArray, JsonArrayRequest>(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), (RunOnResponse<JSONArray>) elem.getRunOnResponse(), true);
                 RequestQueueSingleton.getInstance().add((Request<JsonArrayRequest>) call.getRequest());
             }
             else{
-                call = new APICall(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), elem.getRunOnResponse(), false);
+                call = new APICall<JSONObject, JsonObjectRequest>(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), (RunOnResponse<JSONObject>) elem.getRunOnResponse(), false);
                 RequestQueueSingleton.getInstance().add((Request<JsonObjectRequest>) call.getRequest());
             }
         }
