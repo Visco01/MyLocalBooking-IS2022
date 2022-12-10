@@ -5,6 +5,7 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
+import com.google.android.gms.common.api.UnsupportedApiCallException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,11 +29,12 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
         this.requestBody = requestBody;
         this.url = url;
 
+        final Object thisInstance = this;
         this.runOnResponse = (response) -> {
             if (ror != null)
                 ror.apply(response);
 
-            synchronized (this) {
+            synchronized (thisInstance) {
                 callLock = true;
                 notify();
             }
@@ -41,28 +43,25 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
         this.isArray = isArray;
 
         if (isArray)
-            generateRequest();
+            this.request = generateRequest();
         else
-            init();
+            this.request = init();
     }
 
-    private void init(){
+    private K init(){
         switch (this.method){
             case "GET":
-                get();
-                break;
+                return generateRequest(Request.Method.GET);
             case "POST":
-                post();
-                break;
+                return generateRequest(Request.Method.POST);
             case "PATCH":
-                patch();
-                break;
+                return generateRequest(Request.Method.PATCH);
             case "DELETE":
-                delete();
-                break;
+                return generateRequest(Request.Method.DELETE);
             default:
                 Log.e("APICall constructor error", "Missing type");
         }
+        return null;
     }
 
     private static JSONObject getJsonBody(String body){
@@ -73,22 +72,6 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
             e.printStackTrace();
         }
         return jsonBody;
-    }
-
-    private void get(){
-        generateRequest(Request.Method.GET);
-    }
-
-    private void post(){
-        generateRequest(Request.Method.POST);
-    }
-
-    private void patch(){
-        generateRequest(Request.Method.PATCH);
-    }
-
-    private void delete(){
-        generateRequest(Request.Method.DELETE);
     }
 
     private K generateRequest(int requestMethod){
