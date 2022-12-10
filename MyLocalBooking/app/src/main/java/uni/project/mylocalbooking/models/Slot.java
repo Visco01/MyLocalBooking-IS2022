@@ -7,7 +7,7 @@ import java.util.HashSet;
 public abstract class Slot extends DatabaseModel {
     public final LocalDate date;
     public boolean passwordProtected;
-    public final AppUser owner;
+    public AppUser owner;
     public HashSet<Client> reservations;
     public final SlotBlueprint blueprint;
 

@@ -1,3 +1,69 @@
 <resources>
     <string name="app_name">MyLocalBooking</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="title_activity_footer">Footer</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profile">Il tuo profilo</string>
+    <string name="anagraphic_data">I tuoi dati</string>
+    <string name="edit">Modifica</string>
+    <string name="user_full_name">TBD - User Fullname</string>
+    <string name="age">anni</string>
+    <string name="fav_position">Posizione Predefinita</string>
+    <string name="report">Segnala un problema / Invia un feedback</string>
+    <string name="logout">Logout</string>
+    //Headings
+    <string name="heading_one">Quick &amp; Easy Payments</string>
+    <string name="heading_two">Instant Notifications</string>
+    <string name="heading_three">Cashless Payment</string>
+    <string name="heading_fourth">Pay Anywhere</string>
+
+    //Description
+    <string name="desc_one">Grow your Business By Accepting Card Payments with The New Card Reader</string>
+    <string name="desc_two">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
+    <string name="desc_three">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
+    <string name="desc_fourth">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
+    <string name="addedEst">Your establishment was successfully added! Click anywhere to go back to your home</string>
+    <string name="info">Se devi testare una funzionalità da questo menù e l\'app crasha/fallisce, clicca sui pulsanti in fondo e visita una delle home! Se con una fallisce, prova con l\'altra</string>
+
+    <string name="home_text">Home</string>
+    <string name="profile_text">Profile</string>
+    <string name="Available_Booking">Available Booking</string>
+
+    <string name="add_reservation_button_description">Add reservation</string>
+    <string name="dash">-</string>
+    <string name="places_available_of">places available of</string>
+    <string name="people_attending">people attending</string>
+    <string name="plus">+</string>
+    <string name="password">Password</string>
+    <string name="slot_password_required">Slot password required</string>
+    <string name="choose_slot_password">Choose a password</string>
+    <string name="confirm">confirm</string>
+    <string name="cancel">cancel</string>
+    <string name="question_set_slot_password">Do you wish to set a password for this slot?</string>
+    <string name="set_slot_password_title">Slot password</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="create_slot">create slot</string>
+    <string name="available_for_booking">Available for booking</string>
+    <string name="create_manual_slot_dialog_title">Choose your slot</string>
+    <string name="no_available_slots">No available slots for this day</string>
+    <string name="reservation_error">Reservation error</string>
+    <string name="reservation_error_generic_message">An error occurred while trying to make this reservation, please try again.</string>
 </resources>
