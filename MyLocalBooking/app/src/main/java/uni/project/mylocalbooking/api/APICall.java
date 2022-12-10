@@ -2,33 +2,44 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-class APICall<T, K> {
+class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
     private final String jwt;
-    private boolean isArrayRequest = false;
     private K request = null;
+    private RunOnResponse<T> runOnResponse;
     private final String method;
     private final String requestBody;
     private final String url;
-    private RunOnResponse<T> runOnResponse = null;
+    private final Boolean isArray;
 
-    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> runOnResponse, boolean isArray){
+    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> runOnResponse){
         this.jwt = jwt;
         this.method = method;
         this.requestBody = requestBody;
         this.url = url;
-        this.runOnResponse = runOnResponse;
 
-        if(isArray) call();
-        else init();
+        this.runOnResponse = (response) -> {
+            if (runOnResponse != null)
+                runOnResponse.apply(response);
+
+            this.notify();
+        };
+
+        this.isArray = request instanceof JsonArrayRequest;
+
+        if (isArray)
+            generateRequest();
+        else
+            init();
     }
 
     private void init(){
@@ -61,22 +72,22 @@ class APICall<T, K> {
     }
 
     private void get(){
-        call(Request.Method.GET);
+        generateRequest(Request.Method.GET);
     }
 
     private void post(){
-        call(Request.Method.POST);
+        generateRequest(Request.Method.POST);
     }
 
     private void patch(){
-        call(Request.Method.PATCH);
+        generateRequest(Request.Method.PATCH);
     }
 
     private void delete(){
-        call(Request.Method.DELETE);
+        generateRequest(Request.Method.DELETE);
     }
 
-    private void call(int requestMethod){
+    private void generateRequest(int requestMethod){
         JSONObject jsonBody = null;
         if(requestMethod != Request.Method.GET){
             jsonBody = getJsonBody(this.requestBody);
@@ -107,7 +118,7 @@ class APICall<T, K> {
         };
     }
 
-    private void call(){
+    private void generateRequest(){
         this.request = (K) new JsonArrayRequest(
                 Request.Method.GET,
                 APICall.this.url,
@@ -128,5 +139,23 @@ class APICall<T, K> {
 
     public K getRequest(){
         return this.request;
+    }
+
+    public void call(){
+        if(jwt != null){
+            if(isArray){
+                RequestQueueSingleton.getInstance().add((JsonArrayRequest) getRequest());
+            }
+            else{
+                RequestQueueSingleton.getInstance().add((JsonObjectRequest) getRequest());
+            }
+        }else{
+            LoginAPI.addWaitingRequest(requestBody, url, method, runOnResponse, isArray);
+        }
+    }
+
+    @Override
+    public void run() throws InterruptedException {
+        call();
     }
 }
