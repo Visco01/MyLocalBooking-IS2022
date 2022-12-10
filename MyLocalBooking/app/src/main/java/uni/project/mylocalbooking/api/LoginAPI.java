@@ -2,6 +2,7 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -52,17 +53,17 @@ class LoginAPI {
         for(WaitingRequest elem : WaitingRequestsSingleton.getInstance()){
             APICall call;
             if(elem.isArray()){
-                call = new APICall<JSONArray, JsonArrayRequest>(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), (RunOnResponse<JSONArray>) elem.getRunOnResponse(), true);
+                call = new APICall<JSONArray, JsonArrayRequest>(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), (Response.Listener<JSONArray>) elem.getRunOnResponse(), true);
                 RequestQueueSingleton.getInstance().add((JsonArrayRequest) call.getRequest());
             }
             else{
-                call = new APICall<JSONObject, JsonObjectRequest>(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), (RunOnResponse<JSONObject>) elem.getRunOnResponse(), false);
+                call = new APICall<JSONObject, JsonObjectRequest>(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), (Response.Listener<JSONObject>) elem.getRunOnResponse(), false);
                 RequestQueueSingleton.getInstance().add((JsonObjectRequest) call.getRequest());
             }
         }
     }
     
-    public static <T> void addWaitingRequest(String requestBody, String url, String method, RunOnResponse<T> runOnResponse, boolean isArray){
+    public static <T> void addWaitingRequest(String requestBody, String url, String method, Response.Listener<T> runOnResponse, boolean isArray){
         WaitingRequestsSingleton.getInstance().add(new WaitingRequest<T>(url, requestBody, method, runOnResponse, isArray));
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
@@ -43,7 +44,7 @@ class Utility {
         return password;
     }
 
-    public static <T> void callAPI(String jwt, String requestBody, String url, String method, RunOnResponse<T> runOnResponse, boolean isArray){
+    public static <T> void callAPI(String jwt, String requestBody, String url, String method, Response.Listener<T> runOnResponse, boolean isArray){
         if (isArray)
             new APICall<T, JsonArrayRequest>(jwt, method, requestBody, url, runOnResponse, true).call();
         else

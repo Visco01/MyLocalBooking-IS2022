@@ -2,10 +2,11 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
-import com.google.android.gms.common.api.UnsupportedApiCallException;
+import com.android.volley.toolbox.RequestFuture;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,14 +17,15 @@ import java.util.Map;
 class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
     private final String jwt;
     private K request;
-    private final RunOnResponse<T> runOnResponse;
+    private final Response.Listener<T> runOnResponse;
     private final String method;
     private final String requestBody;
     private final String url;
     private final Boolean isArray;
     private Boolean callLock = false;
+    private RequestFuture<T> future;
 
-    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> ror, boolean isArray){
+    public APICall(String jwt, String method, String requestBody, String url, Response.Listener<T> ror, boolean isArray){
         this.jwt = jwt;
         this.method = method;
         this.requestBody = requestBody;
@@ -32,7 +34,7 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
         final Object thisInstance = this;
         this.runOnResponse = (response) -> {
             if (ror != null)
-                ror.apply(response);
+                ror.onResponse(response);
 
             synchronized (thisInstance) {
                 callLock = true;
@@ -46,6 +48,9 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
             this.request = generateRequest();
         else
             this.request = init();
+    }
+    public APICall(String jwt, String method, String requestBody, String url, boolean isArray) {
+        this(jwt, method, requestBody, url,(RequestFuture<T>) RequestFuture.newFuture(), isArray);
     }
 
     private K init(){
@@ -85,7 +90,7 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
                 APICall.this.url,
                 jsonBody,
                 response -> {
-                    if(runOnResponse != null) runOnResponse.apply((T) response);
+                    if(runOnResponse != null) runOnResponse.onResponse((T) response);
                 },
                 error -> Log.i("APICall error", error.toString())
         ) {
@@ -111,7 +116,7 @@ class APICall<T, K extends JsonRequest<?>> implements IBatchNode<T,K> {
                 APICall.this.url,
                 null,
                 (JSONArray response) -> {
-                    if(runOnResponse != null) runOnResponse.apply((T) response);
+                    if(runOnResponse != null) runOnResponse.onResponse((T) response);
                 },
                 error -> Log.i("APICall error", error.toString())
         ) {

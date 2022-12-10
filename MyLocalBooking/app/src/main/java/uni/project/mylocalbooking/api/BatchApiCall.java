@@ -14,11 +14,11 @@ public class BatchApiCall<T,K extends JsonRequest<?>> implements IBatchNode<T,K>
     }
 
     @Override
-    public void run() throws InterruptedException {
-        for(IBatchNode<T,K> node : batch)
+    public synchronized void run() throws InterruptedException {
+        for (IBatchNode<T, K> node : batch)
             node.run();
 
-        for(IBatchNode<T,K> node : batch)
+        for (IBatchNode<T, K> node : batch)
             node.waitNode();
 
         synchronized (this) {

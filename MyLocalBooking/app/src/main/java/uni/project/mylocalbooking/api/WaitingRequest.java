@@ -1,15 +1,17 @@
 package uni.project.mylocalbooking.api;
 
+import com.android.volley.Response;
+
 import org.json.JSONObject;
 
 public class WaitingRequest<T> {
     private final String url;
     private final String requestBody;
     private final String method;
-    private final RunOnResponse<T> runOnResponse;
+    private final Response.Listener<T> runOnResponse;
     private final boolean isArray;
 
-    public WaitingRequest(String url, String requestBody, String method, RunOnResponse<T> runOnResponse, boolean isArray) {
+    public WaitingRequest(String url, String requestBody, String method, Response.Listener<T> runOnResponse, boolean isArray) {
         this.url = url;
         this.requestBody = requestBody;
         this.method = method;
@@ -29,7 +31,7 @@ public class WaitingRequest<T> {
         return this.method;
     }
 
-    public RunOnResponse<T> getRunOnResponse(){
+    public Response.Listener<T> getRunOnResponse(){
         return this.runOnResponse;
     }
 
