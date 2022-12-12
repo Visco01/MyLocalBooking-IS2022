@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/myestablishment"
-    tools:context=".activities.provider.MyEstablishment">
+    tools:context=".activities.provider.MyEstablishments">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -23,5 +23,13 @@
         </androidx.recyclerview.widget.RecyclerView>
 
     </androidx.cardview.widget.CardView>
+
+    <include
+        android:id="@+id/navigationProvider"
+        layout="@layout/element_bottom_navbar_provider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
