@@ -1,4 +1,4 @@
-package uni.project.mylocalbooking.activities.provider;
+package uni.project.mylocalbooking.activities.client;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -12,12 +12,12 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.ChangeDataActivity;
 import uni.project.mylocalbooking.activities.ChangePasswordActivity;
 
-public class EditChoiceDialogActivity extends Dialog implements View.OnClickListener{
+public class EditChoiceDialogClientActivity extends Dialog implements View.OnClickListener {
 
-    private Button psswd, birthday, nstrikes, name;
-    private Activity motherActivity;
+    Activity motherActivity;
+    Button psswd, birthday, name, position;
 
-    public EditChoiceDialogActivity(Activity A) {
+    public EditChoiceDialogClientActivity(Activity A) {
         super(A);
         motherActivity = A;
     }
@@ -26,16 +26,16 @@ public class EditChoiceDialogActivity extends Dialog implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_edit_choice_dialog);
+        setContentView(R.layout.activity_edit_choice_dialog_client);
 
         psswd = (Button) findViewById(R.id.editPassword);
         birthday = (Button) findViewById(R.id.editBirthday);
-        nstrikes = (Button) findViewById(R.id.editNStrike);
+        position = (Button) findViewById(R.id.editPosition);
         name = (Button) findViewById(R.id.editName);
 
         psswd.setOnClickListener(this);
         birthday.setOnClickListener(this);
-        nstrikes.setOnClickListener(this);
+        position.setOnClickListener(this);
         name.setOnClickListener(this);
     }
 
@@ -50,15 +50,14 @@ public class EditChoiceDialogActivity extends Dialog implements View.OnClickList
                 motherActivity.startActivity(new Intent(motherActivity, ChangeDataActivity.class));
                 return;
             // TODO: still not implemented
-            case R.id.editNStrike:
-                motherActivity.startActivity(new Intent(motherActivity, ProfileProviderActivity.class));
+            case R.id.editPosition:
+                motherActivity.startActivity(new Intent(motherActivity, ProfileClientActivity.class));
                 return;
             case R.id.editName:
-                motherActivity.startActivity(new Intent(motherActivity, HomeProviderActivity.class));
+                motherActivity.startActivity(new Intent(motherActivity, RecycleRview_establishment.class));
                 return;
             default:
                 dismiss();
         }
     }
-
 }
