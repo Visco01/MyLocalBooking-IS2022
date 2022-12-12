@@ -13,7 +13,7 @@ import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
 import uni.project.mylocalbooking.activities.provider.BlackListActivity;
 
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
-import uni.project.mylocalbooking.activities.provider.MyEstablishment;
+import uni.project.mylocalbooking.activities.provider.MyEstablishments;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -22,12 +22,12 @@ public class HomeActivity extends AppCompatActivity {
     private Button changePhone;
     private Button changeDataOfBorn;
     private Button blackListBtn;
-    private Button comirsHome;
     private Button comirsHome2;
     private Button goHome;
     private Button goProfile;
     private Button goMyBookings;
     private Button myEstablishment;
+    private Button prenota;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
         comirsHome2 = findViewById(R.id.btn_comirs_home_provider);
         goHome = findViewById(R.id.go_client_home);
         myEstablishment = findViewById(R.id.go_my_establishment);
+        //prenota = findViewById(R.id.prenota);
 
 
         myEstablishment.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +98,14 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) { openHomeProvider(); }
         });
+
+        /*
+        prenota.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MyLocalBooking.getAppContext(), SlotListActivity.class));
+            }
+        });*/
     }
 
 
@@ -136,7 +145,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     protected void openMyEstablishment() {
-        Intent intent = new Intent(this, MyEstablishment.class);
+        Intent intent = new Intent(this, MyEstablishments.class);
         startActivity(intent);
     }
 

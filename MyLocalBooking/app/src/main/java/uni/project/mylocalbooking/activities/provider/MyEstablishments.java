@@ -1,6 +1,5 @@
 package uni.project.mylocalbooking.activities.provider;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 
-public class MyEstablishment extends AppCompatActivity {
+public class MyEstablishments extends BaseNavigationActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
@@ -21,11 +21,20 @@ public class MyEstablishment extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_establishment);
 
         init_data();
         init_recycleRview();
 
+    }
+
+    @Override
+    public int getContentViewId() {
+        return R.layout.my_establishments;
+    }
+
+    @Override
+    protected int getNavigationMenuItemId() {
+        return R.id.establishments;
     }
 
     private void init_recycleRview() {
