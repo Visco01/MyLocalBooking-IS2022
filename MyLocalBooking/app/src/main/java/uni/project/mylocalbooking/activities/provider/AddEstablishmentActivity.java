@@ -9,19 +9,24 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Console;
+
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
+import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
 
 public class AddEstablishmentActivity extends BaseNavigationActivity {
 
     private FloatingActionButton backButton;
     private Button confirmButton;
+    private boolean success = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println(success);
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,7 +39,12 @@ public class AddEstablishmentActivity extends BaseNavigationActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                confirmAdd();
+                if (success == true){
+                    confirmAdd();
+                }
+                else{
+                    failedAdd();
+                }
             }
         });
 
@@ -43,6 +53,11 @@ public class AddEstablishmentActivity extends BaseNavigationActivity {
     public void confirmAdd() {
         DialogFragment newFragment = new SuccessFragment();
         newFragment.show(getSupportFragmentManager(), "successAddEstablishment");
+    }
+
+    public void failedAdd(){
+        DialogFragment newFragment = new FailureFragment();
+        newFragment.show(getSupportFragmentManager(), "failedAddEstablishment");
     }
 
     public int getContentViewId(){ return R.layout.activity_add_establishment; }

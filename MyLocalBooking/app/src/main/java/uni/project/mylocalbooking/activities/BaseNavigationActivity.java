@@ -64,8 +64,6 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
 
             navigationView = (BottomNavigationView) findViewById(R.id.navigationProvider);
 
-            System.out.println(navigationView);
-            System.out.println(R.id.navigationProvider);
             // Default position
             navigationView.setSelectedItemId(R.id.homeProvider);
 
@@ -81,7 +79,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
                         startActivity(intent);
                         return true;
                     case R.id.establishments:
-                        // TO-DO
+                        // TODO: waiting for the layout
                         return true;
                 }finish();
                 return false;

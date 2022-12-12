@@ -20,7 +20,7 @@
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="530dp"
+                android:layout_height="460dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="24dp"
@@ -30,7 +30,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.39">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -97,10 +98,21 @@
                             android:layout_margin="12dp"
                             android:background="@drawable/circle_background">
 
+                            <ImageButton
+                                android:id="@+id/editButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@color/inactive"
+                                android:contentDescription='Edit'
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
                             <ImageView
+                                android:id="@+id/client_settings_profile"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                android:id="@+id/client_settings_profile"
                                 android:src="@drawable/settings"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -236,40 +248,6 @@
                     android:layout_height="1dp"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="20dp"
-                    android:background="#D9D9D9">
-
-                </View>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="20dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Position:"
-                        android:textColor="#182693"
-                        android:textSize="18dp"></TextView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Calle del Fumo 5319"
-                        android:textAlignment="viewEnd"
-                        android:textSize="18dp"></TextView>
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="20dp"
                     android:background="#D9D9D9"></View>
 
                 <LinearLayout
@@ -283,7 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Number of establishment:"
+                        android:text="Number of strike:"
                         android:textColor="#182693"
                         android:textSize="18dp"></TextView>
 
@@ -368,14 +346,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="80dp"
-                android:layout_marginBottom="140dp"
-                android:text="Log out"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="88dp"
                 android:background="@drawable/button_confirm"
+                android:text="Log out"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
             </androidx.appcompat.widget.AppCompatButton>
 
