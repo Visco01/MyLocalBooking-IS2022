@@ -7,14 +7,21 @@
     android:background="@drawable/sfondo_my_bookings"
     tools:context=".activities.client.MyBookings">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/my_bookings_recyclerView"
-        android:layout_height="match_parent"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="200dp">
+        android:layout_height="match_parent"
+        app:cardCornerRadius="30dp"
+        android:layout_marginVertical="230dp"
+        android:layout_marginHorizontal="50dp">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/my_bookings_recyclerView"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.cardview.widget.CardView>
 
     <include
         android:id="@+id/navigationClient"

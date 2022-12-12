@@ -42,12 +42,12 @@ public class RecycleRview_establishment extends BaseNavigationActivity {
 
     private void initData() {
         userList = new ArrayList<>();
-        userList.add(new ModelClass_search_establishment(R.drawable.ic_baseline_event_note_24, "Campo calcetto Coletti", "casa mia 12/23"));
-        userList.add(new ModelClass_search_establishment(R.drawable.ic_baseline_event_note_24, "Patronato San Giobbe", "non - specificato"));
-        userList.add(new ModelClass_search_establishment(R.drawable.ic_baseline_event_note_24, "Campo santa maria formosa", "san marco 5572/23122"));
-        userList.add(new ModelClass_search_establishment(R.drawable.ic_baseline_event_note_24, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
-        userList.add(new ModelClass_search_establishment(R.drawable.ic_baseline_event_note_24, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
-        userList.add(new ModelClass_search_establishment(R.drawable.ic_baseline_event_note_24, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
+        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "casa mia 12/23"));
+        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Patronato San Giobbe", "non - specificato"));
+        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo santa maria formosa", "san marco 5572/23122"));
+        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
+        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
+        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
 
 
     }
