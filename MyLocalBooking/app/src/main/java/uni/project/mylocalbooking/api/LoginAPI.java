@@ -5,6 +5,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,20 +51,13 @@ class LoginAPI {
     }
 
     private static void freeRequests(String jwt){
-        for(WaitingRequest elem : WaitingRequestsSingleton.getInstance()){
-            APICall call;
-            if(elem.isArray()){
-                call = new APICall<JSONArray, JsonArrayRequest>(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), (Response.Listener<JSONArray>) elem.getRunOnResponse(), true);
-                RequestQueueSingleton.getInstance().add((JsonArrayRequest) call.getRequest());
-            }
-            else{
-                call = new APICall<JSONObject, JsonObjectRequest>(jwt, elem.getMethod(), elem.getRequestBody(), elem.getUrl(), (Response.Listener<JSONObject>) elem.getRunOnResponse(), false);
-                RequestQueueSingleton.getInstance().add((JsonObjectRequest) call.getRequest());
-            }
+        for(IApiCall call : WaitingRequestsSingleton.getInstance()){
+            call.setJwt(jwt);
+            RequestQueueSingleton.getInstance().add((JsonObjectRequest) call.getRequest());
         }
     }
     
-    public static <T> void addWaitingRequest(String requestBody, String url, String method, Response.Listener<T> runOnResponse, boolean isArray){
-        WaitingRequestsSingleton.getInstance().add(new WaitingRequest<T>(url, requestBody, method, runOnResponse, isArray));
+    public static <T> void addWaitingRequest(IApiCall<JsonRequest<T>> call){
+        WaitingRequestsSingleton.getInstance().add(call);
     }
 }
