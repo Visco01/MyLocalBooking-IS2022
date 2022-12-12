@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.client.LandReviewActivity;
 import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
+import uni.project.mylocalbooking.activities.client.SlotListActivity;
 import uni.project.mylocalbooking.activities.provider.BlackListActivity;
 
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
@@ -22,12 +24,12 @@ public class HomeActivity extends AppCompatActivity {
     private Button changePhone;
     private Button changeDataOfBorn;
     private Button blackListBtn;
-    private Button comirsHome;
     private Button comirsHome2;
     private Button goHome;
     private Button goProfile;
     private Button goMyBookings;
     private Button myEstablishment;
+    private Button prenota;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class HomeActivity extends AppCompatActivity {
         comirsHome2 = findViewById(R.id.btn_comirs_home_provider);
         goHome = findViewById(R.id.go_client_home);
         myEstablishment = findViewById(R.id.go_my_establishment);
+        prenota = findViewById(R.id.prenota);
 
 
         myEstablishment.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +99,13 @@ public class HomeActivity extends AppCompatActivity {
         comirsHome2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { openHomeProvider(); }
+        });
+
+        prenota.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MyLocalBooking.getAppContext(), SlotListActivity.class));
+            }
         });
     }
 

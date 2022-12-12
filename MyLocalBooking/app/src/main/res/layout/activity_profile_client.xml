@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:background="@drawable/sfondo_local_booking_profile"
     android:layout_height="match_parent"
-    tools:context=".activities.client.Profile">
+    tools:context=".activities.client.ProfileClientActivity">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -96,6 +96,17 @@
                                 android:layout_gravity="center_horizontal"
                                 android:layout_margin="12dp"
                                 android:background="@drawable/circle_background">
+
+                                <ImageButton
+                                    android:id="@+id/editButtonClient"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/inactive"
+                                    android:contentDescription='Edit'
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
                                 <ImageView
                                     android:layout_width="40dp"

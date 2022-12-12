@@ -11,7 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.client.MyBookings;
-import uni.project.mylocalbooking.activities.client.Profile;
+import uni.project.mylocalbooking.activities.client.ProfileClientActivity;
 import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 import uni.project.mylocalbooking.activities.provider.ProfileProviderActivity;
@@ -47,7 +47,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
                         return true;
                     // Profile Client
                     case R.id.profileClient:
-                        intent = new Intent(getBaseContext(), Profile.class);
+                        intent = new Intent(getBaseContext(), ProfileClientActivity.class);
                         startActivity(intent);
                         return true;
                     // Reservations
@@ -64,8 +64,6 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
 
             navigationView = (BottomNavigationView) findViewById(R.id.navigationProvider);
 
-            System.out.println(navigationView);
-            System.out.println(R.id.navigationProvider);
             // Default position
             navigationView.setSelectedItemId(R.id.homeProvider);
 
@@ -81,7 +79,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
                         startActivity(intent);
                         return true;
                     case R.id.establishments:
-                        // TO-DO
+                        // TODO: waiting for the layout
                         return true;
                 }finish();
                 return false;
