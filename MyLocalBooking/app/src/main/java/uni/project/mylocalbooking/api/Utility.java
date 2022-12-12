@@ -44,11 +44,18 @@ class Utility {
         return password;
     }
 
-    public static <T> void callAPI(String jwt, String requestBody, String url, String method, Response.Listener<T> runOnResponse, boolean isArray){
+    public static <T> void callAPI(String jwt, String requestBody, String url, String method, RunOnResponse<T> runOnResponse, boolean isArray){
         if (isArray)
-            new APICall<T, JsonArrayRequest>(jwt, method, requestBody, url, runOnResponse, true).call();
+            new AsyncApiCall<JSONArray, JsonArrayRequest>(jwt, method, requestBody, url, (RunOnResponse<JSONArray>) runOnResponse, true).call();
         else
-            new APICall<T, JsonObjectRequest>(jwt, method, requestBody, url, runOnResponse, false).call();
+            new AsyncApiCall<JSONObject, JsonObjectRequest>(jwt, method, requestBody, url, (RunOnResponse<JSONObject>) runOnResponse, false).call();
+    }
+
+    public static <T> void callAPI(String jwt, String requestBody, String url, String method, boolean isArray){
+        if (isArray)
+            new SyncApiCall<JSONArray, JsonArrayRequest>(jwt, method, requestBody, url, true).call();
+        else
+            new SyncApiCall<JSONObject, JsonObjectRequest>(jwt, method, requestBody, url, false).call();
     }
 
     public static Collection<Establishment> getOwnedEstablishmentData(JSONArray response) {
