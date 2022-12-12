@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.ChangeDataActivity;
+import uni.project.mylocalbooking.activities.ChangeNameActivity;
 import uni.project.mylocalbooking.activities.ChangePasswordActivity;
 
 public class EditChoiceDialogProviderActivity extends Dialog implements View.OnClickListener{
@@ -30,7 +31,7 @@ public class EditChoiceDialogProviderActivity extends Dialog implements View.OnC
 
         psswd = (Button) findViewById(R.id.editPassword);
         birthday = (Button) findViewById(R.id.editBirthday);
-        nstrikes = (Button) findViewById(R.id.editPosition);
+        nstrikes = (Button) findViewById(R.id.editNStrikes);
         name = (Button) findViewById(R.id.editName);
 
         psswd.setOnClickListener(this);
@@ -49,12 +50,11 @@ public class EditChoiceDialogProviderActivity extends Dialog implements View.OnC
             case R.id.editBirthday:
                 motherActivity.startActivity(new Intent(motherActivity, ChangeDataActivity.class));
                 return;
-            // TODO: still not implemented
-            case R.id.editPosition:
-                motherActivity.startActivity(new Intent(motherActivity, ProfileProviderActivity.class));
+            case R.id.editNStrikes:
+                motherActivity.startActivity(new Intent(motherActivity, ChangeNStrikesActivity.class));
                 return;
             case R.id.editName:
-                motherActivity.startActivity(new Intent(motherActivity, HomeProviderActivity.class));
+                motherActivity.startActivity(new Intent(motherActivity, ChangeNameActivity.class));
                 return;
             default:
                 dismiss();

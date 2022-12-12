@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.ChangeDataActivity;
+import uni.project.mylocalbooking.activities.ChangeNameActivity;
 import uni.project.mylocalbooking.activities.ChangePasswordActivity;
 
 public class EditChoiceDialogClientActivity extends Dialog implements View.OnClickListener {
@@ -54,7 +55,7 @@ public class EditChoiceDialogClientActivity extends Dialog implements View.OnCli
                 motherActivity.startActivity(new Intent(motherActivity, ProfileClientActivity.class));
                 return;
             case R.id.editName:
-                motherActivity.startActivity(new Intent(motherActivity, RecycleRview_establishment.class));
+                motherActivity.startActivity(new Intent(motherActivity, ChangeNameActivity.class));
                 return;
             default:
                 dismiss();

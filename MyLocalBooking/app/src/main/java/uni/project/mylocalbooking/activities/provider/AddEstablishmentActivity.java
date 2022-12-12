@@ -9,8 +9,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.Console;
-
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
@@ -35,7 +33,7 @@ public class AddEstablishmentActivity extends BaseNavigationActivity {
             }
         });
 
-        confirmButton = findViewById(R.id.confirm_add_est);
+        confirmButton = findViewById(R.id.confirm_change);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

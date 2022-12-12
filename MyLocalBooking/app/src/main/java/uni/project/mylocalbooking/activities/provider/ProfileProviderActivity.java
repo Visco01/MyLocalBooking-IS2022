@@ -10,15 +10,14 @@ import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 public class ProfileProviderActivity extends BaseNavigationActivity {
 
     private ImageButton editButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        editButton = findViewById(R.id.editButton);
+        editButton = findViewById(R.id.editButtonProvider);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditChoiceDialogProviderActivity ecd =new EditChoiceDialogProviderActivity(ProfileProviderActivity.this);
+                EditChoiceDialogProviderActivity ecd = new EditChoiceDialogProviderActivity(ProfileProviderActivity.this);
                 ecd.show();
             }
         });
