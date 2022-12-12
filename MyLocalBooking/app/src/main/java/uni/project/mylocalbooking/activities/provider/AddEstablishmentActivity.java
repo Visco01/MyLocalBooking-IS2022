@@ -33,7 +33,7 @@ public class AddEstablishmentActivity extends BaseNavigationActivity {
             }
         });
 
-        confirmButton = findViewById(R.id.confirm_change);
+        confirmButton = findViewById(R.id.confirm_add_est);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

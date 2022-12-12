@@ -53,6 +53,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".activities.provider.MyEstablishments"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activities.provider.AddEstablishmentActivity"
             android:exported="false">
             <meta-data

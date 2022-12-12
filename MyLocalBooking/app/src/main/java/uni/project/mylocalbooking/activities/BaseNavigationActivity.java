@@ -14,6 +14,7 @@ import uni.project.mylocalbooking.activities.client.MyBookings;
 import uni.project.mylocalbooking.activities.client.ProfileClientActivity;
 import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
+import uni.project.mylocalbooking.activities.provider.MyEstablishments;
 import uni.project.mylocalbooking.activities.provider.ProfileProviderActivity;
 
 public abstract class BaseNavigationActivity extends AppCompatActivity {
@@ -79,7 +80,8 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
                         startActivity(intent);
                         return true;
                     case R.id.establishments:
-                        // TODO: waiting for the layout
+                        intent = new Intent(getBaseContext(), MyEstablishments.class);
+                        startActivity(intent);
                         return true;
                 }finish();
                 return false;

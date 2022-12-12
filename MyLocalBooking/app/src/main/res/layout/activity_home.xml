@@ -113,14 +113,19 @@
 
     </androidx.appcompat.widget.AppCompatButton>
 
-    <Button
-        android:id="@+id/prenota"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/go_my_establishment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="61dp"
-        android:text="Esegui Prenotaz"
+        android:text="My establishment"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_change_phoneNumber" />
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.844">
+
+    </androidx.appcompat.widget.AppCompatButton>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
