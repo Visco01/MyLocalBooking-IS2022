@@ -45,7 +45,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     private void getUserByCellphone(String cellphone, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError){
         String url = MyLocalBookingAPI.apiPrefix + "app_user_by_cellphone/" + cellphone;
-        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONObject>) response -> {
             try {
                 String status = response.getString("status");
                 if (status.equals("OK")) {
@@ -85,7 +85,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String url = MyLocalBookingAPI.apiPrefix + "app_users";
         password = Utility.generateEncryptedPassword(password);
         String requestBody = JSONBodyGenerator.generateRegisterBody(user, password);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
             try {
                 user.setId(Long.valueOf(response.getString("app_user_id")));
                 if(user instanceof Client){
@@ -132,7 +132,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String url = MyLocalBookingAPI.apiPrefix + "change_user_password/" + cellphone;
         new_password = Utility.generateEncryptedPassword(new_password);
         String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", (RunOnResponse<JSONObject>) response -> {
             try {
                 String status = response.getString("status");
                 if(status.equals("OK")){
@@ -151,7 +151,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String url = MyLocalBookingAPI.apiPrefix + "change_slot_password/" + slot.getId();
         new_password = Utility.generateEncryptedPassword(new_password);
         String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", (RunOnResponse<JSONObject>) response -> {
             try {
                 String status = response.getString("status");
                 if(status.equals("OK")){
@@ -170,7 +170,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     public void addBlueprint(SlotBlueprint blueprint, APICallBack<SlotBlueprint> onSuccess, APICallBack<StatusCode> onError) {
         String url = MyLocalBookingAPI.apiPrefix + "slot_blueprints";
         String requestBody = JSONBodyGenerator.generateAddBlueprintBody(blueprint);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
             try {
                 String status = response.getString("status");
                 if(status.equals("OK")){
@@ -195,7 +195,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     private void addSlot(Slot slot, String password, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError){
         String url = MyLocalBookingAPI.apiPrefix + "slots";
         String requestBody = JSONBodyGenerator.generateAddSlotBody(slot, password);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
             try {
                 String status = response.getString("status");
                 if(status.equals("OK")){
@@ -221,7 +221,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     public void addEstablishment(Establishment establishment, APICallBack<Establishment> onSuccess, APICallBack<StatusCode> onError) {
         String url = MyLocalBookingAPI.apiPrefix + "create_establishments";
         String requestBody = JSONBodyGenerator.generateAddEstablishmentBody(establishment);
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (Response.Listener<JSONObject>) data -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) data -> {
             try {
                 String status = data.getString("status");
                 if(status.equals("Created")){
@@ -246,7 +246,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         }
         getProviderByAppUserId((long) appUserId, data -> {
             String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + data;
-            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (Response.Listener<JSONArray>) response -> {
+            Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONArray>) response -> {
                 Collection<Establishment> ownedEstablishments = Utility.getOwnedEstablishmentData(response);
                 for(Establishment establishment : ownedEstablishments){
                     getSlotsByBlueprint(establishment.blueprints, blueprints -> {
@@ -262,11 +262,11 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     private void getSlotsByBlueprint(Collection<SlotBlueprint> blueprints, APICallBack<Collection<SlotBlueprint>> onSuccess, APICallBack<StatusCode> onError, Runnable finalize){
-        BatchApiCall<JSONArray, JsonArrayRequest> batch = new BatchApiCall<>();
+        ApiCallBatch<JSONArray, JsonArrayRequest> batch = new ApiCallBatch<>();
         for(SlotBlueprint blueprint : blueprints) {
             String type = (blueprint instanceof ManualSlotBlueprint) ? "manual" : "periodic";
             String url = MyLocalBookingAPI.apiPrefix + "concrete_slot_by_blueprint_id/" + type + "/" + ((IDatabaseSubclassModel) blueprint).getSubclassId();
-            batch.add(new APICall<>(MyLocalBookingAPI.jwt, "GET", null, url, (Response.Listener<JSONArray>) response -> {
+            batch.add(new APICall<>(MyLocalBookingAPI.jwt, "GET", null, url, (RunOnResponse<JSONArray>) response -> {
                 blueprint.slots = Utility.getSlots(response, blueprint);
                 getReservationsBySlot(blueprint.slots, onError);
             }, true));
@@ -281,7 +281,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     private void getReservationsBySlot(Collection<Slot> slots, APICallBack<StatusCode> onError){
-        BatchApiCall<JSONArray, JsonArrayRequest> batch = new BatchApiCall<>();
+        ApiCallBatch<JSONArray, JsonArrayRequest> batch = new ApiCallBatch<>();
 
         for(Slot elem : slots){
             String url = MyLocalBookingAPI.apiPrefix + "reservations_by_slot_id/" + elem.getId();
@@ -341,7 +341,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     private void callAddReservation(Long clientId, Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError){
         String url = MyLocalBookingAPI.apiPrefix + "reservations";
         String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
-        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
             try {
                 String status = response.getString("status");
                 if(status.equals("OK")){
@@ -357,7 +357,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     private void getClientByAppUserId(Long appUserId, APICallBack<Long> onSuccess, APICallBack<StatusCode> onError){
         String url = MyLocalBookingAPI.apiPrefix + "client_by_app_user_id/" + appUserId.toString();
-        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONObject>) response -> {
             try {
                 String status = response.getString("status");
                 if(status.equals("OK")){
@@ -373,7 +373,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     private void getProviderByAppUserId(Long appUserId, APICallBack<Long> onSuccess, APICallBack<StatusCode> onError){
         String url = MyLocalBookingAPI.apiPrefix + "provider_by_app_user_id/" + appUserId.toString();
-        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONObject>) response -> {
             try {
                 String status = response.getString("status");
                 if(status.equals("OK")){
@@ -389,7 +389,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     private void getSlotPasswordById(Long slotId, APICallBack<String> onSuccess, APICallBack<StatusCode> onError){
         String url = MyLocalBookingAPI.apiPrefix + "slot_password_by_id/" + slotId;
-        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (Response.Listener<JSONObject>) response -> {
+        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONObject>) response -> {
             try {
                 String status = response.getString("status");
                 if(status.equals("OK")){
@@ -411,7 +411,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         getClientByAppUserId((long) currentUserId, clientId -> {
             String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
             String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
-            Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (Response.Listener<JSONObject>) response -> {
+            Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
                 try {
                     String status = response.getString("status");
                     if(status.equals("OK")){
