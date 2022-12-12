@@ -13,6 +13,7 @@ import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
 import uni.project.mylocalbooking.activities.provider.BlackListActivity;
 
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
+import uni.project.mylocalbooking.activities.provider.MyEstablishment;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -26,6 +27,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button goHome;
     private Button goProfile;
     private Button goMyBookings;
+    private Button myEstablishment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,15 @@ public class HomeActivity extends AppCompatActivity {
         changeDataOfBorn = findViewById(R.id.btn_change_DataOfBorn);
         comirsHome2 = findViewById(R.id.btn_comirs_home_provider);
         goHome = findViewById(R.id.go_client_home);
+        myEstablishment = findViewById(R.id.go_my_establishment);
 
+
+        myEstablishment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openMyEstablishment();
+            }
+        });
 
         goHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,5 +135,9 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    protected void openMyEstablishment() {
+        Intent intent = new Intent(this, MyEstablishment.class);
+        startActivity(intent);
+    }
 
 }
