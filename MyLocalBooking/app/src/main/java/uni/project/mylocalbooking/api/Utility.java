@@ -1,15 +1,5 @@
 package uni.project.mylocalbooking.api;
 
-import androidx.lifecycle.MutableLiveData;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.Volley;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
@@ -45,11 +34,11 @@ class Utility {
     }
 
     public static <T> void callAPI(String jwt, String requestBody, String url, String method, RunOnResponse<T> runOnResponse, boolean isArray){
-        new AsyncApiCall<T>(jwt, method, requestBody, url, runOnResponse, isArray).call();
+        new CallbackAPICall<T>(jwt, method, requestBody, url, runOnResponse, isArray).call();
     }
 
-    public static <T> SyncApiCall<T> callAPI(String jwt, String requestBody, String url, String method, boolean isArray){
-        SyncApiCall<T> call = new SyncApiCall<T>(jwt, method, requestBody, url, isArray);
+    public static <T> BlockingAPICall<T> callAPI(String jwt, String requestBody, String url, String method, boolean isArray){
+        BlockingAPICall<T> call = new BlockingAPICall<T>(jwt, method, requestBody, url, isArray);
         call.call();
         return call;
     }

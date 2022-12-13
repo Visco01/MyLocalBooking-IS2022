@@ -2,11 +2,7 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import com.android.volley.Response;
-import com.android.volley.toolbox.JsonArrayRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +11,6 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import uni.project.mylocalbooking.SessionPreferences;
@@ -255,7 +250,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             }
 
             String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + providerId;
-            SyncApiCall<JSONArray> call = new SyncApiCall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
+            BlockingAPICall<JSONArray> call = new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
             call.call();
             Collection<Establishment> ownedEstablishments = Utility.getOwnedEstablishmentData(call.waitResponse());
 
@@ -285,7 +280,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             String url = MyLocalBookingAPI.apiPrefix + "concrete_slot_by_blueprint_id/" + type + "/" + ((IDatabaseSubclassModel) blueprint).getSubclassId();
 
             Thread t = new Thread(() -> {
-                SyncApiCall<JSONArray> call = new SyncApiCall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
+                BlockingAPICall<JSONArray> call = new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
                 call.call();
                 blueprint.slots = Utility.getSlots(call.waitResponse(), blueprint);
                 getReservationsBySlot(blueprint.slots);
@@ -302,11 +297,11 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     private void getReservationsBySlot(Collection<Slot> slots){
-        ApiCallBatch<JSONArray> batch = new ApiCallBatch<>();
+        ParallelAPICallBatch<JSONArray> batch = new ParallelAPICallBatch<>();
 
         for(Slot elem : slots){
             String url = MyLocalBookingAPI.apiPrefix + "reservations_by_slot_id/" + elem.getId();
-            batch.add(new SyncApiCall<>(MyLocalBookingAPI.jwt, "GET", null, url, true), response -> {
+            batch.add(new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true), response -> {
                 elem.reservations = Utility.getReservations(response);
             });
         }
@@ -392,7 +387,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     private Long getProviderByAppUserId(Long appUserId){
         String url = MyLocalBookingAPI.apiPrefix + "provider_by_app_user_id/" + appUserId.toString();
-        SyncApiCall<JSONObject> call = Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", false);
+        BlockingAPICall<JSONObject> call = Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", false);
         call.call();
         try {
             return Long.valueOf(call.waitResponse().getString("provider_id"));

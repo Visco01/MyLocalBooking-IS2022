@@ -2,12 +2,8 @@ package uni.project.mylocalbooking.api;
 
 import android.util.Log;
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,13 +47,13 @@ class LoginAPI {
     }
 
     private static void freeRequests(String jwt){
-        for(IApiCall call : WaitingRequestsSingleton.getInstance()){
+        for(IAPICall call : WaitingRequestsSingleton.getInstance()){
             call.setJwt(jwt);
             RequestQueueSingleton.getInstance().add((JsonObjectRequest) call.getRequest());
         }
     }
     
-    public static <T> void addWaitingRequest(IApiCall<T> call){
+    public static <T> void addWaitingRequest(IAPICall<T> call){
         WaitingRequestsSingleton.getInstance().add(call);
     }
 }

@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class APICall<T> implements IApiCall<T> {
+abstract class APICall<T> implements IAPICall<T> {
     public String jwt;
     protected JsonRequest<T> request;
     protected final String method;
@@ -127,7 +127,7 @@ abstract class APICall<T> implements IApiCall<T> {
                 RequestQueueSingleton.getInstance().add((JsonObjectRequest) getRequest());
             }
         }else{
-            LoginAPI.addWaitingRequest((IApiCall<T>) this);
+            LoginAPI.addWaitingRequest((IAPICall<T>) this);
         }
     }
 }
