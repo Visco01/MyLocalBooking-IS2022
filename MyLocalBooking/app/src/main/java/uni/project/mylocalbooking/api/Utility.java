@@ -45,17 +45,13 @@ class Utility {
     }
 
     public static <T> void callAPI(String jwt, String requestBody, String url, String method, RunOnResponse<T> runOnResponse, boolean isArray){
-        if (isArray)
-            new AsyncApiCall<JSONArray, JsonArrayRequest>(jwt, method, requestBody, url, (RunOnResponse<JSONArray>) runOnResponse, true).call();
-        else
-            new AsyncApiCall<JSONObject, JsonObjectRequest>(jwt, method, requestBody, url, (RunOnResponse<JSONObject>) runOnResponse, false).call();
+        new AsyncApiCall<T>(jwt, method, requestBody, url, runOnResponse, isArray).call();
     }
 
-    public static <T> void callAPI(String jwt, String requestBody, String url, String method, boolean isArray){
-        if (isArray)
-            new SyncApiCall<JSONArray, JsonArrayRequest>(jwt, method, requestBody, url, true).call();
-        else
-            new SyncApiCall<JSONObject, JsonObjectRequest>(jwt, method, requestBody, url, false).call();
+    public static <T> SyncApiCall<T> callAPI(String jwt, String requestBody, String url, String method, boolean isArray){
+        SyncApiCall<T> call = new SyncApiCall<T>(jwt, method, requestBody, url, isArray);
+        call.call();
+        return call;
     }
 
     public static Collection<Establishment> getOwnedEstablishmentData(JSONArray response) {

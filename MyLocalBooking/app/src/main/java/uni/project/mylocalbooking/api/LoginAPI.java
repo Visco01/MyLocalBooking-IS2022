@@ -57,7 +57,7 @@ class LoginAPI {
         }
     }
     
-    public static <T> void addWaitingRequest(IApiCall<JsonRequest<T>> call){
+    public static <T> void addWaitingRequest(IApiCall<T> call){
         WaitingRequestsSingleton.getInstance().add(call);
     }
 }

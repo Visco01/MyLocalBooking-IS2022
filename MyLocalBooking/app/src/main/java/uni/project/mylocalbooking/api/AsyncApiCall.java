@@ -5,7 +5,7 @@ import android.util.Log;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonRequest;
 
-public class AsyncApiCall<T,K extends JsonRequest<T>> extends APICall<T,K> {
+public class AsyncApiCall<T> extends APICall<T> {
     protected RunOnResponse<T> runOnResponse;
     private Boolean callLock = false;
 

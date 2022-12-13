@@ -2,8 +2,8 @@ package uni.project.mylocalbooking.api;
 
 import com.android.volley.toolbox.JsonRequest;
 
-public interface IApiCall<K extends JsonRequest<?>> {
+public interface IApiCall<T> {
     void setJwt(String jwt);
     String getJwt();
-    K getRequest();
+    JsonRequest<T> getRequest();
 }

@@ -13,9 +13,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class APICall<T, K extends JsonRequest<T>> implements IApiCall<K> {
+abstract class APICall<T> implements IApiCall<T> {
     public String jwt;
-    protected K request;
+    protected JsonRequest<T> request;
     protected final String method;
     protected final String requestBody;
     protected final String url;
@@ -39,7 +39,7 @@ abstract class APICall<T, K extends JsonRequest<T>> implements IApiCall<K> {
         return jwt;
     }
 
-    private K init(Response.Listener<T> successListener, Response.ErrorListener errorListener){
+    private JsonRequest<T> init(Response.Listener<T> successListener, Response.ErrorListener errorListener){
         switch (this.method){
             case "GET":
                 return generateRequest(successListener, errorListener, Request.Method.GET);
@@ -65,13 +65,13 @@ abstract class APICall<T, K extends JsonRequest<T>> implements IApiCall<K> {
         return jsonBody;
     }
 
-    private K generateRequest(Response.Listener<T> successListener, Response.ErrorListener errorListener, int requestMethod){
+    private JsonRequest<T> generateRequest(Response.Listener<T> successListener, Response.ErrorListener errorListener, int requestMethod){
         JSONObject jsonBody = null;
         if(requestMethod != Request.Method.GET){
             jsonBody = getJsonBody(this.requestBody);
         }
 
-        return (K) new JsonObjectRequest(
+        return (JsonRequest<T>) new JsonObjectRequest(
                 requestMethod,
                 APICall.this.url,
                 jsonBody,
@@ -94,8 +94,8 @@ abstract class APICall<T, K extends JsonRequest<T>> implements IApiCall<K> {
         };
     }
 
-    private K generateRequest(Response.Listener<T> successListener, Response.ErrorListener errorListener){
-        return (K) new JsonArrayRequest(
+    private JsonRequest<T> generateRequest(Response.Listener<T> successListener, Response.ErrorListener errorListener){
+        return (JsonRequest<T>) new JsonArrayRequest(
                 Request.Method.GET,
                 APICall.this.url,
                 null,
@@ -111,7 +111,7 @@ abstract class APICall<T, K extends JsonRequest<T>> implements IApiCall<K> {
         };
     }
 
-    public K getRequest(){
+    public JsonRequest<T> getRequest(){
         return this.request;
     }
 
@@ -127,7 +127,7 @@ abstract class APICall<T, K extends JsonRequest<T>> implements IApiCall<K> {
                 RequestQueueSingleton.getInstance().add((JsonObjectRequest) getRequest());
             }
         }else{
-            LoginAPI.addWaitingRequest((IApiCall<JsonRequest<T>>) this);
+            LoginAPI.addWaitingRequest((IApiCall<T>) this);
         }
     }
 }

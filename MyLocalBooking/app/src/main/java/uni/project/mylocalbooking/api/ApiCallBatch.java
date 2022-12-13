@@ -6,24 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class ApiCallBatch<T,K extends JsonRequest<T>> {
-    private final List<SyncApiCall<T,K>> batch = new ArrayList<>();
+public class ApiCallBatch<T> {
+    private final List<SyncApiCall<T>> batch = new ArrayList<>();
+    private final List<RunOnResponse<T>> callbacks = new ArrayList<>();
 
-    public void add(SyncApiCall<T,K> node) {
+    public void add(SyncApiCall<T> node, RunOnResponse<T> runOnResponse) {
         batch.add(node);
+        callbacks.add(runOnResponse);
     }
 
-    public synchronized void run(RunOnResponse<T> runOnResponse) throws InterruptedException {
-        for (SyncApiCall<T,K> node : batch)
+    public synchronized void run() {
+        for (SyncApiCall<T> node : batch)
             node.call();
 
-        for (SyncApiCall<T,K> node : batch) {
-            try {
-                T response = node.waitResponse();
-                runOnResponse.onResponse(response);
-            } catch (ExecutionException e) {
-                e.printStackTrace(); // TODO: how to handle this?
-            }
+        for(int i = 0; i < batch.size(); i++) {
+            SyncApiCall<T> node = batch.get(i);
+            RunOnResponse<T> callback = callbacks.get(i);
+            callback.onResponse(node.waitResponse());
         }
     }
 }
