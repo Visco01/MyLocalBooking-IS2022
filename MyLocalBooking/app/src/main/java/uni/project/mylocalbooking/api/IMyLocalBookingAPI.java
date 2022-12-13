@@ -1,5 +1,7 @@
 package uni.project.mylocalbooking.api;
 
+import androidx.lifecycle.MutableLiveData;
+
 import java.util.Collection;
 
 import uni.project.mylocalbooking.models.AppUser;
@@ -74,7 +76,7 @@ public interface IMyLocalBookingAPI{
      *       returns inserted establishment
      * */
     void addEstablishment(Establishment establishment, APICallBack<Establishment> onSuccess, APICallBack<StatusCode> onError);
-    void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError);
+    void getOwnedEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata);
 
     /*
      * pre:
