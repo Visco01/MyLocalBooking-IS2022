@@ -61,6 +61,23 @@
 
     </androidx.cardview.widget.CardView>
 
+    <Button
+        android:id="@+id/addEstablishmentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        android:text="Add Establishment"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/navigationProvider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <include
+        android:id="@+id/navigationProvider"
+        layout="@layout/element_bottom_navbar_provider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

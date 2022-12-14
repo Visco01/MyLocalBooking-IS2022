@@ -25,8 +25,6 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        System.out.println(UserTest.getType());
-
         // AppCompact super
         super.onCreate(savedInstanceState);
 
