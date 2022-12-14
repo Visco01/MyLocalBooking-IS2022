@@ -41,8 +41,8 @@ public class SessionPreferences {
                 Client client = (Client) user;
                 editor.putLong("subclass_id", client.getSubclassId());
                 editor.putString("usertype", "client");
-                editor.putFloat("lat", client.position.latitude);
-                editor.putFloat("lng", client.position.longitude);
+                putDouble(editor, "lat", client.position.latitude);
+                putDouble(editor, "lng", client.position.longitude);
             }else if(user instanceof Provider){
                 Provider provider = (Provider) user;
                 editor.putLong("subclass_id", provider.getSubclassId());
@@ -57,6 +57,13 @@ public class SessionPreferences {
         }
     }
 
+    private static SharedPreferences.Editor putDouble(final SharedPreferences.Editor edit, final String key, double value) {
+        return edit.putLong(key, Double.doubleToRawLongBits(value));
+    }
+
+    private static Double getDouble(final SharedPreferences prefs, final String key, double defaultValue) {
+        return Double.longBitsToDouble(prefs.getLong(key, Double.doubleToLongBits(defaultValue)));
+    }
     public static Map<String, ?> getUserPrefs(){
         return theInstance.getAll();
     }
