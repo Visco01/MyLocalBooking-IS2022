@@ -1,5 +1,6 @@
 package uni.project.mylocalbooking.api;
 
-interface RunOnResponse<T> {
-    void apply(T response);
+import com.android.volley.Response;
+
+public interface RunOnResponse<T> extends Response.Listener<T> {
 }
