@@ -4,13 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
+import uni.project.mylocalbooking.activities.provider.AddEstablishmentActivity;
 
 public class MyBookings extends BaseNavigationActivity {
 
@@ -19,12 +24,23 @@ public class MyBookings extends BaseNavigationActivity {
     List<ModelClass_myBookings> myBookingsList;
     Adapter_myBookings adapter_myBookings;
 
+    private Button reviewButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initData();
         initRecyckeRview();
+
+        reviewButton = findViewById(R.id.reviewButton);
+        // addButton = findViewById(R.id.addButton);
+        reviewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MyLocalBooking.getAppContext(), LandReviewActivity.class));
+            }
+        });
     }
 
     private void initRecyckeRview() {

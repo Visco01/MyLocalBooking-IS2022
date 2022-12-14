@@ -18,13 +18,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activities.provider.MyHomeProvider"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".activities.provider.ChangeNStrikesActivity"
             android:exported="false">
             <meta-data
@@ -109,19 +102,13 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".activities.client.RecycleRview_establishment"
+            android:name=".activities.client.HomeClientActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity
-            android:name=".activities.provider.ProviderHomeActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -139,13 +126,6 @@
         -->
         <activity
             android:name=".activities.provider.BlackListActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".activities.ChangePhoneNumberActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
