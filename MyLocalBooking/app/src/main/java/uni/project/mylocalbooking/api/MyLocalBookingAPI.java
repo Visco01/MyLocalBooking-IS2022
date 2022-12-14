@@ -239,7 +239,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public void getOwnedEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata) {
-        Long appUserId = (Long) SessionPreferences.getUserPrefs().get("id");
+        Long appUserId = (Long) 1901L;
         if(appUserId == null)
             return;
         
@@ -453,15 +453,16 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String requestBody = JSONBodyGenerator.getSetPreferredPositionBody(position);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", new RunOnResponse<JSONObject>() {
             @Override
-            public void apply(JSONObject data){
+            public void onResponse(JSONObject response) {
                 try {
-                    String status = data.getString("status");
+                    String status = response.getString("status");
                     Log.i("client id on set position", String.valueOf(clientId));
                     if(status.equals("OK") && onSuccess != null) onSuccess.apply(null);
                     else if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
                 } catch (JSONException e) {
                     if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
                 }
+
             }
         }, false);
     }
