@@ -1,5 +1,7 @@
 package uni.project.mylocalbooking.api;
 
+import androidx.lifecycle.MutableLiveData;
+
 import java.util.Collection;
 
 import uni.project.mylocalbooking.models.AppUser;
@@ -74,7 +76,7 @@ public interface IMyLocalBookingAPI{
      *       returns inserted establishment
      * */
     void addEstablishment(Establishment establishment, APICallBack<Establishment> onSuccess, APICallBack<StatusCode> onError);
-    void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError);
+    void getOwnedEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata);
 
     /*
      * pre:
@@ -131,7 +133,7 @@ public interface IMyLocalBookingAPI{
      */
     void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
     Collection<Establishment> getClosestEstablishments();
-    void setPreferredPosition(Coordinates position);
+    void setPreferredPosition(Coordinates position, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError);
     void rateEstablishment(Establishment establishment, int rating, String comment/*, boolean anonymous*/);
 
 
