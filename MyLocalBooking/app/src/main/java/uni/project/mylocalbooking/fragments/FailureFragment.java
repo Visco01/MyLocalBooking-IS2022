@@ -1,5 +1,6 @@
 package uni.project.mylocalbooking.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,16 +20,37 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 
 public class FailureFragment extends DialogFragment {
+    private String errorMessage;
+    private String errorTitle;
+    // atm unused
+    private boolean goHome = false;
+
+    public FailureFragment (String title, String message){
+        errorTitle = title;
+        errorMessage = message;
+    }
+
+    // To help with ritical errors that require an Activity to be re-opened
+    /*
+    public FailureFragment (String title, String message, boolean home){
+        errorTitle = title;
+        errorMessage = message;
+        goHome = true;
+    }
+    */
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setMessage("Error ###").setTitle("Failure")
+        builder.setMessage(errorMessage).setTitle(errorTitle)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    // Atm will never go inside the if
                     public void onClick(DialogInterface dialog, int id) {
-                        startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
+                        if (goHome == true){
+                            startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
+                        }
                     }
                 });
 
@@ -38,6 +60,9 @@ public class FailureFragment extends DialogFragment {
     @Override
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
-        startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
+        // Atm will never go inside the if
+        if (goHome == true){
+            startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
+        }
     }
 }

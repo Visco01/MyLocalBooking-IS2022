@@ -5,17 +5,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
 
-public class AddEstablishmentActivity extends BaseNavigationActivity {
+public class AddEstablishmentActivity extends AppCompatActivity {
 
     private FloatingActionButton backButton;
     private Button confirmButton;
@@ -24,7 +24,8 @@ public class AddEstablishmentActivity extends BaseNavigationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println(success);
+        setContentView(R.layout.activity_add_establishment);
+
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,6 +39,7 @@ public class AddEstablishmentActivity extends BaseNavigationActivity {
             @Override
             public void onClick(View view) {
                 if (success == true){
+                    // TODO: update backend
                     confirmAdd();
                 }
                 else{
@@ -49,16 +51,15 @@ public class AddEstablishmentActivity extends BaseNavigationActivity {
     }
 
     public void confirmAdd() {
-        DialogFragment newFragment = new SuccessFragment();
+        DialogFragment newFragment = new SuccessFragment("Added establishment successfully",
+                "Your establishment was successfully added to the database, you can check it in 'My Establishment'");
         newFragment.show(getSupportFragmentManager(), "successAddEstablishment");
     }
 
     public void failedAdd(){
-        DialogFragment newFragment = new FailureFragment();
+        DialogFragment newFragment = new FailureFragment("Added establishment failed",
+                "At least one of the fields is not valid, please try again with a different input");
         newFragment.show(getSupportFragmentManager(), "failedAddEstablishment");
     }
 
-    public int getContentViewId(){ return R.layout.activity_add_establishment; }
-
-    public int getNavigationMenuItemId(){ return R.id.homeProvider; }
 }
