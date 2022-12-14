@@ -2,8 +2,14 @@ package uni.project.mylocalbooking;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 
 import androidx.lifecycle.LiveData;
+
+import com.google.maps.GaeRequestHandler;
+import com.google.maps.GeoApiContext;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -20,10 +26,20 @@ public class MyLocalBooking extends Application {
     private static Context context;
     private static AppUser currentUser;
     public static HashMap<Long, Establishment> establishments;
+    public static GeoApiContext geoApiContext;
 
     public void onCreate() {
         super.onCreate();
         MyLocalBooking.context = getApplicationContext();
+        try {
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(),
+                    PackageManager.GET_META_DATA);
+            MyLocalBooking.geoApiContext = new GeoApiContext.Builder()
+                    .apiKey(ai.metaData.getString("com.google.android.geo.API_KEY"))
+                    .build();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Context getAppContext() {
