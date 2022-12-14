@@ -19,7 +19,8 @@ public class HomeProviderActivity extends BaseNavigationActivity {
         UserTest.setType("Provider");
         super.onCreate(savedInstanceState);
 
-        addButton = findViewById(R.id.addButton);
+        addButton = findViewById(R.id.addEstablishmentButton);
+        // addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -28,7 +29,9 @@ public class HomeProviderActivity extends BaseNavigationActivity {
         });
     }
 
-    public int getContentViewId(){ return R.layout.activity_home_provider;}
+    public int getContentViewId(){ return R.layout.new_home_provider;
+    //return R.layout.activity_home_provider
+    }
 
     protected int getNavigationMenuItemId(){ return R.id.homeProvider;}
 }
