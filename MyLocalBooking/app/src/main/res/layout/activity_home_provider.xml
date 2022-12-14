@@ -61,12 +61,14 @@
 
     </androidx.cardview.widget.CardView>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addEstablishmentButton"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_confirm"
         android:layout_marginBottom="64dp"
         android:text="Add Establishment"
+        android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/navigationProvider"
         app:layout_constraintEnd_toEndOf="parent"
