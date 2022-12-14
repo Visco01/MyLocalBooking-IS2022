@@ -34,11 +34,6 @@ abstract class APICall<T> implements IAPICall<T> {
         this.jwt = jwt;
     }
 
-    @Override
-    public String getJwt() {
-        return jwt;
-    }
-
     private JsonRequest<T> init(Response.Listener<T> successListener, Response.ErrorListener errorListener){
         switch (this.method){
             case "GET":
