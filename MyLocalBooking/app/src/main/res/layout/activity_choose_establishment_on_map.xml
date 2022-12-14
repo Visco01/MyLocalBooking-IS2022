@@ -7,11 +7,27 @@
     tools:context=".activities.provider.ChooseEstablishmentOnMapActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView2"
+        android:id="@+id/maps_fragment"
         android:name="uni.project.mylocalbooking.fragments.MapsFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/fragment_maps" />
+
+    <ListView
+        android:id="@+id/options_list"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/booking_color"
+        android:backgroundTint="@color/booking_color"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/map_location_option" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
