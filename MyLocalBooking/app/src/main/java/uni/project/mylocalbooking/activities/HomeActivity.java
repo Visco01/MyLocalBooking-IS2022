@@ -14,6 +14,7 @@ import uni.project.mylocalbooking.activities.provider.BlackListActivity;
 
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 import uni.project.mylocalbooking.activities.provider.MyEstablishments;
+import uni.project.mylocalbooking.activities.provider.MyHomeProvider;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -28,6 +29,7 @@ public class HomeActivity extends AppCompatActivity {
     private Button goMyBookings;
     private Button myEstablishment;
     private Button prenota;
+    private Button goProviderHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +44,16 @@ public class HomeActivity extends AppCompatActivity {
         comirsHome2 = findViewById(R.id.btn_comirs_home_provider);
         goHome = findViewById(R.id.go_client_home);
         myEstablishment = findViewById(R.id.go_my_establishment);
+        goProviderHome = findViewById(R.id.go_provider_home);
         //prenota = findViewById(R.id.prenota);
 
 
+        goProviderHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openProviderHome();
+            }
+        });
         myEstablishment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,6 +155,11 @@ public class HomeActivity extends AppCompatActivity {
 
     protected void openMyEstablishment() {
         Intent intent = new Intent(this, MyEstablishments.class);
+        startActivity(intent);
+    }
+
+    protected void openProviderHome() {
+        Intent intent = new Intent(this, MyHomeProvider.class);
         startActivity(intent);
     }
 

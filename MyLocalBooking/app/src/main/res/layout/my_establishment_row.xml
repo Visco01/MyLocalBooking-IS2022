@@ -6,7 +6,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,7 +17,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             app:cardCornerRadius="15dp"
             android:layout_marginLeft="15dp">
 
@@ -35,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title"
+            android:textStyle="bold"
             android:id="@+id/myEstablishment_textView1"
             android:textColor="@color/booking_color"
             android:layout_marginLeft="100dp"
@@ -47,6 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Location"
+            android:textStyle="bold"
             android:textSize="18dp"
             android:id="@+id/myEstablishment_textView2"
             android:textColor="@color/booking_color"
