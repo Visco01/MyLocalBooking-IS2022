@@ -73,7 +73,7 @@ public class HomeProviderActivity extends BaseNavigationActivity {
 
     }
 
-    public int getContentViewId(){ return R.layout.activity_my_home_provider;}
+    public int getContentViewId(){ return R.layout.activity_home_provider;}
 
     protected int getNavigationMenuItemId(){ return R.id.homeProvider;}
 }

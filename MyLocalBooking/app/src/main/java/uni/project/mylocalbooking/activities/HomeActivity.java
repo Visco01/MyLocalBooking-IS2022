@@ -9,101 +9,34 @@ import android.widget.Button;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.client.LandReviewActivity;
-import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
-import uni.project.mylocalbooking.activities.provider.BlackListActivity;
+import uni.project.mylocalbooking.activities.client.HomeClientActivity;
 
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
-import uni.project.mylocalbooking.activities.provider.MyEstablishments;
-import uni.project.mylocalbooking.activities.provider.MyHomeProvider;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private Button changePwdBtn;
-    private Button reviewBtn;
-    private Button changePhone;
-    private Button changeDataOfBorn;
-    private Button blackListBtn;
-    private Button comirsHome2;
-    private Button goHome;
-    private Button goProfile;
-    private Button goMyBookings;
-    private Button myEstablishment;
-    private Button prenota;
-    private Button goProviderHome;
+    private Button homePro;
+    private Button homeCli;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        blackListBtn = findViewById(R.id.btn_black_list);
-        changePhone = findViewById(R.id.btn_change_phoneNumber);
-        changePwdBtn = findViewById(R.id.change_pwd);
-        reviewBtn = findViewById(R.id.make_review);
-        changeDataOfBorn = findViewById(R.id.btn_change_DataOfBorn);
-        comirsHome2 = findViewById(R.id.btn_comirs_home_provider);
-        goHome = findViewById(R.id.go_client_home);
-        myEstablishment = findViewById(R.id.go_my_establishment);
-        goProviderHome = findViewById(R.id.go_provider_home);
+        homePro = findViewById(R.id.btn_comirs_home_provider);
+        homeCli = findViewById(R.id.go_client_home);
+
         //prenota = findViewById(R.id.prenota);
 
-
-        goProviderHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openProviderHome();
-            }
-        });
-        myEstablishment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openMyEstablishment();
-            }
-        });
-
-        goHome.setOnClickListener(new View.OnClickListener() {
+        homeCli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openHome();
             }
         });
 
-        blackListBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openBlackListActivity();
-            }
-        });
-
-        changePwdBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openChangePwd();
-            }
-        });
-
-        reviewBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openReview();
-            }
-        });
-
-        changePhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openChangePhoneNumber();
-            }
-        });
-
-        changeDataOfBorn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openChangeDataOfBorn();
-            }
-        });
-
-        comirsHome2.setOnClickListener(new View.OnClickListener() {
+        homePro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) { openHomeProvider(); }
         });
@@ -119,47 +52,12 @@ public class HomeActivity extends AppCompatActivity {
 
 
     protected void openHome() {
-        Intent intent = new Intent(this, RecycleRview_establishment.class);
-        startActivity(intent);
-    }
-
-    protected void openBlackListActivity() {
-        Intent intent = new Intent(this, BlackListActivity.class);
-        startActivity(intent);
-    }
-
-    protected void openChangePwd() {
-        Intent intent = new Intent(this, ChangePasswordActivity.class);
-        startActivity(intent);
-    }
-
-    protected void openReview() {
-        Intent intent = new Intent(this, LandReviewActivity.class);
-        startActivity(intent);
-    }
-
-    protected void openChangePhoneNumber() {
-        Intent intent = new Intent(this, ChangePhoneNumberActivity.class);
-        startActivity(intent);
-    }
-
-    protected void openChangeDataOfBorn() {
-        Intent intent = new Intent(this, ChangeDataActivity.class);
+        Intent intent = new Intent(this, HomeClientActivity.class);
         startActivity(intent);
     }
 
     protected void openHomeProvider(){
         Intent intent = new Intent(this, HomeProviderActivity.class);
-        startActivity(intent);
-    }
-
-    protected void openMyEstablishment() {
-        Intent intent = new Intent(this, MyEstablishments.class);
-        startActivity(intent);
-    }
-
-    protected void openProviderHome() {
-        Intent intent = new Intent(this, MyHomeProvider.class);
         startActivity(intent);
     }
 

@@ -8,12 +8,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import android.app.Dialog;
-import android.view.LayoutInflater;
 
 import uni.project.mylocalbooking.MyLocalBooking;
-import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.UserTest;
-import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
+import uni.project.mylocalbooking.activities.client.HomeClientActivity;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 
 public class SuccessFragment extends DialogFragment {
@@ -33,7 +31,7 @@ public class SuccessFragment extends DialogFragment {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (UserTest.getType() == "Client"){
-                            startActivity(new Intent(MyLocalBooking.getAppContext(), RecycleRview_establishment.class));
+                            startActivity(new Intent(MyLocalBooking.getAppContext(), HomeClientActivity.class));
                         }
                         else if (UserTest.getType() == "Provider"){
                             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
@@ -53,7 +51,7 @@ public class SuccessFragment extends DialogFragment {
         super.onCancel(dialog);
         // User type dynamic
         if (UserTest.getType() == "Client"){
-            startActivity(new Intent(MyLocalBooking.getAppContext(), RecycleRview_establishment.class));
+            startActivity(new Intent(MyLocalBooking.getAppContext(), HomeClientActivity.class));
         }
         else if (UserTest.getType() == "Provider"){
             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
