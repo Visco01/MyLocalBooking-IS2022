@@ -4,34 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/sfondo_my_bookings"
-    tools:context=".activities.client.MyBookings">
+    android:background="@drawable/myestablishment"
+    tools:context=".activities.provider.MyEstablishments">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="30dp"
         android:layout_marginVertical="230dp"
-        android:layout_marginHorizontal="50dp">
+        android:layout_marginHorizontal="50dp"
+        app:cardCornerRadius="30dp"
+        >
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/my_bookings_recyclerView"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_width="match_parent">
+            android:id="@+id/my_establishment_rv">
 
         </androidx.recyclerview.widget.RecyclerView>
 
     </androidx.cardview.widget.CardView>
 
     <include
-        android:id="@+id/navigationClient"
-        layout="@layout/element_bottom_navbar_client"
+        android:id="@+id/navigationProvider"
+        layout="@layout/element_bottom_navbar_provider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

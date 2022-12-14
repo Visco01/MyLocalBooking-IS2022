@@ -14,8 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:cardCornerRadius="40dp"
-            android:background="@drawable/button_begin"
-            android:backgroundTint="@color/white"
             android:layout_margin="8dp">
 
             <androidx.cardview.widget.CardView
@@ -24,13 +22,13 @@
                 android:layout_height="70dp"
                 android:layout_marginLeft="18dp"
                 android:layout_marginTop="6dp"
-                app:cardCornerRadius="20dp">
+                app:cardCornerRadius="15dp">
 
                 <ImageView
                     android:id="@+id/imageView1_se"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_baseline_event_note_24">
+                    android:src="@drawable/logo">
 
                 </ImageView>
 
@@ -40,8 +38,8 @@
                 android:id="@+id/tittle_se"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tittle"
-                android:textColor="@color/light_purple"
+                android:text="Title"
+                android:textColor="@color/booking_color"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 android:layout_marginTop="10dp"
@@ -54,13 +52,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Location"
-                android:textColor="@color/light_purple"
+                android:textColor="@color/booking_color"
                 android:textSize="17dp"
                 android:textStyle="bold"
                 android:layout_marginTop="35dp"
                 android:layout_marginLeft="100dp">
 
             </TextView>
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/notes"
+                android:layout_marginLeft="310dp"
+                android:layout_marginTop="45dp"
+                >
+
+            </ImageView>
+
+
 
         </androidx.cardview.widget.CardView>
 

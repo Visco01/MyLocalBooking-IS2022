@@ -13,6 +13,8 @@ import uni.project.mylocalbooking.activities.client.RecycleRview_establishment;
 import uni.project.mylocalbooking.activities.provider.BlackListActivity;
 
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
+import uni.project.mylocalbooking.activities.provider.MyEstablishments;
+import uni.project.mylocalbooking.activities.provider.MyHomeProvider;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -21,11 +23,13 @@ public class HomeActivity extends AppCompatActivity {
     private Button changePhone;
     private Button changeDataOfBorn;
     private Button blackListBtn;
-    private Button comirsHome;
     private Button comirsHome2;
     private Button goHome;
     private Button goProfile;
     private Button goMyBookings;
+    private Button myEstablishment;
+    private Button prenota;
+    private Button goProviderHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,23 @@ public class HomeActivity extends AppCompatActivity {
         changeDataOfBorn = findViewById(R.id.btn_change_DataOfBorn);
         comirsHome2 = findViewById(R.id.btn_comirs_home_provider);
         goHome = findViewById(R.id.go_client_home);
+        myEstablishment = findViewById(R.id.go_my_establishment);
+        goProviderHome = findViewById(R.id.go_provider_home);
+        //prenota = findViewById(R.id.prenota);
 
+
+        goProviderHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openProviderHome();
+            }
+        });
+        myEstablishment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openMyEstablishment();
+            }
+        });
 
         goHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +107,14 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) { openHomeProvider(); }
         });
+
+        /*
+        prenota.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MyLocalBooking.getAppContext(), SlotListActivity.class));
+            }
+        });*/
     }
 
 
@@ -125,5 +153,14 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    protected void openMyEstablishment() {
+        Intent intent = new Intent(this, MyEstablishments.class);
+        startActivity(intent);
+    }
+
+    protected void openProviderHome() {
+        Intent intent = new Intent(this, MyHomeProvider.class);
+        startActivity(intent);
+    }
 
 }
