@@ -23,10 +23,12 @@
 
     </androidx.cardview.widget.CardView>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/reviewButton"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:background="@drawable/button_confirm"
         android:layout_marginBottom="64dp"
         android:text="Leave a Review"
         android:textSize="20sp"
