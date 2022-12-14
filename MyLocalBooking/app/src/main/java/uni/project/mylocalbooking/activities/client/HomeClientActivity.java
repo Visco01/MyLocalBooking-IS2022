@@ -1,6 +1,5 @@
 package uni.project.mylocalbooking.activities.client;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,7 +12,7 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.UserTest;
 
-public class RecycleRview_establishment extends BaseNavigationActivity {
+public class HomeClientActivity extends BaseNavigationActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
@@ -53,7 +52,7 @@ public class RecycleRview_establishment extends BaseNavigationActivity {
     }
 
     public int getContentViewId(){
-        return R.layout.activity_recycle_rview_establishment;
+        return R.layout.activity_home_client;
     }
 
     // Returns the id in the navigation menu

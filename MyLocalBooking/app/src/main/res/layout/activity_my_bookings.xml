@@ -23,6 +23,20 @@
 
     </androidx.cardview.widget.CardView>
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/reviewButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:background="@drawable/button_confirm"
+        android:layout_marginBottom="64dp"
+        android:text="Leave a Review"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/navigationClient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
     <include
         android:id="@+id/navigationClient"
         layout="@layout/element_bottom_navbar_client"

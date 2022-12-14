@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/sfondo_searching_establishment"
-    tools:context=".activities.client.RecycleRview_establishment">
+    tools:context=".activities.client.HomeClientActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

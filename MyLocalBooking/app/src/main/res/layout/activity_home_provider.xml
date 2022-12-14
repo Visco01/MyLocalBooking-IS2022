@@ -4,166 +4,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/sfondo_local_booking"
     tools:context=".activities.provider.HomeProviderActivity">
 
-    <View
-        android:id="@+id/body"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_bright"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <View
-        android:id="@+id/topBar"
-        android:layout_width="410dp"
-        android:layout_height="130dp"
-        android:background="@android:color/background_light"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/homeTextView"
-        android:layout_width="219dp"
-        android:layout_height="62dp"
-        android:layout_marginStart="8dp"
-        android:text="Home"
-        android:textAlignment="textStart"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/userFullName"
-        android:layout_width="404dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="68dp"
-        android:text="User Fullname"
-        android:textAlignment="textStart"
-        android:textSize="40sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/body" />
-
-    <Button
-        android:id="@+id/addButton"
-        android:layout_width="143dp"
-        android:layout_height="83dp"
-        android:layout_marginTop="412dp"
-        android:text="Add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topBar" />
-
     <androidx.cardview.widget.CardView
-        android:layout_width="310dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:cardBackgroundColor="@color/purple_200"
-        app:cardCornerRadius="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topBar">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="200dp"
+        app:cardCornerRadius="25dp"
+        android:layout_marginHorizontal="50dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="5dp">
 
             <TextView
-                android:id="@+id/statsTextView"
+                android:id="@+id/text_view_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Statistiche"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="Date"
+                android:textStyle="bold"
+                android:textColor="@color/booking_color"
+                android:textSize="25dp">
 
-            <TableLayout
-                android:layout_width="match_parent"
+            </TextView>
+
+            <TextClock
+                android:id="@+id/text_view_clock"
+                android:layout_width="wrap_content"
+                android:textColor="@color/booking_color"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/statsTextView">
+                android:format24Hour="hh:mm:ss"
+                android:text="Clock"
+                android:textSize="25dp"
+                android:textStyle="bold">
+            </TextClock>
 
-                <TableRow
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom">
+                
+                <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
+                    android:id="@+id/prenotation_for_today_rv"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/tw1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="N° Stabilimenti"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
+                </androidx.recyclerview.widget.RecyclerView>
 
-                    <TextView
-                        android:id="@+id/empty1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="   "
-                        android:textSize="16sp" />
+            </androidx.cardview.widget.CardView>
 
-                    <TextView
-                        android:id="@+id/establishmentNumber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
-                </TableRow>
+        </LinearLayout>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
-
-                    <TextView
-                        android:id="@+id/tw2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Stabilimento più vecchio"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/empty2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="   "
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/oldestEstablishment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nessuno"
-                        android:textAlignment="center"
-                        android:textSize="16sp" />
-                </TableRow>
-
-            </TableLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/addEstablishmentButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_confirm"
+        android:layout_marginBottom="64dp"
+        android:text="Add Establishment"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/navigationProvider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <include
         android:id="@+id/navigationProvider"
@@ -171,6 +80,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="@+id/body" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
