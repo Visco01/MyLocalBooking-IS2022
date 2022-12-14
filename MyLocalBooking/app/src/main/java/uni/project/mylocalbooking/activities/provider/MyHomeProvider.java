@@ -1,39 +1,30 @@
 package uni.project.mylocalbooking.activities.provider;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Bundle;
+import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.activities.BaseNavigationActivity;
-import uni.project.mylocalbooking.activities.UserTest;
 
-public class HomeProviderActivity extends BaseNavigationActivity {
-
-    private Button addButton;
+public class MyHomeProvider extends AppCompatActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     List<ModelPrenotationToday> prenotationTodayList;
     AdapterPrenotationToday adapterPrenotationToday;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        UserTest.setType("Provider");
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_my_home_provider);
         setTitle("Date & Time");
         Calendar calendar = Calendar.getInstance();
         String currentDate = DateFormat.getDateInstance(android.icu.text.DateFormat.FULL).format(calendar.getTime());
@@ -43,14 +34,6 @@ public class HomeProviderActivity extends BaseNavigationActivity {
         init_data();
         init_recycleRview();
 
-        addButton = findViewById(R.id.addEstablishmentButton);
-        // addButton = findViewById(R.id.addButton);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MyLocalBooking.getAppContext(), AddEstablishmentActivity.class));
-            }
-        });
     }
 
     private void init_recycleRview() {
@@ -73,7 +56,5 @@ public class HomeProviderActivity extends BaseNavigationActivity {
 
     }
 
-    public int getContentViewId(){ return R.layout.activity_my_home_provider;}
 
-    protected int getNavigationMenuItemId(){ return R.id.homeProvider;}
 }

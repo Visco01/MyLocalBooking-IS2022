@@ -102,7 +102,7 @@ class JSONBodyGenerator {
                 "\"client_id\": " + clientId + ", " +
                 "\"slot_id\": " + slotId + "}";
     }
-    
+
     public static String generateAddEstablishmentBody(Establishment establishment) {
         return "{" +
                 "\"name\": \"" + establishment.name + "\", " +
@@ -114,8 +114,8 @@ class JSONBodyGenerator {
     }
 
     public static String getSetPreferredPositionBody(Coordinates position) {
-
-        //build json with lat, lng and perform PATCH request
-        return null;
+        return "{" +
+                "\"lat\": " + position.latitude + ", " +
+                "\"lng\": " + position.longitude + "}";
     }
 }
