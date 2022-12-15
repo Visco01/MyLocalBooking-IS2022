@@ -3,7 +3,6 @@ package uni.project.mylocalbooking.api;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -11,7 +10,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
@@ -72,7 +70,7 @@ class Utility {
         JSONArray slotBlueprints = object.getJSONArray("slot_blueprints");
         for(int j = 0; j < slotBlueprints.length(); j++){
             JSONObject jsonSlotBlueprint = slotBlueprints.getJSONObject(j);
-            newEstablishment.blueprints.add(getSlotBlueprintByJSONObject(jsonSlotBlueprint, newEstablishment));
+            SlotBlueprint newBlueprint = getSlotBlueprintByJSONObject(jsonSlotBlueprint, newEstablishment);
         }
         return newEstablishment;
     }
