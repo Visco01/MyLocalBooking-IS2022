@@ -33,14 +33,7 @@ public class MyBookings extends BaseNavigationActivity {
         initData();
         initRecyckeRview();
 
-        reviewButton = findViewById(R.id.reviewButton);
         // addButton = findViewById(R.id.addButton);
-        reviewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MyLocalBooking.getAppContext(), LandReviewActivity.class));
-            }
-        });
     }
 
     private void initRecyckeRview() {

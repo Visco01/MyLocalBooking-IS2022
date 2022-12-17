@@ -26,4 +26,5 @@
     <color name="inactive">#00000000</color>
     <color name="light_grey">#D2D2D2</color>
     <color name="light_purple">#8692f7</color>
+    <color name="booking_yellow">#FFEB3B</color>
 </resources>
