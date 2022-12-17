@@ -239,7 +239,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public void getOwnedEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata) {
-        Long appUserId = (Long) 1901L;
+        Long appUserId = (Long) SessionPreferences.getUserPrefs().get("id");;
         if(appUserId == null)
             return;
         
@@ -252,7 +252,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + providerId;
             BlockingAPICall<JSONArray> call = new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
             call.call();
-            Collection<Establishment> ownedEstablishments = Utility.getOwnedEstablishmentData(call.waitResponse());
+            Collection<Establishment> ownedEstablishments = Utility.getEstablishmentData(call.waitResponse());
 
             List<Thread> threads = new ArrayList<>();
             for(Establishment establishment : ownedEstablishments){
@@ -438,8 +438,40 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public Collection<Establishment> getClosestEstablishments() {
-        return null;
+    public void getClosestEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata) {
+        Long appUserId = (Long) SessionPreferences.getUserPrefs().get("id");
+        Double lat = (Double) SessionPreferences.getUserPrefs().get("lat");
+        Double lng = (Double) SessionPreferences.getUserPrefs().get("lng");
+        int range = 500000000;
+        //Long appUserId = 1907L;
+        //Double lat = 45.501859;
+        //Double lng = 12.254584;
+        if(appUserId == null || lat == null || lng == null)
+            return;
+
+        Runnable runnable = () -> {
+            String url = MyLocalBookingAPI.apiPrefix + "closest_establishments?" + "lat=" + lat + "&lng=" + lng + "&range=" + range;
+            BlockingAPICall<JSONArray> call = new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
+            call.call();
+            Collection<Establishment> closestEstablishments = Utility.getEstablishmentData(call.waitResponse());
+
+            List<Thread> threads = new ArrayList<>();
+            for(Establishment establishment : closestEstablishments){
+                Thread t = new Thread(() -> getSlotsByBlueprint(establishment.blueprints));
+                threads.add(t);
+                t.start();
+            }
+
+            for(Thread t : threads) {
+                try {
+                    t.join();
+                } catch (InterruptedException ignored) {}
+            }
+
+            establishmentsLivedata.postValue(closestEstablishments);
+        };
+
+        new Thread(runnable).start();
     }
 
     @Override

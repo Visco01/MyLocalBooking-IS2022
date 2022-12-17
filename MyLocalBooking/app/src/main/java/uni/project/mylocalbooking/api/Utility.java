@@ -41,7 +41,7 @@ class Utility {
         return call;
     }
 
-    public static Collection<Establishment> getOwnedEstablishmentData(JSONArray response) {
+    public static Collection<Establishment> getEstablishmentData(JSONArray response) {
         Collection<Establishment> ownedEstablishments = new ArrayList<>();
         try {
             for(int i = 0; i < response.length(); i++) {
