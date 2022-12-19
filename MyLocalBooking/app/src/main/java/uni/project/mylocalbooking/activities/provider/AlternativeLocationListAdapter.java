@@ -12,20 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.models.MapLocationOption;
+import uni.project.mylocalbooking.models.AlternativeLocation;
 
-public class MapLocationOptionListAdapter extends BaseAdapter {
+public class AlternativeLocationListAdapter extends BaseAdapter {
     public interface IOptionClickedListener {
-        void onOptionClicked(MapLocationOption option);
+        void onOptionClicked(AlternativeLocation option);
     }
 
     private final IOptionClickedListener optionClickedListener;
-    private List<MapLocationOption> options = new ArrayList<>();
+    private List<AlternativeLocation> options = new ArrayList<>();
 
-    public MapLocationOptionListAdapter(IOptionClickedListener listener) {
+    public AlternativeLocationListAdapter(IOptionClickedListener listener) {
         this.optionClickedListener = listener;
     }
-    public void onListUpdated(List<MapLocationOption> list) {
+    public void onListUpdated(List<AlternativeLocation> list) {
         options = list;
         notifyDataSetChanged();
     }

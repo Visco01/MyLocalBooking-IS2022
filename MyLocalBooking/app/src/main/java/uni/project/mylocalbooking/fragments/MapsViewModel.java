@@ -13,21 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uni.project.mylocalbooking.MyLocalBooking;
-import uni.project.mylocalbooking.models.Coordinates;
-import uni.project.mylocalbooking.models.Establishment;
-import uni.project.mylocalbooking.models.MapLocationOption;
-import uni.project.mylocalbooking.models.Provider;
+import uni.project.mylocalbooking.models.AlternativeLocation;
 
 public class MapsViewModel  extends ViewModel {
     private final MutableLiveData<LatLng> selectedPosition = new MutableLiveData<>();
-    private final MutableLiveData<List<MapLocationOption>> geocodingResults = new MutableLiveData<>();
+    private final MutableLiveData<List<AlternativeLocation>> geocodingResults = new MutableLiveData<>();
     private final MutableLiveData<LatLng> tempMarkerPosition = new MutableLiveData<>();
 
     public LiveData<LatLng> getSelectedPosition() {
         return selectedPosition;
     }
 
-    public LiveData<List<MapLocationOption>> getGeocodingResults() {
+    public LiveData<List<AlternativeLocation>> getGeocodingResults() {
         return geocodingResults;
     }
 
@@ -37,10 +34,10 @@ public class MapsViewModel  extends ViewModel {
             @Override
             public void onResult(GeocodingResult[] results) {
                 selectedPosition.postValue(pos);
-                List<MapLocationOption> options = new ArrayList<>();
+                List<AlternativeLocation> options = new ArrayList<>();
                 for(int i = 1; i < results.length; i++) {
                     GeocodingResult result = results[i];
-                    options.add(new MapLocationOption(result.formattedAddress, result.geometry.location));
+                    options.add(new AlternativeLocation(result.formattedAddress, result.geometry.location));
                 }
                 geocodingResults.postValue(options);
             }
