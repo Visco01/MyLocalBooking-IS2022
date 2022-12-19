@@ -17,12 +17,13 @@ public class ChooseEstablishmentOnMapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(MapsViewModel.class);
         setContentView(R.layout.activity_choose_establishment_on_map);
-        MapLocationOptionListAdapter adapter = new MapLocationOptionListAdapter();
+        MapLocationOptionListAdapter adapter = new MapLocationOptionListAdapter(option -> {
+            viewModel.setTempPosition(option.coordinates.toMapsCoordinates());
+        });
         ListView optionsListView = findViewById(R.id.options_list);
 
         viewModel.getGeocodingResults().observe(this, mapLocationOptions -> {
             adapter.onListUpdated(mapLocationOptions);
-
             optionsListView.setVisibility(mapLocationOptions.isEmpty() ? View.GONE : View.VISIBLE);
         });
         optionsListView.setAdapter(adapter);

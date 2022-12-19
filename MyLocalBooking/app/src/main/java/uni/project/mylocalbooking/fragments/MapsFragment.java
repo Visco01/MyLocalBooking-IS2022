@@ -17,26 +17,43 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.GeocodingApi;
-import com.google.maps.PendingResult;
-import com.google.maps.errors.ApiException;
-import com.google.maps.model.GeocodingResult;
 
-import java.io.IOException;
-
-import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.activities.client.SlotListViewModel;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
     private GoogleMap map;
     private MapsViewModel viewModel;
 
+    private Marker alternativeMarker;
+    private Marker placedMarker;
+    private Marker selectedMarker;
+
     @Override
     public void onMapReady(GoogleMap map) {
         this.map = map;
         map.setOnMapLongClickListener(this);
+        map.setOnMarkerClickListener(marker -> {
+            if(marker.getPosition().equals(alternativeMarker.getPosition()))
+                toggleSelectedMarker(alternativeMarker);
+            else
+                toggleSelectedMarker(placedMarker);
+
+            return true;
+        });
         viewModel = new ViewModelProvider(requireActivity()).get(MapsViewModel.class);
+
+        viewModel.getSelectedPosition().observe(this, latLng -> {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), 700, null);
+        });
+
+        viewModel.getTempPosition().observe(this, pos -> {
+            if(alternativeMarker != null)
+                alternativeMarker.remove();
+
+            alternativeMarker = map.addMarker(new MarkerOptions().position(pos).alpha(0.5f));
+            toggleSelectedMarker(placedMarker);
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 15), 700, null);
+        });
     }
 
     @Nullable
@@ -60,8 +77,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapLongClick(@NonNull LatLng latLng) {
         map.clear();
-        map.addMarker(new MarkerOptions().position(latLng));
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), 700, null);
+        placedMarker = map.addMarker(new MarkerOptions().position(latLng));
+        selectedMarker = placedMarker;
         viewModel.setPosition(latLng);
+    }
+
+    private void toggleSelectedMarker(Marker marker) {
+        selectedMarker = marker;
+        marker.setAlpha(1);
+        if(marker == placedMarker)
+            alternativeMarker.setAlpha(0.5f);
+        else
+            placedMarker.setAlpha(0.5f);
     }
 }

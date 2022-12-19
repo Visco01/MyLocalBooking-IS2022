@@ -19,10 +19,11 @@ import uni.project.mylocalbooking.models.MapLocationOption;
 import uni.project.mylocalbooking.models.Provider;
 
 public class MapsViewModel  extends ViewModel {
-    private MutableLiveData<Coordinates> selectedPosition = new MutableLiveData<>();
-    private MutableLiveData<List<MapLocationOption>> geocodingResults = new MutableLiveData<>();
+    private final MutableLiveData<LatLng> selectedPosition = new MutableLiveData<>();
+    private final MutableLiveData<List<MapLocationOption>> geocodingResults = new MutableLiveData<>();
+    private final MutableLiveData<LatLng> tempMarkerPosition = new MutableLiveData<>();
 
-    public LiveData<Coordinates> getSelectedPosition() {
+    public LiveData<LatLng> getSelectedPosition() {
         return selectedPosition;
     }
 
@@ -31,14 +32,16 @@ public class MapsViewModel  extends ViewModel {
     }
 
     void setPosition(LatLng position) {
-        Coordinates pos = new Coordinates(position.latitude, position.longitude);
+        LatLng pos = new LatLng(position.latitude, position.longitude);
         GeocodingApi.reverseGeocode(MyLocalBooking.geoApiContext, convertCoordinates(position)).setCallback(new PendingResult.Callback<GeocodingResult[]>() {
             @Override
             public void onResult(GeocodingResult[] results) {
                 selectedPosition.postValue(pos);
                 List<MapLocationOption> options = new ArrayList<>();
-                for(GeocodingResult result : results)
+                for(int i = 1; i < results.length; i++) {
+                    GeocodingResult result = results[i];
                     options.add(new MapLocationOption(result.formattedAddress, result.geometry.location));
+                }
                 geocodingResults.postValue(options);
             }
 
@@ -49,11 +52,19 @@ public class MapsViewModel  extends ViewModel {
         });
     }
 
-    private LatLng convertCoordinates(com.google.maps.model.LatLng loc) {
+    LiveData<LatLng> getTempPosition() {
+        return tempMarkerPosition;
+    }
+
+    public void setTempPosition(LatLng pos) {
+        tempMarkerPosition.setValue(pos);
+    }
+
+    public static LatLng convertCoordinates(com.google.maps.model.LatLng loc) {
         return new LatLng(loc.lat, loc.lng);
     }
 
-    private com.google.maps.model.LatLng convertCoordinates(LatLng loc) {
+    public static com.google.maps.model.LatLng convertCoordinates(LatLng loc) {
         return new com.google.maps.model.LatLng(loc.latitude, loc.longitude);
     }
 }
