@@ -28,6 +28,23 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/map_location_option" />
+        tools:listitem="@layout/map_location_option" >
+
+    </ListView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/confirmation_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="@string/confirm"
+        android:textColor="@android:color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SpeakableTextPresentCheck"
+        tools:text="@string/confirm" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

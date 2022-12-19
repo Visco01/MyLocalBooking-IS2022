@@ -12,27 +12,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.models.AlternativeLocation;
+import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class AlternativeLocationListAdapter extends BaseAdapter {
     public interface IOptionClickedListener {
-        void onOptionClicked(AlternativeLocation option);
+        void onOptionClicked(SelectableMapLocation option);
     }
 
     private final IOptionClickedListener optionClickedListener;
-    private List<AlternativeLocation> options = new ArrayList<>();
+    private List<SelectableMapLocation> options = new ArrayList<>();
 
     public AlternativeLocationListAdapter(IOptionClickedListener listener) {
         this.optionClickedListener = listener;
     }
-    public void onListUpdated(List<AlternativeLocation> list) {
+    public void onListUpdated(List<SelectableMapLocation> list) {
         options = list;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return options.size();
+        return options.size() - 1;
     }
 
     @Override

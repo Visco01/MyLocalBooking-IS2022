@@ -13,19 +13,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uni.project.mylocalbooking.MyLocalBooking;
-import uni.project.mylocalbooking.models.AlternativeLocation;
+import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class MapsViewModel  extends ViewModel {
-    private final MutableLiveData<LatLng> selectedPosition = new MutableLiveData<>();
-    private final MutableLiveData<List<AlternativeLocation>> geocodingResults = new MutableLiveData<>();
-    private final MutableLiveData<LatLng> tempMarkerPosition = new MutableLiveData<>();
 
-    public LiveData<LatLng> getSelectedPosition() {
+    public interface IPositionSelectedListener {
+        void onPositionSelected(SelectableMapLocation location);
+        void onNoPositionSelected();
+    }
+    private final MutableLiveData<SelectableMapLocation> selectedPosition = new MutableLiveData<>();
+    private final MutableLiveData<List<SelectableMapLocation>> geocodingResults = new MutableLiveData<>();
+    private final MutableLiveData<SelectableMapLocation> tempMarkerPosition = new MutableLiveData<>();
+    public final MutableLiveData<SelectableMapLocation> selectedLocation = new MutableLiveData<>();
+    public final MutableLiveData<SelectableMapLocation> confirmedLocation = new MutableLiveData<>();
+
+    public LiveData<SelectableMapLocation> getSelectedPosition() {
         return selectedPosition;
     }
-
-    public LiveData<List<AlternativeLocation>> getGeocodingResults() {
+    public LiveData<List<SelectableMapLocation>> getGeocodingResults() {
         return geocodingResults;
+    }
+
+    public void confirmLocation(SelectableMapLocation loc) {
+        confirmedLocation.setValue(loc);
+    }
+
+    public LiveData<SelectableMapLocation> getConfirmedLocation() {
+        return confirmedLocation;
     }
 
     void setPosition(LatLng position) {
@@ -33,13 +47,12 @@ public class MapsViewModel  extends ViewModel {
         GeocodingApi.reverseGeocode(MyLocalBooking.geoApiContext, convertCoordinates(position)).setCallback(new PendingResult.Callback<GeocodingResult[]>() {
             @Override
             public void onResult(GeocodingResult[] results) {
-                selectedPosition.postValue(pos);
-                List<AlternativeLocation> options = new ArrayList<>();
-                for(int i = 1; i < results.length; i++) {
-                    GeocodingResult result = results[i];
-                    options.add(new AlternativeLocation(result.formattedAddress, result.geometry.location));
-                }
+                List<SelectableMapLocation> options = new ArrayList<>();
+                for(GeocodingResult result : results)
+                    options.add(new SelectableMapLocation(result));
+
                 geocodingResults.postValue(options);
+                selectedPosition.postValue(options.get(0));
             }
 
             @Override
@@ -49,12 +62,20 @@ public class MapsViewModel  extends ViewModel {
         });
     }
 
-    LiveData<LatLng> getTempPosition() {
+    LiveData<SelectableMapLocation> getTempPosition() {
         return tempMarkerPosition;
     }
 
-    public void setTempPosition(LatLng pos) {
+    public void setTempPosition(SelectableMapLocation pos) {
         tempMarkerPosition.setValue(pos);
+    }
+
+    public LiveData<SelectableMapLocation> getSelectedLocation() {
+        return selectedLocation;
+    }
+
+    void setSelectedLocation(SelectableMapLocation location) {
+        selectedLocation.setValue(location);
     }
 
     public static LatLng convertCoordinates(com.google.maps.model.LatLng loc) {

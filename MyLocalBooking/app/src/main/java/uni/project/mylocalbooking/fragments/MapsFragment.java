@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
     private GoogleMap map;
@@ -27,32 +28,38 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private Marker alternativeMarker;
     private Marker placedMarker;
     private Marker selectedMarker;
+    private SelectableMapLocation placedLocation;
+    private SelectableMapLocation alternativeLocation;
 
     @Override
     public void onMapReady(GoogleMap map) {
         this.map = map;
         map.setOnMapLongClickListener(this);
         map.setOnMarkerClickListener(marker -> {
-            if(marker.getPosition().equals(alternativeMarker.getPosition()))
-                toggleSelectedMarker(alternativeMarker);
-            else
+            if(marker.getPosition().equals(placedMarker.getPosition()))
                 toggleSelectedMarker(placedMarker);
+            else
+                toggleSelectedMarker(alternativeMarker);
 
             return true;
         });
         viewModel = new ViewModelProvider(requireActivity()).get(MapsViewModel.class);
 
-        viewModel.getSelectedPosition().observe(this, latLng -> {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15), 700, null);
+        viewModel.getSelectedPosition().observe(this, location -> {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(location.coordinates.toMapsCoordinates(), 15), 700, null);
+            placedLocation = location;
+            toggleSelectedMarker(placedMarker);
         });
 
-        viewModel.getTempPosition().observe(this, pos -> {
+        viewModel.getTempPosition().observe(this, location -> {
             if(alternativeMarker != null)
                 alternativeMarker.remove();
 
-            alternativeMarker = map.addMarker(new MarkerOptions().position(pos).alpha(0.5f));
+            LatLng coordinates = location.coordinates.toMapsCoordinates();
+            alternativeMarker = map.addMarker(new MarkerOptions().position(coordinates).alpha(0.5f));
+            alternativeLocation = location;
             toggleSelectedMarker(placedMarker);
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 15), 700, null);
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 15), 700, null);
         });
     }
 
@@ -85,9 +92,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private void toggleSelectedMarker(Marker marker) {
         selectedMarker = marker;
         marker.setAlpha(1);
-        if(marker == placedMarker)
-            alternativeMarker.setAlpha(0.5f);
-        else
+        if(marker == placedMarker) {
+            if(alternativeMarker != null)
+                alternativeMarker.setAlpha(0.5f);
+            viewModel.setSelectedLocation(placedLocation);
+        }
+        else {
             placedMarker.setAlpha(0.5f);
+            viewModel.setSelectedLocation(alternativeLocation);
+        }
     }
 }
