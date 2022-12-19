@@ -38,12 +38,12 @@
                 android:id="@+id/tittle_se"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="10dp"
                 android:text="Title"
                 android:textColor="@color/booking_color"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="100dp">
+                android:textSize="18dp"
+                android:textStyle="bold">
 
             </TextView>
 
@@ -51,25 +51,23 @@
                 android:id="@+id/location_se"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="50dp"
                 android:text="Location"
                 android:textColor="@color/booking_color"
-                android:textSize="17dp"
-                android:textStyle="bold"
-                android:layout_marginTop="35dp"
-                android:layout_marginLeft="100dp">
+                android:textSize="15sp"
+                android:textStyle="bold">
 
             </TextView>
 
             <ImageView
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/notes"
                 android:layout_marginLeft="310dp"
                 android:layout_marginTop="45dp"
-                >
+                android:src="@drawable/notes">
 
             </ImageView>
-
 
 
         </androidx.cardview.widget.CardView>

@@ -24,16 +24,12 @@ public class MyBookings extends BaseNavigationActivity {
     List<ModelClass_myBookings> myBookingsList;
     Adapter_myBookings adapter_myBookings;
 
-    private Button reviewButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initData();
         initRecyckeRview();
-
-        // addButton = findViewById(R.id.addButton);
     }
 
     private void initRecyckeRview() {
