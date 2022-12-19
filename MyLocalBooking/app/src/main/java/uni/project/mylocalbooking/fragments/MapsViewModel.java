@@ -16,11 +16,6 @@ import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class MapsViewModel  extends ViewModel {
-
-    public interface IPositionSelectedListener {
-        void onPositionSelected(SelectableMapLocation location);
-        void onNoPositionSelected();
-    }
     private final MutableLiveData<SelectableMapLocation> selectedPosition = new MutableLiveData<>();
     private final MutableLiveData<List<SelectableMapLocation>> geocodingResults = new MutableLiveData<>();
     private final MutableLiveData<SelectableMapLocation> tempMarkerPosition = new MutableLiveData<>();
@@ -43,8 +38,7 @@ public class MapsViewModel  extends ViewModel {
     }
 
     void setPosition(LatLng position) {
-        LatLng pos = new LatLng(position.latitude, position.longitude);
-        GeocodingApi.reverseGeocode(MyLocalBooking.geoApiContext, convertCoordinates(position)).setCallback(new PendingResult.Callback<GeocodingResult[]>() {
+        GeocodingApi.reverseGeocode(MyLocalBooking.geoApiContext, toApiCoordinates(position)).setCallback(new PendingResult.Callback<GeocodingResult[]>() {
             @Override
             public void onResult(GeocodingResult[] results) {
                 List<SelectableMapLocation> options = new ArrayList<>();
@@ -78,11 +72,7 @@ public class MapsViewModel  extends ViewModel {
         selectedLocation.setValue(location);
     }
 
-    public static LatLng convertCoordinates(com.google.maps.model.LatLng loc) {
-        return new LatLng(loc.lat, loc.lng);
-    }
-
-    public static com.google.maps.model.LatLng convertCoordinates(LatLng loc) {
+    public static com.google.maps.model.LatLng toApiCoordinates(LatLng loc) {
         return new com.google.maps.model.LatLng(loc.latitude, loc.longitude);
     }
 }
