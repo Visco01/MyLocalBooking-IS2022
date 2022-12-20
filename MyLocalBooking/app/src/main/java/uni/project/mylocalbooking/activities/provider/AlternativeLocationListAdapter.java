@@ -32,17 +32,17 @@ public class AlternativeLocationListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return options.size() - 1;
+        return options.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return options.get(i + 1);
+        return options.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return i + 1;
+        return i;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class AlternativeLocationListAdapter extends BaseAdapter {
                 .inflate(R.layout.map_location_option, viewGroup, false);
 
 
-        SelectableMapLocation location = options.get(i + 1);
+        SelectableMapLocation location = options.get(i);
         ((TextView) viewRoot.findViewById(R.id.address)).setText(location.address);
         ((AppCompatButton) viewRoot.findViewById(R.id.location_option_button)).setOnClickListener(v -> {
             optionClickedListener.onOptionClicked(location);

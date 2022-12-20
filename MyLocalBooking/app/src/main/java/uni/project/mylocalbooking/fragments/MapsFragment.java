@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.models.SelectableMapLocation;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
     private GoogleMap map;
     private MapsViewModel viewModel;
 
@@ -35,14 +35,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onMapReady(GoogleMap map) {
         this.map = map;
         map.setOnMapLongClickListener(this);
-        map.setOnMarkerClickListener(marker -> {
-            if(marker.getPosition().equals(placedMarker.getPosition()))
-                toggleSelectedMarker(placedMarker);
-            else
-                toggleSelectedMarker(alternativeMarker);
-
-            return true;
-        });
+        map.setOnMarkerClickListener(this);
         viewModel = new ViewModelProvider(requireActivity()).get(MapsViewModel.class);
 
         viewModel.getSelectedPosition().observe(this, location -> {
@@ -101,5 +94,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             placedMarker.setAlpha(0.5f);
             viewModel.setSelectedLocation(alternativeLocation);
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(@NonNull Marker marker) {
+        if(marker.getPosition().equals(placedMarker.getPosition()))
+            toggleSelectedMarker(placedMarker);
+        else
+            toggleSelectedMarker(alternativeMarker);
+
+        return true;
     }
 }

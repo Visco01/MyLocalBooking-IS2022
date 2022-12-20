@@ -1,12 +1,15 @@
 package uni.project.mylocalbooking.fragments;
 
+import android.location.Location;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.GeocodingApi;
 import com.google.maps.PendingResult;
+import com.google.maps.android.SphericalUtil;
 import com.google.maps.model.GeocodingResult;
 
 import java.util.ArrayList;
@@ -38,15 +41,28 @@ public class MapsViewModel  extends ViewModel {
     }
 
     void setPosition(LatLng position) {
-        GeocodingApi.reverseGeocode(MyLocalBooking.geoApiContext, toApiCoordinates(position)).setCallback(new PendingResult.Callback<GeocodingResult[]>() {
+        LatLng[] bounds = new LatLng[2];
+        createBoundsAroundCenter(position, 100, bounds);
+        GeocodingApi.reverseGeocode(MyLocalBooking.geoApiContext, toApiCoordinates(position))
+                .bounds(convertCoordinates(bounds[0]), convertCoordinates(bounds[1]))
+                .setCallback(new PendingResult.Callback<GeocodingResult[]>() {
             @Override
             public void onResult(GeocodingResult[] results) {
                 List<SelectableMapLocation> options = new ArrayList<>();
-                for(GeocodingResult result : results)
-                    options.add(new SelectableMapLocation(result));
+                for(GeocodingResult result : results) {
+                    float[] r = new float[3];
+                    Location.distanceBetween(position.latitude, position.longitude, result.geometry.location.lat, result.geometry.location.lng, r);
+                    if(r[0] < 100) {
+                        SelectableMapLocation locationResult = new SelectableMapLocation(result);
+
+                        if(result.plusCode == null)
+                            options.add(locationResult);
+                        else
+                            selectedPosition.postValue(locationResult);
+                    }
+                }
 
                 geocodingResults.postValue(options);
-                selectedPosition.postValue(options.get(0));
             }
 
             @Override
@@ -54,6 +70,25 @@ public class MapsViewModel  extends ViewModel {
 
             }
         });
+    }
+
+    private com.google.maps.model.LatLng convertCoordinates(LatLng coordinates) {
+        return new com.google.maps.model.LatLng(coordinates.latitude, coordinates.longitude);
+    }
+
+    private LatLng convertCoordinates(com.google.maps.model.LatLng coordinates) {
+        return new LatLng(coordinates.lat, coordinates.lng);
+    }
+
+    private void createBoundsAroundCenter(LatLng center, double radiusInMeters, LatLng[] results) {
+        double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
+        LatLng southwestCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
+        LatLng northeastCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0);
+
+        results[0] = southwestCorner;
+        results[1] = northeastCorner;
     }
 
     LiveData<SelectableMapLocation> getTempPosition() {
