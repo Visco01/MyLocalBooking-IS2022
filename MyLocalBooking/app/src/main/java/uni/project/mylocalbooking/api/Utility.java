@@ -1,5 +1,7 @@
 package uni.project.mylocalbooking.api;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,12 +72,22 @@ class Utility {
         JSONArray slotBlueprints = object.getJSONArray("slot_blueprints");
         for(int j = 0; j < slotBlueprints.length(); j++){
             JSONObject jsonSlotBlueprint = slotBlueprints.getJSONObject(j);
-            SlotBlueprint newBlueprint = getSlotBlueprintByJSONObject(jsonSlotBlueprint, newEstablishment);
+            JSONArray jsonConcreteSlotBlueprints = jsonSlotBlueprint.getJSONArray("periodic_slot_blueprints");
+            for(int i = 0; i < jsonConcreteSlotBlueprints.length(); i++){
+                Log.i("concrete slot", jsonConcreteSlotBlueprints.getJSONObject(i).toString());
+                SlotBlueprint newBlueprint = getSlotBlueprintByJSONObject(jsonSlotBlueprint, jsonConcreteSlotBlueprints.getJSONObject(i), newEstablishment, 'p');
+            }
+            jsonConcreteSlotBlueprints = jsonSlotBlueprint.getJSONArray("manual_slot_blueprints");
+            for(int i = 0; i < jsonConcreteSlotBlueprints.length(); i++){
+                Log.i("concrete slot", jsonConcreteSlotBlueprints.getJSONObject(i).toString());
+                SlotBlueprint newBlueprint = getSlotBlueprintByJSONObject(jsonSlotBlueprint, jsonConcreteSlotBlueprints.getJSONObject(i), newEstablishment, 'm');
+            }
+
         }
         return newEstablishment;
     }
     
-    private static SlotBlueprint getSlotBlueprintByJSONObject(JSONObject object, Establishment establishment) throws JSONException{
+    private static SlotBlueprint getSlotBlueprintByJSONObject(JSONObject object, JSONObject concreteBlueprint, Establishment establishment, char type) throws JSONException{
         SlotBlueprint result;
         Long slotBlueprintId = object.getLong("id");
         HashSet<DayOfWeek> weekDays = getDaysOfWeek(object.getInt("weekdays"));
@@ -85,8 +97,7 @@ class Utility {
         LocalDate fromDate = extractDate(object, "fromdate");
         LocalDate toDate = extractDate(object, "todate");
 
-        JSONObject concreteBlueprint = object.optJSONObject("periodic_slot_blueprint");
-        if(concreteBlueprint != null){
+        if(type == 'p'){
             Long concreteBlueprintId = concreteBlueprint.getLong("id");
             String fromTime = concreteBlueprint.getString("fromtime");
             String toTime = concreteBlueprint.getString("totime");
