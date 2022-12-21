@@ -3,27 +3,40 @@ package uni.project.mylocalbooking.activities.provider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 
-public class MyEstablishments extends BaseNavigationActivity {
+public class MyEstablishments extends BaseNavigationActivity implements RVInterface {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
     List<ModelClass_myEstablishment> myEstablishmentList;
     Adapter_myEstablishment adapter_myEstablishment;
+    private Button addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         init_data();
         init_recycleRview();
+
+        addButton = findViewById(R.id.addEstablishmentButton);
+        // addButton = findViewById(R.id.addButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MyLocalBooking.getAppContext(), AddEstablishmentActivity.class));
+            }
+        });
 
     }
 
@@ -43,7 +56,7 @@ public class MyEstablishments extends BaseNavigationActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter_myEstablishment = new Adapter_myEstablishment(myEstablishmentList);
+        adapter_myEstablishment = new Adapter_myEstablishment(myEstablishmentList, this);
         recyclerView.setAdapter(adapter_myEstablishment);
         adapter_myEstablishment.notifyDataSetChanged();
     }
@@ -51,12 +64,16 @@ public class MyEstablishments extends BaseNavigationActivity {
     private void init_data() {
 
         myEstablishmentList = new ArrayList<>();
-
-
         myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
         myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
         myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
 
 
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Intent intent = new Intent(this, CalendarViewActivity.class);
+        startActivity(intent);
     }
 }

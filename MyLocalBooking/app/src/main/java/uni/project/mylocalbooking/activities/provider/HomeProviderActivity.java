@@ -21,8 +21,6 @@ import uni.project.mylocalbooking.activities.UserTest;
 
 public class HomeProviderActivity extends BaseNavigationActivity {
 
-    private Button addButton;
-
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     List<ModelPrenotationToday> prenotationTodayList;
@@ -42,15 +40,6 @@ public class HomeProviderActivity extends BaseNavigationActivity {
 
         init_data();
         init_recycleRview();
-
-        addButton = findViewById(R.id.addEstablishmentButton);
-        // addButton = findViewById(R.id.addButton);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MyLocalBooking.getAppContext(), AddEstablishmentActivity.class));
-            }
-        });
     }
 
     private void init_recycleRview() {
