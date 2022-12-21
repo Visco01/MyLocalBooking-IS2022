@@ -15,9 +15,11 @@ import uni.project.mylocalbooking.R;
 
 public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEstablishment.ViewHolder3> {
 
+    private final RVInterface rvInterface;
     List<ModelClass_myEstablishment> providerEstablishment;
 
-    public Adapter_myEstablishment(List<ModelClass_myEstablishment> providerEstablishment) {
+    public Adapter_myEstablishment(List<ModelClass_myEstablishment> providerEstablishment, RVInterface rvInterface) {
+        this.rvInterface = rvInterface;
         this.providerEstablishment = providerEstablishment;
     }
 
@@ -25,7 +27,7 @@ public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEsta
     @Override
     public Adapter_myEstablishment.ViewHolder3 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_establishment_row, parent, false);
-        return new ViewHolder3(view);
+        return new ViewHolder3(view, rvInterface);
     }
 
     @Override
@@ -41,17 +43,31 @@ public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEsta
         return providerEstablishment.size();
     }
 
-    public class ViewHolder3 extends RecyclerView.ViewHolder {
+    public static class ViewHolder3 extends RecyclerView.ViewHolder {
 
         private ImageView imageView;
         private TextView textViewTitle;
         private TextView textViewLocation;
 
-        public ViewHolder3(@NonNull View itemView) {
+        public ViewHolder3(@NonNull View itemView, RVInterface rvInterface) {
             super(itemView);
             imageView = itemView.findViewById(R.id.myEstablishment_imageview1);
             textViewTitle = itemView.findViewById(R.id.myEstablishment_textView1);
             textViewLocation = itemView.findViewById(R.id.myEstablishment_textView2);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (rvInterface != null) {
+                        int pos = getAbsoluteAdapterPosition();
+
+                        if (pos != RecyclerView.NO_POSITION) {
+                            rvInterface.onItemClick(pos);
+                        }
+
+                    }
+                }
+            });
 
         }
 
