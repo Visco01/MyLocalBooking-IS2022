@@ -1,6 +1,5 @@
 package uni.project.mylocalbooking.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,28 +8,22 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import uni.project.mylocalbooking.MyLocalBooking;
-import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 
 public class FailureFragment extends DialogFragment {
-    private String errorMessage;
-    private String errorTitle;
+    private final String errorMessage;
+    private final String errorTitle;
     // atm unused
-    private boolean goHome = false;
+    private final boolean goHome = false;
 
     public FailureFragment (String title, String message){
         errorTitle = title;
         errorMessage = message;
     }
 
-    // To help with ritical errors that require an Activity to be re-opened
+    // To help with critical errors that require an Activity to be re-opened
     /*
     public FailureFragment (String title, String message, boolean home){
         errorTitle = title;
@@ -39,6 +32,7 @@ public class FailureFragment extends DialogFragment {
     }
     */
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -48,7 +42,7 @@ public class FailureFragment extends DialogFragment {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     // Atm will never go inside the if
                     public void onClick(DialogInterface dialog, int id) {
-                        if (goHome == true){
+                        if (goHome){
                             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
                         }
                     }
@@ -61,7 +55,7 @@ public class FailureFragment extends DialogFragment {
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
         // Atm will never go inside the if
-        if (goHome == true){
+        if (goHome){
             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
         }
     }

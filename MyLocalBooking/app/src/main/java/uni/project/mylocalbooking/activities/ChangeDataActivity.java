@@ -1,10 +1,12 @@
 package uni.project.mylocalbooking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -13,6 +15,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.fragments.FailureFragment;
+import uni.project.mylocalbooking.fragments.SuccessFragment;
 
 public class ChangeDataActivity extends AppCompatActivity {
 
@@ -107,6 +111,55 @@ public class ChangeDataActivity extends AppCompatActivity {
             }
         });
 
+        Button confirmChange = findViewById(R.id.confirm_change_birthday);
+        confirmChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: Check emptiness
+
+                // TODO: Check if date is valid
+
+                // TODO: Check if underage
+
+                // TODO: Check if confirm is the same
+
+                // TODO: Confirm based on its age
+
+            }
+        });
+
+    }
+
+    private void confirmChange() {
+        DialogFragment newFragment = new SuccessFragment("Birthday changed successfully!",
+                "Your birthday was changed successfully, ");
+        newFragment.show(getSupportFragmentManager(), "successReview");
+    }
+
+    private void confirmChangeUnderage() {
+        DialogFragment newFragment = new SuccessFragment("Birthday changed successfully!",
+                "Your birthday was changed successfully!\n" +
+                        "Remember you're underage, so you must use the application while a parent or" +
+                        " someone overage is watching you!!!");
+        newFragment.show(getSupportFragmentManager(), "successReview");
+    }
+
+    private void failedEmptiness(){
+        DialogFragment newFragment = new FailureFragment("Error",
+                "At least one of the dates is empty, please fill them all");
+        newFragment.show(getSupportFragmentManager(), "failedChangeMinAge");
+    }
+
+    private void failedChangeMinAge(){
+        DialogFragment newFragment = new FailureFragment("Error",
+                "The selected date is not valid, please try with another one");
+        newFragment.show(getSupportFragmentManager(), "failedChangeMinAge");
+    }
+
+    private void failedChangeEquals(){
+        DialogFragment newFragment = new FailureFragment("Error",
+                "The new birthday was not confirmed correctly, please try again");
+        newFragment.show(getSupportFragmentManager(), "failedChangeEquals");
     }
 
 }
