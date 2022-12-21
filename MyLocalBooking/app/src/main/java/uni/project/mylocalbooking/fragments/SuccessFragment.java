@@ -9,19 +9,23 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import android.app.Dialog;
 
+import java.util.Objects;
+
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.activities.UserTest;
 import uni.project.mylocalbooking.activities.client.HomeClientActivity;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 
 public class SuccessFragment extends DialogFragment {
-    private String successTitle, successMessage;
+    private final String successTitle;
+    private final String successMessage;
 
     public SuccessFragment (String title, String message){
         successTitle = title;
         successMessage = message;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
@@ -30,10 +34,10 @@ public class SuccessFragment extends DialogFragment {
         builder.setMessage(successMessage).setTitle(successTitle)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (UserTest.getType() == "Client"){
+                        if (Objects.equals(UserTest.getType(), "Client")){
                             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeClientActivity.class));
                         }
-                        else if (UserTest.getType() == "Provider"){
+                        else if (Objects.equals(UserTest.getType(), "Provider")){
                             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
                         }
                         else{
@@ -50,10 +54,10 @@ public class SuccessFragment extends DialogFragment {
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
         // User type dynamic
-        if (UserTest.getType() == "Client"){
+        if (Objects.equals(UserTest.getType(), "Client")){
             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeClientActivity.class));
         }
-        else if (UserTest.getType() == "Provider"){
+        else if (Objects.equals(UserTest.getType(), "Provider")){
             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
         }
         else{

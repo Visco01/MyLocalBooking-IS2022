@@ -52,63 +52,59 @@
         </TextView>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="name client"
             android:id="@+id/name_client_prenotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
             android:layout_marginTop="30dp"
-            android:textSize="20dp"
-            android:textStyle="bold"
+            android:text="name client"
             android:textColor="@color/booking_color"
-            android:layout_marginLeft="100dp">
+            android:textSize="18dp"
+            android:textStyle="bold">
 
         </TextView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="50dp"
             android:text="From"
-            android:layout_marginTop="50dp"
-            android:textSize="20dp"
-            android:textStyle="bold"
             android:textColor="@color/booking_color"
-            android:layout_marginLeft="100dp">
-        </TextView>
+            android:textSize="16sp"
+            android:textStyle="bold"></TextView>
 
         <TextClock
+            android:id="@+id/from_hour_prenotation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="11:50:00"
+            android:layout_marginLeft="150dp"
             android:layout_marginTop="50dp"
-            android:textSize="20dp"
-            android:id="@+id/from_hour_prenotation"
-            android:textStyle="bold"
+            android:text="11:50:00"
             android:textColor="@color/booking_color"
-            android:layout_marginLeft="150dp">
-        </TextClock>
+            android:textSize="16sp"
+            android:textStyle="bold"></TextClock>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="To"
+            android:layout_marginLeft="235dp"
             android:layout_marginTop="50dp"
-            android:textSize="20dp"
-            android:textStyle="bold"
+            android:text="To"
             android:textColor="@color/booking_color"
-            android:layout_marginLeft="235dp">
-        </TextView>
+            android:textSize="16sp"
+            android:textStyle="bold"></TextView>
 
         <TextClock
+            android:id="@+id/to_hour_prenotation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12:50:00"
+            android:layout_marginLeft="260dp"
             android:layout_marginTop="50dp"
-            android:textSize="20dp"
-            android:id="@+id/to_hour_prenotation"
-            android:textStyle="bold"
+            android:text="12:50:00"
             android:textColor="@color/booking_color"
-            android:layout_marginLeft="260dp">
-        </TextClock>
+            android:textSize="16sp"
+            android:textStyle="bold"></TextClock>
 
     </androidx.cardview.widget.CardView>
 

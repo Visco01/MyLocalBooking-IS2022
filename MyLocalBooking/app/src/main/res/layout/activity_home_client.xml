@@ -10,16 +10,24 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginVertical="230dp"
         android:layout_marginHorizontal="50dp"
-        app:cardCornerRadius="25dp">
+        android:layout_marginVertical="230dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="32dp"
+        app:cardCornerRadius="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/switchPosition"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:backgroundTint="@color/inactive"
+            android:id="@+id/recycleRview_establishment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recycleRview_establishment"
-            android:background="@color/inactive">
+            android:background="@color/inactive"
+            android:backgroundTint="@color/inactive">
 
         </androidx.recyclerview.widget.RecyclerView>
 
