@@ -8,9 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.Objects;
-
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.fragments.AskConfirmFragment;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
 
@@ -19,7 +18,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     // TODO: get the value and remove the line below
     // For testing purpose i'll use the following one
-    private String currentPassword = "Ciao123";
+    private final String currentPassword = "Ciao123";
     EditText oldPassword, newPassword, newPasswordConfirm;
 
 
@@ -47,13 +46,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 else if(!currentPassword.equals(inputValue1)) {
                     failedChangeOld();
                 }
-                //TODO: Check if new password is valid (DB constraint)
-                /*
-                else if(...){
+                // Check if new password is valid (DB constraint
+                else if(!checkPassword(inputValue2)){
                     failedChangeValid();
                 }
-                */
-
                 // Check if confirm is the same as newPassword
                 else if(!inputValue2.equals(inputValue3)){
                     failedChangeEquals();
@@ -65,10 +61,43 @@ public class ChangePasswordActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Password requisites:
+     * Length: At least 6 characters.
+     * At least one uppercase, one lowercase and one number.
+     * */
+    private boolean checkPassword(String p){
+        int i;
+        char c;
+        boolean hasNumber = false, hasUppercase = false, hasLowercase = false;
+
+        // If password is too short
+        if (p.length() < 6){
+            return false;
+        }
+        for (i = 0; i<p.length(); i++){
+            c = p.charAt(i);
+            if (Character.isDigit(c)){
+                hasNumber = true;
+            }
+            else if (Character.isUpperCase(c)){
+                hasUppercase = true;
+            }
+            else if (Character.isLowerCase(c)){
+                hasLowercase = true;
+            }
+        }
+
+        return hasNumber && hasUppercase && hasLowercase;
+    }
+
+
     private void confirmChange() {
-        DialogFragment newFragment = new SuccessFragment("Password changed successfully!",
+        DialogFragment newFragment = new AskConfirmFragment("Are you sure?",
+                "Are you sure you want to change your password?",
+                "Password changed successfully!",
                 "Your password was changed successfully");
-        newFragment.show(getSupportFragmentManager(), "confirmChange");
+        newFragment.show(getSupportFragmentManager(), "askChange");
     }
 
     private void failedChangeEmptiness(){
@@ -85,8 +114,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private void failedChangeValid(){
         DialogFragment newFragment = new FailureFragment("Error",
                 "Your new password is not valid, please try again following these rules:\n" +
-                        "Minimum length: \n" +
+                        "Minimum length: 6 characters\n" +
                         "At least one Uppercase letter\n" +
+                        "At least one Lowercase letter\n" +
                         "At least one Number");
         newFragment.show(getSupportFragmentManager(), "failedChangeValid");
     }

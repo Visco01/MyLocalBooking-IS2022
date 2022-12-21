@@ -10,12 +10,18 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="50dp"
         android:layout_marginVertical="230dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="64dp"
         app:cardCornerRadius="30dp"
-        tools:layout_editor_absoluteX="50dp"
-        tools:layout_editor_absoluteY="230dp">
+        app:layout_constraintBottom_toTopOf="@+id/navigationClient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/my_bookings_recyclerView"
@@ -32,7 +38,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="64dp"
+        android:layout_marginBottom="16dp"
         android:text="Tip: Click on a reservation to see more details, delete it or review its establishment!"
         android:textSize="16sp"
         android:textStyle="bold"
