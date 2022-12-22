@@ -98,7 +98,7 @@ public interface IMyLocalBookingAPI{
      * post:
      *       strikes the user in the db
      * */
-    void strikeUser(Client client);
+    void strikeUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
     /*
      * post:
      *       sets the CURRENT_USER.maxstrikes in the db to max

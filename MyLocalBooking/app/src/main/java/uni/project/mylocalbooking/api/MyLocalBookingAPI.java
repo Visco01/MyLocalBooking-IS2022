@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.helpers.Util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -320,8 +321,20 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void strikeUser(Client client) {
+    public void strikeUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
+        Long providerId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
+        providerId = 378L;
+        if(providerId == null)
+            return;
 
+        String url = MyLocalBookingAPI.apiPrefix + "strikes";
+        String requestBody = JSONBodyGenerator.generateStrikeUserBody(providerId, "0394686815914"/*client.cellphone*/);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) data -> {
+            if(data.has("id"))
+                if(onSuccess != null) onSuccess.apply(StatusCode.CREATED);
+            else
+                if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+        }, false);
     }
 
     @Override
