@@ -83,14 +83,16 @@
         </activity>
         <activity
             android:name=".activities.client.EditChoiceDialogClientActivity"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="Instantiatable">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.provider.EditChoiceDialogProviderActivity"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="Instantiatable">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

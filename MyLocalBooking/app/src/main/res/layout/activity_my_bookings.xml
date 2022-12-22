@@ -21,7 +21,9 @@
         app:layout_constraintBottom_toTopOf="@+id/navigationClient"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="50dp">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/my_bookings_recyclerView"
