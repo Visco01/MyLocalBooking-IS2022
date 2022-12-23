@@ -323,7 +323,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void strikeUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
         Long providerId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
-        providerId = 378L;
+        //providerId = 378L;
         if(providerId == null)
             return;
 
@@ -338,8 +338,21 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void setMaxStrikes(int max) {
+    public void setMaxStrikes(int max, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
+        Long providerId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
+        //providerId = 377L;
+        if(providerId == null)
+            return;
 
+        String url = MyLocalBookingAPI.apiPrefix + "providers/" + providerId + "/set_max_strikes?new_max_strikes=" + max;
+        Utility.callAPI(MyLocalBookingAPI.jwt, "{\"sample\": \"sample\"}", url, "POST", (RunOnResponse<JSONObject>) data -> {
+            if(data.has("error"))
+                if(onError != null) onError.apply(StatusCode.NOT_FOUND);
+            if(data.has("success"))
+                if(onSuccess != null) onSuccess.apply(StatusCode.CREATED);
+            else
+                if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+        }, false);
     }
 
     @Override

@@ -103,7 +103,7 @@ public interface IMyLocalBookingAPI{
      * post:
      *       sets the CURRENT_USER.maxstrikes in the db to max
      * */
-    void setMaxStrikes(int max);
+    void setMaxStrikes(int max, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
 
     // CLIENT
     // all calls in this section implicitly have the precondition
