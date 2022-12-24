@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
@@ -26,6 +27,31 @@ public class ChangeDataActivity extends AppCompatActivity {
     private Calendar calendar;
     private Calendar calendar2;
     private Calendar calendar3;
+    private Calendar today = Calendar.getInstance();
+
+
+    private boolean isOverage(String date, String today){
+        String[] D = date.split("/");
+        String[] T = today.split("/");
+
+        if (Integer.parseInt(D[2]) - Integer.parseInt(T[2]) >= 19){
+            return true;
+        }
+        else if (Integer.parseInt(D[2]) - Integer.parseInt(T[2]) <= 17){
+            return false;
+        }
+        else if (Integer.parseInt(D[0]) > Integer.parseInt(T[0])){
+            return true;
+        }
+        else if (Integer.parseInt(D[0]) < Integer.parseInt(T[0])){
+            return false;
+        }
+        else if (Integer.parseInt(D[1]) < Integer.parseInt(T[1])){
+            return false;
+        }
+
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,24 +137,47 @@ public class ChangeDataActivity extends AppCompatActivity {
             }
         });
 
+
+
         Button confirmChange = findViewById(R.id.confirm_change_birthday);
         confirmChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String oldInput = oldBornDate.getText().toString();
+                String newInput = newBornDate.getText().toString();
+                String confirmInput = confirmNewBornDate.getText().toString();
+                String format = "MM/dd/yy";
+                SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+                String todayString = sdf.format(today.getTime()).toString();
+                //System.out.println(sdf.format(today.getTime()).toString() + " Old: " + oldInput);
+                String[] splitted = newInput.split("/");
+
                 // TODO: Check emptiness
-
+                if (oldInput.isEmpty() || newInput.isEmpty() || confirmInput.isEmpty()){
+                    failedEmptiness();
+                }
                 // TODO: Check if date is valid
-
-                // TODO: Check if underage
-
+                // Date picked < This year
+                else if (Integer.parseInt(splitted[2]) >= 22){
+                    failedChangeMinAge();
+                }
                 // TODO: Check if confirm is the same
-
+                else if (!newInput.equals(confirmInput)){
+                    failedChangeEquals();
+                }
+                // TODO: Check if underage
+                else if (!isOverage(newInput, todayString)){
+                    confirmChangeUnderage();
+                }
                 // TODO: Confirm based on its age
-
+                else{
+                    confirmChange();
+                }
             }
         });
 
     }
+
 
     private void confirmChange() {
         DialogFragment newFragment = new SuccessFragment("Birthday changed successfully!",

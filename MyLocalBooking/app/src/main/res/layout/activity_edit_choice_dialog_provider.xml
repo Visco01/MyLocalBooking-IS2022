@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="25dp"
-        android:text="What do you wanna edit?"
+        android:text="What do you want to edit?"
         android:textColor="@color/booking_color"
         android:textSize="25sp"
         android:textStyle="bold" />
