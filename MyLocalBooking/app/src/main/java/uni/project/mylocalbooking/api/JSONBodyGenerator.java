@@ -123,4 +123,12 @@ class JSONBodyGenerator {
                 "\"provider_id\": " + providerId + ", " +
                 "\"usercellphone\": " + cellphone + "}";
     }
+
+    public static String generateRatingBody(Long clientId, Long establishment_id, float rating, String comment) {
+        return "{" +
+                "\"client_id\": " + clientId + ", " +
+                "\"establishment_id\": " +  establishment_id + ", " +
+                "\"rating\": " + rating + ", " +
+                "\"comment\": " + comment + "}";
+    }
 }

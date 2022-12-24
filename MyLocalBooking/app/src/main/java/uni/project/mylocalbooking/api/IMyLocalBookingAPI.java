@@ -132,9 +132,12 @@ public interface IMyLocalBookingAPI{
      *       removes the reservation if exists
      */
     void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
+
     void getClosestEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata);
+
     void setPreferredPosition(Coordinates position, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError);
-    void rateEstablishment(Establishment establishment, int rating, String comment/*, boolean anonymous*/);
+
+    void rateEstablishment(Establishment establishment, float rating, String comment, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
 
 
 
