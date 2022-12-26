@@ -91,7 +91,7 @@ public interface IMyLocalBookingAPI{
      * post:
      *       removes the user from the blacklist in the db
      * */
-    void unbanUser(Client client);
+    void unbanUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
     /*
      * pre:
      *      client.id != null

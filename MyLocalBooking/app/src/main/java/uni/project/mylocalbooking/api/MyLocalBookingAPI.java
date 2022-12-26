@@ -316,8 +316,21 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void unbanUser(Client client) {
+    public void unbanUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
+        Long providerId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
+        //providerId = 377L;
+        if(providerId == null)
+            return;
 
+        String url = MyLocalBookingAPI.apiPrefix + "providers/delete_blacklist_by_params";
+        String requestBody = JSONBodyGenerator.generateUnbanUserBody(providerId, client.cellphone);
+        Log.i("request body", requestBody);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) data -> {
+            if(data.has("error"))
+                if(onError != null) onError.apply(StatusCode.NOT_FOUND);
+            else
+                if(onSuccess != null) onSuccess.apply(StatusCode.DELETED);
+        }, false);
     }
 
     @Override
@@ -328,7 +341,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             return;
 
         String url = MyLocalBookingAPI.apiPrefix + "strikes";
-        String requestBody = JSONBodyGenerator.generateStrikeUserBody(providerId, "0394686815914"/*client.cellphone*/);
+        String requestBody = JSONBodyGenerator.generateStrikeUserBody(providerId, client.cellphone);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) data -> {
             if(data.has("id"))
                 if(onSuccess != null) onSuccess.apply(StatusCode.CREATED);

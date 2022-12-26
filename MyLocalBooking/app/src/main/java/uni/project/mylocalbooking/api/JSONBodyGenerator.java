@@ -124,6 +124,12 @@ class JSONBodyGenerator {
                 "\"usercellphone\": " + cellphone + "}";
     }
 
+    public static String generateUnbanUserBody(Long providerId, String cellphone) {
+        return "{" +
+                "\"provider_id\": " + providerId + ", " +
+                "\"usercellphone\": \"" + cellphone + "\"}";
+    }
+
     public static String generateRatingBody(Long clientId, Long establishment_id, float rating, String comment) {
         return "{" +
                 "\"client_id\": " + clientId + ", " +
