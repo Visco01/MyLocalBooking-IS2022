@@ -20,9 +20,7 @@ import com.google.android.gms.tasks.Task;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
-import uni.project.mylocalbooking.fragments.AskConfirmFragment;
 import uni.project.mylocalbooking.fragments.FailureFragment;
-import uni.project.mylocalbooking.fragments.SuccessFragment;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -53,8 +51,9 @@ public class LoginActivity extends AppCompatActivity {
                     failedEmptiness();
                 }
                 else{
-                    //api.login(cell.getText().toString(), psswd.getText().toString(), null, null);
-                    openMenuActivity();
+                    api.login(cell.getText().toString(), psswd.getText().toString(),
+                            (a) -> openMenuActivity(), (b) -> System.out.println("Err")); //--> Non printa, va in errore prima
+                    openMenuActivity(); // Da rimuovere
                 }
 
             }

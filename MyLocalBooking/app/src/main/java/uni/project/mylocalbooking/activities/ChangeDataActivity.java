@@ -149,27 +149,26 @@ public class ChangeDataActivity extends AppCompatActivity {
                 String format = "MM/dd/yy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
                 String todayString = sdf.format(today.getTime()).toString();
-                //System.out.println(sdf.format(today.getTime()).toString() + " Old: " + oldInput);
                 String[] splitted = newInput.split("/");
 
-                // TODO: Check emptiness
+                // Check emptiness
                 if (oldInput.isEmpty() || newInput.isEmpty() || confirmInput.isEmpty()){
                     failedEmptiness();
                 }
-                // TODO: Check if date is valid
+                // Check if date is valid
                 // Date picked < This year
                 else if (Integer.parseInt(splitted[2]) >= 22){
                     failedChangeMinAge();
                 }
-                // TODO: Check if confirm is the same
+                // Check if confirm is the same
                 else if (!newInput.equals(confirmInput)){
                     failedChangeEquals();
                 }
-                // TODO: Check if underage
+                // Check if underage
                 else if (!isOverage(newInput, todayString)){
                     confirmChangeUnderage();
                 }
-                // TODO: Confirm based on its age
+                // Confirm based on its age
                 else{
                     confirmChange();
                 }
