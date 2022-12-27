@@ -70,7 +70,7 @@ public class ChangeDataActivity extends AppCompatActivity {
             }
 
             private void updateCalendar() {
-                String format = "MM/dd/yy";
+                String format = "MM/dd/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 
                 oldBornDate.setText(sdf.format(calendar.getTime()));
@@ -96,7 +96,7 @@ public class ChangeDataActivity extends AppCompatActivity {
             }
 
             private void updateCalendar() {
-                String format = "MM/dd/yy";
+                String format = "MM/dd/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 
                 newBornDate.setText(sdf.format(calendar2.getTime()));
@@ -123,7 +123,7 @@ public class ChangeDataActivity extends AppCompatActivity {
             }
 
             private void updateCalendar() {
-                String format = "MM/dd/yy";
+                String format = "MM/dd/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 
                 confirmNewBornDate.setText(sdf.format(calendar3.getTime()));
@@ -146,7 +146,7 @@ public class ChangeDataActivity extends AppCompatActivity {
                 String oldInput = oldBornDate.getText().toString();
                 String newInput = newBornDate.getText().toString();
                 String confirmInput = confirmNewBornDate.getText().toString();
-                String format = "MM/dd/yy";
+                String format = "MM/dd/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
                 String todayString = sdf.format(today.getTime()).toString();
                 String[] splitted = newInput.split("/");
@@ -157,7 +157,7 @@ public class ChangeDataActivity extends AppCompatActivity {
                 }
                 // Check if date is valid
                 // Date picked < This year
-                else if (Integer.parseInt(splitted[2]) >= 22){
+                else if (Integer.parseInt(splitted[2]) >= 2022){
                     failedChangeMinAge();
                 }
                 // Check if confirm is the same

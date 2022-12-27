@@ -7,11 +7,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.Map;
+
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.client.LandReviewActivity;
 import uni.project.mylocalbooking.activities.client.HomeClientActivity;
 
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -27,7 +31,12 @@ public class HomeActivity extends AppCompatActivity {
         homePro = findViewById(R.id.btn_comirs_home_provider);
         homeCli = findViewById(R.id.go_client_home);
 
-        //prenota = findViewById(R.id.prenota);
+        //Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
+
+        /*if (!sessionData.isEmpty()){
+            System.out.println(sessionData);
+            //TODO Comir.
+        }*/
 
         homeCli.setOnClickListener(new View.OnClickListener() {
             @Override

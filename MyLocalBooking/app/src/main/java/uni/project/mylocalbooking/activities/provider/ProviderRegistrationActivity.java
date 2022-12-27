@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.activities.UserTest;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
@@ -47,7 +48,7 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
             }
 
             private void updateCalendar() {
-                String format = "MM/dd/yy";
+                String format = "MM/dd/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 
                 ownerDateOfBorn.setText(sdf.format(calendar.getTime()));
@@ -87,7 +88,7 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
                 // Date
                 EditText clientDate = findViewById(R.id.provider_signup_birthday);
                 String dateInput = clientDate.getText().toString();
-                String format = "MM/dd/yy";
+                String format = "MM/dd/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
                 String todayString = sdf.format(today.getTime()).toString();
                 String[] split = dateInput.split("/");
@@ -109,19 +110,17 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
                 }
                 // Check if date is valid
                 // Date picked < This year
-                else if (Integer.parseInt(split[2]) >= 22){
+                else if (Integer.parseInt(split[2]) >= 2022){
                     failedChangeMinAge();
-                }
-                // Check if underage
-                else if (!isOverage(dateInput, todayString)){
-                    confirmSignupUnderage();
                 }
                 // Confirm based on its age
                 else{
                     //confirmSignup();
                     IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                    formatter = formatter.withLocale(Locale.US);
                     LocalDate birthday = LocalDate.parse(dateInput, formatter);
+                    System.out.println(birthday);
                     api.register(new Provider(false, inputCompanyName, inputMaxStrikes, null, inputCellphone,
                                     inputEmail, inputName, inputLastname, birthday, inputPassword), inputPassword,
                             (a) -> confirmSignup(),
@@ -141,6 +140,7 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
     }
 
     private void confirmSignup() {
+        UserTest.setType("Provider");
         DialogFragment newFragment = new SuccessFragment("User created successfully!",
                 "Enjoy ###PLACEHOLDER###");
         newFragment.show(getSupportFragmentManager(), "successReview");

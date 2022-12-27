@@ -48,7 +48,7 @@ public class ClientRegistrationActivity extends AppCompatActivity {
             }
 
             private void updateCalendar() {
-                String format = "MM/dd/yy";
+                String format = "MM/dd/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 
                 bookerDateBorn.setText(sdf.format(calendar.getTime()));
@@ -85,7 +85,7 @@ public class ClientRegistrationActivity extends AppCompatActivity {
                 // Date
                 EditText clientDate = findViewById(R.id.booker_registration_dateBorn);
                 String dateInput = clientDate.getText().toString();
-                String format = "MM/dd/yy";
+                String format = "MM/dd/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
                 String todayString = sdf.format(today.getTime()).toString();
                 String[] split = dateInput.split("/");
@@ -105,14 +105,11 @@ public class ClientRegistrationActivity extends AppCompatActivity {
                 else if (!checkPassword(inputPassword)){
                     failedValidPassword();
                 }
+                // TODO: underage check
                 // Check if date is valid
                 // Date picked < This year
-                else if (Integer.parseInt(split[2]) >= 22){
+                else if (Integer.parseInt(split[2]) >= 2022){
                     failedChangeMinAge();
-                }
-                // Check if underage
-                else if (!isOverage(dateInput, todayString)){
-                    confirmSignupUnderage();
                 }
                 // Confirm based on its age
                 else{
@@ -120,7 +117,9 @@ public class ClientRegistrationActivity extends AppCompatActivity {
                     IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
                     Coordinates defaultCoords = new Coordinates(45.4408f, 12.3155f); //Venice Default
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                    formatter = formatter.withLocale(Locale.US);
                     LocalDate birthday = LocalDate.parse(dateInput, formatter);
+                    System.out.println(birthday);
                     api.register(new Client(defaultCoords, inputCellphone, inputEmail, inputName,
                             inputLastname, birthday, inputPassword), inputPassword,
                             (a) -> confirmSignup(),
@@ -139,7 +138,7 @@ public class ClientRegistrationActivity extends AppCompatActivity {
     }
 
     private void confirmSignup() {
-        UserTest.setType("Provider");
+        UserTest.setType("Client");
         DialogFragment newFragment = new SuccessFragment("User created successfully!",
                 "Enjoy ###PLACEHOLDER###");
         newFragment.show(getSupportFragmentManager(), "successReview");
