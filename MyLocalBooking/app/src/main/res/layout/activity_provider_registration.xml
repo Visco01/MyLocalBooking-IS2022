@@ -36,6 +36,7 @@
                 android:textStyle="bold"></TextView>
 
             <EditText
+                android:id="@+id/provider_signup_name"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="30dp"
@@ -47,6 +48,7 @@
                 android:textColor="@color/black"></EditText>
 
             <EditText
+                android:id="@+id/provider_signup_lastname"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
@@ -58,17 +60,19 @@
                 android:textColor="@color/black"></EditText>
 
             <EditText
+                android:id="@+id/provider_signup_company_name"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button_begin"
                 android:drawableLeft="@drawable/ic_baseline_date_range_24"
                 android:drawablePadding="8dp"
-                android:hint="company name"
+                android:hint="Company name"
                 android:padding="8dp"
                 android:textColor="@color/black"></EditText>
 
             <EditText
+                android:id="@+id/provider_signup_email"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
@@ -80,19 +84,20 @@
                 android:textColor="@color/black"></EditText>
 
             <EditText
+                android:id="@+id/provider_signup_cellphone"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button_begin"
                 android:drawableLeft="@drawable/ic_baseline_phone_24"
-                android:inputType="phone"
                 android:drawablePadding="8dp"
                 android:hint="Phone Number"
+                android:inputType="phone"
                 android:padding="8dp"
                 android:textColor="@color/black"></EditText>
 
             <EditText
-                android:id="@+id/owner_registration_dateBorn"
+                android:id="@+id/provider_signup_birthday"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
@@ -111,6 +116,7 @@
             </EditText>
 
             <EditText
+                android:id="@+id/provider_signup_password"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="15dp"
@@ -123,7 +129,7 @@
                 android:textColor="@color/black"></EditText>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/confirm_owner_registration"
+                android:id="@+id/confirm_provider_registration"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"

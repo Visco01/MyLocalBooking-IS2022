@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.activities.UserTest;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
@@ -66,6 +67,7 @@ public class ClientRegistrationActivity extends AppCompatActivity {
         confirmSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // TODO: missing position picker
                 // Name and Surname
                 EditText name = findViewById(R.id.client_signup_name);
                 EditText lastname = findViewById(R.id.client_signup_surname);
@@ -137,6 +139,7 @@ public class ClientRegistrationActivity extends AppCompatActivity {
     }
 
     private void confirmSignup() {
+        UserTest.setType("Provider");
         DialogFragment newFragment = new SuccessFragment("User created successfully!",
                 "Enjoy ###PLACEHOLDER###");
         newFragment.show(getSupportFragmentManager(), "successReview");
