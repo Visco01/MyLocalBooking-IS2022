@@ -84,7 +84,7 @@ public interface IMyLocalBookingAPI{
      * post:
      *       blacklists the user in the db
      * */
-    void banUser(Client client);
+    void banUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
     /*
      * pre:
      *      client.id != null

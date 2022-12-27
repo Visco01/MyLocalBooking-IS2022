@@ -121,7 +121,7 @@ class JSONBodyGenerator {
     public static String generateStrikeUserBody(Long providerId, String cellphone) {
         return "{" +
                 "\"provider_id\": " + providerId + ", " +
-                "\"usercellphone\": " + cellphone + "}";
+                "\"usercellphone\": \"" + cellphone + "\"}";
     }
 
     public static String generateUnbanUserBody(Long providerId, String cellphone) {
