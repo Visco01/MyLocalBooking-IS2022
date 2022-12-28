@@ -9,7 +9,10 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Map;
+
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.client.MyBookings;
 import uni.project.mylocalbooking.activities.client.ProfileClientActivity;
 import uni.project.mylocalbooking.activities.client.HomeClientActivity;
@@ -30,6 +33,12 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
 
         // Set the layout of the corresponding Activity
         setContentView(getContentViewId());
+
+        // TODO: Remove before submission
+        // Get the currentUser info
+        //Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
+
+        //if (((String) sessionData.get("usertype")).equals("client")){
 
         if (UserTest.getType() == "Client"){
             navigationView = (BottomNavigationView) findViewById(R.id.navigationClient);
