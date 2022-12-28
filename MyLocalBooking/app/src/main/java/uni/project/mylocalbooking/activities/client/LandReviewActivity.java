@@ -13,9 +13,15 @@ import android.widget.RatingBar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.LocalDate;
+
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
+import uni.project.mylocalbooking.models.Coordinates;
+import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.Provider;
 
 public class LandReviewActivity extends AppCompatActivity {
 
@@ -26,6 +32,24 @@ public class LandReviewActivity extends AppCompatActivity {
     private String reviewString;
     private RatingBar ratingBar;
     private FloatingActionButton backButton;
+    private Provider mircoMock = new Provider(
+            false,
+            "MockData Company",
+            2,
+            null,
+            "3330003330",
+            "mirco@mo.ck",
+            "Mirco",
+            "Mock",
+            LocalDate.now(),
+            "pssw");
+    private Establishment establishment = new Establishment(
+            mircoMock,
+            "Mock Est",
+            "Via Prova 01",
+            new Coordinates(0.0f, 0.0f),
+            "00200"
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +86,20 @@ public class LandReviewActivity extends AppCompatActivity {
                     failedSend();
                 }
                 else{
-                    // TODO: update DB
-                    confirmSend();
+                    IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
+                    // TODO: adjust with the right establishment
+                    // Missing anonymous
+                    api.rateEstablishment(
+                            establishment,
+                            (float) reviewStars,
+                            reviewText.getText().toString(),
+                            (a) -> confirmSend(),
+                            (b) -> { // Non ci arriva mai, fa prima error 422
+                                System.out.println("Error with API data");
+                                failedSend();
+                            }
+                    );
+                    //confirmSend();
                 }
             }
         });
