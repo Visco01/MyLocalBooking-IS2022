@@ -1,5 +1,8 @@
 package uni.project.mylocalbooking.activities.provider;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.List;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 
 public class BlacklistAdapter extends RecyclerView.Adapter<BlacklistAdapter.ViewHolder> {
@@ -53,6 +59,15 @@ public class BlacklistAdapter extends RecyclerView.Adapter<BlacklistAdapter.View
             imageView = itemView.findViewById(R.id.imagePeople);
             textView1 = itemView.findViewById(R.id.blackList_name);
             textView2 = itemView.findViewById(R.id.balckList_email);
+
+            FloatingActionButton unButton = itemView.findViewById(R.id.unblacklistButton);
+            unButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // TODO: implement
+                    MyLocalBooking.getAppContext().startActivity(new Intent(MyLocalBooking.getAppContext(), ProfileProviderActivity.class).setFlags(FLAG_ACTIVITY_NEW_TASK));
+                }
+            });
 
         }
 

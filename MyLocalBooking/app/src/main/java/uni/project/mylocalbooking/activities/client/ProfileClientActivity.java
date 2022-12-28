@@ -18,8 +18,6 @@ import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.LoginActivity;
-import uni.project.mylocalbooking.activities.provider.EditChoiceDialogProviderActivity;
-import uni.project.mylocalbooking.activities.provider.ProfileProviderActivity;
 
 public class ProfileClientActivity extends BaseNavigationActivity {
 

@@ -54,6 +54,8 @@ public class ProfileProviderActivity extends BaseNavigationActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // TODO: Understand how to logout
+                // TODO: fix google login and adapt it
                 googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
