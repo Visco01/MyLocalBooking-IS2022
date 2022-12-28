@@ -39,7 +39,7 @@
                 app:layout_constraintTop_toTopOf="parent"></TextView>
 
             <EditText
-                android:id="@+id/newSurname"
+                android:id="@+id/newEstAddress"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="24dp"
@@ -54,10 +54,10 @@
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/est_name"></EditText>
+                app:layout_constraintTop_toBottomOf="@+id/newEstName"></EditText>
 
             <EditText
-                android:id="@+id/est_name"
+                android:id="@+id/newEstName"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="24dp"
@@ -97,7 +97,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/newSurname">
+                app:layout_constraintTop_toBottomOf="@+id/newEstAddress">
 
             </androidx.appcompat.widget.AppCompatButton>
         </androidx.constraintlayout.widget.ConstraintLayout>

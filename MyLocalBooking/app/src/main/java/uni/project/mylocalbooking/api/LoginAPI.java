@@ -49,7 +49,7 @@ class LoginAPI {
     private static void freeRequests(String jwt){
         for(IAPICall call : WaitingRequestsSingleton.getInstance()){
             call.setJwt(jwt);
-            RequestQueueSingleton.getInstance().add((JsonObjectRequest) call.getRequest());
+            RequestQueueSingleton.getInstance().add(call.getRequest());
         }
     }
     
