@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
@@ -39,7 +40,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         viewModel = new ViewModelProvider(requireActivity()).get(MapsViewModel.class);
 
         viewModel.getSelectedPosition().observe(this, location -> {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(location.coordinates.toMapsCoordinates(), 15), 700, null);
+            LatLng position = location.coordinates.toMapsCoordinates();
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15), 700, null);
+            placedMarker = map.addMarker(new MarkerOptions().position(position));
+            selectedMarker = placedMarker;
             placedLocation = location;
             toggleSelectedMarker(placedMarker);
         });
@@ -77,8 +81,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapLongClick(@NonNull LatLng latLng) {
         map.clear();
-        placedMarker = map.addMarker(new MarkerOptions().position(latLng));
-        selectedMarker = placedMarker;
         viewModel.setPosition(latLng);
     }
 

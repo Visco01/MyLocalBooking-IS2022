@@ -53,15 +53,11 @@ public class MapsViewModel  extends ViewModel {
                     float[] r = new float[3];
                     Location.distanceBetween(position.latitude, position.longitude, result.geometry.location.lat, result.geometry.location.lng, r);
                     if(r[0] < 100) {
-                        SelectableMapLocation locationResult = new SelectableMapLocation(result);
-
-                        if(result.plusCode == null)
-                            options.add(locationResult);
-                        else
-                            selectedPosition.postValue(locationResult);
+                        options.add(new SelectableMapLocation(result));
                     }
                 }
 
+                selectedPosition.postValue(options.remove(0));
                 geocodingResults.postValue(options);
             }
 
