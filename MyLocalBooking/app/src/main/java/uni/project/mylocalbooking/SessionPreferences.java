@@ -60,4 +60,8 @@ public class SessionPreferences {
     public static Map<String, ?> getUserPrefs(){
         return theInstance.getAll();
     }
+
+    public static void deleteSessionPreferences(){
+        getInstance().edit().clear().commit();
+    }
 }

@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
@@ -117,5 +116,25 @@ class JSONBodyGenerator {
         return "{" +
                 "\"lat\": " + position.latitude + ", " +
                 "\"lng\": " + position.longitude + "}";
+    }
+
+    public static String generateStrikeUserBody(Long providerId, String cellphone) {
+        return "{" +
+                "\"provider_id\": " + providerId + ", " +
+                "\"usercellphone\": \"" + cellphone + "\"}";
+    }
+
+    public static String generateUnbanUserBody(Long providerId, String cellphone) {
+        return "{" +
+                "\"provider_id\": " + providerId + ", " +
+                "\"usercellphone\": \"" + cellphone + "\"}";
+    }
+
+    public static String generateRatingBody(Long clientId, Long establishment_id, float rating, String comment) {
+        return "{" +
+                "\"client_id\": " + clientId + ", " +
+                "\"establishment_id\": " +  establishment_id + ", " +
+                "\"rating\": " + rating + ", " +
+                "\"comment\": " + comment + "}";
     }
 }
