@@ -42,8 +42,8 @@ public class MyLocalBooking extends Application {
         LocalDate dob = LocalDate.ofEpochDay((Long) prefs.get("dob"));
 
         if(((String) prefs.get("usertype")).equals("client")) {
-            Float lat = (Float) prefs.get("lat");
-            Float lng = (Float) prefs.get("lng");
+            Double lat = SessionPreferences.getDouble("lat", null);
+            Double lng = SessionPreferences.getDouble("lng", null);
 
             Coordinates coordinates = lat == null || lng == null ? null : new Coordinates(lat, lng);
             currentUser = new Client(subclassId, coordinates, id, cellphone, email, firstname, lastname, dob, password);

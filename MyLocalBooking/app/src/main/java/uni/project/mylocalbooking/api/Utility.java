@@ -61,8 +61,8 @@ class Utility {
         Establishment newEstablishment;
         Long establishmentId = object.getLong("id");
         String name = object.getString("name");
-        float lat = (float) object.getDouble("lat");
-        float lng = (float) object.getDouble("lng");
+        Double lat = object.getDouble("lat");
+        Double lng = object.getDouble("lng");
         String address = object.getString("address");
         String placeId = object.getString("place_id");
 
@@ -187,13 +187,13 @@ class Utility {
     private static Client getReservation(JSONObject object) throws JSONException {
         Long clientId = object.getLong("client_id");
         JSONObject client = object.getJSONObject("client");
-        Float lat = null;
-        Float lng = null;
+        Double lat = null;
+        Double lng = null;
 
         if(!client.isNull("lat"))
-            lat = (float) client.getDouble("lat");
+            lat = client.getDouble("lat");
         if(!client.isNull("lng"))
-            lng = (float) client.getDouble("lng");
+            lng = client.getDouble("lng");
 
         Coordinates coordinates = null;
         if(lng != null && lat != null) coordinates = new Coordinates(lat, lng);
