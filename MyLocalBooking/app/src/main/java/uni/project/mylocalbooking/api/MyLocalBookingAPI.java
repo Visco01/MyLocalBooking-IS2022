@@ -383,10 +383,10 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void addReservation(Slot slot, String password, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError) {
         Map<String, ?> prefs = SessionPreferences.getUserPrefs();
-        int currentUserId = (int) prefs.get("id");
+        Long currentUserId = (Long) prefs.get("id");
 
-        if(slot.getId() != null){
-            if(currentUserId == slot.owner.getId())
+        if(slot.getId() == null){
+            if(currentUserId.equals(slot.owner.getId()))
                 addSlot(slot, password, onSuccess, onError);
             else
                 addSlot(slot, null, onSuccess, onError);
