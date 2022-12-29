@@ -1,5 +1,8 @@
 package uni.project.mylocalbooking.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.LocalDate;
@@ -8,6 +11,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ISelectableSlot {
+    public static final Parcelable.Creator<PeriodicSlotBlueprint> CREATOR
+            = new Parcelable.Creator<PeriodicSlotBlueprint>() {
+        public PeriodicSlotBlueprint createFromParcel(Parcel in) {
+            return new PeriodicSlotBlueprint(in);
+        }
+
+        public PeriodicSlotBlueprint[] newArray(int size) {
+            return new PeriodicSlotBlueprint[size];
+        }
+    };
+
     private Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;
@@ -23,6 +37,21 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
 
     public PeriodicSlotBlueprint(LocalTime fromTime, LocalTime toTime, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         this(null, fromTime, toTime, null, establishment, reservationLimit, weekdays, fromDate, toDate);
+    }
+
+    protected PeriodicSlotBlueprint(Parcel in) {
+        super(in);
+        id = in.readLong();
+        fromTime = (LocalTime) in.readSerializable();
+        toTime = (LocalTime) in.readSerializable();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        super.writeToParcel(parcel, i);
+        parcel.writeLong(id);
+        parcel.writeSerializable(fromTime);
+        parcel.writeSerializable(toTime);
     }
 
     @Override

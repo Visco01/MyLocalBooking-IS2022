@@ -1,5 +1,8 @@
 package uni.project.mylocalbooking.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -10,6 +13,17 @@ import java.util.List;
 import java.util.SortedSet;
 
 public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ITimeFrame {
+    public static final Parcelable.Creator<ManualSlotBlueprint> CREATOR
+            = new Parcelable.Creator<ManualSlotBlueprint>() {
+        public ManualSlotBlueprint createFromParcel(Parcel in) {
+            return new ManualSlotBlueprint(in);
+        }
+
+        public ManualSlotBlueprint[] newArray(int size) {
+            return new ManualSlotBlueprint[size];
+        }
+    };
+
     private Long id;
     public final LocalTime openTime;
     public final LocalTime closeTime;
@@ -27,6 +41,23 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
 
     public ManualSlotBlueprint(LocalTime openTime, LocalTime closeTime, Duration maxDuration, Establishment establishment,Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         this(null, openTime, closeTime, maxDuration, null, establishment, reservationLimit, weekdays, fromDate, toDate);
+    }
+
+    protected ManualSlotBlueprint(Parcel in) {
+        super(in);
+        id = in.readLong();
+        openTime = (LocalTime) in.readSerializable();
+        closeTime = (LocalTime) in.readSerializable();
+        maxDuration = (Duration) in.readSerializable();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        super.writeToParcel(parcel, i);
+        parcel.writeLong(id);
+        parcel.writeSerializable(openTime);
+        parcel.writeSerializable(closeTime);
+        parcel.writeSerializable(maxDuration);
     }
 
     @Override
