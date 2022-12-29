@@ -1,11 +1,41 @@
 package uni.project.mylocalbooking.models;
 
-public class Coordinates {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Coordinates implements Parcelable {
+    public static final Parcelable.Creator<Coordinates> CREATOR
+            = new Parcelable.Creator<Coordinates>() {
+        public Coordinates createFromParcel(Parcel in) {
+            return new Coordinates(in);
+        }
+
+        public Coordinates[] newArray(int size) {
+            return new Coordinates[size];
+        }
+    };
+
     public final double latitude;
     public final double longitude;
 
     public Coordinates(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    protected Coordinates(Parcel in) {
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longitude);
     }
 }
