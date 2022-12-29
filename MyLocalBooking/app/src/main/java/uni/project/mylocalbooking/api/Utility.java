@@ -5,12 +5,18 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.sql.Time;
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
@@ -103,12 +109,12 @@ class Utility {
             String toTime = concreteBlueprint.getString("totime");
             result = new PeriodicSlotBlueprint(concreteBlueprintId, getTimeByString(fromTime), getTimeByString(toTime), slotBlueprintId, establishment, reservationLimit, weekDays, fromDate, toDate);
         } else {
-            concreteBlueprint = object.getJSONObject("manual_slot_blueprint");
             Long concreteBlueprintId = concreteBlueprint.getLong("id");
             String openTime = concreteBlueprint.getString("opentime");
             String closeTime = concreteBlueprint.getString("closetime");
-            int maxDuration = concreteBlueprint.getInt("maxduration");
-            result = new ManualSlotBlueprint(concreteBlueprintId, getTimeByString(openTime), getTimeByString(closeTime), Duration.ofMinutes(maxDuration), slotBlueprintId, establishment, reservationLimit, weekDays, fromDate, toDate);
+            LocalTime maxtime = LocalDateTime.ofInstant(Instant.parse(concreteBlueprint.getString("maxduration")), ZoneOffset.UTC).toLocalTime();
+            Duration duration = Duration.between(LocalTime.MIN, maxtime);
+            result = new ManualSlotBlueprint(concreteBlueprintId, getTimeByString(openTime), getTimeByString(closeTime), duration, slotBlueprintId, establishment, reservationLimit, weekDays, fromDate, toDate);
         }
         return result;
     }
