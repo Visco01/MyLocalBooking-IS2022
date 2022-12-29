@@ -44,6 +44,12 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
         id = in.readLong();
         fromTime = (LocalTime) in.readSerializable();
         toTime = (LocalTime) in.readSerializable();
+
+        for(Parcelable s : in.readParcelableArray(Slot.class.getClassLoader())) {
+            PeriodicSlot slot = (PeriodicSlot) s;
+            slots.put(slot.date, slot);
+            slot.blueprint = this;
+        }
     }
 
     @Override
@@ -52,6 +58,10 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
         parcel.writeLong(id);
         parcel.writeSerializable(fromTime);
         parcel.writeSerializable(toTime);
+
+        PeriodicSlot[] slotsArr = new PeriodicSlot[slots.size()];
+        slots.values().toArray(slotsArr);
+        parcel.writeParcelableArray(slotsArr, i);
     }
 
     @Override

@@ -7,10 +7,12 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ITimeFrame {
     public static final Parcelable.Creator<ManualSlotBlueprint> CREATOR
@@ -49,6 +51,16 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         openTime = (LocalTime) in.readSerializable();
         closeTime = (LocalTime) in.readSerializable();
         maxDuration = (Duration) in.readSerializable();
+
+        for(Parcelable s : in.readParcelableArray(ManualSlot.class.getClassLoader())) {
+            ManualSlot slot = (ManualSlot) s;
+            slot.blueprint = this;
+
+            if(!slots.containsKey(slot.date))
+                slots.put(slot.date, new TreeSet<>());
+
+            slots.get(slot.date).add(slot);
+        }
     }
 
     @Override
@@ -58,6 +70,15 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         parcel.writeSerializable(openTime);
         parcel.writeSerializable(closeTime);
         parcel.writeSerializable(maxDuration);
+
+        ManualSlot[] slotsArr = new ManualSlot[super.slots.size()];
+        int j = 0;
+        for(SortedSet<ManualSlot> slotList : slots.values())
+            for(ManualSlot slot : slotList) {
+                slotsArr[j] = slot;
+                j++;
+            }
+        parcel.writeParcelableArray(slotsArr, i);
     }
 
     @Override

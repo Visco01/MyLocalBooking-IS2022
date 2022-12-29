@@ -45,12 +45,14 @@ public abstract class SlotBlueprint extends DatabaseModel {
         super(in);
 
         weekdays = new HashSet<>();
-        int[] weekdaysArr = {};
+        int[] weekdaysArr = new int[in.readInt()];
         in.readIntArray(weekdaysArr);
         for(int w : weekdaysArr)
             weekdays.add(DayOfWeek.of(w));
 
-        reservationLimit = in.readInt();
+        int reservationLimit = in.readInt();
+        this.reservationLimit = reservationLimit == 0 ? null : reservationLimit;
+
         fromDate = (LocalDate) in.readSerializable();
         toDate = (LocalDate) in.readSerializable();
 
@@ -66,6 +68,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
 
+        parcel.writeInt(weekdays.size());
         List<Integer> wd = new ArrayList<>();
         for(DayOfWeek dow : weekdays)
             wd.add(dow.getValue());
@@ -74,7 +77,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
             wdArr[j] = wd.get(j);
         parcel.writeIntArray(wdArr);
 
-        parcel.writeInt(reservationLimit);
+        parcel.writeInt(reservationLimit == null ? 0 : reservationLimit);
         parcel.writeSerializable(fromDate);
         parcel.writeSerializable(toDate);
 
