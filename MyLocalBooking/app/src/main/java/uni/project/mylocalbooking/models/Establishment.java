@@ -3,6 +3,7 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Establishment extends DatabaseModel {
@@ -54,6 +55,13 @@ public class Establishment extends DatabaseModel {
         address = in.readString();
         position = in.readParcelable(Coordinates.class.getClassLoader());
         placeId = in.readString();
+
+        blueprints = new ArrayList<>();
+        for(Parcelable b : in.readParcelableArray(SlotBlueprint.class.getClassLoader())) {
+            SlotBlueprint blueprint = (SlotBlueprint) b;
+            blueprints.add(blueprint);
+            blueprint.establishment = this;
+        }
     }
 
     @Override
@@ -64,5 +72,9 @@ public class Establishment extends DatabaseModel {
         parcel.writeString(address);
         parcel.writeParcelable(position, i);
         parcel.writeString(placeId);
+
+        SlotBlueprint[] blueprintsArr = new SlotBlueprint[blueprints.size()];
+        blueprints.toArray(blueprintsArr);
+        parcel.writeParcelableArray(blueprintsArr, i);
     }
 }

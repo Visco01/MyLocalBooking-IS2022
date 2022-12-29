@@ -3,6 +3,8 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -12,9 +14,9 @@ public abstract class Slot extends DatabaseModel {
     public boolean passwordProtected;
     public AppUser owner;
     public HashSet<Client> reservations;
-    public final SlotBlueprint blueprint;
+    public SlotBlueprint blueprint;
 
-    public Slot(Long id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, SlotBlueprint blueprint) {
+    public Slot(Long id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, @NotNull SlotBlueprint blueprint) {
         super(id);
         this.date = date;
         this.owner = owner;
@@ -40,8 +42,6 @@ public abstract class Slot extends DatabaseModel {
         reservations = new HashSet<>();
         for(Parcelable client : in.readParcelableArray(Client.class.getClassLoader()))
             reservations.add((Client) client);
-
-        blueprint = in.readParcelable(SlotBlueprint.class.getClassLoader());
     }
 
     @Override
@@ -54,7 +54,5 @@ public abstract class Slot extends DatabaseModel {
         Client[] reservationsArr = new Client[reservations.size()];
         reservations.toArray(reservationsArr);
         parcel.writeParcelableArray(reservationsArr, i);
-
-        parcel.writeParcelable(blueprint, i);
     }
 }

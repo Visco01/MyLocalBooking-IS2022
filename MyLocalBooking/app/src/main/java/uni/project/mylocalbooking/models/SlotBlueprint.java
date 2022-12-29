@@ -3,6 +3,8 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +16,7 @@ import java.util.function.IntFunction;
 
 
 public abstract class SlotBlueprint extends DatabaseModel {
-    public final Establishment establishment;
+    public Establishment establishment;
     public final HashSet<DayOfWeek> weekdays;
     public final Integer reservationLimit;
     public final LocalDate fromDate;
@@ -22,7 +24,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
 
     public Collection<Slot> slots;
 
-    public SlotBlueprint(Long id, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
+    public SlotBlueprint(Long id, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         super(id);
         this.weekdays = weekdays;
         this.reservationLimit = reservationLimit;
@@ -41,7 +43,6 @@ public abstract class SlotBlueprint extends DatabaseModel {
 
     protected SlotBlueprint(Parcel in) {
         super(in);
-        establishment = in.readParcelable(Establishment.class.getClassLoader());
 
         weekdays = new HashSet<>();
         int[] weekdaysArr = {};
@@ -54,15 +55,16 @@ public abstract class SlotBlueprint extends DatabaseModel {
         toDate = (LocalDate) in.readSerializable();
 
         slots = new ArrayList<>();
-        for(Parcelable slot : in.readParcelableArray(Slot.class.getClassLoader()))
-            slots.add((Slot) slot);
+        for(Parcelable s : in.readParcelableArray(Slot.class.getClassLoader())) {
+            Slot slot = (Slot) s;
+            slots.add(slot);
+            slot.blueprint = this;
+        }
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
-
-        parcel.writeParcelable(establishment, i);
 
         List<Integer> wd = new ArrayList<>();
         for(DayOfWeek dow : weekdays)
@@ -76,7 +78,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
         parcel.writeSerializable(fromDate);
         parcel.writeSerializable(toDate);
 
-        Parcelable[] slotsArr = {};
+        Slot[] slotsArr = new Slot[slots.size()];
         slots.toArray(slotsArr);
         parcel.writeParcelableArray(slotsArr, i);
     }
