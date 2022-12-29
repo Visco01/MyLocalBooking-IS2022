@@ -51,8 +51,8 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
         });
 
+        currentEstablishment = MyLocalBooking.establishments.get(getIntent().getExtras().getLong(("current_establishment")));
         ((ListView) findViewById(R.id.slot_list)).setAdapter(adapter);
-        currentEstablishment = ((MyLocalBooking) getApplication()).establishments.get(savedInstanceState.getLong("current_establishment"));
         viewModel.setBlueprints(currentEstablishment.blueprints);
     }
 

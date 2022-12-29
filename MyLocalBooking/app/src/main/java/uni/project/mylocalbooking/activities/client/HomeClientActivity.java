@@ -1,22 +1,31 @@
 package uni.project.mylocalbooking.activities.client;
 
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.UserTest;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+import uni.project.mylocalbooking.models.Establishment;
 
 public class HomeClientActivity extends BaseNavigationActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    List<ModelClass_search_establishment> userList;
+    public HashMap<Long, Establishment> establishments = new HashMap<>();
     Adapter_search_establishment adapter;
 
     @Override
@@ -24,9 +33,17 @@ public class HomeClientActivity extends BaseNavigationActivity {
         UserTest.setType("Client");
         super.onCreate(savedInstanceState);
 
-        initData();
-        initRecycleRview();
+        MutableLiveData<Collection<Establishment>> closestEstablishments = new MutableLiveData<>();
+        closestEstablishments.observe(this, est -> {
+            for(Establishment e : est)
+                establishments.put(e.getId(), e);
 
+            SlotListViewModel viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
+            MyLocalBooking.establishments = establishments;
+
+            initRecycleRview();
+        });
+        IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(closestEstablishments);
     }
 
     private void initRecycleRview() {
@@ -34,21 +51,9 @@ public class HomeClientActivity extends BaseNavigationActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new Adapter_search_establishment(userList);
+        adapter = new Adapter_search_establishment(new ArrayList<>(establishments.values()));
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-    }
-
-    private void initData() {
-        userList = new ArrayList<>();
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "casa mia 12/23"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Patronato San Giobbe", "non - specificato"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo santa maria formosa", "san marco 5572/23122"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
-
-
     }
 
     public int getContentViewId(){

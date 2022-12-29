@@ -12,6 +12,7 @@ import org.slf4j.helpers.Util;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import uni.project.mylocalbooking.SessionPreferences;
@@ -63,7 +64,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                     if (category.equals("client")) {
                         String lat = response.getString("lat");
                         String lng = response.getString("lng");
-                        user = new Client(Long.valueOf(concreteUserId), new Coordinates(Float.parseFloat(lat), Float.parseFloat(lng)), Long.valueOf(appUserId), cellphone, email, firstName, lastName, LocalDate.of(Integer.parseInt(dob[0]), Integer.parseInt(dob[1]), Integer.parseInt(dob[2])), password);
+                        user = new Client(Long.valueOf(concreteUserId), new Coordinates(Double.parseDouble(lat), Double.parseDouble(lng)), Long.valueOf(appUserId), cellphone, email, firstName, lastName, LocalDate.of(Integer.parseInt(dob[0]), Integer.parseInt(dob[1]), Integer.parseInt(dob[2])), password);
                     } else {
                         String isVerified = response.getString("isverified");
                         String maxStrikes = response.getString("maxstrikes");
@@ -382,10 +383,10 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void addReservation(Slot slot, String password, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError) {
         Map<String, ?> prefs = SessionPreferences.getUserPrefs();
-        int currentUserId = (int) prefs.get("id");
+        Long currentUserId = (Long) prefs.get("id");
 
-        if(slot.getId() != null){
-            if(currentUserId == slot.owner.getId())
+        if(slot.getId() == null){
+            if(currentUserId.equals(slot.owner.getId()))
                 addSlot(slot, password, onSuccess, onError);
             else
                 addSlot(slot, null, onSuccess, onError);
@@ -490,8 +491,8 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void getClosestEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata) {
         Long appUserId = (Long) SessionPreferences.getUserPrefs().get("id");
-        Double lat = (Double) SessionPreferences.getUserPrefs().get("lat");
-        Double lng = (Double) SessionPreferences.getUserPrefs().get("lng");
+        Double lat = SessionPreferences.getDouble("lat", null);
+        Double lng = SessionPreferences.getDouble("lng", null);
         int range = 500000000;
         //Long appUserId = 1907L;
         //Double lat = 45.501859;
