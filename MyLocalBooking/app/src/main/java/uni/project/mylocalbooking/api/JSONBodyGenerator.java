@@ -89,8 +89,8 @@ class JSONBodyGenerator {
             ManualSlotBlueprint msBlueprint = (ManualSlotBlueprint) slot.blueprint;
             jsonBody += "\"fromtime\": \"" + mSlot.fromTime.toString() + "\", " +
                     "\"totime\": \"" + mSlot.toTime.toString() + "\", ";
-            jsonBody += "\"PeriodicSlot\": {" +
-                    "\"periodic_slot_blueprint_id\": " + msBlueprint.getSubclassId() + "}}";
+            jsonBody += "\"ManualSlot\": {" +
+                    "\"manual_slot_blueprint_id\": " + msBlueprint.getSubclassId() + "}}";
         }
         return jsonBody;
     }
