@@ -1,10 +1,10 @@
 package uni.project.mylocalbooking.models;
 
 public class Coordinates {
-    public final float latitude;
-    public final float longitude;
+    public final double latitude;
+    public final double longitude;
 
-    public Coordinates(float latitude, float longitude) {
+    public Coordinates(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

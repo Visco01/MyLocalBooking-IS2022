@@ -51,13 +51,15 @@ public class LoginActivity extends AppCompatActivity {
                     failedEmptiness();
                 }
                 // Provider: 3332221113 - Psswd: Ciao123
-                // Client: mirco@client.it - Psswd: Ciao123
+                // Client: mirco@client.it / fwefwfs-->3332221114 - Psswd: Ciao123
+                // mirco.client@gmail.com + 3332221115 - Psswd: Ciao123
                 else{
                     // Errore 404 api/app_user_by_cellphone/<email> se loggo con la mail, ma funziona lo stesso
                     // Non critta la password per via di questo!
                     api.login(cell.getText().toString(), psswd.getText().toString(),
-                            (a) -> openMenuActivity(), (b) -> System.out.println("Error with Login data")); //ToDO: fix
-                    openMenuActivity(); // TODO: Da rimuovere
+                            (a) -> openMenuActivity(),
+                            (b) -> System.out.println("Error with Login data")); //TODO: fix
+                    // openMenuActivity(); // TODO: Da rimuovere
                 }
 
             }

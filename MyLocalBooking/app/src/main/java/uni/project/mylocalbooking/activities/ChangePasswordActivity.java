@@ -56,6 +56,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     failedChangeEquals();
                 }
                 else{
+                    // Errore nel parsing di una qualche stringa nel JSON (non è colpa della mail null)
                     IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
                     api.changeUserPassword(inputValue2,
                             (a) -> confirmChange(),
