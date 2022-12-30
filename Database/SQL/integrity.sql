@@ -898,3 +898,40 @@ after update on providers
 for each row
 when (NEW.maxstrikes < OLD.maxstrikes)
 execute function trg_maxstrikes_reached_provider();
+
+
+
+-------------------------------
+-- automatically add reservation when slot is added
+-------------------------------
+
+
+create or replace function trg_add_reservation()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	if not exists ( -- assert reservation doesn't already exist and owner is a client
+		select		c.id
+		into		client_id
+		from		clients c
+					join reservations r on r.client_id = c.id
+		where		c.app_user_id = NEW.app_user_id and r.slot_id = NEW.id
+	)
+	then
+		insert into reservations(slot_id, client_id) values
+		(
+			NEW.id,
+			(select c.id from clients c where c.app_user_id = NEW.app_user_id)
+		);
+	end if;
+
+	return NULL;
+end;$$;
+
+
+drop trigger if exists add_reservation on slots;
+create trigger add_reservation
+after insert or update on slots
+for each row
+execute function trg_add_reservation();
