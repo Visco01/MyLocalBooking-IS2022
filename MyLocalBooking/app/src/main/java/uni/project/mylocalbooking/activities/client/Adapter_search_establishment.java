@@ -19,11 +19,16 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.models.Establishment;
 
 public class Adapter_search_establishment extends RecyclerView.Adapter<Adapter_search_establishment.ViewHolder> {
+    public interface IEstablishmentSelectedListener {
+        void onEstablishmentSelected(Establishment establishment);
+    }
 
-    private List<Establishment> establishments;
+    private final List<Establishment> establishments;
+    private final IEstablishmentSelectedListener listener;
 
-    public Adapter_search_establishment(List<Establishment> establishments) {
+    public Adapter_search_establishment(List<Establishment> establishments, IEstablishmentSelectedListener listener) {
         this.establishments = establishments;
+        this.listener = listener;
     }
 
     @NonNull
@@ -57,11 +62,7 @@ public class Adapter_search_establishment extends RecyclerView.Adapter<Adapter_s
             super(itemView);
 
             itemView.findViewById(R.id.establishment_cardview).setOnClickListener(view -> {
-                Context context = MyLocalBooking.getAppContext();
-                Intent intent = new Intent(context, SlotListActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("current_establishment", establishment.getId());
-                context.startActivity(intent);
+                listener.onEstablishmentSelected(establishment);
             });
 
             imageView = itemView.findViewById(R.id.imageView1_se);

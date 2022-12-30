@@ -1,31 +1,28 @@
 package uni.project.mylocalbooking.activities.client;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 
-import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.UserTest;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.models.Establishment;
 
-public class HomeClientActivity extends BaseNavigationActivity {
+public class HomeClientActivity extends BaseNavigationActivity implements Adapter_search_establishment.IEstablishmentSelectedListener {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    public HashMap<Long, Establishment> establishments = new HashMap<>();
+    Collection<Establishment> establishments = new ArrayList<>();
     Adapter_search_establishment adapter;
 
     @Override
@@ -33,25 +30,33 @@ public class HomeClientActivity extends BaseNavigationActivity {
         UserTest.setType("Client");
         super.onCreate(savedInstanceState);
 
-        MutableLiveData<Collection<Establishment>> closestEstablishments = new MutableLiveData<>();
-        closestEstablishments.observe(this, est -> {
-            for(Establishment e : est)
-                establishments.put(e.getId(), e);
-
-            SlotListViewModel viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
-            MyLocalBooking.establishments = establishments;
-
-            initRecycleRview();
-        });
-        IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(closestEstablishments);
+        if(savedInstanceState == null) {
+            MutableLiveData<Collection<Establishment>> closestEstablishments = new MutableLiveData<>();
+            closestEstablishments.observe(this, est -> {
+                establishments = est;
+                initRecyclerView();
+            });
+            IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(closestEstablishments);
+        } else {
+            for(Parcelable e : savedInstanceState.getParcelableArray("establishments"))
+                establishments.add((Establishment) e);
+        }
     }
 
-    private void initRecycleRview() {
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Establishment[] establishmentsArr = new Establishment[establishments.size()];
+        establishments.toArray(establishmentsArr);
+        outState.putParcelableArray("establishments", establishmentsArr);
+    }
+
+    private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycleRview_establishment);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new Adapter_search_establishment(new ArrayList<>(establishments.values()));
+        adapter = new Adapter_search_establishment(new ArrayList<>(establishments), this);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -65,4 +70,12 @@ public class HomeClientActivity extends BaseNavigationActivity {
         return R.id.homeClient;
     }
 
+    @Override
+    public void onEstablishmentSelected(Establishment establishment) {
+        startActivity(
+                new Intent(this, SlotListActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .putExtra("current_establishment", establishment)
+        );
+    }
 }

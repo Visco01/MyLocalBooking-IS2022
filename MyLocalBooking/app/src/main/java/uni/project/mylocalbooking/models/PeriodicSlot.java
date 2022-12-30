@@ -1,11 +1,25 @@
 package uni.project.mylocalbooking.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 
 public class PeriodicSlot extends Slot implements IDatabaseSubclassModel, ISelectableSlot {
+    public static final Parcelable.Creator<PeriodicSlot> CREATOR
+            = new Parcelable.Creator<PeriodicSlot>() {
+        public PeriodicSlot createFromParcel(Parcel in) {
+            return new PeriodicSlot(in);
+        }
+
+        public PeriodicSlot[] newArray(int size) {
+            return new PeriodicSlot[size];
+        }
+    };
+
     private Long id;
 
     public PeriodicSlot(Long id, Long slot_id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, PeriodicSlotBlueprint blueprint) {
@@ -16,6 +30,17 @@ public class PeriodicSlot extends Slot implements IDatabaseSubclassModel, ISelec
 
     public PeriodicSlot(LocalDate date, AppUser owner, PeriodicSlotBlueprint blueprint) {
         this(null, null, date, owner, false, new HashSet<>(), blueprint);
+    }
+
+    protected PeriodicSlot(Parcel in) {
+        super(in);
+        id = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        super.writeToParcel(parcel, i);
+        parcel.writeLong(id);
     }
 
     @Override
