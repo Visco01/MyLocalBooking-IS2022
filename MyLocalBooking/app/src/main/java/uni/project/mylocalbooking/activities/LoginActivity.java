@@ -57,9 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                     // Errore 404 api/app_user_by_cellphone/<email> se loggo con la mail, ma funziona lo stesso
                     // Non critta la password per via di questo!
                     api.login(cell.getText().toString(), psswd.getText().toString(),
-                            (a) -> openMenuActivity(),
-                            (b) -> System.out.println("Error with Login data")); //TODO: fix
-                    // openMenuActivity(); // TODO: Da rimuovere
+                            (a) -> openMenuActivity(), (b) -> System.out.println("Error with Login data")); //ToDO: fix
                 }
 
             }
