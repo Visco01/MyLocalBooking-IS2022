@@ -19,7 +19,6 @@ import uni.project.mylocalbooking.models.Provider;
 public class MyLocalBooking extends Application {
     private static Context context;
     private static AppUser currentUser;
-    public static HashMap<Long, Establishment> establishments;
 
     public void onCreate() {
         super.onCreate();
