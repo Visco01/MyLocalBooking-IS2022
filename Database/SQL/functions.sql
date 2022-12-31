@@ -424,3 +424,66 @@ begin
 				b.establishment_id = reservation_establishment_id;
 end;$$;
 
+
+drop function if exists get_manual_reservations_by_day(bigint, date);
+drop type if exists manual_reservations_result;
+
+CREATE TYPE manual_reservations_result AS
+(	
+	slot_id bigint,
+	slot_password_digest varchar,
+	date date,
+
+	manual_slot_id bigint,
+	fromtime time,
+	totime time,
+	manual_slot_blueprint_id bigint,
+	
+	app_user_id bigint,
+	cellphone char(13),
+	user_password_digest varchar,
+	email varchar,
+	firstname varchar,
+	lastname varchar,
+	dob date,
+	client_id bigint,
+	lat double precision,
+	lng double precision
+);
+
+create or replace function get_manual_reservations_by_day(reservation_establishment_id bigint, reservation_date date)
+	returns setof manual_reservations_result
+	language plpgsql
+as $$
+begin
+	return query
+	select		s.id,
+				s.password_digest,
+				s.date,
+
+				m.id,
+				m.fromtime,
+				m.totime,
+				mb.id,
+				
+				a.id,
+				a.cellphone,
+				a.password_digest,
+				a.email,
+				a.firstname,
+				a.lastname,
+				a.dob,
+				c.id,
+				c.lat,
+				c.lng
+	from		slot_blueprints b
+				join manual_slot_blueprints mb on mb.slot_blueprint_id = b.id
+				join manual_slots m on m.manual_slot_blueprint_id = mb.id
+				join slots s on s.id = m.slot_id
+				join reservations r on r.slot_id = s.id
+				join clients c on c.id = r.client_id
+				join app_users a on a.id = c.app_user_id
+	where		s.date = reservation_date and
+				b.establishment_id = reservation_establishment_id;
+end;$$;
+
