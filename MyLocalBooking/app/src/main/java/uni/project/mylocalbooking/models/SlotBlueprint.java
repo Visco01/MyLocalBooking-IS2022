@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -16,6 +18,15 @@ import java.util.function.IntFunction;
 
 
 public abstract class SlotBlueprint extends DatabaseModel {
+    private static HashSet<DayOfWeek> getDaysOfWeek(int weekDays){
+        HashSet<DayOfWeek> map = new HashSet<>();
+        for(int i = 0; i < 7; i++){
+            if(((int)Math.pow(2, i) & weekDays) != 0)
+                map.add(DayOfWeek.of(7 - i));
+        }
+        return map;
+    }
+
     public Establishment establishment;
     public final HashSet<DayOfWeek> weekdays;
     public final Integer reservationLimit;
@@ -39,6 +50,14 @@ public abstract class SlotBlueprint extends DatabaseModel {
 
     public SlotBlueprint(Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         this(null, establishment, reservationLimit, weekdays, fromDate, toDate);
+    }
+
+    protected SlotBlueprint(JSONObject object) throws JSONException {
+        super(object);
+        weekdays = getDaysOfWeek(object.getInt("weekdays"));
+        reservationLimit = object.has("reservation_limit") ? object.getInt("reservation_limit") : null;
+        fromDate = LocalDate.parse(object.getString("from_date"));
+        toDate = LocalDate.parse(object.getString("to_date"));
     }
 
     protected SlotBlueprint(Parcel in) {

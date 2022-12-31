@@ -3,6 +3,9 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.LocalDate;
@@ -37,6 +40,14 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
 
     public PeriodicSlotBlueprint(LocalTime fromTime, LocalTime toTime, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         this(null, fromTime, toTime, null, establishment, reservationLimit, weekdays, fromDate, toDate);
+    }
+
+    public PeriodicSlotBlueprint(JSONObject object) throws JSONException {
+        super(object);
+
+        id = object.getLong("subclass_id");
+        fromTime = LocalTime.parse(object.getString("from_time"));
+        toTime = LocalTime.parse(object.getString("to_time"));
     }
 
     protected PeriodicSlotBlueprint(Parcel in) {
