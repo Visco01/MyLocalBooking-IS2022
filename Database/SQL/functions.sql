@@ -155,17 +155,20 @@ create or replace function get_base_blueprint_by_slot_id(base_slot_id bigint)
 as $$
 declare
 	base_blueprint slot_blueprints;
+	is_periodic boolean;
 begin
-	select		b.*
-	into		base_blueprint
-	from		slots s
-				join periodic_slots ps on ps.slot_id = s.id
-				join periodic_slot_blueprints pb on pb.id = ps.periodic_slot_blueprint_id
-				join slot_blueprints b on b.id = pb.slot_blueprint_id
-	where		s.id = base_slot_id;
+	select has_periodic_policy into is_periodic from slots where id = base_slot_id;
 
-	if base_blueprint.id is NULL
+	if is_periodic
 	then
+		select		b.*
+		into		base_blueprint
+		from		slots s
+					join periodic_slots ps on ps.slot_id = s.id
+					join periodic_slot_blueprints pb on pb.id = ps.periodic_slot_blueprint_id
+					join slot_blueprints b on b.id = pb.slot_blueprint_id
+		where		s.id = base_slot_id;
+	else
 		select		b.*
 		into		base_blueprint
 		from		slots s

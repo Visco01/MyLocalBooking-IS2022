@@ -618,25 +618,20 @@ create or replace function trg_no_unmatched_slot_sub()
 	language plpgsql
 as $$
 begin
-	delete from slots where id in (
-		select		s.id
-		from		slots s
-		where		not exists (select * from manual_slots where slot_id = s.id) and
-					not exists (select * from periodic_slots where slot_id = s.id)
-	);
+	delete from slots where id = OLD.slot_id;
 	return NULL;
 end;$$;
 
 drop trigger if exists no_unmatched_slot on periodic_slots;
 create trigger no_unmatched_slot
 after delete on periodic_slots
-for each statement
+for each row
 execute function trg_no_unmatched_slot_sub();
 
 drop trigger if exists no_unmatched_slot on manual_slots;
 create trigger no_unmatched_slot
 after delete on manual_slots
-for each statement
+for each row
 execute function trg_no_unmatched_slot_sub();
 
 
