@@ -221,27 +221,8 @@ create or replace function has_establishment_periodic_policy(establishmentid big
 	returns boolean
 	language plpgsql
 as $$
-declare
-	is_periodic boolean;
 begin
-	is_periodic = exists (
-		select		*
-		from		slot_blueprints b
-					join periodic_slot_blueprints p on p.slot_blueprint_id = b.id
-		where		b.establishment_id = establishmentid
-	);
-
-	if is_periodic and exists (
-		select		*
-		from		slot_blueprints b
-					join manual_slot_blueprints m on m.slot_blueprint_id = b.id
-		where		b.establishment_id = establishmentid
-	)
-	then
-		return null;
-	end if;
-
-	return is_periodic;
+	return has_periodic_policy from establishments where id = establishmentid;
 end;$$;
 
 

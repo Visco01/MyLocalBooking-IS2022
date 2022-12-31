@@ -496,13 +496,17 @@ create or replace function trg_no_unmatched_slot_blueprint()
 	returns trigger 
 	language plpgsql
 as $$
+declare
+	is_periodic boolean;
 begin
-	if not exists (
-		select * from periodic_slot_blueprints where slot_blueprint_id = NEW.id
-	)
-	and not exists (
-		select * from manual_slot_blueprints where slot_blueprint_id = NEW.id
-	)
+	select		has_periodic_policy
+	into 		is_periodic
+	from		establishments
+	where		id = NEW.establishment_id;
+
+	if	is_periodic is null
+		or is_periodic and not exists (select * from periodic_slot_blueprints where slot_blueprint_id = NEW.id)
+		or not is_periodic and not exists (select * from manual_slot_blueprints where slot_blueprint_id = NEW.id)
 	then
 		delete from slot_blueprints where id = NEW.id;
 		raise 'Cannot insert an unmatched blueprint';
@@ -523,14 +527,20 @@ create or replace function trg_no_unmatched_slot_blueprint_sub()
 	returns trigger
 	language plpgsql
 as $$
+declare
+	is_periodic boolean;
 begin
-	with to_drop as (
-		select		distinct b.id
-		from		slot_blueprints b
-		where		not exists (select * from manual_slot_blueprints where slot_blueprint_id = b.id) and
-					not exists (select * from periodic_slot_blueprints where slot_blueprint_id = b.id)
-	)
-	delete from slot_blueprints where id in (select id from to_drop);
+	select		e.has_periodic_policy
+	into		is_periodic
+	from		slot_blueprints b
+				join establishments e on e.id = b.establishment_id
+	where		b.id = OLD.slot_blueprint_id;
+
+	if is_periodic and not exists (select * from periodic_slot_blueprints where slot_blueprint_id = OLD.slot_blueprint_id)
+	or not is_periodic and not exists (select * from manual_slot_blueprints where slot_blueprint_id = OLD.slot_blueprint_id)
+	then
+		delete from slot_blueprints where id = OLD.slot_blueprint_id;
+	end if;
 	return NULL;
 end;$$;
 
@@ -695,8 +705,15 @@ create or replace function trg_reservation_limit_blueprints()
 	returns trigger
 	language plpgsql
 as $$
+declare
+	is_periodic boolean;
 begin
-	if exists (
+	select		has_periodic_policy
+	into		is_periodic
+	from		establishments
+	where		id = NEW.establishment_id;
+
+	if is_periodic and exists (
 		select		s.id
 		from		periodic_slot_blueprints pb
 					join periodic_slots p on p.periodic_slot_blueprint_id = pb.id
@@ -706,7 +723,7 @@ begin
 		group by	s.id
 		having		count(*) > NEW.reservationlimit -- unknown -> false
 	)
-	or exists (
+	or not is_periodic and exists (
 		select		s.id
 		from		manual_slot_blueprints mb
 					join manual_slots m on m.periodic_slot_blueprint_id = mb.id
