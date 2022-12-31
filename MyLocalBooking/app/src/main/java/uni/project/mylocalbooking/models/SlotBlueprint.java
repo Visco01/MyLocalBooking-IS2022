@@ -22,7 +22,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
     public final LocalDate fromDate;
     public final LocalDate toDate;
 
-    public Collection<Slot> slots;
+    public Collection<Slot> slots = new ArrayList<>();
 
     public SlotBlueprint(Long id, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         super(id);
@@ -56,7 +56,6 @@ public abstract class SlotBlueprint extends DatabaseModel {
         fromDate = (LocalDate) in.readSerializable();
         toDate = (LocalDate) in.readSerializable();
 
-        slots = new ArrayList<>();
         for(Parcelable s : in.readParcelableArray(Slot.class.getClassLoader())) {
             Slot slot = (Slot) s;
             slots.add(slot);
@@ -84,5 +83,9 @@ public abstract class SlotBlueprint extends DatabaseModel {
         Slot[] slotsArr = new Slot[slots.size()];
         slots.toArray(slotsArr);
         parcel.writeParcelableArray(slotsArr, i);
+    }
+
+    protected void addSlot(Slot slot) {
+        slots.add(slot);
     }
 }

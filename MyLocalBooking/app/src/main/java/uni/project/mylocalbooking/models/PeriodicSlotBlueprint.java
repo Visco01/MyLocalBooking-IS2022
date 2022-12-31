@@ -47,7 +47,7 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
 
         for(Parcelable s : in.readParcelableArray(Slot.class.getClassLoader())) {
             PeriodicSlot slot = (PeriodicSlot) s;
-            slots.put(slot.date, slot);
+            addSlot(slot);
             slot.blueprint = this;
         }
     }
@@ -97,5 +97,10 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
     @Override
     public Integer getReservationLimit() {
         return super.reservationLimit;
+    }
+
+    protected void addSlot(PeriodicSlot slot) {
+        super.addSlot(slot);
+        slots.put(slot.date, slot);
     }
 }

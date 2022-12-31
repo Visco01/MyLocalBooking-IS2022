@@ -28,8 +28,6 @@ public abstract class Slot extends DatabaseModel {
         this.reservations = reservations;
         this.blueprint = blueprint;
 
-        if (blueprint.slots == null)
-            blueprint.slots = new ArrayList<>();
         blueprint.slots.add(this);
     }
 

@@ -55,11 +55,7 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         for(Parcelable s : in.readParcelableArray(ManualSlot.class.getClassLoader())) {
             ManualSlot slot = (ManualSlot) s;
             slot.blueprint = this;
-
-            if(!slots.containsKey(slot.date))
-                slots.put(slot.date, new TreeSet<>());
-
-            slots.get(slot.date).add(slot);
+            addSlot(slot);
         }
     }
 
@@ -99,5 +95,14 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
     @Override
     public LocalTime getEnd() {
         return closeTime;
+    }
+
+    protected void addSlot(ManualSlot slot) {
+        super.addSlot(slot);
+
+        if(!slots.containsKey(slot.date))
+            slots.put(slot.date, new TreeSet<>());
+
+        slots.get(slot.date).add(slot);
     }
 }
