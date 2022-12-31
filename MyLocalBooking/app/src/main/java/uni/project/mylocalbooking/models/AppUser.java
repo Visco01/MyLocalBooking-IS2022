@@ -2,6 +2,9 @@ package uni.project.mylocalbooking.models;
 
 import android.os.Parcel;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalDate;
 
 public abstract class AppUser extends DatabaseModel {
@@ -24,6 +27,17 @@ public abstract class AppUser extends DatabaseModel {
 
     public AppUser(String cellphone, String email, String firstname, String lastname, LocalDate dob, String password) {
         this(null, cellphone, email, firstname, lastname, dob, password);
+    }
+
+    protected AppUser(JSONObject object) throws JSONException {
+        super(object);
+
+        cellphone = object.getString("cellphone");
+        password = object.getString("password_digest");
+        email = object.has("email") ? object.getString("email") : null;
+        firstname = object.getString("firstname");
+        lastname = object.getString("lastname");
+        dob = LocalDate.parse(object.getString("dob"));
     }
 
     protected AppUser(Parcel in) {
