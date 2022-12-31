@@ -4,9 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public abstract class Slot extends DatabaseModel {
@@ -31,6 +35,19 @@ public abstract class Slot extends DatabaseModel {
 
     public Slot(LocalDate date, AppUser owner, SlotBlueprint blueprint) {
         this(null, date, owner, false, new HashSet<>(), blueprint);
+    }
+
+    protected Slot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
+        super(object);
+        blueprint = blueprints.get(object.getLong("blueprint_subclass_id"));
+        date = LocalDate.parse(object.getString("date"));
+        passwordProtected = !object.getString("password_digest").isEmpty();
+        owner = AppUser.fromJson(object.getJSONObject("owner"));
+        reservations = new HashSet<>();
+
+        JSONArray reservationsArr = object.getJSONArray("reservations");
+        for(int i = 0; i < reservationsArr.length(); i++)
+            reservations.add(new Client(reservationsArr.getJSONObject(i)));
     }
 
     protected Slot(Parcel in) {
