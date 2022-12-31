@@ -3,6 +3,9 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -46,6 +49,16 @@ public class Establishment extends DatabaseModel {
 
     public Establishment(Provider provider, String name, String address, Coordinates position, String placeId) {
         this(null, provider, name, address, position, placeId);
+    }
+
+    public Establishment(JSONObject object) throws JSONException {
+        super(object.getLong("id"));
+
+        provider = new Provider(object.getJSONObject("provider"));
+        name = object.getString("name");
+        address = object.getString("address");
+        position = new Coordinates(object.getJSONObject("coordinates"));
+        placeId = object.getString("place_id");
     }
 
     protected Establishment(Parcel in) {
