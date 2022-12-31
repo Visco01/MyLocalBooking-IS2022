@@ -364,3 +364,63 @@ begin
 	insert into periodic_slots(slot_id, periodic_slot_blueprint_id)
 	values (slot_id, periodic_slot_blueprint_id);
 end;$$;
+
+
+drop function if exists get_periodic_reservations_by_day(bigint, date);
+drop type if exists periodic_reservations_result;
+
+CREATE TYPE periodic_reservations_result AS
+(	
+	slot_id bigint,
+	slot_password_digest varchar,
+	date date,
+
+	periodic_slot_id bigint,
+	periodic_slot_blueprint_id bigint,
+	
+	app_user_id bigint,
+	cellphone char(13),
+	user_password_digest varchar,
+	email varchar,
+	firstname varchar,
+	lastname varchar,
+	dob date,
+	client_id bigint,
+	lat double precision,
+	lng double precision
+);
+
+create or replace function get_periodic_reservations_by_day(reservation_establishment_id bigint, reservation_date date)
+	returns setof periodic_reservations_result
+	language plpgsql
+as $$
+begin
+	return query
+	select		s.id,
+				s.password_digest,
+				s.date,
+
+				p.id,
+				pb.id,
+				
+				a.id,
+				a.cellphone,
+				a.password_digest,
+				a.email,
+				a.firstname,
+				a.lastname,
+				a.dob,
+				c.id,
+				c.lat,
+				c.lng
+	from		slot_blueprints b
+				join periodic_slot_blueprints pb on pb.slot_blueprint_id = b.id
+				join periodic_slots p on p.periodic_slot_blueprint_id = pb.id
+				join slots s on s.id = p.slot_id
+				join reservations r on r.slot_id = s.id
+				join clients c on c.id = r.client_id
+				join app_users a on a.id = c.app_user_id
+	where		s.date = reservation_date and
+				b.establishment_id = reservation_establishment_id;
+end;$$;
+
