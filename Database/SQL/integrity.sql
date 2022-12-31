@@ -145,6 +145,8 @@ begin
 		return NULL;
 	end if;
 
+	update establishments set has_periodic_policy = true where id = est_id;
+
 	return NEW;
 end;$$;
 
@@ -182,6 +184,8 @@ begin
 		raise 'Mixed blueprint types are not allowed';
 		return NULL;
 	end if;
+
+	update establishments set has_periodic_policy = false where id = est_id;
 
 	return NEW;
 end;$$;
@@ -541,6 +545,29 @@ create trigger no_unmatched_slot_blueprint
 after delete on manual_slot_blueprints
 for each statement
 execute function trg_no_unmatched_slot_blueprint_sub();
+
+
+create or replace function trg_null_establishment_policy()
+	returns trigger
+	language plpgsql
+as $$
+declare
+	is_periodic boolean;
+	est_id bigint;
+begin
+	if not exists (select * from slot_blueprints where establishment_id = OLD.establishment_id)
+	then
+		update establishments set has_periodic_policy = NULL where id = est_id;
+	end if;
+	
+	return NULL;
+end;$$;
+
+drop trigger if exists set_null_policy on slot_blueprints;
+create trigger set_null_policy
+after delete on slot_blueprints
+for each row
+execute function trg_null_establishment_policy();
 
 
 

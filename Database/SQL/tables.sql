@@ -80,6 +80,7 @@ create table strikes (
 drop table if exists establishments cascade;
 create table establishments (
     id serial primary key,
+	has_periodic_policy boolean,
     provider_id bigint not null references providers(id)
 		on update cascade
 		on delete cascade,
