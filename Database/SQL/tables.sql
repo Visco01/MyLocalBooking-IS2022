@@ -118,7 +118,7 @@ drop table if exists slots cascade;
 create table slots (
 	id serial primary key,
 	date date not null,
-
+	has_periodic_policy boolean,
 	-- the slot owner can leave the reservations open for anyone, or lock them with a password
 	password_digest text,
 	app_user_id bigint not null references app_users(id)

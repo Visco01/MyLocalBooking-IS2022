@@ -642,6 +642,31 @@ execute function trg_no_unmatched_slot_sub();
 
 
 -------------------------------
+-- manage slot policy field
+-------------------------------
+
+
+create or replace function trg_set_slot_policy()
+	returns trigger
+	language plpgsql
+as $$
+begin
+	upate slots s
+	set has_periodic_policy = exists (
+		select * from periodic_slots where slot_id = s.id
+	);
+end;$$;
+
+drop trigger if exists set_slot_policy on slots;
+create constraint trigger set_slot_policy
+after insert on slots
+deferrable initially deferred
+for each row
+execute function trg_set_slot_policy();
+
+
+
+-------------------------------
 -- no unmatched app_users
 -------------------------------
 
