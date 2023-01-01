@@ -76,7 +76,7 @@ public interface IMyLocalBookingAPI{
      *       returns inserted establishment
      * */
     void addEstablishment(Establishment establishment, APICallBack<Establishment> onSuccess, APICallBack<StatusCode> onError);
-    void getOwnedEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata);
+    void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError);
 
     /*
      * pre:
@@ -133,7 +133,7 @@ public interface IMyLocalBookingAPI{
      */
     void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
 
-    void getClosestEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata);
+    void getClosestEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError);
 
     void setPreferredPosition(Coordinates position, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError);
 

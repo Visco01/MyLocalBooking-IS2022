@@ -240,39 +240,30 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void getOwnedEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata) {
+    public void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError) {
         Long appUserId = (Long) SessionPreferences.getUserPrefs().get("id");;
         if(appUserId == null)
             return;
-        
-        Runnable runnable = () -> {
-            Long providerId = getProviderByAppUserId(appUserId);
-            if(providerId == null) {
-                return;
-            }
 
-            String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + providerId;
-            BlockingAPICall<JSONArray> call = new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
-            call.call();
-            Collection<Establishment> ownedEstablishments = Utility.getEstablishmentData(call.waitResponse());
-
-            List<Thread> threads = new ArrayList<>();
-            for(Establishment establishment : ownedEstablishments){
-                Thread t = new Thread(() -> getSlotsByBlueprint(establishment.blueprints));
-                threads.add(t);
-                t.start();
-            }
-
-            for(Thread t : threads) {
+        Long providerId = getProviderByAppUserId(appUserId);
+        if(providerId == null) {
+            return;
+        }
+        String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + providerId; // TODO: conform API response to new json models
+        new CallbackAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, data -> {
+            Collection<Establishment> establishments = new ArrayList<>();
+            for(int i = 0; i < data.length(); i++) {
                 try {
-                    t.join();
-                } catch (InterruptedException ignored) {}
+                    establishments.add(new Establishment(data.getJSONObject(i)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+                    return;
+                }
             }
 
-            establishmentsLivedata.postValue(ownedEstablishments);
-        };
-
-        new Thread(runnable).start();
+            if(onSuccess != null) onSuccess.apply(establishments);
+        }, true).call();
     }
 
     private void getSlotsByBlueprint(Collection<SlotBlueprint> blueprints) {
@@ -489,40 +480,29 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void getClosestEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata) {
+    public void getClosestEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError) {
         Long appUserId = (Long) SessionPreferences.getUserPrefs().get("id");
         Double lat = SessionPreferences.getDouble("lat", null);
         Double lng = SessionPreferences.getDouble("lng", null);
-        int range = 500000000;
-        //Long appUserId = 1907L;
-        //Double lat = 45.501859;
-        //Double lng = 12.254584;
+        int range = 500000000; // TODO: change testing range
         if(appUserId == null || lat == null || lng == null)
             return;
 
-        Runnable runnable = () -> {
-            String url = MyLocalBookingAPI.apiPrefix + "closest_establishments?" + "lat=" + lat + "&lng=" + lng + "&range=" + range;
-            BlockingAPICall<JSONArray> call = new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
-            call.call();
-            Collection<Establishment> closestEstablishments = Utility.getEstablishmentData(call.waitResponse());
-
-            List<Thread> threads = new ArrayList<>();
-            for(Establishment establishment : closestEstablishments){
-                Thread t = new Thread(() -> getSlotsByBlueprint(establishment.blueprints));
-                threads.add(t);
-                t.start();
-            }
-
-            for(Thread t : threads) {
+        String url = MyLocalBookingAPI.apiPrefix + "closest_establishments?" + "lat=" + lat + "&lng=" + lng + "&range=" + range;
+        new CallbackAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, data -> {
+            Collection<Establishment> establishments = new ArrayList<>();
+            for(int i = 0; i < data.length(); i++) {
                 try {
-                    t.join();
-                } catch (InterruptedException ignored) {}
+                    establishments.add(new Establishment(data.getJSONObject(i)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+                    return;
+                }
             }
 
-            establishmentsLivedata.postValue(closestEstablishments);
-        };
-
-        new Thread(runnable).start();
+            if(onSuccess != null) onSuccess.apply(establishments);
+        }, true).call();
     }
 
     @Override

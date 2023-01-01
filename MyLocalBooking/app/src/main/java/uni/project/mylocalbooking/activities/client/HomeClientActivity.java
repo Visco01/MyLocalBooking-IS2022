@@ -22,7 +22,7 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    Collection<Establishment> establishments = new ArrayList<>();
+    Collection<Establishment> establishments;
     Adapter_search_establishment adapter;
 
     @Override
@@ -31,12 +31,11 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState == null) {
-            MutableLiveData<Collection<Establishment>> closestEstablishments = new MutableLiveData<>();
-            closestEstablishments.observe(this, est -> {
+            IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
                 establishments = est;
-                initRecyclerView();
+            }, statusCode -> {
+                System.out.println("GetClosestEstablishments returned error " + statusCode.name());
             });
-            IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(closestEstablishments);
         } else {
             for(Parcelable e : savedInstanceState.getParcelableArray("establishments"))
                 establishments.add((Establishment) e);
