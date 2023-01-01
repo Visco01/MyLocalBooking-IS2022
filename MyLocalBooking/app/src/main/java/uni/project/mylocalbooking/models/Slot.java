@@ -40,7 +40,7 @@ public abstract class Slot extends DatabaseModel {
         this.reservations = reservations;
         this.blueprint = blueprint;
 
-        blueprint.slots.add(this);
+        blueprint.addSlot(this);
     }
 
     public Slot(LocalDate date, AppUser owner, SlotBlueprint blueprint) {

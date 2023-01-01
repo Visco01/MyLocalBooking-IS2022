@@ -37,16 +37,7 @@ public class ManualSlot extends Slot implements IDatabaseSubclassModel, ISelecta
         this.id = id;
         this.fromTime = fromTime;
         this.toTime = toTime;
-
-        SortedSet<ManualSlot> slots = blueprint.slots.get(super.date);
-        boolean firstInsert = slots == null;
-        if(firstInsert)
-            slots = new TreeSet<>();
-
-        slots.add(this);
-
-        if(firstInsert)
-            blueprint.slots.put(super.date, slots);
+        blueprint.addSlot(this);
     }
 
     public ManualSlot(LocalTime fromTime, LocalTime toTime, LocalDate date, AppUser owner, ManualSlotBlueprint blueprint) {
