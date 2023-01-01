@@ -10,10 +10,22 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
 public abstract class Slot extends DatabaseModel {
+    public static Slot fromJson(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
+        String clientType = object.getString("type");
+        if(clientType.equals("periodic"))
+            return new PeriodicSlot(object, blueprints);
+
+        if (clientType.equals("manual"))
+            return new ManualSlot(object, blueprints);
+
+        throw new IllegalArgumentException();
+    }
+
     public final LocalDate date;
     public boolean passwordProtected;
     public AppUser owner;
