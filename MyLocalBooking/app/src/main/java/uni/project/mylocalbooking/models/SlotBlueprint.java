@@ -12,12 +12,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.IntFunction;
 
 
 public abstract class SlotBlueprint extends DatabaseModel {
+    public static SlotBlueprint fromJson(JSONObject object) throws JSONException {
+        String clientType = object.getString("type");
+        if(clientType.equals("periodic"))
+            return new PeriodicSlotBlueprint(object);
+
+        if (clientType.equals("manual"))
+            return new ManualSlotBlueprint(object);
+
+        throw new IllegalArgumentException();
+    }
+
     private static HashSet<DayOfWeek> getDaysOfWeek(int weekDays){
         HashSet<DayOfWeek> map = new HashSet<>();
         for(int i = 0; i < 7; i++){
