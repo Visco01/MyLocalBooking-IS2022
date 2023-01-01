@@ -8,6 +8,17 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 
 public abstract class AppUser extends DatabaseModel {
+    public static AppUser fromJson(JSONObject object) throws JSONException {
+        String clientType = object.getString("type");
+        if(clientType.equals("client"))
+            return new Client(object);
+
+        if (clientType.equals("provider"))
+            return new Provider(object);
+
+        throw new IllegalArgumentException();
+    }
+
     public final String cellphone;
     public final String email;
     public final String firstname;
