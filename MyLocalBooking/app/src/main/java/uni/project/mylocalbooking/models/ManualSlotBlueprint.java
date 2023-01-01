@@ -3,10 +3,16 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,6 +51,18 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         this(null, openTime, closeTime, maxDuration, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
+    public ManualSlotBlueprint(JSONObject object) throws JSONException {
+        super(object);
+
+        id = object.getLong("subclass_id");
+        openTime = LocalTime.parse(object.getString("open_time"));
+        closeTime = LocalTime.parse(object.getString("close_time"));
+        maxDuration = Duration.between(
+                LocalTime.MIN,
+                LocalDateTime.ofInstant(Instant.parse(object.getString("max_duration")), ZoneOffset.UTC).toLocalTime()
+        );
+    }
+
     protected ManualSlotBlueprint(Parcel in) {
         super(in);
         id = in.readLong();
@@ -55,11 +73,7 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         for(Parcelable s : in.readParcelableArray(ManualSlot.class.getClassLoader())) {
             ManualSlot slot = (ManualSlot) s;
             slot.blueprint = this;
-
-            if(!slots.containsKey(slot.date))
-                slots.put(slot.date, new TreeSet<>());
-
-            slots.get(slot.date).add(slot);
+            addSlot(slot);
         }
     }
 
@@ -99,5 +113,14 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
     @Override
     public LocalTime getEnd() {
         return closeTime;
+    }
+
+    protected void addSlot(ManualSlot slot) {
+        super.addSlot(slot);
+
+        if(!slots.containsKey(slot.date))
+            slots.put(slot.date, new TreeSet<>());
+
+        slots.get(slot.date).add(slot);
     }
 }

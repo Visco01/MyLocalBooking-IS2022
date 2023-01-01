@@ -4,25 +4,48 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.IntFunction;
 
 
 public abstract class SlotBlueprint extends DatabaseModel {
+    public static SlotBlueprint fromJson(JSONObject object) throws JSONException {
+        String clientType = object.getString("type");
+        if(clientType.equals("periodic"))
+            return new PeriodicSlotBlueprint(object);
+
+        if (clientType.equals("manual"))
+            return new ManualSlotBlueprint(object);
+
+        throw new IllegalArgumentException();
+    }
+
+    private static HashSet<DayOfWeek> getDaysOfWeek(int weekDays){
+        HashSet<DayOfWeek> map = new HashSet<>();
+        for(int i = 0; i < 7; i++){
+            if(((int)Math.pow(2, i) & weekDays) != 0)
+                map.add(DayOfWeek.of(7 - i));
+        }
+        return map;
+    }
+
     public Establishment establishment;
     public final HashSet<DayOfWeek> weekdays;
     public final Integer reservationLimit;
     public final LocalDate fromDate;
     public final LocalDate toDate;
 
-    public Collection<Slot> slots;
+    public Collection<Slot> slots = new ArrayList<>();
 
     public SlotBlueprint(Long id, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         super(id);
@@ -41,6 +64,14 @@ public abstract class SlotBlueprint extends DatabaseModel {
         this(null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
+    protected SlotBlueprint(JSONObject object) throws JSONException {
+        super(object);
+        weekdays = getDaysOfWeek(object.getInt("weekdays"));
+        reservationLimit = object.has("reservation_limit") ? object.getInt("reservation_limit") : null;
+        fromDate = LocalDate.parse(object.getString("from_date"));
+        toDate = LocalDate.parse(object.getString("to_date"));
+    }
+
     protected SlotBlueprint(Parcel in) {
         super(in);
 
@@ -56,7 +87,6 @@ public abstract class SlotBlueprint extends DatabaseModel {
         fromDate = (LocalDate) in.readSerializable();
         toDate = (LocalDate) in.readSerializable();
 
-        slots = new ArrayList<>();
         for(Parcelable s : in.readParcelableArray(Slot.class.getClassLoader())) {
             Slot slot = (Slot) s;
             slots.add(slot);
@@ -84,5 +114,9 @@ public abstract class SlotBlueprint extends DatabaseModel {
         Slot[] slotsArr = new Slot[slots.size()];
         slots.toArray(slotsArr);
         parcel.writeParcelableArray(slotsArr, i);
+    }
+
+    protected void addSlot(Slot slot) {
+        slots.add(slot);
     }
 }

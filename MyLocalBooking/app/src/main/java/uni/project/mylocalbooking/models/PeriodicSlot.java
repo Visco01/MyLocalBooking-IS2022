@@ -3,9 +3,13 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class PeriodicSlot extends Slot implements IDatabaseSubclassModel, ISelectableSlot {
@@ -30,6 +34,12 @@ public class PeriodicSlot extends Slot implements IDatabaseSubclassModel, ISelec
 
     public PeriodicSlot(LocalDate date, AppUser owner, PeriodicSlotBlueprint blueprint) {
         this(null, null, date, owner, false, new HashSet<>(), blueprint);
+    }
+
+    public PeriodicSlot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
+        super(object, blueprints);
+
+        id = object.getLong("subclass_id");
     }
 
     protected PeriodicSlot(Parcel in) {
