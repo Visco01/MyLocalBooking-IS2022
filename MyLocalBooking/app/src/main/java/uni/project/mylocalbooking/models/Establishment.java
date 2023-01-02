@@ -10,7 +10,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 
@@ -97,16 +99,19 @@ public class Establishment extends DatabaseModel {
     }
 
     public List<SlotBlueprint> getBlueprints(LocalDate date) {
-        if(blueprints.size() == 0)
+        Stream<SlotBlueprint> activeBlueprintsInDate = blueprints.stream().filter(b ->
+                b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
+                        b.weekdays.contains(date.getDayOfWeek()));
+
+        Optional<SlotBlueprint> someBlueprint = activeBlueprintsInDate.findAny();
+        if(!someBlueprint.isPresent())
             return new ArrayList<>();
 
-        // either all or no slots for a given date
-        if(!blueprints.iterator().next().slots.containsKey(date))
-            IMyLocalBookingAPI.getApiInstance().getReservations(date, this);
+        // there are no partial results for a given date, so I can just check any blueprint
+        boolean completeResults = someBlueprint.get().slots.containsKey(date) ||
+                IMyLocalBookingAPI.getApiInstance().getReservations(this, date);
 
-        return blueprints.stream().filter(b ->
-                b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
-                        b.weekdays.contains(date.getDayOfWeek())).collect(Collectors.toList());
+        return completeResults ? activeBlueprintsInDate.collect(Collectors.toList()) : null;
     }
 
     protected void addBlueprint(SlotBlueprint blueprint) {

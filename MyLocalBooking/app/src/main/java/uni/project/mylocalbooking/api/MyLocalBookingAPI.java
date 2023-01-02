@@ -266,42 +266,6 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         }, true).call();
     }
 
-    private void getSlotsByBlueprint(Collection<SlotBlueprint> blueprints) {
-        List<Thread> threads = new ArrayList<>();
-        for(SlotBlueprint blueprint : blueprints) {
-            String type = (blueprint instanceof ManualSlotBlueprint) ? "manual" : "periodic";
-            String url = MyLocalBookingAPI.apiPrefix + "concrete_slot_by_blueprint_id/" + type + "/" + ((IDatabaseSubclassModel) blueprint).getSubclassId();
-
-            Thread t = new Thread(() -> {
-                BlockingAPICall<JSONArray> call = new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
-                call.call();
-                blueprint.slots = Utility.getSlots(call.waitResponse(), blueprint);
-                getReservationsBySlot(blueprint.slots);
-            });
-            threads.add(t);
-            t.start();
-        }
-
-        for(Thread t : threads) {
-            try {
-                t.join();
-            } catch (InterruptedException ignored) {}
-        }
-    }
-
-    private void getReservationsBySlot(Collection<Slot> slots){
-        ParallelAPICallBatch<JSONArray> batch = new ParallelAPICallBatch<>();
-
-        for(Slot elem : slots){
-            String url = MyLocalBookingAPI.apiPrefix + "reservations_by_slot_id/" + elem.getId();
-            batch.add(new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true), response -> {
-                elem.reservations = Utility.getReservations(response);
-            });
-        }
-
-        batch.run();
-    }
-
     @Override
     public void banUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
         Long providerId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
@@ -546,5 +510,26 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             else
                 if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
         }, false);
+    }
+
+    @Override
+    public boolean getReservations(Establishment establishment, LocalDate date) {
+        String url = MyLocalBookingAPI.apiPrefix + "slots?establishment_id=" + establishment.getId() + "&date=" + date.toString();
+        HashMap<Long, SlotBlueprint> blueprints = new HashMap<>();
+        for(SlotBlueprint b : establishment.blueprints)
+            blueprints.put(b.getId(), b);
+
+        JSONArray response = new BlockingAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, true).call().waitResponse();
+        try {
+            for(int i = 0; i < response.length(); i++)
+                Slot.fromJson(response.getJSONObject(i), blueprints);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            // results must be complete, partial results must be deleted
+            establishment.blueprints.forEach(blueprint -> blueprint.slots.remove(date));
+            return false;
+        }
+
+        return true;
     }
 }

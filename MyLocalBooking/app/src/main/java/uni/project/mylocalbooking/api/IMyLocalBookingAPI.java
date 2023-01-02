@@ -2,6 +2,7 @@ package uni.project.mylocalbooking.api;
 
 import androidx.lifecycle.MutableLiveData;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 import uni.project.mylocalbooking.models.AppUser;
@@ -139,7 +140,7 @@ public interface IMyLocalBookingAPI{
 
     void rateEstablishment(Establishment establishment, float rating, String comment, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
 
-
+    boolean getReservations(Establishment establishment, LocalDate date);
 
     // left to implement:
 
