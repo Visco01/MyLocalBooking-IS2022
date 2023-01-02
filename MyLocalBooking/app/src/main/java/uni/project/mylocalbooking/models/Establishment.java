@@ -17,6 +17,8 @@ import java.util.stream.Stream;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 
 public class Establishment extends DatabaseModel {
+    public static class PartialReservationsResultsException extends Exception {}
+
     public static final Parcelable.Creator<Establishment> CREATOR
             = new Parcelable.Creator<Establishment>() {
         public Establishment createFromParcel(Parcel in) {
@@ -98,7 +100,7 @@ public class Establishment extends DatabaseModel {
         parcel.writeParcelableArray(blueprintsArr, i);
     }
 
-    public Collection<SlotBlueprint> getBlueprints(LocalDate date) {
+    public Collection<SlotBlueprint> getBlueprints(LocalDate date) throws PartialReservationsResultsException {
         Stream<SlotBlueprint> activeBlueprintsInDate = blueprints.stream().filter(b ->
                 b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
                         b.weekdays.contains(date.getDayOfWeek()));
@@ -107,11 +109,13 @@ public class Establishment extends DatabaseModel {
         if(results.isEmpty())
             return results;
 
-        // there are no partial results for a given date, so I can just check any blueprint
-        boolean completeResults = results.get(0).slots.containsKey(date) ||
+        boolean completeResults = results.stream().allMatch(blueprint -> blueprint.slots.containsKey(date)) ||
                 IMyLocalBookingAPI.getApiInstance().getReservations(this, date);
 
-        return completeResults ? activeBlueprintsInDate.collect(Collectors.toList()) : null;
+        if(!completeResults)
+            throw new PartialReservationsResultsException();
+
+        return activeBlueprintsInDate.collect(Collectors.toList());
     }
 
     protected void addBlueprint(SlotBlueprint blueprint) {
