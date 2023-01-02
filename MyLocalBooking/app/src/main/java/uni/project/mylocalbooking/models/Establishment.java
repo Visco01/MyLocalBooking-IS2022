@@ -98,7 +98,7 @@ public class Establishment extends DatabaseModel {
         parcel.writeParcelableArray(blueprintsArr, i);
     }
 
-    public List<SlotBlueprint> getBlueprints(LocalDate date) {
+    public Collection<SlotBlueprint> getBlueprints(LocalDate date) {
         Stream<SlotBlueprint> activeBlueprintsInDate = blueprints.stream().filter(b ->
                 b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
                         b.weekdays.contains(date.getDayOfWeek()));
