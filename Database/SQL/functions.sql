@@ -366,7 +366,7 @@ begin
 end;$$;
 
 
-drop function if exists get_periodic_reservations_by_day(bigint, date);
+drop function if exists get_periodic_reservations_by_date(bigint, date);
 drop type if exists periodic_reservations_result;
 
 CREATE TYPE periodic_reservations_result AS
@@ -374,6 +374,7 @@ CREATE TYPE periodic_reservations_result AS
 	slot_id bigint,
 	slot_password_digest varchar,
 	date date,
+	owner_cellphone char(13),
 
 	periodic_slot_id bigint,
 	periodic_slot_blueprint_id bigint,
@@ -390,7 +391,7 @@ CREATE TYPE periodic_reservations_result AS
 	lng double precision
 );
 
-create or replace function get_periodic_reservations_by_day(reservation_establishment_id bigint, reservation_date date)
+create or replace function get_periodic_reservations_by_date(reservation_establishment_id bigint, reservation_date date)
 	returns setof periodic_reservations_result
 	language plpgsql
 as $$
@@ -399,6 +400,7 @@ begin
 	select		s.id,
 				s.password_digest,
 				s.date,
+				o.cellphone,
 
 				p.id,
 				pb.id,
@@ -420,12 +422,13 @@ begin
 				join reservations r on r.slot_id = s.id
 				join clients c on c.id = r.client_id
 				join app_users a on a.id = c.app_user_id
+				join app_users o on o.id = s.app_user_id
 	where		s.date = reservation_date and
 				b.establishment_id = reservation_establishment_id;
 end;$$;
 
 
-drop function if exists get_manual_reservations_by_day(bigint, date);
+drop function if exists get_manual_reservations_by_date(bigint, date);
 drop type if exists manual_reservations_result;
 
 CREATE TYPE manual_reservations_result AS
@@ -433,6 +436,7 @@ CREATE TYPE manual_reservations_result AS
 	slot_id bigint,
 	slot_password_digest varchar,
 	date date,
+	owner_cellphone char(13),
 
 	manual_slot_id bigint,
 	fromtime time,
@@ -451,7 +455,7 @@ CREATE TYPE manual_reservations_result AS
 	lng double precision
 );
 
-create or replace function get_manual_reservations_by_day(reservation_establishment_id bigint, reservation_date date)
+create or replace function get_manual_reservations_by_date(reservation_establishment_id bigint, reservation_date date)
 	returns setof manual_reservations_result
 	language plpgsql
 as $$
@@ -460,6 +464,8 @@ begin
 	select		s.id,
 				s.password_digest,
 				s.date,
+				s.app_user_id,
+                o.cellphone,
 
 				m.id,
 				m.fromtime,
@@ -483,7 +489,9 @@ begin
 				join reservations r on r.slot_id = s.id
 				join clients c on c.id = r.client_id
 				join app_users a on a.id = c.app_user_id
+				join app_users o on o.id = s.app_user_id
 	where		s.date = reservation_date and
 				b.establishment_id = reservation_establishment_id;
 end;$$;
+
 
