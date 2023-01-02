@@ -84,26 +84,26 @@ public interface IMyLocalBookingAPI{
      * post:
      *       blacklists the user in the db
      * */
-    void banUser(Client client);
+    void banUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
     /*
      * pre:
      *      client.id != null
      * post:
      *       removes the user from the blacklist in the db
      * */
-    void unbanUser(Client client);
+    void unbanUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
     /*
      * pre:
      *      client.id != null
      * post:
      *       strikes the user in the db
      * */
-    void strikeUser(Client client);
+    void strikeUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
     /*
      * post:
      *       sets the CURRENT_USER.maxstrikes in the db to max
      * */
-    void setMaxStrikes(int max);
+    void setMaxStrikes(int max, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
 
     // CLIENT
     // all calls in this section implicitly have the precondition
@@ -132,9 +132,12 @@ public interface IMyLocalBookingAPI{
      *       removes the reservation if exists
      */
     void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
-    Collection<Establishment> getClosestEstablishments();
+
+    void getClosestEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata);
+
     void setPreferredPosition(Coordinates position, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError);
-    void rateEstablishment(Establishment establishment, int rating, String comment/*, boolean anonymous*/);
+
+    void rateEstablishment(Establishment establishment, float rating, String comment, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
 
 
 

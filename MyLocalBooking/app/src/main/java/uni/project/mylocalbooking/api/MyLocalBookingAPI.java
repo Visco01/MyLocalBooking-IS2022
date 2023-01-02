@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.helpers.Util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -239,7 +240,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public void getOwnedEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata) {
-        Long appUserId = (Long) 1901L;
+        Long appUserId = (Long) SessionPreferences.getUserPrefs().get("id");;
         if(appUserId == null)
             return;
         
@@ -252,7 +253,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + providerId;
             BlockingAPICall<JSONArray> call = new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
             call.call();
-            Collection<Establishment> ownedEstablishments = Utility.getOwnedEstablishmentData(call.waitResponse());
+            Collection<Establishment> ownedEstablishments = Utility.getEstablishmentData(call.waitResponse());
 
             List<Thread> threads = new ArrayList<>();
             for(Establishment establishment : ownedEstablishments){
@@ -310,23 +311,72 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void banUser(Client client) {
+    public void banUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
+        Long providerId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
+        //providerId = 377L;
+        if(providerId == null)
+            return;
 
+        String url = MyLocalBookingAPI.apiPrefix + "blacklists";
+        String requestBody = JSONBodyGenerator.generateStrikeUserBody(providerId, client.cellphone);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) data -> {
+            if(data.has("id"))
+                if(onSuccess != null) onSuccess.apply(StatusCode.CREATED);
+            else
+                if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+        }, false);
     }
 
     @Override
-    public void unbanUser(Client client) {
+    public void unbanUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
+        Long providerId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
+        //providerId = 377L;
+        if(providerId == null)
+            return;
 
+        String url = MyLocalBookingAPI.apiPrefix + "providers/delete_blacklist_by_params";
+        String requestBody = JSONBodyGenerator.generateUnbanUserBody(providerId, client.cellphone);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) data -> {
+            if(data.has("error"))
+                if(onError != null) onError.apply(StatusCode.NOT_FOUND);
+            else
+                if(onSuccess != null) onSuccess.apply(StatusCode.DELETED);
+        }, false);
     }
 
     @Override
-    public void strikeUser(Client client) {
+    public void strikeUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
+        Long providerId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
+        //providerId = 378L;
+        if(providerId == null)
+            return;
 
+        String url = MyLocalBookingAPI.apiPrefix + "strikes";
+        String requestBody = JSONBodyGenerator.generateStrikeUserBody(providerId, client.cellphone);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) data -> {
+            if(data.has("id"))
+                if(onSuccess != null) onSuccess.apply(StatusCode.CREATED);
+            else
+                if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+        }, false);
     }
 
     @Override
-    public void setMaxStrikes(int max) {
+    public void setMaxStrikes(int max, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
+        Long providerId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
+        //providerId = 377L;
+        if(providerId == null)
+            return;
 
+        String url = MyLocalBookingAPI.apiPrefix + "providers/" + providerId + "/set_max_strikes?new_max_strikes=" + max;
+        Utility.callAPI(MyLocalBookingAPI.jwt, "{\"sample\": \"sample\"}", url, "POST", (RunOnResponse<JSONObject>) data -> {
+            if(data.has("error"))
+                if(onError != null) onError.apply(StatusCode.NOT_FOUND);
+            if(data.has("success"))
+                if(onSuccess != null) onSuccess.apply(StatusCode.CREATED);
+            else
+                if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+        }, false);
     }
 
     @Override
@@ -438,8 +488,40 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public Collection<Establishment> getClosestEstablishments() {
-        return null;
+    public void getClosestEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata) {
+        Long appUserId = (Long) SessionPreferences.getUserPrefs().get("id");
+        Double lat = (Double) SessionPreferences.getUserPrefs().get("lat");
+        Double lng = (Double) SessionPreferences.getUserPrefs().get("lng");
+        int range = 500000000;
+        //Long appUserId = 1907L;
+        //Double lat = 45.501859;
+        //Double lng = 12.254584;
+        if(appUserId == null || lat == null || lng == null)
+            return;
+
+        Runnable runnable = () -> {
+            String url = MyLocalBookingAPI.apiPrefix + "closest_establishments?" + "lat=" + lat + "&lng=" + lng + "&range=" + range;
+            BlockingAPICall<JSONArray> call = new BlockingAPICall<>(MyLocalBookingAPI.jwt, "GET", null, url, true);
+            call.call();
+            Collection<Establishment> closestEstablishments = Utility.getEstablishmentData(call.waitResponse());
+
+            List<Thread> threads = new ArrayList<>();
+            for(Establishment establishment : closestEstablishments){
+                Thread t = new Thread(() -> getSlotsByBlueprint(establishment.blueprints));
+                threads.add(t);
+                t.start();
+            }
+
+            for(Thread t : threads) {
+                try {
+                    t.join();
+                } catch (InterruptedException ignored) {}
+            }
+
+            establishmentsLivedata.postValue(closestEstablishments);
+        };
+
+        new Thread(runnable).start();
     }
 
     @Override
@@ -468,7 +550,20 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void rateEstablishment(Establishment establishment, int rating, String comment) {
-
+    public void rateEstablishment(Establishment establishment, float rating, String comment, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
+        Long clientId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
+        clientId = 1296L;
+        if(clientId == -1 && onError != null){
+            onError.apply(StatusCode.SESSION_PREFERENCES_NOT_FOUND);
+            return;
+        }
+        String url = MyLocalBookingAPI.apiPrefix + "ratings";
+        String requestBody = JSONBodyGenerator.generateRatingBody(clientId, establishment.getId(), rating, comment);
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) data -> {
+            if(data.has("success"))
+                if(onSuccess != null) onSuccess.apply(StatusCode.CREATED);
+            else
+                if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+        }, false);
     }
 }

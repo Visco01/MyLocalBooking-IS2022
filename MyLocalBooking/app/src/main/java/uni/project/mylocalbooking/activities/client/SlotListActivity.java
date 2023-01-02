@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ListView;
 
 
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
         });
 
+        ((ListView) findViewById(R.id.slot_list)).setAdapter(adapter);
         currentEstablishment = ((MyLocalBooking) getApplication()).establishments.get(savedInstanceState.getLong("current_establishment"));
         viewModel.setBlueprints(currentEstablishment.blueprints);
     }

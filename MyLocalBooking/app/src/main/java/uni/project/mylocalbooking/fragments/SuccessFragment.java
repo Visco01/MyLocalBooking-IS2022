@@ -34,6 +34,7 @@ public class SuccessFragment extends DialogFragment {
         builder.setMessage(successMessage).setTitle(successTitle)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        // TODO: Replace with AppUser
                         if (Objects.equals(UserTest.getType(), "Client")){
                             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeClientActivity.class));
                         }
