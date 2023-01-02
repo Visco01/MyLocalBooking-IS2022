@@ -7,13 +7,13 @@ import androidx.lifecycle.ViewModel;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.api.StatusCode;
+import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
@@ -26,19 +26,7 @@ public class SlotListViewModel extends ViewModel {
     private final MutableLiveData<LocalDate> startOfWeek = new MutableLiveData<>();
     private final MutableLiveData<DayOfWeek> currentDayOfWeek = new MutableLiveData<>();
     private final MutableLiveData<LocalDate> currentDay = new MutableLiveData<>();
-    private final MutableLiveData<Collection<SlotBlueprint>> blueprints = new MutableLiveData<>();
     private final MutableLiveData<StatusCode> reservationOutcome = new MutableLiveData<>();
-
-    public void setBlueprints(Collection<SlotBlueprint> blueprints) {
-        this.blueprints.setValue(blueprints);
-    }
-
-    public List<SlotBlueprint> getBlueprints(LocalDate date) {
-        return blueprints.getValue().stream().filter(b ->
-                b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
-                        b.weekdays.contains(date.getDayOfWeek())
-        ).collect(Collectors.toList());
-    }
 
     public LiveData<LocalDate> getStartOfWeek() {
         return startOfWeek;

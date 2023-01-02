@@ -8,15 +8,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
 
 
-import java.util.ArrayList;
-
-import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.fragments.PasswordInputDialogFragment;
 import uni.project.mylocalbooking.fragments.PasswordRequestDialogFragment;
@@ -32,6 +28,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        currentEstablishment = (Establishment) getIntent().getExtras().getParcelable("current_establishment");
         setContentView(R.layout.activity_slot_list);
 
         viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
@@ -40,7 +37,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         ((ListView) findViewById(R.id.slot_list)).setAdapter(adapter);
 
         viewModel.getCurrentDay().observe(this, date -> {
-            adapter.onRefresh(date, viewModel.getBlueprints(date));
+            adapter.onRefresh(date, currentEstablishment.getBlueprints(date));
             findViewById(R.id.no_available_slots).setVisibility(adapter.filteredSlots.isEmpty() ? View.VISIBLE : View.GONE);
         });
 
@@ -52,9 +49,6 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
             builder.create();
 
         });
-
-        currentEstablishment = (Establishment) getIntent().getExtras().getParcelable("current_establishment");
-        viewModel.setBlueprints(currentEstablishment.blueprints);
     }
 
     @Nullable
