@@ -119,8 +119,8 @@ public class ManualSlotCreationDialogFragment extends DialogFragment implements 
 
         LocalTime start = timeWindow.getStart();
         LocalTime initialEnd = start.plusMinutes(timeWindow.blueprint.maxDuration.toMinutes());
-        if(initialEnd.compareTo(timeWindow.blueprint.closeTime) > 0)
-            initialEnd = timeWindow.blueprint.closeTime;
+        if(initialEnd.compareTo(timeWindow.toTime) > 0)
+            initialEnd = timeWindow.toTime;
 
         slider.setValueFrom(0);
         slider.setValueTo(Duration.between(start, timeWindow.getEnd()).getSeconds() / 60f);
