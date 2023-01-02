@@ -103,12 +103,12 @@ public class Establishment extends DatabaseModel {
                 b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
                         b.weekdays.contains(date.getDayOfWeek()));
 
-        Optional<SlotBlueprint> someBlueprint = activeBlueprintsInDate.findAny();
-        if(!someBlueprint.isPresent())
-            return new ArrayList<>();
+        List<SlotBlueprint> results = activeBlueprintsInDate.collect(Collectors.toList());
+        if(results.isEmpty())
+            return results;
 
         // there are no partial results for a given date, so I can just check any blueprint
-        boolean completeResults = someBlueprint.get().slots.containsKey(date) ||
+        boolean completeResults = results.get(0).slots.containsKey(date) ||
                 IMyLocalBookingAPI.getApiInstance().getReservations(this, date);
 
         return completeResults ? activeBlueprintsInDate.collect(Collectors.toList()) : null;
