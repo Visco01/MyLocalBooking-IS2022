@@ -6,8 +6,13 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 
 public class Establishment extends DatabaseModel {
     public static final Parcelable.Creator<Establishment> CREATOR
@@ -89,5 +94,22 @@ public class Establishment extends DatabaseModel {
         SlotBlueprint[] blueprintsArr = new SlotBlueprint[blueprints.size()];
         blueprints.toArray(blueprintsArr);
         parcel.writeParcelableArray(blueprintsArr, i);
+    }
+
+    public List<SlotBlueprint> getBlueprints(LocalDate date) {
+        if(blueprints.size() == 0)
+            return new ArrayList<>();
+
+        // either all or no slots for a given date
+        if(!blueprints.iterator().next().slots.containsKey(date))
+            IMyLocalBookingAPI.getApiInstance().getReservations(date, this);
+
+        return blueprints.stream().filter(b ->
+                b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
+                        b.weekdays.contains(date.getDayOfWeek())).collect(Collectors.toList());
+    }
+
+    protected void addBlueprint(SlotBlueprint blueprint) {
+        this.blueprints.add(blueprint);
     }
 }

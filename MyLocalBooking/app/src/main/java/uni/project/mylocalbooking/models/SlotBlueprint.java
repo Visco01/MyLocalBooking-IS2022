@@ -43,8 +43,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
     public final LocalDate fromDate;
     public final LocalDate toDate;
 
-
-    private HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
+    public final HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
 
     public SlotBlueprint(Long id, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         super(id);
@@ -54,9 +53,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
         this.toDate = toDate;
         this.establishment = establishment;
 
-        if(establishment.blueprints == null)
-            establishment.blueprints = new ArrayList<>();
-        establishment.blueprints.add(this);
+        establishment.addBlueprint(this);
     }
 
     public SlotBlueprint(Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
