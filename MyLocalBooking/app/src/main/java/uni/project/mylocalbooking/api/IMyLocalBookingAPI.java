@@ -142,7 +142,9 @@ public interface IMyLocalBookingAPI{
 
     boolean getReservations(Establishment establishment, LocalDate date);
 
-    // left to implement:
+    AppUser getUserByCellphone(String cellphone);
+
+        // left to implement:
 
     // void deleteBlueprint(SlotBlueprint blueprint);
     // void editBlueprint(SlotBlueprint blueprint);

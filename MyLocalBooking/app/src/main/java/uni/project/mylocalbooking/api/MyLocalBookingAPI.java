@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
@@ -46,41 +48,17 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         Log.i("auth request", MyLocalBookingAPI.jwt);
     }
 
-    private void getUserByCellphone(String cellphone, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError){
+    @Override
+    public AppUser getUserByCellphone(String cellphone){
         String url = MyLocalBookingAPI.apiPrefix + "app_user_by_cellphone/" + cellphone;
-        Utility.callAPI(MyLocalBookingAPI.jwt, null, url, "GET", (RunOnResponse<JSONObject>) response -> {
-            try {
-                String status = response.getString("status");
-                if (status.equals("OK")) {
-                    AppUser user;
-                    String category = response.getString("category");
-                    String appUserId = response.getString("app_user_id");
-                    String concreteUserId = response.getString("concrete_user_id");
-                    String password = response.getString("password_digest");
-                    String email = response.getString("email");
-                    String firstName = response.getString("firstname");
-                    String lastName = response.getString("lastname");
-                    String[] dob = response.getString("dob").split("-");
-                    if (category.equals("client")) {
-                        String lat = response.getString("lat");
-                        String lng = response.getString("lng");
-                        user = new Client(Long.valueOf(concreteUserId), new Coordinates(Double.parseDouble(lat), Double.parseDouble(lng)), Long.valueOf(appUserId), cellphone, email, firstName, lastName, LocalDate.of(Integer.parseInt(dob[0]), Integer.parseInt(dob[1]), Integer.parseInt(dob[2])), password);
-                    } else {
-                        String isVerified = response.getString("isverified");
-                        String maxStrikes = response.getString("maxstrikes");
-                        String companyName = response.getString("companyname");
-                        user = new Provider(Long.valueOf(concreteUserId), Boolean.parseBoolean(isVerified), companyName, Integer.valueOf(maxStrikes), null, Long.valueOf(appUserId), cellphone, email, firstName, lastName, LocalDate.of(Integer.parseInt(dob[0]), Integer.parseInt(dob[1]), Integer.parseInt(dob[2])), password);
-                    }
-                    Log.i("user login", user.toString());
-                    if (onSuccess != null) onSuccess.apply(user);
-                } else {
-                    if (onError != null) onError.apply(StatusCode.NOT_FOUND);
-                }
-            } catch (Exception e) {
-                if (onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
-                e.printStackTrace();
-            }
-        }, false);
+        JSONObject data = new BlockingAPICall<JSONObject>(MyLocalBookingAPI.jwt, null, url, "GET", false).call().waitResponse();
+
+        try {
+            return AppUser.fromJson(data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -108,20 +86,21 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError){
-        getUserByCellphone(cellphone, data -> {
-            try {
-                if(AESCrypt.encrypt(password).equals(data.password)){
-                    SessionPreferences.setUserPrefs(data);
-                    if(onSuccess != null) onSuccess.apply(data);
-                }else{
-                    if(onError != null) onError.apply(StatusCode.UNAUTHORIZED);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        AppUser user = getUserByCellphone(cellphone);
+        if(user == null) {
+            if(onError != null) onError.apply(StatusCode.);
+        }
+        try {
+            if(AESCrypt.encrypt(password).equals(user.password)){
+                SessionPreferences.setUserPrefs(user);
+                if(onSuccess != null) onSuccess.apply(user);
+            }else{
+                if(onError != null) onError.apply(StatusCode.UNAUTHORIZED);
             }
-        }, data -> {
-            if(onError != null) onError.apply(data);
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(onError != null) onError.apply(user);
+        }
     }
 
     //dato id est popolare collection
@@ -340,8 +319,9 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         Map<String, ?> prefs = SessionPreferences.getUserPrefs();
         Long currentUserId = (Long) prefs.get("id");
 
+
         if(slot.getId() == null){
-            if(currentUserId.equals(slot.owner.getId()))
+            if(slot.isOwner(MyLocalBooking.getCurrentUser()))
                 addSlot(slot, password, onSuccess, onError);
             else
                 addSlot(slot, null, onSuccess, onError);
