@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+
 public abstract class Slot extends DatabaseModel {
     public static Slot fromJson(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
         String clientType = object.getString("type");
@@ -28,9 +30,11 @@ public abstract class Slot extends DatabaseModel {
 
     public final LocalDate date;
     public boolean passwordProtected;
-    public AppUser owner;
+    private AppUser owner;
     public HashSet<Client> reservations;
     public SlotBlueprint blueprint;
+
+    private String ownerCellphone;
 
     public Slot(Long id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, @NotNull SlotBlueprint blueprint) {
         super(id);
@@ -52,7 +56,7 @@ public abstract class Slot extends DatabaseModel {
         blueprint = blueprints.get(object.getLong("blueprint_subclass_id"));
         date = LocalDate.parse(object.getString("date"));
         passwordProtected = !object.getString("password_digest").isEmpty();
-        owner = AppUser.fromJson(object.getJSONObject("owner"));
+        ownerCellphone = object.getString("owner_cellphone");
         reservations = new HashSet<>();
 
         JSONArray reservationsArr = object.getJSONArray("reservations");
@@ -81,5 +85,21 @@ public abstract class Slot extends DatabaseModel {
         Client[] reservationsArr = new Client[reservations.size()];
         reservations.toArray(reservationsArr);
         parcel.writeParcelableArray(reservationsArr, i);
+    }
+
+    public void setOwner(AppUser user) {
+        owner = user;
+        ownerCellphone = user.cellphone;
+    }
+
+    public AppUser getOwner() {
+        if(owner != null)
+            return owner;
+
+        return IMyLocalBookingAPI.getApiInstance().getUserByCellphone(ownerCellphone);
+    }
+
+    public boolean isOwner(AppUser user) {
+        return ownerCellphone.equals(user.cellphone);
     }
 }
