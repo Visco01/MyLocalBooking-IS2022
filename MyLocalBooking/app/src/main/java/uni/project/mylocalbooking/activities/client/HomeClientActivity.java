@@ -2,6 +2,8 @@ package uni.project.mylocalbooking.activities.client;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,7 +13,11 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.UserTest;
