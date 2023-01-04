@@ -8,19 +8,25 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
+import uni.project.mylocalbooking.models.Provider;
 
 public class ChangeNStrikesActivity extends AppCompatActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_nstrikes);
-
+        Provider user = (Provider) MyLocalBooking.getCurrentUser();
         EditText newNStrikes = findViewById(R.id.newNStrikes);
-        newNStrikes.setHint("2");
+
+        newNStrikes.setHint(Integer.toString(user.maxStrikes)); // Replace with current User
         Button confirm = findViewById(R.id.confirm_change_nStrikes);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,8 +39,19 @@ public class ChangeNStrikesActivity extends AppCompatActivity {
                     failedValid();
                 }
                 else {
-                    // TODO: update backend
-                    success();
+                    user.maxStrikes = Integer.parseInt(inputValue);
+                    // TODO: Fix stesso errore della ChangePassword con il parsing
+                    // I/APICall error: com.android.volley.ParseError: org.json.JSONException:
+                    // Value �� of type java.lang.String cannot be converted to JSONObject
+                    // requestBody = "{"sample": "sample"}"
+                    IMyLocalBookingAPI.getApiInstance().setMaxStrikes(
+                            user.maxStrikes,
+                            (a) -> success(),
+                            (b) -> {
+                                System.out.println("Error Set N Strikes API");
+                                failedValid();
+                            }
+                    );
                 }
             }
         });
