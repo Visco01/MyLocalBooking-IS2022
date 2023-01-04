@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.LoginActivity;
 
@@ -47,6 +48,7 @@ public class ProfileClientActivity extends BaseNavigationActivity {
 
             @Override
             public void onClick(View view) {
+                SessionPreferences.deleteSessionPreferences();
                 googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -54,6 +56,7 @@ public class ProfileClientActivity extends BaseNavigationActivity {
                         startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
                     }
                 });
+                startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
             }
         });
     }

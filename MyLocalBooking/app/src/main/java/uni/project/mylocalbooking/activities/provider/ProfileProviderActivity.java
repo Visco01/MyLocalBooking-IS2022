@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.LoginActivity;
 
@@ -53,8 +54,8 @@ public class ProfileProviderActivity extends BaseNavigationActivity {
         logoutButton = findViewById(R.id.logoutProviderButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                // TODO: Understand how to logout
+            public void onClick(View view){
+                SessionPreferences.deleteSessionPreferences();
                 // TODO: fix google login and adapt it
                 googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -63,6 +64,7 @@ public class ProfileProviderActivity extends BaseNavigationActivity {
                         startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
                     }
                 });
+                startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
 
             }
         });

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.AskConfirmFragment;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
@@ -55,7 +56,16 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     failedChangeEquals();
                 }
                 else{
-                   confirmChange();
+                    // Errore nel parsing di una qualche stringa nel JSON (non è colpa della mail null)
+                    IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
+                    api.changeUserPassword(inputValue2,
+                            (a) -> confirmChange(),
+                            (b) -> {
+                                    System.out.println("Possible data error, change password api failed");
+                                    failedChangeAPI();
+                                    }
+                    );
+                    //confirmChange();
                 }
             }
         });
@@ -124,6 +134,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private void failedChangeEquals(){
         DialogFragment newFragment = new FailureFragment("Error",
                 "The new password was not confirmed correctly, please try again");
+        newFragment.show(getSupportFragmentManager(), "failedChangeEquals");
+    }
+
+    private void failedChangeAPI(){
+        DialogFragment newFragment = new FailureFragment("API error",
+                "Given data is not valid or the service is not working correctly right now," +
+                        "please try again later or contact us");
         newFragment.show(getSupportFragmentManager(), "failedChangeEquals");
     }
 

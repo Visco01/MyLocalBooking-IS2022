@@ -59,8 +59,7 @@ public class AddEstablishmentActivity extends AppCompatActivity {
                     success = true;
                 }
 
-                if (success == true){
-                    // TODO: update backend
+                if (success){
                     IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
                     api.addEstablishment(new Establishment(
                             (Provider) MyLocalBooking.getCurrentUser(),
