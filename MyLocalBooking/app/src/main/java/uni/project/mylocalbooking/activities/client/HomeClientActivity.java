@@ -1,22 +1,28 @@
 package uni.project.mylocalbooking.activities.client;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.UserTest;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+import uni.project.mylocalbooking.models.Establishment;
 
-public class HomeClientActivity extends BaseNavigationActivity {
+public class HomeClientActivity extends BaseNavigationActivity implements Adapter_search_establishment.IEstablishmentSelectedListener {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    List<ModelClass_search_establishment> userList;
+    Collection<Establishment> establishments = new ArrayList<>();
     Adapter_search_establishment adapter;
 
     @Override
@@ -24,31 +30,35 @@ public class HomeClientActivity extends BaseNavigationActivity {
         UserTest.setType("Client");
         super.onCreate(savedInstanceState);
 
-        initData();
-        initRecycleRview();
-
+        if(savedInstanceState == null) {
+            MutableLiveData<Collection<Establishment>> closestEstablishments = new MutableLiveData<>();
+            closestEstablishments.observe(this, est -> {
+                establishments = est;
+                initRecyclerView();
+            });
+            IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(closestEstablishments);
+        } else {
+            for(Parcelable e : savedInstanceState.getParcelableArray("establishments"))
+                establishments.add((Establishment) e);
+        }
     }
 
-    private void initRecycleRview() {
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Establishment[] establishmentsArr = new Establishment[establishments.size()];
+        establishments.toArray(establishmentsArr);
+        outState.putParcelableArray("establishments", establishmentsArr);
+    }
+
+    private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycleRview_establishment);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new Adapter_search_establishment(userList);
+        adapter = new Adapter_search_establishment(new ArrayList<>(establishments), this);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-    }
-
-    private void initData() {
-        userList = new ArrayList<>();
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "casa mia 12/23"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Patronato San Giobbe", "non - specificato"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo santa maria formosa", "san marco 5572/23122"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
-        userList.add(new ModelClass_search_establishment(R.drawable.logo, "Campo calcetto Coletti", "Ruga Giuffa 12/23"));
-
-
     }
 
     public int getContentViewId(){
@@ -60,4 +70,12 @@ public class HomeClientActivity extends BaseNavigationActivity {
         return R.id.homeClient;
     }
 
+    @Override
+    public void onEstablishmentSelected(Establishment establishment) {
+        startActivity(
+                new Intent(this, SlotListActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .putExtra("current_establishment", establishment)
+        );
+    }
 }

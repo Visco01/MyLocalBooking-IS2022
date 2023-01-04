@@ -74,10 +74,9 @@ class JSONBodyGenerator {
     }
 
     public static String generateAddSlotBody(Slot slot, String password){
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String jsonBody = "{" +
                 "\"app_user_id\": " + slot.owner.getId() + ", " +
-                "\"date\": \"" + date + "\", " +
+                "\"date\": \"" + slot.date.toString() + "\", " +
                 "\"password_digest\": ";
         jsonBody += password != null ? ("\"" + password + "\", ") : "null, ";
 
@@ -90,8 +89,8 @@ class JSONBodyGenerator {
             ManualSlotBlueprint msBlueprint = (ManualSlotBlueprint) slot.blueprint;
             jsonBody += "\"fromtime\": \"" + mSlot.fromTime.toString() + "\", " +
                     "\"totime\": \"" + mSlot.toTime.toString() + "\", ";
-            jsonBody += "\"PeriodicSlot\": {" +
-                    "\"periodic_slot_blueprint_id\": " + msBlueprint.getSubclassId() + "}}";
+            jsonBody += "\"ManualSlot\": {" +
+                    "\"manual_slot_blueprint_id\": " + msBlueprint.getSubclassId() + "}}";
         }
         return jsonBody;
     }

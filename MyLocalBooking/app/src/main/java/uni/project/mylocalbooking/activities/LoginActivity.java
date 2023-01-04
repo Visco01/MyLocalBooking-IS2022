@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
                 else{
                     api.login(cell.getText().toString(), psswd.getText().toString(),
                             (a) -> openMenuActivity(), (b) -> System.out.println("Error with Login data")); //ToDO: fix
-                    openMenuActivity(); // TODO: Da rimuovere
                 }
 
             }
