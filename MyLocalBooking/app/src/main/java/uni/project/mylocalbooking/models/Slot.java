@@ -102,4 +102,8 @@ public abstract class Slot extends DatabaseModel {
     public boolean isOwner(AppUser user) {
         return ownerCellphone.equals(user.cellphone);
     }
+
+    public String getOwnerCellphone() {
+        return ownerCellphone;
+    }
 }

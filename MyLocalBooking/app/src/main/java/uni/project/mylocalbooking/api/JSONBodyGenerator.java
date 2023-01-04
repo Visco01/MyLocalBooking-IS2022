@@ -1,9 +1,13 @@
 package uni.project.mylocalbooking.api;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
@@ -74,26 +78,31 @@ class JSONBodyGenerator {
     }
 
     public static String generateAddSlotBody(Slot slot, String password){
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        String jsonBody = "{" +
-                "\"app_user_id\": " + slot.getOwner().getId() + ", " +
-                "\"date\": \"" + date + "\", " +
-                "\"password_digest\": ";
-        jsonBody += password != null ? ("\"" + password + "\", ") : "null, ";
+        try {
+            JSONObject body = new JSONObject();
+            body.put("owner_cellphone", slot.getOwnerCellphone());
+            body.put("date", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(slot.date));
+            body.put("password_digest", password);
+            body.put("client_id", slot instanceof PeriodicSlot ? ((Client) MyLocalBooking.getCurrentUser()).getSubclassId() : null);
+            JSONObject concreteSlot = new JSONObject();
+            if(slot instanceof PeriodicSlot) {
+                concreteSlot.put("periodic_slot_blueprint_id", ((PeriodicSlotBlueprint) slot.blueprint).getSubclassId());
+                body.put("PeriodicSlot", concreteSlot);
+            } else {
+                ManualSlot mSlot = (ManualSlot) slot;
+                ManualSlotBlueprint msBlueprint = (ManualSlotBlueprint) slot.blueprint;
+                body.put("fromtime", mSlot.fromTime.toString());
+                body.put("totime", mSlot.toTime.toString());
 
-        if(slot instanceof PeriodicSlot){
-            PeriodicSlotBlueprint psBlueprint = (PeriodicSlotBlueprint) slot.blueprint;
-            jsonBody += "\"PeriodicSlot\": {" +
-                    "\"periodic_slot_blueprint_id\": " + psBlueprint.getSubclassId() + "}}";
-        } else {
-            ManualSlot mSlot = (ManualSlot) slot;
-            ManualSlotBlueprint msBlueprint = (ManualSlotBlueprint) slot.blueprint;
-            jsonBody += "\"fromtime\": \"" + mSlot.fromTime.toString() + "\", " +
-                    "\"totime\": \"" + mSlot.toTime.toString() + "\", ";
-            jsonBody += "\"PeriodicSlot\": {" +
-                    "\"periodic_slot_blueprint_id\": " + msBlueprint.getSubclassId() + "}}";
+                concreteSlot.put("manual_slot_blueprint_id", ((ManualSlotBlueprint) slot.blueprint).getSubclassId());
+                body.put("ManualSlot", concreteSlot);
+            }
+
+            return body.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
         }
-        return jsonBody;
     }
 
     public static String generateReservationBody(Long clientId, Long slotId){
