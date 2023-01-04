@@ -325,7 +325,7 @@ end;$$;
 
 
 create or replace procedure insert_manual_slot (
-	app_user_id bigint,
+	owner_cellphone char(13),
 	date date,
 	password_digest text,
 	manual_slot_blueprint_id bigint,
@@ -338,7 +338,7 @@ declare
 	slot_id bigint;
 begin
 	insert into slots(app_user_id, date, password_digest)
-	values (app_user_id, date, password_digest)
+	values ((select id from app_users where cellphone = owner_cellphone), date, password_digest)
 	returning id into slot_id;
 
 	insert into manual_slots(slot_id, manual_slot_blueprint_id, fromtime, totime)
@@ -347,7 +347,8 @@ end;$$;
 
 
 create or replace procedure insert_periodic_slot (
-	app_user_id bigint,
+	owner_cellphone char(13),
+	client_id bigint,
 	date date,
 	password_digest text,
 	periodic_slot_blueprint_id bigint
@@ -358,11 +359,14 @@ declare
 	slot_id bigint;
 begin
 	insert into slots(app_user_id, date, password_digest)
-	values (app_user_id, date, password_digest)
+	values ((select id from app_users where cellphone = owner_cellphone), date, password_digest)
 	returning id into slot_id;
 
 	insert into periodic_slots(slot_id, periodic_slot_blueprint_id)
 	values (slot_id, periodic_slot_blueprint_id);
+
+	insert into reservations(client_id, slot_id)
+	values (client_id, slot_id);
 end;$$;
 
 
