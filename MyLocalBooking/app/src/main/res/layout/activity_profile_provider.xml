@@ -211,9 +211,11 @@
                         android:textSize="18dp"></TextView>
 
                     <TextView
+                        android:id="@+id/passwordProvider"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:inputType="textPassword"
                         android:text="********"
                         android:textAlignment="viewEnd"
                         android:textSize="18dp"></TextView>
@@ -245,6 +247,7 @@
                         android:textSize="18dp"></TextView>
 
                     <TextView
+                        android:id="@+id/providerNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -277,6 +280,7 @@
                         android:textSize="18dp"></TextView>
 
                     <TextView
+                        android:id="@+id/numberOfStrikesProvider"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -309,6 +313,7 @@
                         android:textSize="18dp"></TextView>
 
                     <TextView
+                        android:id="@+id/fullNameProvider"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -341,6 +346,7 @@
                         android:textSize="18dp"></TextView>
 
                     <TextView
+                        android:id="@+id/emailProvider"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
