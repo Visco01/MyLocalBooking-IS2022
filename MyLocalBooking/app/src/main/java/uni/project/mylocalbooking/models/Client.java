@@ -3,6 +3,9 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalDate;
 
 public class Client extends AppUser implements IDatabaseSubclassModel {
@@ -28,6 +31,13 @@ public class Client extends AppUser implements IDatabaseSubclassModel {
 
     public Client(Coordinates position, String cellphone, String email, String firstname, String lastname, LocalDate dob, String password) {
         this(null, position, null, cellphone, email, firstname, lastname, dob, password);
+    }
+
+    public Client(JSONObject object) throws JSONException {
+        super(object);
+
+        id = object.getLong("subclass_id");
+        position = object.has("coordinates") ? new Coordinates(object.getJSONObject("coordinates")) : null;
     }
 
     protected Client(Parcel in) {

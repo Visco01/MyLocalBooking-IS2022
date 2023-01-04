@@ -162,8 +162,8 @@ class Utility {
         JSONObject slot = object.getJSONObject("slot");
         Long slotId = slot.getLong("id");
         String[] date = slot.getString("date").split("-");
-        String password = slot.optString("password_digest", "");
-        boolean passwordProtected = !password.isEmpty();
+        String password = slot.isNull("password_digest") ? null : slot.getString("password_digest");
+        boolean passwordProtected = password != null;
 
         if(blueprint instanceof PeriodicSlotBlueprint){
             Long id = object.getLong("id");

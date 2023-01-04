@@ -3,10 +3,14 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.SortedSet;
@@ -47,6 +51,14 @@ public class ManualSlot extends Slot implements IDatabaseSubclassModel, ISelecta
 
     public ManualSlot(LocalTime fromTime, LocalTime toTime, LocalDate date, AppUser owner, ManualSlotBlueprint blueprint) {
         this(null, fromTime, toTime, null, date, owner, false, new HashSet<>(), blueprint);
+    }
+
+    public ManualSlot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
+        super(object, blueprints);
+
+        id = object.getLong("subclass_id");
+        fromTime = LocalTime.parse(object.getString("from_time"));
+        toTime = LocalTime.parse(object.getString("to_time"));
     }
 
     protected ManualSlot(Parcel in) {

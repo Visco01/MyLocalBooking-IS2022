@@ -3,6 +3,9 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Coordinates implements Parcelable {
     public static final Parcelable.Creator<Coordinates> CREATOR
             = new Parcelable.Creator<Coordinates>() {
@@ -21,6 +24,11 @@ public class Coordinates implements Parcelable {
     public Coordinates(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public Coordinates(JSONObject object) throws JSONException {
+        latitude = object.getDouble("lat");
+        longitude = object.getDouble("lng");
     }
 
     protected Coordinates(Parcel in) {
