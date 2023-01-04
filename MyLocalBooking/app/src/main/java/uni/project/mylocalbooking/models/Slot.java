@@ -96,7 +96,8 @@ public abstract class Slot extends DatabaseModel {
         if(owner != null)
             return owner;
 
-        return IMyLocalBookingAPI.getApiInstance().getUserByCellphone(ownerCellphone);
+        owner = IMyLocalBookingAPI.getApiInstance().getUserByCellphone(ownerCellphone);
+        return owner;
     }
 
     public boolean isOwner(AppUser user) {
