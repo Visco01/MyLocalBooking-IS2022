@@ -23,7 +23,7 @@ public class Provider extends AppUser implements IDatabaseSubclassModel {
 
     private Long id;
     public final boolean verified;
-    public final int maxStrikes;
+    public int maxStrikes;
     public final String companyName;
 
     public HashMap<Client, Integer> strikedUsers;
