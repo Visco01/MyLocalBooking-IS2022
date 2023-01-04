@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
@@ -34,8 +35,9 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         setContentView(R.layout.activity_slot_list);
 
         viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
-        viewModel.setBlueprints(new ArrayList<>());
+
         SlotListAdapter adapter = new SlotListAdapter(this);
+        ((ListView) findViewById(R.id.slot_list)).setAdapter(adapter);
 
         viewModel.getCurrentDay().observe(this, date -> {
             adapter.onRefresh(date, viewModel.getBlueprints(date));
@@ -51,15 +53,8 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
         });
 
-        ((ListView) findViewById(R.id.slot_list)).setAdapter(adapter);
-        currentEstablishment = ((MyLocalBooking) getApplication()).establishments.get(savedInstanceState.getLong("current_establishment"));
+        currentEstablishment = (Establishment) getIntent().getExtras().getParcelable("current_establishment");
         viewModel.setBlueprints(currentEstablishment.blueprints);
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong("current_establishment", currentEstablishment.getId());
     }
 
     @Nullable

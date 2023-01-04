@@ -1,15 +1,33 @@
 package uni.project.mylocalbooking.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class ManualSlot extends Slot implements IDatabaseSubclassModel, ISelectableSlot, Comparable<ManualSlot> {
+    public static final Parcelable.Creator<ManualSlot> CREATOR
+            = new Parcelable.Creator<ManualSlot>() {
+        public ManualSlot createFromParcel(Parcel in) {
+            return new ManualSlot(in);
+        }
+
+        public ManualSlot[] newArray(int size) {
+            return new ManualSlot[size];
+        }
+    };
+
     private Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;
@@ -33,6 +51,29 @@ public class ManualSlot extends Slot implements IDatabaseSubclassModel, ISelecta
 
     public ManualSlot(LocalTime fromTime, LocalTime toTime, LocalDate date, AppUser owner, ManualSlotBlueprint blueprint) {
         this(null, fromTime, toTime, null, date, owner, false, new HashSet<>(), blueprint);
+    }
+
+    public ManualSlot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
+        super(object, blueprints);
+
+        id = object.getLong("subclass_id");
+        fromTime = LocalTime.parse(object.getString("from_time"));
+        toTime = LocalTime.parse(object.getString("to_time"));
+    }
+
+    protected ManualSlot(Parcel in) {
+        super(in);
+        id = in.readLong();
+        fromTime = (LocalTime) in.readSerializable();
+        toTime = (LocalTime) in.readSerializable();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        super.writeToParcel(parcel, i);
+        parcel.writeLong(id);
+        parcel.writeSerializable(fromTime);
+        parcel.writeSerializable(toTime);
     }
 
     @Override
