@@ -57,18 +57,20 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
     }
 
     private void refreshDate (LocalDate date) {
-        try {
-            Collection<SlotBlueprint> blueprints = currentEstablishment.getBlueprints(date);
-            adapter.onRefresh(date, blueprints);
+        new Thread(() -> {
+            try {
+                Collection<SlotBlueprint> blueprints = currentEstablishment.getBlueprints(date);
+                adapter.onRefresh(date, blueprints);
 
-            findViewById(R.id.reservations_warning_text).setVisibility(blueprints.isEmpty() ? View.VISIBLE : View.GONE);
-            if(blueprints.isEmpty())
-                ((TextView) findViewById(R.id.reservations_warning_text)).setText(R.string.no_available_slots);
-        } catch (Establishment.PartialReservationsResultsException e) {
-            e.printStackTrace();
-            findViewById(R.id.reservations_warning_text).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.reservations_warning_text)).setText(R.string.get_reservation_error_generic_message);
-        }
+                findViewById(R.id.reservations_warning_text).setVisibility(blueprints.isEmpty() ? View.VISIBLE : View.GONE);
+                if(blueprints.isEmpty())
+                    ((TextView) findViewById(R.id.reservations_warning_text)).setText(R.string.no_available_slots);
+            } catch (Establishment.PartialReservationsResultsException e) {
+                e.printStackTrace();
+                findViewById(R.id.reservations_warning_text).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.reservations_warning_text)).setText(R.string.get_reservation_error_generic_message);
+            }
+        }).start();
     }
 
     @Nullable
