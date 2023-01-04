@@ -2,6 +2,7 @@ package uni.project.mylocalbooking.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.MutableLiveData;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +21,9 @@ import com.google.android.gms.tasks.Task;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+import uni.project.mylocalbooking.api.StatusCode;
 import uni.project.mylocalbooking.fragments.FailureFragment;
+import uni.project.mylocalbooking.models.AppUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -41,21 +44,26 @@ public class LoginActivity extends AppCompatActivity {
         googleBtn = findViewById(R.id.google_btn);
 
         goHome = findViewById(R.id.final_lgn_button);
-        goHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: Constraints
+        MutableLiveData<AppUser> loginOutcome = new MutableLiveData<>();
+        loginOutcome.observe(this, user -> {
+            if(user != null)
+                openMenuActivity();
+            else
+                System.out.println("Error with Login data");
+        });
+
+
+        goHome.setOnClickListener(view -> {
+            new Thread(() -> {
                 EditText cell = findViewById(R.id.cellOrMailLogin);
                 EditText psswd = findViewById(R.id.passwordLogin);
                 if (cell.getText().toString().isEmpty() || psswd.getText().toString().isEmpty()){
                     failedEmptiness();
                 }
                 else{
-                    api.login(cell.getText().toString(), psswd.getText().toString(),
-                            (a) -> openMenuActivity(), (b) -> System.out.println("Error with Login data")); //ToDO: fix
+                    api.login(cell.getText().toString(), psswd.getText().toString(), loginOutcome);
                 }
-
-            }
+            }).start();
         });
 
         googleBtn.setOnClickListener(new View.OnClickListener() {

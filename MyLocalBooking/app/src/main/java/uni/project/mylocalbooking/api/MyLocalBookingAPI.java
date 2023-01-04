@@ -85,21 +85,21 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError){
+    public void login(String cellphone, String password, MutableLiveData<AppUser> loginOutcome){
         AppUser user = getUserByCellphone(cellphone);
         if(user == null) {
-            if(onError != null) onError.apply(StatusCode.NOT_FOUND);
+            loginOutcome.postValue(null);
         }
         try {
             if(AESCrypt.encrypt(password).equals(user.password)){
                 SessionPreferences.setUserPrefs(user);
-                if(onSuccess != null) onSuccess.apply(user);
+                loginOutcome.postValue(user);
             }else{
-                if(onError != null) onError.apply(StatusCode.UNAUTHORIZED);
+                loginOutcome.postValue(null);
             }
         } catch (Exception encryptException) {
             encryptException.printStackTrace();
-            if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
+            loginOutcome.postValue(null);
         }
     }
 

@@ -30,7 +30,7 @@ public interface IMyLocalBookingAPI{
      * */
     void register(AppUser user, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError);
 
-    void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError);
+    void login(String cellphone, String password, MutableLiveData<AppUser> loginOutcome);
     /*
      * pre:
      *       CURRENT_USER.id != null
