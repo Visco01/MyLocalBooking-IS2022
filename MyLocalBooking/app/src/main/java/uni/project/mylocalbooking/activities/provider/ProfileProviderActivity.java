@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -20,6 +21,7 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.LoginActivity;
+import uni.project.mylocalbooking.models.Provider;
 
 public class ProfileProviderActivity extends BaseNavigationActivity {
 
@@ -27,13 +29,29 @@ public class ProfileProviderActivity extends BaseNavigationActivity {
     private Button logoutButton;
     GoogleSignInOptions googleSignInOptions;
     GoogleSignInClient googleSignInClient;
+    private TextView password;
+    private TextView email;
+    private TextView numberPhone;
+    private TextView numberOfStrikes;
+    private TextView fullName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Provider provider = (Provider)MyLocalBooking.getCurrentUser();
 
         googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+        password = findViewById(R.id.passwordProvider);
+        email = findViewById(R.id.emailProvider);
+        numberPhone = findViewById(R.id.providerNumber);
+        numberOfStrikes = findViewById(R.id.numberOfStrikesProvider);
+        fullName = findViewById(R.id.fullNameProvider);
+        password.setText(provider.password);
+        email.setText(provider.email);
+        numberPhone.setText(provider.cellphone);
+        fullName.setText(provider.firstname + " " + provider.lastname);
+        numberOfStrikes.setText(provider.maxStrikes);
 
         editButton = findViewById(R.id.editButtonProvider);
         editButton.setOnClickListener(new View.OnClickListener() {
