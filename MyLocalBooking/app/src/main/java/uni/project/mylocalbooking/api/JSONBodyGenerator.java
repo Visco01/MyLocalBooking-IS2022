@@ -76,7 +76,7 @@ class JSONBodyGenerator {
     public static String generateAddSlotBody(Slot slot, String password){
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String jsonBody = "{" +
-                "\"app_user_id\": " + slot.owner.getId() + ", " +
+                "\"app_user_id\": " + slot.getOwner().getId() + ", " +
                 "\"date\": \"" + date + "\", " +
                 "\"password_digest\": ";
         jsonBody += password != null ? ("\"" + password + "\", ") : "null, ";
