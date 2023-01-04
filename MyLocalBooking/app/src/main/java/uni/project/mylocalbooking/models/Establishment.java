@@ -3,6 +3,7 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +31,8 @@ public class Establishment extends DatabaseModel {
         }
     };
 
-    public final Provider provider;
+    private String providerCellphone;
+    private Provider provider;
     public final String name;
     public final String address;
     public final Coordinates position;
@@ -40,20 +42,11 @@ public class Establishment extends DatabaseModel {
 
     public Establishment(Long id, Provider provider, String name, String address, Coordinates position, String placeId) {
         super(id);
-        this.provider = provider;
+        setProvider(provider);
         this.name = name;
         this.address = address;
         this.position = position;
         this.placeId = placeId;
-    }
-
-    public Establishment(Long id, String name, String address, Coordinates position, String placeId) {
-        super(id);
-        this.placeId = placeId;
-        this.provider = null;
-        this.name = name;
-        this.address = address;
-        this.position = position;
     }
 
     public Establishment(Provider provider, String name, String address, Coordinates position, String placeId) {
@@ -63,11 +56,15 @@ public class Establishment extends DatabaseModel {
     public Establishment(JSONObject object) throws JSONException {
         super(object.getLong("id"));
 
-        provider = new Provider(object.getJSONObject("provider"));
+        providerCellphone = object.getString("provider_cellphone");
         name = object.getString("name");
         address = object.getString("address");
         position = new Coordinates(object.getJSONObject("coordinates"));
         placeId = object.getString("place_id");
+
+        JSONArray blueprintsArr = object.getJSONArray("slot_blueprints");
+        for(int i = 0; i < blueprintsArr.length(); i++)
+            this.addBlueprint(SlotBlueprint.fromJson(blueprintsArr.getJSONObject(i)));
     }
 
     protected Establishment(Parcel in) {
@@ -116,6 +113,19 @@ public class Establishment extends DatabaseModel {
             throw new PartialReservationsResultsException();
 
         return activeBlueprintsInDate.collect(Collectors.toList());
+    }
+
+    public Provider getProvider() {
+        if(provider != null)
+            return provider;
+
+        provider = (Provider) IMyLocalBookingAPI.getApiInstance().getUserByCellphone(providerCellphone);
+        return provider;
+    }
+
+    protected void setProvider(Provider provider) {
+        this.provider = provider;
+        this.providerCellphone = provider != null ? provider.cellphone : null;
     }
 
     protected void addBlueprint(SlotBlueprint blueprint) {
