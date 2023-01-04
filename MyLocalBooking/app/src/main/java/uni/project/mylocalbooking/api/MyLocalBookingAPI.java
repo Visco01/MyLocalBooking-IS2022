@@ -51,7 +51,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public AppUser getUserByCellphone(String cellphone){
         String url = MyLocalBookingAPI.apiPrefix + "app_user_by_cellphone/" + cellphone;
-        JSONObject data = new BlockingAPICall<JSONObject>(MyLocalBookingAPI.jwt, null, url, "GET", false).call().waitResponse();
+        JSONObject data = new BlockingAPICall<JSONObject>(MyLocalBookingAPI.jwt, "GET", null, url, false).call().waitResponse();
 
         try {
             return AppUser.fromJson(data);
@@ -88,7 +88,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     public void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError){
         AppUser user = getUserByCellphone(cellphone);
         if(user == null) {
-            if(onError != null) onError.apply(StatusCode.);
+            if(onError != null) onError.apply(StatusCode.NOT_FOUND);
         }
         try {
             if(AESCrypt.encrypt(password).equals(user.password)){
@@ -97,9 +97,9 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             }else{
                 if(onError != null) onError.apply(StatusCode.UNAUTHORIZED);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            if(onError != null) onError.apply(user);
+        } catch (Exception encryptException) {
+            encryptException.printStackTrace();
+            if(onError != null) onError.apply(StatusCode.UNPROCESSABLE_ENTITY);
         }
     }
 
