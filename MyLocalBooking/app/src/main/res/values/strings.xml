@@ -66,4 +66,5 @@
     <string name="no_available_slots">No available slots for this day</string>
     <string name="reservation_error">Reservation error</string>
     <string name="reservation_error_generic_message">An error occurred while trying to make this reservation, please try again.</string>
+    <string name="terms">I have read and I accept the <a href=""><u>Privacy and Data processing Policy and Terms of use</u></a>  of the application</string>
 </resources>

@@ -51,7 +51,7 @@ public class ProfileProviderActivity extends BaseNavigationActivity {
         email.setText(provider.email);
         numberPhone.setText(provider.cellphone);
         fullName.setText(provider.firstname + " " + provider.lastname);
-        numberOfStrikes.setText(provider.maxStrikes);
+        numberOfStrikes.setText("" + provider.maxStrikes);
 
         editButton = findViewById(R.id.editButtonProvider);
         editButton.setOnClickListener(new View.OnClickListener() {

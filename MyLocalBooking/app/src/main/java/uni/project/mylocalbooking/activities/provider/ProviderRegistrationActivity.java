@@ -1,12 +1,22 @@
 package uni.project.mylocalbooking.activities.provider;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -17,8 +27,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
+import uni.project.mylocalbooking.activities.MainActivity;
 import uni.project.mylocalbooking.activities.UserTest;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
@@ -36,6 +48,39 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_provider_registration);
+
+        CheckBox cb = findViewById(R.id.provider_signup_policy_cb);
+
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(((CompoundButton) compoundButton).isChecked()){
+                    System.out.println("Checked");
+                } else {
+                    System.out.println("Un-Checked");
+                }
+            }
+        });
+
+        ClickableSpan cs = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                view.cancelPendingInputEvents();
+                // TODO: Update with privacy policy popup/activity
+                startActivity(new Intent(MyLocalBooking.getAppContext(), MainActivity.class));
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+            }
+        };
+
+        SpannableString ss = new SpannableString("here");
+        ss.setSpan(cs, 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        CharSequence c = TextUtils.expandTemplate("I have read and I accept the Privacy and Data Processing Policy and Terms of use, of the application found ^1 ", ss);
+        cb.setText(c);
+        cb.setMovementMethod(LinkMovementMethod.getInstance());
 
         ownerDateOfBorn = findViewById(R.id.provider_signup_birthday);
         Calendar calendar = Calendar.getInstance();
@@ -113,6 +158,10 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
                 // Date picked < This year
                 else if (Integer.parseInt(split[2]) >= 2022){
                     failedChangeMinAge();
+                }
+                // Checked Policy
+                else if (!cb.isChecked()){
+                    failedChecked();
                 }
                 // Confirm based on its age
                 else{
@@ -194,6 +243,12 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
                         "At least one Lowercase letter\n" +
                         "At least one Number");
         newFragment.show(getSupportFragmentManager(), "failedChangeValid");
+    }
+    private void failedChecked(){
+        DialogFragment newFragment = new FailureFragment("Error, Policy not accepted",
+                "You can't create a new account without accepting first our" +
+                        "policies and terms of use!");
+        newFragment.show(getSupportFragmentManager(), "failure");
     }
 
     /**
