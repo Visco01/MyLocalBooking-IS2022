@@ -21,8 +21,10 @@ import com.google.android.gms.tasks.Task;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
+import uni.project.mylocalbooking.models.AppUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,6 +37,17 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        if (!SessionPreferences.getUserPrefs().isEmpty()){
+            System.out.println(SessionPreferences.getUserPrefs());
+            if (MyLocalBooking.getCurrentUser() != null){
+                System.out.println(MyLocalBooking.getCurrentUser());
+                startActivity(new Intent(MyLocalBooking.getAppContext(),HomeActivity.class));
+            }
+        }
+        else{
+            System.out.println("Empty sessionData");
+        }
 
         IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
 

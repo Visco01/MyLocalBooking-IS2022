@@ -4,6 +4,7 @@
     package="uni.project.mylocalbooking">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name="uni.project.mylocalbooking.MyLocalBooking"

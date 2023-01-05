@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.UserTest;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
@@ -120,6 +121,9 @@ public class ClientRegistrationActivity extends AppCompatActivity {
                     formatter = formatter.withLocale(Locale.US);
                     LocalDate birthday = LocalDate.parse(dateInput, formatter);
                     System.out.println(birthday);
+                    if (!SessionPreferences.getUserPrefs().isEmpty()){
+                        SessionPreferences.deleteSessionPreferences();
+                    }
                     api.register(new Client(defaultCoords, inputCellphone, inputEmail, inputName,
                             inputLastname, birthday, inputPassword), inputPassword,
                             (a) -> confirmSignup(),
