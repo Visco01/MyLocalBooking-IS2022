@@ -112,7 +112,7 @@ public class Establishment extends DatabaseModel {
         if(!completeResults)
             throw new PartialReservationsResultsException();
 
-        return activeBlueprintsInDate.collect(Collectors.toList());
+        return results;
     }
 
     public Provider getProvider() {
