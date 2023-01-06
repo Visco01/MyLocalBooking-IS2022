@@ -115,6 +115,13 @@ public abstract class SlotBlueprint extends DatabaseModel {
         parcel.writeParcelableArray(slotsArr, i);
     }
 
+    public int getDaysOfWeekAsInt(){
+        int result = 0;
+        for (DayOfWeek w : weekdays)
+            result = result | 7 - w.getValue();
+        return result;
+    }
+
     protected void addSlot(Slot slot) {
         if(!slots.containsKey(slot.date))
             slots.put(slot.date, new ArrayList<>());
