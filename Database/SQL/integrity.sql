@@ -240,7 +240,7 @@ declare
 begin
 	select		p.id
 	into		conflicting_id
-	from		periodic_blueprints p
+	from		periodic_slot_blueprints p
 	where		blueprints_overlap(p, NEW)
 	limit		1;
 
@@ -269,7 +269,7 @@ declare
 begin
 	select		m.id
 	into		conflicting_id
-	from		manual_blueprints m
+	from		manual_slot_blueprints m
 	where		blueprints_overlap(m, NEW)
 	limit		1;
 
