@@ -235,14 +235,18 @@ create or replace function trg_no_overlapping_blueprints_periodic()
 	returns trigger
 	language plpgsql
 as $$
+declare
+	conflicting_id bigint;
 begin
-	if exists (
-		select		*
-		from		periodic_slot_blueprints p
-		where		blueprints_overlap(p, NEW)
-	)
+	select		p.id
+	into		conflicting_id
+	from		periodic_blueprints p
+	where		blueprints_overlap(p, NEW)
+	limit		1;
+
+	if FOUND
 	then
-		raise 'Blueprint overlaps with existing one';
+		raise 'Blueprint overlaps with periodic_slot_blueprint %', conflicting_id;
 		return NULL;
 	end if;
 
@@ -260,14 +264,18 @@ create or replace function trg_no_overlapping_blueprints_manual()
 	returns trigger
 	language plpgsql
 as $$
+declare
+	conflicting_id bigint;
 begin
-	if exists (
-		select		*
-		from		manual_slot_blueprints m
-		where		blueprints_overlap(m, NEW)
-	)
+	select		m.id
+	into		conflicting_id
+	from		manual_blueprints m
+	where		blueprints_overlap(m, NEW)
+	limit		1;
+
+	if FOUND
 	then
-		raise 'Blueprint overlaps with existing one';
+		raise 'Blueprint overlaps with manual_slot_blueprint %', conflicting_id;
 		return NULL;
 	end if;
 
@@ -291,14 +299,19 @@ create or replace function trg_no_overlapping_slots_periodic()
 	returns trigger
 	language plpgsql
 as $$
+declare
+	conflicting_id bigint;
 begin
-	if exists (
-		select		*
-		from		periodic_slots p
-		where		slots_overlap(p, NEW)
-	)
+
+	select		p.id
+	into		conflicting_id
+	from		periodic_slots p
+	where		slots_overlap(p, NEW)
+	limit		1;
+
+	if FOUND
 	then
-		raise 'Slot overlaps with existing one';
+		raise 'Slot overlaps with periodic_slot %', conflicting_id;
 		return NULL;
 	end if;
 
@@ -316,14 +329,18 @@ create or replace function trg_no_overlapping_slots_manual()
 	returns trigger
 	language plpgsql
 as $$
+declare
+	conflicting_id bigint;
 begin
-	if exists (
-		select		*
-		from		manual_slots m
-		where		slots_overlap(m, NEW)
-	)
+	select		m.id
+	into		conflicting_id
+	from		manual_slots m
+	where		slots_overlap(m, NEW)
+	limit		1;
+
+	if FOUND
 	then
-		raise 'Slot overlaps with existing one';
+		raise 'Slot overlaps with manual_slot %', conflicting_id;
 		return NULL;
 	end if;
 
