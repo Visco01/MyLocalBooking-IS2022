@@ -23,58 +23,80 @@ import uni.project.mylocalbooking.models.SlotBlueprint;
 class JSONBodyGenerator {
 
     public static String generateRegisterBody(AppUser user, String password){
-        String jsonBody = "{" +
-                "\"cellphone\": \"" + user.cellphone + "\", " +
-                "\"firstname\": \"" + user.firstname + "\", " +
-                "\"email\": \"" + user.email + "\", " +
-                "\"lastname\": \"" + user.lastname + "\", " +
-                "\"dob\": \"" + "2001-04-20" + "\", " +
-                "\"password_digest\": \"" + password + "\", ";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("cellphone", user.cellphone);
+            body.put("firstname", user.firstname);
+            body.put("email", user.email);
+            body.put("lastname", user.lastname);
+            body.put("dob", user.dob.toString());
+            body.put("password_digest", password);
 
-        if(user instanceof Client){
-            Client client = (Client) user;
-            jsonBody += "\"Client\": {" +
-                    "\"lat\": " + client.position.latitude + ", " +
-                    "\"lng\": " + client.position.longitude +
-                    "}}";
-        } else {
-            Provider provider = (Provider) user;
-            jsonBody += "\"Provider\": {" +
-                    "\"isverified\": " + (provider.verified ? 1 : 0) + ", " +
-                    "\"maxstrikes\": " + provider.maxStrikes + ", " +
-                    "\"companyname\": \"" + provider.companyName +
-                    "\"}}";
+            JSONObject concreteBlueprint = new JSONObject();
+            if(user instanceof Client) {
+                Client client = (Client) user;
+                if(client.position != null) {
+                    concreteBlueprint.put("lat", client.position.latitude);
+                    concreteBlueprint.put("lng", client.position.longitude);
+                } else {
+                    concreteBlueprint.put("lat", null);
+                    concreteBlueprint.put("lng", null);
+                }
+                body.put("Client", concreteBlueprint);
+            } else {
+                Provider provider = (Provider) user;
+                concreteBlueprint.put("isverified", provider.verified ? 1 : 0);
+                concreteBlueprint.put("maxstrikes", provider.maxStrikes);
+                concreteBlueprint.put("companyname", provider.companyName);
+                body.put("Provider", concreteBlueprint);
+            }
+
+            return body.toString(4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
         }
-
-        return jsonBody;
     }
 
     public static String generateNewPasswordBody(String new_password){
-        return "{\"new_password\": \"" + new_password + "\"}";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("new_password", new_password);
+            return body.toString(4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String generateAddBlueprintBody(SlotBlueprint blueprint){
-        String jsonBody = "{" +
-                "\"establishment_id\": " + blueprint.establishment.getId() + ", " +
-                "\"weekdays\": " + blueprint.weekdays.size() + ", " +
-                "\"reservationlimit\": " + blueprint.reservationLimit + ", " +
-                "\"fromdate\": \"" + blueprint.fromDate.toString() + "\", " +
-                "\"todate\": \"" + blueprint.toDate.toString() + "\", ";
+        JSONObject body = new JSONObject();
+        int weekdays = 0;
+        try {
+            body.put("establishment_id", blueprint.establishment.getId());
+            body.put("weekdays", blueprint.getDaysOfWeekAsInt());
+            body.put("reservationlimit", blueprint.reservationLimit);
+            body.put("fromdate", blueprint.fromDate.toString());
+            body.put("todate", blueprint.toDate.toString());
 
-        if(blueprint instanceof PeriodicSlotBlueprint){
-            PeriodicSlotBlueprint pBlueprint = (PeriodicSlotBlueprint) blueprint;
-            jsonBody += "\"PeriodicSlotBlueprint\": {" +
-                    "\"fromtime\": \"" + pBlueprint.fromTime.getHour() + ":" + pBlueprint.fromTime.getMinute() + "\", " +
-                    "\"totime\": \"" + pBlueprint.toTime.getHour() + ":" + pBlueprint.toTime.getMinute() +
-                    "\"}}";
-        } else {
-            ManualSlotBlueprint mBlueprint = (ManualSlotBlueprint) blueprint;
-            jsonBody += "\"ManualSlotBlueprint\": {" +
-                    "\"opentime\": \"" + mBlueprint.openTime.toString() + "\", " +
-                    "\"closetime\": \"" + mBlueprint.closeTime.toString() + "\"" +
-                    "\"}}";
+            JSONObject concreteBlueprint = new JSONObject();
+            if(blueprint instanceof PeriodicSlotBlueprint) {
+                PeriodicSlotBlueprint pBlueprint = (PeriodicSlotBlueprint) blueprint;
+                concreteBlueprint.put("fromtime", pBlueprint.fromTime.toString());
+                concreteBlueprint.put("totime", pBlueprint.toTime.toString());
+                body.put("PeriodicSlotBlueprint", concreteBlueprint);
+            } else {
+                ManualSlotBlueprint mBlueprint = (ManualSlotBlueprint) blueprint;
+                concreteBlueprint.put("fromtime", mBlueprint.openTime.toString());
+                concreteBlueprint.put("totime", mBlueprint.closeTime.toString());
+                body.put("ManualSlotBlueprint", concreteBlueprint);
+            }
+
+            return body.toString(4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
         }
-        return jsonBody;
     }
 
     public static String generateAddSlotBody(Slot slot, String password){
@@ -90,7 +112,6 @@ class JSONBodyGenerator {
                 body.put("PeriodicSlot", concreteSlot);
             } else {
                 ManualSlot mSlot = (ManualSlot) slot;
-                ManualSlotBlueprint msBlueprint = (ManualSlotBlueprint) slot.blueprint;
                 body.put("fromtime", mSlot.fromTime.toString());
                 body.put("totime", mSlot.toTime.toString());
 
@@ -98,7 +119,7 @@ class JSONBodyGenerator {
                 body.put("ManualSlot", concreteSlot);
             }
 
-            return body.toString();
+            return body.toString(4);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -106,44 +127,86 @@ class JSONBodyGenerator {
     }
 
     public static String generateReservationBody(Long clientId, Long slotId){
-        return "{" +
-                "\"client_id\": " + clientId + ", " +
-                "\"slot_id\": " + slotId + "}";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("client_id", clientId);
+            body.put("slot_id", slotId);
+
+            return body.toString(4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String generateAddEstablishmentBody(Establishment establishment) {
-        return "{" +
-                "\"name\": \"" + establishment.name + "\", " +
-                "\"provider_id\": " + establishment.getProvider().getSubclassId() + ", " +
-                "\"lat\": " + establishment.position.latitude + ", " +
-                "\"lng\": " + establishment.position.longitude + ", " +
-                "\"place_id\": \"" + establishment.placeId + "\", " +
-                "\"address\": \"" + establishment.address + "\"" + "}";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("name", establishment.name);
+            body.put("provider_id", establishment.getProvider().getSubclassId()); //TODO: use cellphone instead
+            body.put("lat", establishment.position.latitude);
+            body.put("lng", establishment.position.longitude);
+            body.put("place_id", establishment.placeId);
+            body.put("address", establishment.address);
+
+            return body.toString(4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String getSetPreferredPositionBody(Coordinates position) {
-        return "{" +
-                "\"lat\": " + position.latitude + ", " +
-                "\"lng\": " + position.longitude + "}";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("lat", position.latitude);
+            body.put("lng", position.longitude);
+
+            return body.toString(4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String generateStrikeUserBody(Long providerId, String cellphone) {
-        return "{" +
-                "\"provider_id\": " + providerId + ", " +
-                "\"usercellphone\": \"" + cellphone + "\"}";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("provider_id", providerId);
+            body.put("usercellphone", cellphone);
+
+            return body.toString(4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String generateUnbanUserBody(Long providerId, String cellphone) {
-        return "{" +
-                "\"provider_id\": " + providerId + ", " +
-                "\"usercellphone\": \"" + cellphone + "\"}";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("provider_id", providerId);
+            body.put("usercellphone", cellphone);
+
+            return body.toString(4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static String generateRatingBody(Long clientId, Long establishment_id, float rating, String comment) {
-        return "{" +
-                "\"client_id\": " + clientId + ", " +
-                "\"establishment_id\": " +  establishment_id + ", " +
-                "\"rating\": " + rating + ", " +
-                "\"comment\": " + comment + "}";
+        JSONObject body = new JSONObject();
+        try {
+            body.put("client_id", clientId);
+            body.put("establishment_id", establishment_id);
+            body.put("rating", rating);
+            body.put("comment", comment);
+
+            return body.toString(4);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
