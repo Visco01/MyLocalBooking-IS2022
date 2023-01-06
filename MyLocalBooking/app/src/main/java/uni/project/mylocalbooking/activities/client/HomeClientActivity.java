@@ -33,6 +33,7 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
         if(savedInstanceState == null) {
             IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
                 establishments = est;
+                initRecyclerView();
             }, statusCode -> {
                 System.out.println("GetClosestEstablishments returned error " + statusCode.name());
             });
