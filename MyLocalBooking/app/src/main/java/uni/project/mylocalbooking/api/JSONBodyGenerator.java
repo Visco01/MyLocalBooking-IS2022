@@ -81,7 +81,7 @@ class JSONBodyGenerator {
         try {
             JSONObject body = new JSONObject();
             body.put("owner_cellphone", slot.getOwnerCellphone());
-            body.put("date", new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(slot.date));
+            body.put("date", slot.date.toString());
             body.put("password_digest", password);
             body.put("client_id", slot instanceof PeriodicSlot ? ((Client) MyLocalBooking.getCurrentUser()).getSubclassId() : null);
             JSONObject concreteSlot = new JSONObject();
