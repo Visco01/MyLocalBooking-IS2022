@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -57,14 +58,18 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
     }
 
     private void refreshDate (LocalDate date) {
+        MutableLiveData<Collection<SlotBlueprint>> blueprints = new MutableLiveData<>();
+        blueprints.observe(this, bp -> {
+            adapter.onRefresh(date, bp);
+
+            findViewById(R.id.reservations_warning_text).setVisibility(bp.isEmpty() ? View.VISIBLE : View.GONE);
+            if(bp.isEmpty())
+                ((TextView) findViewById(R.id.reservations_warning_text)).setText(R.string.no_available_slots);
+        });
+
         new Thread(() -> {
             try {
-                Collection<SlotBlueprint> blueprints = currentEstablishment.getBlueprints(date);
-                adapter.onRefresh(date, blueprints);
-
-                findViewById(R.id.reservations_warning_text).setVisibility(blueprints.isEmpty() ? View.VISIBLE : View.GONE);
-                if(blueprints.isEmpty())
-                    ((TextView) findViewById(R.id.reservations_warning_text)).setText(R.string.no_available_slots);
+                blueprints.postValue(currentEstablishment.getBlueprints(date));
             } catch (Establishment.PartialReservationsResultsException e) {
                 e.printStackTrace();
                 findViewById(R.id.reservations_warning_text).setVisibility(View.VISIBLE);
