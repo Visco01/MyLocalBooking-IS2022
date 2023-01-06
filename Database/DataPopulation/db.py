@@ -43,6 +43,12 @@ class AppUser(Base):
         uselist=False
 	)
 
+	ownedSlots = relationship(
+		"Slot",
+		back_populates='owner',
+        uselist=True
+	)
+
 class Client(Base):
 	__tablename__ = 'clients'
 
@@ -50,6 +56,15 @@ class Client(Base):
 		"AppUser",
 		back_populates='client',
         uselist=False
+	)
+
+	bookedSlots = relationship(
+		"Slot",
+		secondary=reservations_table,
+		secondaryjoin='Slot.id==reservations.slot_id',
+		primaryjoin='Client.id==reservations.client_id',
+		back_populates='reservations',
+		uselist=True
 	)
 
 class Provider(Base):
@@ -61,12 +76,25 @@ class Provider(Base):
         uselist=False
 	)
 
+	establishments = relationship(
+		"Establishment",
+		back_populates='provider',
+		uselist=True
+	)
+
 class Establishment(Base):
 	__tablename__ = 'establishments'
 
 	provider = relationship(
 		"Provider",
-		backref='establishments'
+		back_populates='establishments',
+		uselist=False
+	)
+
+	blueprints = relationship(
+		"SlotBlueprint",
+		back_populates='establishment',
+		uselist=True
 	)
 
 class SlotBlueprint(Base):
@@ -74,7 +102,20 @@ class SlotBlueprint(Base):
 
 	establishment = relationship(
 		"Establishment",
-		backref='blueprints'
+		back_populates='blueprints',
+		uselist=False
+	)
+
+	periodicBlueprints = relationship(
+		"PeriodicBlueprint",
+		back_populates='blueprint',
+		uselist=True
+	)
+
+	manualBlueprints = relationship(
+		"ManualBlueprint",
+		back_populates='blueprint',
+		uselist=True
 	)
 
 class Slot(Base):
@@ -82,7 +123,8 @@ class Slot(Base):
 
 	owner = relationship(
 		"AppUser",
-		backref='ownedSlots'
+		back_populates='ownedSlots',
+		uselist=False
 	)
 
 	reservations = relationship(
@@ -90,7 +132,20 @@ class Slot(Base):
 		secondary=reservations_table,
 		primaryjoin='Slot.id==reservations.slot_id',
 		secondaryjoin='Client.id==reservations.client_id',
-		backref='bookedSlots'
+		back_populates='bookedSlots',
+		uselist=True
+	)
+
+	manualSlot = relationship(
+		"ManualSlot",
+		back_populates='baseSlot',
+		uselist = False
+	)
+
+	periodicSlot = relationship(
+		"PeriodicSlot",
+		back_populates='baseSlot',
+		uselist = False
 	)
 
 class PeriodicBlueprint(Base):
@@ -98,7 +153,14 @@ class PeriodicBlueprint(Base):
 
 	blueprint = relationship(
 		"SlotBlueprint",
-		backref='periodicBlueprints'
+		back_populates='periodicBlueprints',
+		uselist=False
+	)
+
+	periodicSlots = relationship(
+		"PeriodicSlot",
+		back_populates='blueprint',
+		uselist = True
 	)
 
 class ManualBlueprint(Base):
@@ -106,7 +168,14 @@ class ManualBlueprint(Base):
 
 	blueprint = relationship(
 		"SlotBlueprint",
-		backref='manualBlueprints'
+		back_populates='manualBlueprints',
+		uselist=False
+	)
+
+	manualSlots = relationship(
+		"ManualSlot",
+		back_populates='blueprint',
+		uselist=True
 	)
 
 class ManualSlot(Base):
@@ -114,12 +183,14 @@ class ManualSlot(Base):
 
 	baseSlot = relationship(
 		"Slot",
-		backref='manualSlots'
+		back_populates='manualSlot',
+		uselist = False
 	)
 
 	blueprint = relationship(
 		"ManualBlueprint",
-		backref='manualSlots'
+		back_populates='manualSlots',
+		uselist=False
 	)
 
 class PeriodicSlot(Base):
@@ -127,12 +198,14 @@ class PeriodicSlot(Base):
 
 	baseSlot = relationship(
 		"Slot",
-		backref='periodicSlots'
+		back_populates='periodicSlot',
+		uselist = False
 	)
 
 	blueprint = relationship(
 		"PeriodicBlueprint",
-		backref='periodicSlots'
+		back_populates='periodicSlots',
+		uselist = False
 	)
 
 class Blacklist(Base):
@@ -140,7 +213,8 @@ class Blacklist(Base):
 
 	provider = relationship(
 		"Provider",
-		backref='blacklist'
+		backref='blacklist',
+		uselist=False
 	)
 
 
@@ -149,7 +223,8 @@ class Strike(Base):
 
 	provider = relationship(
 		"Provider",
-		backref='strike'
+		backref='strike',
+		uselist=False
 	)
 
 
