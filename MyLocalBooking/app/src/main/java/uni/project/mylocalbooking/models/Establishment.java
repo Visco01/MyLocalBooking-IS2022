@@ -128,6 +128,10 @@ public class Establishment extends DatabaseModel {
         this.providerCellphone = provider != null ? provider.cellphone : null;
     }
 
+    public String getProviderCellphone() {
+        return providerCellphone;
+    }
+
     protected void addBlueprint(SlotBlueprint blueprint) {
         this.blueprints.add(blueprint);
     }

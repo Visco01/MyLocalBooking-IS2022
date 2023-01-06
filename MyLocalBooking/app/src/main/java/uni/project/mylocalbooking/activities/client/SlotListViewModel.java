@@ -64,7 +64,7 @@ public class SlotListViewModel extends ViewModel {
 
     private void makeReservation(Slot slot, String password) {
         if(slot instanceof PeriodicSlot)
-            slot.setOwner(slot.blueprint.establishment.provider);
+            slot.setOwner(slot.blueprint.establishment.getProviderCellphone());
         else
             slot.setOwner(MyLocalBooking.getCurrentUser());
 

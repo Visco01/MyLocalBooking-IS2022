@@ -92,6 +92,10 @@ public abstract class Slot extends DatabaseModel {
         ownerCellphone = user.cellphone;
     }
 
+    public void setOwner(String ownerCellphone) {
+        this.ownerCellphone = ownerCellphone;
+    }
+
     public AppUser getOwner() {
         if(owner != null)
             return owner;

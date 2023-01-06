@@ -114,7 +114,7 @@ class JSONBodyGenerator {
     public static String generateAddEstablishmentBody(Establishment establishment) {
         return "{" +
                 "\"name\": \"" + establishment.name + "\", " +
-                "\"provider_id\": " + establishment.provider.getSubclassId() + ", " +
+                "\"provider_id\": " + establishment.getProvider().getSubclassId() + ", " +
                 "\"lat\": " + establishment.position.latitude + ", " +
                 "\"lng\": " + establishment.position.longitude + ", " +
                 "\"place_id\": \"" + establishment.placeId + "\", " +
