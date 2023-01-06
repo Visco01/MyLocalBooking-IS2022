@@ -646,7 +646,7 @@ create or replace function trg_set_slot_policy()
 	language plpgsql
 as $$
 begin
-	upate slots s
+	update slots s
 	set has_periodic_policy = exists (
 		select * from periodic_slots where slot_id = s.id
 	);
