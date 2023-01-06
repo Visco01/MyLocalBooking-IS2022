@@ -11,7 +11,7 @@ RATING_COMMENTS_PERCENTAGE =20
 COMPANY_PERCENTAGE =50
 RESERVATION_LIMIT_PERCENTAGE =50
 MAX_ESTABLISHMENTS_PER_PROVIDER=4
-MAX_RESERVATION_LIMIT = 20
+MAX_RESERVATION_LIMIT = 5
 PERIODIC_PERCENTAGE = 50
 MANUAL_DURATION_CAP_PERCENTAGE = 50
 SLOT_GRANULARITY_MINUTES = 15
@@ -19,9 +19,10 @@ MAX_MANUAL_SLOT_DURATION_MULT = 20
 MAX_PERIODIC_SLOT_DURATION_MULT = 8
 MAX_DEAD_TIME_MULT = 16
 LOCKED_SLOT_PERCENTAGE = 20
-SLOT_DENSITY_PERCENTAGE = 70
+SLOT_DENSITY_PERCENTAGE = 15
 BLUEPRINTS_DAYS_OFFSET = 14
 SLOTS_DAYS_OFFSET = 7
+MAX_DEFAULT_RESERVATIONS=2
 
 fake = Faker(['it_IT'])
 app_users = []
@@ -77,6 +78,7 @@ def generateClients():
         client = db.Client(lat=location[0], lng=location[1])
         client.appUser = generateAppUser()
         clients.append(client)
+        print(f'Generated client {client.appUser.cellphone}')
 
 
 def generateProviders():
@@ -88,6 +90,7 @@ def generateProviders():
         )
         provider.appUser = generateAppUser()
         providers.append(provider)
+        print(f'Generated provider {provider.appUser.cellphone}')
 
 
 def generateEstablishments():
@@ -101,6 +104,7 @@ def generateEstablishments():
                     lng=fake.longitude()
                 )
             establishments.append(est)
+            print(f'Generated establishment {est.place_id}')
             prov.establishments.append(est)
 
             if randint(1, 100) <= PERIODIC_PERCENTAGE:
@@ -173,6 +177,16 @@ def manualBlueprintsOverlap(a, b):
         )
     )
 
+def baseSlotsOverlap(a,b):
+    return a.date == b.date
+
+def manualSlotsOverlap(a,b):
+    blueprint_a = a.blueprint.blueprint
+    blueprint_b = b.blueprint.blueprint
+    (blueprint_a.establishment == blueprint_b.establishment) and\
+    (0 != (blueprint_a.weekdays & blueprint_b.weekdays)) and\
+    timeframesOverlap(a.fromtime, a.totime, b.fromtime, b.totime)
+
 
 def generatePeriodicBlueprints():
     for est in periodic_establishments:
@@ -192,6 +206,8 @@ def generatePeriodicBlueprints():
                     bp.blueprint = None
                 else:
                     periodic_blueprints.append(bp)
+                    print(f'Generated periodic blueprint {bp.blueprint.fromdate} - {bp.blueprint.todate}')
+
             
             start = addToTime(end, timedelta(minutes=randint(0, MAX_DEAD_TIME_MULT) * SLOT_GRANULARITY_MINUTES))
 
@@ -232,6 +248,7 @@ def generateManualBlueprints():
                     bp.blueprint = None
                 else:
                     manual_blueprints.append(bp)
+                    print(f'Generated periodic blueprint {bp.blueprint.fromdate} - {bp.blueprint.todate}')
             
             start = addToTime(end, timedelta(minutes=randint(0, MAX_DEAD_TIME_MULT) * SLOT_GRANULARITY_MINUTES))
 
@@ -240,16 +257,11 @@ def generateManualBlueprints():
 
 
 def generateBaseSlot(date):
-    slot = db.Slot(
+    return db.Slot(
         date=date,
         password_digest=testPercentage(LOCKED_SLOT_PERCENTAGE, generateRandomPassword(15))
     )
-    slot.owner = fake.random_element(app_users)
-
-    if slot.owner.client != None:
-        slot.reservations.append(slot.owner.client)
-
-    return slot
+    
 
 def generatePeriodicSlots():
     today = datetime.now()
@@ -260,7 +272,30 @@ def generatePeriodicSlots():
                 day = today + i * timedelta(days=1)
                 periodicSlot = db.PeriodicSlot()
                 periodicSlot.baseSlot = generateBaseSlot(day)
+                print(f'Generated periodic slot of blueprint {bp.blueprint.fromdate} - {bp.blueprint.todate}')
+
                 periodicSlot.blueprint = bp
+                baseSlot = periodicSlot.baseSlot
+                baseSlot.owner = bp.blueprint.establishment.provider.appUser
+                reservationLimit = periodicSlot.blueprint.blueprint.reservationlimit
+                if reservationLimit is None:
+                    reservationLimit = testPercentage(1, 2, 0)
+                else:
+                    reservationLimit = min(testPercentage(1, 2, 0), reservationLimit - 1)
+
+                reservationLimit = min(reservationLimit, len(clients))
+
+                if reservationLimit == 0:
+                    periodicSlot.blueprint = None
+                    periodicSlot.baseSlot.owner = None
+                    periodicSlot.baseSlot = None
+                    continue
+
+                reservations = fake.random_elements(clients, unique=True, length=reservationLimit)
+                reservations = list(filter(lambda c : c.appUser != baseSlot.owner, reservations))
+                print(f'Generating {len(reservations)} reservations')
+                baseSlot.reservations.extend(reservations)
+
 
 def randomDurationBetweenDurations(min, max):
     mults = (int) (randint(min.seconds, max.seconds) / (60 * SLOT_GRANULARITY_MINUTES))
@@ -270,7 +305,7 @@ def generateManualSlots():
     today = datetime.now()
 
     for bp in manual_blueprints:
-        for i in range(-6, 6):
+        for i in range(-6, 6): # week
             if randint(1,100) <= SLOT_DENSITY_PERCENTAGE:
                 start = bp.opentime
                 looped = False
@@ -285,6 +320,35 @@ def generateManualSlots():
                         )
                         manualSlot.baseSlot = generateBaseSlot(today + i * timedelta(days=1))
                         manualSlot.blueprint = bp
+
+                        reservationLimit = manualSlot.blueprint.blueprint.reservationlimit
+                        if reservationLimit is None:
+                            reservationLimit = MAX_RESERVATION_LIMIT
+                        else:
+                            reservationLimit = reservationLimit - 1
+
+                        if reservationLimit <= 0:
+                            manualSlot.blueprint = None
+                            manualSlot.baseSlot.owner = None
+                            manualSlot.baseSlot = None
+                            newstart = addToTime(end, timedelta(minutes=randint(0, MAX_DEAD_TIME_MULT) * SLOT_GRANULARITY_MINUTES))
+                            looped = newstart < start
+                            start = newstart
+                            continue
+
+                        
+                        baseSlot = manualSlot.baseSlot
+                        print(f'Generated periodic slot of blueprint {bp.blueprint.fromdate} - {bp.blueprint.todate}')
+
+                        client = fake.random_element(clients)
+                        baseSlot.owner = client.appUser
+                        print(f'Generating {reservationLimit} reservations')
+
+                        reservations = fake.random_elements(clients, unique=True, length=reservationLimit if reservationLimit < len(clients) else len(clients))
+                        reservations = list(filter(lambda c : c.appUser != baseSlot.owner, reservations))
+                        baseSlot.reservations.extend(reservations)
+
+
                     
                     newstart = addToTime(end, timedelta(minutes=randint(0, MAX_DEAD_TIME_MULT) * SLOT_GRANULARITY_MINUTES))
                     looped = newstart < start

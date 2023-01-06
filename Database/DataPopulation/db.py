@@ -13,7 +13,7 @@ pwd = os.environ.get(PWD_VAR_NAME)
 if host is None or pwd is None:
 	raise Exception(f'\'{HOST_VAR_NAME}\' and \'{PWD_VAR_NAME}\' environment variables are required to run this script')
 
-engine = create_engine(f'postgresql://admin:{pwd}@{host}:5432/mylocalbooking_db')
+engine = create_engine(f'postgresql://admin:{pwd}@{host}:5432/mylocalbooking_db', echo=True)
 
 metadata = MetaData(bind=engine)
 
