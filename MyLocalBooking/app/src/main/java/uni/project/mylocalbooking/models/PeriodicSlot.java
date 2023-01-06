@@ -26,14 +26,14 @@ public class PeriodicSlot extends Slot implements IDatabaseSubclassModel, ISelec
 
     private Long id;
 
-    public PeriodicSlot(Long id, Long slot_id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, PeriodicSlotBlueprint blueprint) {
-        super(slot_id, date, owner, passwordProtected, reservations, blueprint);
+    public PeriodicSlot(Long id, Long slot_id, LocalDate date, String ownerCellphone, boolean passwordProtected, HashSet<Client> reservations, PeriodicSlotBlueprint blueprint) {
+        super(slot_id, date, ownerCellphone, passwordProtected, reservations, blueprint);
         this.id = id;
         blueprint.addSlot(this);
     }
 
-    public PeriodicSlot(LocalDate date, AppUser owner, PeriodicSlotBlueprint blueprint) {
-        this(null, null, date, owner, false, new HashSet<>(), blueprint);
+    public PeriodicSlot(LocalDate date, String ownerCellphone, PeriodicSlotBlueprint blueprint) {
+        this(null, null, date, ownerCellphone, false, new HashSet<>(), blueprint);
     }
 
     public PeriodicSlot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {

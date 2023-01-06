@@ -79,6 +79,6 @@ public class SlotListViewModel extends ViewModel {
     }
 
     private void makeReservation(PeriodicSlotBlueprint blueprint, String password) {
-        makeReservation((Slot) new PeriodicSlot(currentDay.getValue(), null, blueprint), password);
+        makeReservation((Slot) new PeriodicSlot(currentDay.getValue(), blueprint.establishment.getProviderCellphone(), blueprint), password);
     }
 }

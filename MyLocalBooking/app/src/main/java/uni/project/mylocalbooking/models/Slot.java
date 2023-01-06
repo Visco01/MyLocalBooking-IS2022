@@ -36,10 +36,10 @@ public abstract class Slot extends DatabaseModel {
 
     private String ownerCellphone;
 
-    public Slot(Long id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, @NotNull SlotBlueprint blueprint) {
+    public Slot(Long id, LocalDate date, String ownerCellphone, boolean passwordProtected, HashSet<Client> reservations, @NotNull SlotBlueprint blueprint) {
         super(id);
         this.date = date;
-        this.owner = owner;
+        this.ownerCellphone = ownerCellphone;
         this.passwordProtected = passwordProtected;
         this.reservations = reservations;
         this.blueprint = blueprint;
@@ -47,8 +47,8 @@ public abstract class Slot extends DatabaseModel {
         blueprint.addSlot(this);
     }
 
-    public Slot(LocalDate date, AppUser owner, SlotBlueprint blueprint) {
-        this(null, date, owner, false, new HashSet<>(), blueprint);
+    public Slot(LocalDate date, String ownerCellphone, SlotBlueprint blueprint) {
+        this(null, date, ownerCellphone, false, new HashSet<>(), blueprint);
     }
 
     protected Slot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
@@ -68,6 +68,7 @@ public abstract class Slot extends DatabaseModel {
         super(in);
         date = (LocalDate) in.readSerializable();
         owner = in.readParcelable(AppUser.class.getClassLoader());
+        ownerCellphone = in.readString();
         passwordProtected = in.readByte() != 0;
 
         reservations = new HashSet<>();
@@ -80,6 +81,7 @@ public abstract class Slot extends DatabaseModel {
         super.writeToParcel(parcel, i);
         parcel.writeSerializable(date);
         parcel.writeParcelable(owner, i);
+        parcel.writeString(ownerCellphone);
         parcel.writeByte((byte) (passwordProtected ? 1 : 0));
 
         Client[] reservationsArr = new Client[reservations.size()];
