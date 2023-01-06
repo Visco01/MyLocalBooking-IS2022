@@ -494,7 +494,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public boolean getReservations(Establishment establishment, LocalDate date) {
-        String url = MyLocalBookingAPI.apiPrefix + "slots?establishment_id=" + establishment.getId() + "&date=" + date.toString();
+        String url = MyLocalBookingAPI.apiPrefix + "slots?establishment_id=" + establishment.getId() + "&date='" + date.toString() + "'";
         HashMap<Long, SlotBlueprint> blueprints = new HashMap<>();
         for(SlotBlueprint b : establishment.blueprints)
             blueprints.put(b.getId(), b);
