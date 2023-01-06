@@ -977,10 +977,13 @@ as $$
 begin
 	if not exists ( -- assert reservation doesn't already exist and owner is a client
 		select		c.id
-		into		client_id
 		from		clients c
 					join reservations r on r.client_id = c.id
 		where		c.app_user_id = NEW.app_user_id and r.slot_id = NEW.id
+	) and not exists (
+		select		*
+		from		providers
+		where		app_user_id = NEW.app_user_id
 	)
 	then
 		insert into reservations(slot_id, client_id) values
