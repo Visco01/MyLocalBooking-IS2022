@@ -38,7 +38,7 @@ public class Establishment extends DatabaseModel {
     public final Coordinates position;
     public final String placeId;
 
-    public Collection<SlotBlueprint> blueprints;
+    public Collection<SlotBlueprint> blueprints = new ArrayList<>();
 
     public Establishment(Long id, Provider provider, String name, String address, Coordinates position, String placeId) {
         super(id);
