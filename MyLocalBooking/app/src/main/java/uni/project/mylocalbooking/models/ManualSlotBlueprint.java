@@ -57,7 +57,7 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         closeTime = LocalTime.parse(object.getString("close_time"));
         maxDuration = Duration.between(
                 LocalTime.MIN,
-                LocalDateTime.ofInstant(Instant.parse(object.getString("max_duration")), ZoneOffset.UTC).toLocalTime()
+                LocalTime.parse(object.getString("max_duration"))
         );
     }
 
