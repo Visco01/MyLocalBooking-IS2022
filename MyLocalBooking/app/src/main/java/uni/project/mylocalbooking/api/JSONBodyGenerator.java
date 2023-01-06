@@ -27,7 +27,7 @@ class JSONBodyGenerator {
         try {
             body.put("cellphone", user.cellphone);
             body.put("firstname", user.firstname);
-            body.put("email", user.email);
+            body.put("email", user.email != null ? user.email : JSONObject.NULL);
             body.put("lastname", user.lastname);
             body.put("dob", user.dob.toString());
             body.put("password_digest", password);
@@ -39,15 +39,15 @@ class JSONBodyGenerator {
                     concreteBlueprint.put("lat", client.position.latitude);
                     concreteBlueprint.put("lng", client.position.longitude);
                 } else {
-                    concreteBlueprint.put("lat", null);
-                    concreteBlueprint.put("lng", null);
+                    concreteBlueprint.put("lat", JSONObject.NULL);
+                    concreteBlueprint.put("lng", JSONObject.NULL);
                 }
                 body.put("Client", concreteBlueprint);
             } else {
                 Provider provider = (Provider) user;
                 concreteBlueprint.put("isverified", provider.verified ? 1 : 0);
                 concreteBlueprint.put("maxstrikes", provider.maxStrikes);
-                concreteBlueprint.put("companyname", provider.companyName);
+                concreteBlueprint.put("companyname", provider.companyName != null ? provider.companyName : JSONObject.NULL);
                 body.put("Provider", concreteBlueprint);
             }
 
@@ -75,7 +75,7 @@ class JSONBodyGenerator {
         try {
             body.put("establishment_id", blueprint.establishment.getId());
             body.put("weekdays", blueprint.getDaysOfWeekAsInt());
-            body.put("reservationlimit", blueprint.reservationLimit);
+            body.put("reservationlimit", blueprint.reservationLimit != null ? blueprint.reservationLimit : JSONObject.NULL);
             body.put("fromdate", blueprint.fromDate.toString());
             body.put("todate", blueprint.toDate.toString());
 
@@ -104,7 +104,7 @@ class JSONBodyGenerator {
             JSONObject body = new JSONObject();
             body.put("owner_cellphone", slot.getOwnerCellphone());
             body.put("date", slot.date.toString());
-            body.put("password_digest", password);
+            body.put("password_digest", password != null ? password : JSONObject.NULL);
             body.put("client_id", slot instanceof PeriodicSlot ? ((Client) MyLocalBooking.getCurrentUser()).getSubclassId() : null);
             JSONObject concreteSlot = new JSONObject();
             if(slot instanceof PeriodicSlot) {
@@ -201,7 +201,7 @@ class JSONBodyGenerator {
             body.put("client_id", clientId);
             body.put("establishment_id", establishment_id);
             body.put("rating", rating);
-            body.put("comment", comment);
+            body.put("comment", comment != null ? comment : JSONObject.NULL);
 
             return body.toString(4);
         } catch (JSONException e) {
