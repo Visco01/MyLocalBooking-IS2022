@@ -63,7 +63,9 @@ public abstract class SlotBlueprint extends DatabaseModel {
     protected SlotBlueprint(JSONObject object) throws JSONException {
         super(object);
         weekdays = getDaysOfWeek(object.getInt("weekdays"));
-        reservationLimit = object.has("reservation_limit") ? object.getInt("reservation_limit") : null;
+        reservationLimit = object.has("reservation_limit") && !object.isNull("reservation_limit") ?
+                object.getInt("reservation_limit") : null;
+
         fromDate = LocalDate.parse(object.getString("from_date"));
         toDate = LocalDate.parse(object.getString("to_date"));
     }
