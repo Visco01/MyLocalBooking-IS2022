@@ -40,9 +40,9 @@ public class Establishment extends DatabaseModel {
 
     public Collection<SlotBlueprint> blueprints = new ArrayList<>();
 
-    public Establishment(Long id, Provider provider, String name, String address, Coordinates position, String placeId) {
+    public Establishment(Long id, String providerCellphone, String name, String address, Coordinates position, String placeId) {
         super(id);
-        setProvider(provider);
+        this.providerCellphone = providerCellphone;
         this.name = name;
         this.address = address;
         this.position = position;
@@ -50,7 +50,12 @@ public class Establishment extends DatabaseModel {
     }
 
     public Establishment(Provider provider, String name, String address, Coordinates position, String placeId) {
-        this(null, provider, name, address, position, placeId);
+        this(null, provider.cellphone, name, address, position, placeId);
+        this.provider = provider;
+    }
+
+    public Establishment(String providerCellphone, String name, String address, Coordinates position, String placeId) {
+        this(null, providerCellphone, name, address, position, placeId);
     }
 
     public Establishment(JSONObject object) throws JSONException {
@@ -70,6 +75,7 @@ public class Establishment extends DatabaseModel {
     protected Establishment(Parcel in) {
         super(in);
         provider = in.readParcelable(Provider.class.getClassLoader());
+        providerCellphone = in.readString();
         name = in.readString();
         address = in.readString();
         position = in.readParcelable(Coordinates.class.getClassLoader());
@@ -87,6 +93,7 @@ public class Establishment extends DatabaseModel {
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
         parcel.writeParcelable(provider, i);
+        parcel.writeString(providerCellphone);
         parcel.writeString(name);
         parcel.writeString(address);
         parcel.writeParcelable(position, i);
