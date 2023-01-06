@@ -650,6 +650,8 @@ begin
 	set has_periodic_policy = exists (
 		select * from periodic_slots where slot_id = s.id
 	);
+
+	return null;
 end;$$;
 
 drop trigger if exists set_slot_policy on slots;
