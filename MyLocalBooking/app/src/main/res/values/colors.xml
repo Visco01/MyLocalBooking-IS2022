@@ -9,6 +9,7 @@
     <color name="black">#FF000000</color>
     <color name="grey">#96969696</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="BookingGray">#F1F1F1</color>
     <color name="reservation_button_available">#DB6666</color>
     <color name="reservation_button_unavailable">#68CCB5B5</color>
     <color name="slot_line_free">#3ECC62</color>
@@ -25,4 +26,5 @@
     <color name="inactive">#00000000</color>
     <color name="light_grey">#D2D2D2</color>
     <color name="light_purple">#8692f7</color>
+    <color name="booking_yellow">#FFEB3B</color>
 </resources>

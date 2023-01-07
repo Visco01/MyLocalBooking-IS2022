@@ -8,7 +8,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
-import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
 
 import java.time.Duration;
@@ -19,7 +18,7 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.models.ITimeFrame;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 
-public class ManualSlotCreationDialogFragment extends DialogFragment {
+public class ManualSlotCreationDialogFragment extends DialogFragment implements RangeSlider.OnSliderTouchListener, RangeSlider.OnChangeListener {
     public interface IListener {
         void onManualSlotCreated(FreeManualTimeWindow timeWindow);
     }
@@ -53,6 +52,8 @@ public class ManualSlotCreationDialogFragment extends DialogFragment {
 
     private final FreeManualTimeWindow timeWindow;
     private final IListener listener;
+    Float lastValidStart;
+    Float lastValidEnd;
 
     public ManualSlotCreationDialogFragment(FreeManualTimeWindow timeWindow, IListener listener) {
         this.timeWindow = timeWindow;
@@ -72,6 +73,37 @@ public class ManualSlotCreationDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    @Override
+    public void onValueChange(@NonNull RangeSlider slider, float value, boolean fromUser) {
+        float start = slider.getValues().get(0);
+        float end = slider.getValues().get(1);
+        long maxDuration = timeWindow.blueprint.maxDuration.toMinutes();
+        float exceededDist = maxDuration - (end - start);
+
+        if(exceededDist < 0) {
+            if(start < lastValidStart)
+                slider.setValues(start, end + exceededDist);
+            else
+                slider.setValues(start - exceededDist, end);
+        } else {
+            lastValidStart = start;
+            lastValidEnd = end;
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(@NonNull RangeSlider slider) {
+        float start = slider.getValues().get(0);
+        float end = slider.getValues().get(1);
+        lastValidStart = start;
+        lastValidEnd = end;
+    }
+
+    @Override
+    public void onStopTrackingTouch(@NonNull RangeSlider slider) {
+
+    }
+
     private FreeManualTimeWindow parseView(View view) {
         RangeSlider slider = view.findViewById(R.id.time_slider);
         LocalTime fromTime = timeWindow.fromTime.plusMinutes(slider.getValues().get(0).intValue());
@@ -86,12 +118,16 @@ public class ManualSlotCreationDialogFragment extends DialogFragment {
         slider.setMinSeparationValue(TIME_GRANULARITY_MINUTES);
 
         LocalTime start = timeWindow.getStart();
-        int deltaSeconds = (int) Duration.between(start, timeWindow.getEnd()).getSeconds();
-        int maxVal = deltaSeconds / 60;
-        slider.setValueFrom(0);
-        slider.setValueTo(maxVal);
+        LocalTime initialEnd = start.plusMinutes(timeWindow.blueprint.maxDuration.toMinutes());
+        if(initialEnd.compareTo(timeWindow.toTime) > 0)
+            initialEnd = timeWindow.toTime;
 
-        slider.setValues((float) 0, (float) maxVal);
+        slider.setValueFrom(0);
+        slider.setValueTo(Duration.between(start, timeWindow.getEnd()).getSeconds() / 60f);
+
+        slider.setValues(0f, Duration.between(start, initialEnd).getSeconds() / 60f);
         slider.setLabelFormatter(value -> start.plusMinutes((int) value).toString());
+        slider.addOnChangeListener(this);
+        slider.addOnSliderTouchListener(this);
     }
 }

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class WaitingRequestsSingleton {
-    private static Collection<WaitingRequest> theInstance = null;
+    private static Collection<IAPICall> theInstance = null;
 
     private WaitingRequestsSingleton(){
 
     }
 
-    public static Collection<WaitingRequest> getInstance(){
+    public static Collection<IAPICall> getInstance(){
         if(theInstance == null){
             theInstance = new ArrayList<>();
         }

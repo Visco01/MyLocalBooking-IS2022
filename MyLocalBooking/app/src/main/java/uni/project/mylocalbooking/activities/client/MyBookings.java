@@ -4,13 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
+import uni.project.mylocalbooking.activities.provider.AddEstablishmentActivity;
 
 public class MyBookings extends BaseNavigationActivity {
 
@@ -41,10 +46,10 @@ public class MyBookings extends BaseNavigationActivity {
     private void initData() {
 
         myBookingsList = new ArrayList<>();
-        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
-        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
-        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
-        myBookingsList.add(new ModelClass_myBookings(R.drawable.ic_baseline_event_note_24, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
+        myBookingsList.add(new ModelClass_myBookings(R.drawable.logo, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
+        myBookingsList.add(new ModelClass_myBookings(R.drawable.logo, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
+        myBookingsList.add(new ModelClass_myBookings(R.drawable.logo, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
+        myBookingsList.add(new ModelClass_myBookings(R.drawable.logo, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
 
     }
 

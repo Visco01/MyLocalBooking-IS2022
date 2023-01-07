@@ -35,10 +35,10 @@
                 android:id="@+id/booker_registration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_confirm"
                 android:layout_marginTop="20dp"
-                android:text="I'm a Booker"
-                android:textColor="@color/white" >
+                android:background="@drawable/button_confirm"
+                android:text="I'm a Client"
+                android:textColor="@color/white">
 
             </androidx.appcompat.widget.AppCompatButton>
 
@@ -46,10 +46,10 @@
                 android:id="@+id/owner_registration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_confirm"
                 android:layout_marginTop="15dp"
-                android:text="I'm an Owner"
-                android:textColor="@color/white" >
+                android:background="@drawable/button_confirm"
+                android:text="I'm a Provider"
+                android:textColor="@color/white">
 
             </androidx.appcompat.widget.AppCompatButton>
 

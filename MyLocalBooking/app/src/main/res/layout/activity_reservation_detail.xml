@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/sfondo_my_bookings"
+    tools:context=".activities.client.ReservationDetailActivity">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/backButtonReservation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:contentDescription="back"
+        app:backgroundTint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:background="@drawable/button_begin"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/titleReservation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Reservation"
+                android:textAlignment="center"
+                android:textColor="@color/booking_color"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"></TextView>
+
+            <View
+                android:id="@+id/topLine"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/booking_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleReservation" />
+
+            <TextView
+                android:id="@+id/establishmentDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="Establishment: "
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/topLine"
+                app:layout_constraintTop_toBottomOf="@+id/topLine" />
+
+            <TextView
+                android:id="@+id/estName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:text="TO BE DEFINED RUNTIME"
+                android:textAlignment="viewEnd"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/establishmentDesc"
+                app:layout_constraintTop_toBottomOf="@+id/topLine" />
+
+            <View
+                android:id="@+id/topLine2"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/booking_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/estName" />
+
+            <TextView
+                android:id="@+id/addressDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="Address:"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/topLine"
+                app:layout_constraintTop_toBottomOf="@+id/topLine2" />
+
+            <TextView
+                android:id="@+id/newEstAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:text="TO BE DEFINED RUNTIME"
+                android:textAlignment="viewEnd"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/addressDesc"
+                app:layout_constraintTop_toBottomOf="@+id/topLine2" />
+
+            <View
+                android:id="@+id/topLine3"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/booking_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/newEstAddress" />
+
+            <TextView
+                android:id="@+id/dateDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="Date:"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/topLine"
+                app:layout_constraintTop_toBottomOf="@+id/topLine3" />
+
+            <TextView
+                android:id="@+id/reservationDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:text="TO BE DEFINED RUNTIME"
+                android:textAlignment="viewEnd"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/dateDesc"
+                app:layout_constraintTop_toBottomOf="@+id/topLine3" />
+            <View
+                android:id="@+id/topLine4"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/booking_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reservationDate" />
+
+            <TextView
+                android:id="@+id/reservationSlot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:text="TO BE DEFINED RUNTIME"
+                android:textAlignment="viewEnd"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/slotDesc"
+                app:layout_constraintTop_toBottomOf="@+id/topLine4" />
+
+            <TextView
+                android:id="@+id/slotDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="Slot:"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/topLine"
+                app:layout_constraintTop_toBottomOf="@+id/topLine4" />
+
+            <View
+                android:id="@+id/topLine5"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/booking_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reservationSlot" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/deleteReservationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="32dp"
+                android:clickable="true"
+                android:contentDescription="delete"
+                app:backgroundTint="@color/reservation_button_available"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/topLine5"
+                app:srcCompat="@drawable/ic_baseline_delete_outline_24" />
+
+            <TextView
+                android:id="@+id/deleteDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:text="Delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/deleteReservationButton"
+                app:layout_constraintStart_toStartOf="@+id/deleteReservationButton"
+                app:layout_constraintTop_toBottomOf="@+id/deleteReservationButton"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/reviewReservationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="64dp"
+                android:clickable="true"
+                android:contentDescription="review"
+                app:backgroundTint="@color/booking_yellow"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/topLine5"
+                app:srcCompat="@drawable/ic_baseline_star_border_24" />
+
+            <TextView
+                android:id="@+id/reviewDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:text="Review"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/reviewReservationButton"
+                app:layout_constraintStart_toStartOf="@+id/reviewReservationButton"
+                app:layout_constraintTop_toBottomOf="@+id/reviewReservationButton"
+                app:layout_constraintVertical_bias="0.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

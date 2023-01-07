@@ -1,5 +1,8 @@
 package uni.project.mylocalbooking.api;
 
+import androidx.lifecycle.MutableLiveData;
+
+import java.time.LocalDate;
 import java.util.Collection;
 
 import uni.project.mylocalbooking.models.AppUser;
@@ -27,7 +30,7 @@ public interface IMyLocalBookingAPI{
      * */
     void register(AppUser user, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError);
 
-    void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError);
+    void login(String cellphone, String password, MutableLiveData<AppUser> loginOutcome);
     /*
      * pre:
      *       CURRENT_USER.id != null
@@ -82,26 +85,26 @@ public interface IMyLocalBookingAPI{
      * post:
      *       blacklists the user in the db
      * */
-    void banUser(Client client);
+    void banUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
     /*
      * pre:
      *      client.id != null
      * post:
      *       removes the user from the blacklist in the db
      * */
-    void unbanUser(Client client);
+    void unbanUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
     /*
      * pre:
      *      client.id != null
      * post:
      *       strikes the user in the db
      * */
-    void strikeUser(Client client);
+    void strikeUser(Client client, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
     /*
      * post:
      *       sets the CURRENT_USER.maxstrikes in the db to max
      * */
-    void setMaxStrikes(int max);
+    void setMaxStrikes(int max, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
 
     // CLIENT
     // all calls in this section implicitly have the precondition
@@ -130,13 +133,18 @@ public interface IMyLocalBookingAPI{
      *       removes the reservation if exists
      */
     void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
-    Collection<Establishment> getClosestEstablishments();
-    void setPreferredPosition(Coordinates position);
-    void rateEstablishment(Establishment establishment, int rating, String comment/*, boolean anonymous*/);
 
+    void getClosestEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError);
 
+    void setPreferredPosition(Coordinates position, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError);
 
-    // left to implement:
+    void rateEstablishment(Establishment establishment, float rating, String comment, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
+
+    boolean getReservations(Establishment establishment, LocalDate date);
+
+    AppUser getUserByCellphone(String cellphone);
+
+        // left to implement:
 
     // void deleteBlueprint(SlotBlueprint blueprint);
     // void editBlueprint(SlotBlueprint blueprint);

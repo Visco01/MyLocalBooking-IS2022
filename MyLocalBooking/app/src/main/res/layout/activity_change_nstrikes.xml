@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,12 +8,13 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/sfondo_local_booking"
-    tools:context="uni.project.mylocalbooking.activities.ChangePhoneNumberActivity">
+    tools:context=".activities.provider.ChangeNStrikesActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
+        android:background="@drawable/button_begin"
         app:cardCornerRadius="30dp"
         app:cardElevation="20dp">
 
@@ -24,59 +26,34 @@
             android:padding="24dp">
 
             <TextView
-                android:id="@+id/ChangePhoneNumber"
+                android:id="@+id/loginText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Change Phone Number"
+                android:text="Change N° Strikes"
                 android:textAlignment="center"
                 android:textColor="@color/booking_color"
                 android:textSize="36sp"
-                android:textStyle="bold">
-
-            </TextView>
+                android:textStyle="bold"></TextView>
 
             <EditText
+                android:id="@+id/newNStrikes"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/button_begin"
+                android:drawableLeft="@drawable/ic_baseline_warning_amber_24"
+                android:drawablePadding="8dp"
+                android:inputType="number"
+                android:padding="8dp"
+                android:textColor="@color/black"></EditText>
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/confirm_change_nStrikes"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/button_begin"
-                android:drawableLeft="@drawable/ic_baseline_phone_24"
-                android:drawablePadding="8dp"
-                android:hint="Old phone number"
-                android:inputType="phone"
-                android:padding="8dp"
-                android:textColor="@color/black"></EditText>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/button_begin"
-                android:drawableLeft="@drawable/ic_baseline_phone_24"
-                android:drawablePadding="8dp"
-                android:hint="New phone number"
-                android:inputType="phone"
-                android:padding="8dp"
-                android:textColor="@color/black"></EditText>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/button_begin"
-                android:drawableLeft="@drawable/ic_baseline_phone_24"
-                android:drawablePadding="8dp"
-                android:hint="Confirm phone number"
-                android:inputType="phone"
-                android:padding="8dp"
-                android:textColor="@color/black"></EditText>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/confirm_change_phoneNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:background="@drawable/button_confirm"
-                android:layout_marginTop="15dp"
                 android:text="Confirm"
                 android:textColor="@color/white">
 

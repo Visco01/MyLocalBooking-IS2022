@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
@@ -41,7 +42,7 @@ public class SlotListAdapter extends BaseAdapter {
         this.listener = listener;
     }
 
-    public void onRefresh(LocalDate currentDate, List<SlotBlueprint> blueprints) {
+    public void onRefresh(LocalDate currentDate, Collection<SlotBlueprint> blueprints) {
         this.currentDate = currentDate;
 
         filteredSlots.clear();

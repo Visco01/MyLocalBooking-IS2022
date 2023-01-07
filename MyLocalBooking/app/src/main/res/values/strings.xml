@@ -31,14 +31,14 @@
     //Headings
     <string name="heading_one">Quick &amp; Easy Payments</string>
     <string name="heading_two">Instant Notifications</string>
-    <string name="heading_three">Cashless Payment</string>
-    <string name="heading_fourth">Pay Anywhere</string>
+    <string name="heading_three">All in one application</string>
+    <string name="heading_fourth">Payment</string>
 
     //Description
-    <string name="desc_one">Grow your Business By Accepting Card Payments with The New Card Reader</string>
-    <string name="desc_two">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
-    <string name="desc_three">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
-    <string name="desc_fourth">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
+    <string name="desc_one">Book your favorite establishment for your meetings or a soccer field to have fun with friends!</string>
+    <string name="desc_two">Receive instant notifications about your reservations, don\'t miss your commitments!</string>
+    <string name="desc_three">MyLocalBooking the application for the complete management of your reservations, directly from your smartphone</string>
+    <string name="desc_fourth">Don\'t worry about online payments visa ATM or credit card, payments are handled in person</string>
     <string name="addedEst">Your establishment was successfully added! Click anywhere to go back to your home</string>
     <string name="info">Se devi testare una funzionalità da questo menù e l\'app crasha/fallisce, clicca sui pulsanti in fondo e visita una delle home! Se con una fallisce, prova con l\'altra</string>
 
@@ -65,5 +65,7 @@
     <string name="create_manual_slot_dialog_title">Choose your slot</string>
     <string name="no_available_slots">No available slots for this day</string>
     <string name="reservation_error">Reservation error</string>
-    <string name="reservation_error_generic_message">An error occurred while trying to make this reservation, please try again.</string>
+    <string name="terms">I have read and I accept the <a href=""><u>Privacy and Data processing Policy and Terms of use</u></a>  of the application</string>
+    <string name="make_reservation_error_generic_message">An error occurred while trying to make this reservation, please try again.</string>
+    <string name="get_reservation_error_generic_message">An error occurred while trying to obtain reservations for this day. Please swipe to refresh the page</string>
 </resources>

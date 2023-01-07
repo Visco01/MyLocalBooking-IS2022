@@ -61,10 +61,22 @@ public class SessionPreferences {
         return edit.putLong(key, Double.doubleToRawLongBits(value));
     }
 
-    private static Double getDouble(final SharedPreferences prefs, final String key, double defaultValue) {
-        return Double.longBitsToDouble(prefs.getLong(key, Double.doubleToLongBits(defaultValue)));
+
+    public static Double getDouble(String key, Double defaultValue) {
+        if(defaultValue != null)
+            return Double.longBitsToDouble(theInstance.getLong(key, Double.doubleToLongBits(defaultValue)));
+
+        if(theInstance.contains(key))
+            return Double.longBitsToDouble(theInstance.getLong(key, 0L));
+
+        return null;
     }
+    
     public static Map<String, ?> getUserPrefs(){
         return theInstance.getAll();
+    }
+
+    public static void deleteSessionPreferences(){
+        getInstance().edit().clear().commit();
     }
 }

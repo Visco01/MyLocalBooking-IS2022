@@ -5,12 +5,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 
 public class BlackListActivity extends AppCompatActivity {
 
@@ -25,7 +22,6 @@ public class BlackListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_black_list);
         initData();
         initRecycleReview();
-
     }
 
     private void initData() {

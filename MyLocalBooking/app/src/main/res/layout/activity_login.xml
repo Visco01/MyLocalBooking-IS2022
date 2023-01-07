@@ -36,17 +36,19 @@
                 android:textStyle="bold"></TextView>
 
             <EditText
+                android:id="@+id/cellOrMailLogin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/button_begin"
                 android:drawableLeft="@drawable/ic_baseline_person_24"
                 android:drawablePadding="8dp"
-                android:hint="email"
+                android:hint="Cellphone / Email"
                 android:padding="8dp"
                 android:textColor="@color/black"></EditText>
 
             <EditText
+                android:id="@+id/passwordLogin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
@@ -68,6 +70,26 @@
                 android:textColor="@color/white">
 
             </androidx.appcompat.widget.AppCompatButton>
+
+            <TextView
+                android:id="@+id/redirectDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Do you have an account? If not, click below here and create a new one right now for free!"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/redirectSignupText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:clickable="true"
+                android:text="Signup"
+                android:textAlignment="center"
+                android:textColor="@color/booking_color"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

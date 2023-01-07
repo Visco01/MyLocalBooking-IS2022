@@ -5,49 +5,49 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-class APICall<T, K> {
-    private final String jwt;
-    private boolean isArrayRequest = false;
-    private K request = null;
-    private final String method;
-    private final String requestBody;
-    private final String url;
-    private RunOnResponse<T> runOnResponse = null;
+abstract class APICall<T> implements IAPICall<T> {
+    public String jwt;
+    protected JsonRequest<T> request;
+    protected final String method;
+    protected final String requestBody;
+    protected final String url;
+    protected final Boolean isArray;
 
-    public APICall(String jwt, String method, String requestBody, String url, RunOnResponse<T> runOnResponse, boolean isArray){
+    public APICall(String jwt, String method, String requestBody, String url,  boolean isArray){
         this.jwt = jwt;
         this.method = method;
         this.requestBody = requestBody;
         this.url = url;
-        this.runOnResponse = runOnResponse;
-
-        if(isArray) call();
-        else init();
+        this.isArray = isArray;
     }
 
-    private void init(){
+    @Override
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
+
+    private JsonRequest<T> init(Response.Listener<T> successListener, Response.ErrorListener errorListener){
         switch (this.method){
             case "GET":
-                get();
-                break;
+                return generateRequest(successListener, errorListener, Request.Method.GET);
             case "POST":
-                post();
-                break;
+                return generateRequest(successListener, errorListener, Request.Method.POST);
             case "PATCH":
-                patch();
-                break;
+                return generateRequest(successListener, errorListener, Request.Method.PATCH);
             case "DELETE":
-                delete();
-                break;
+                return generateRequest(successListener, errorListener, Request.Method.DELETE);
             default:
                 Log.e("APICall constructor error", "Missing type");
         }
+        return null;
     }
 
     private static JSONObject getJsonBody(String body){
@@ -60,36 +60,18 @@ class APICall<T, K> {
         return jsonBody;
     }
 
-    private void get(){
-        call(Request.Method.GET);
-    }
-
-    private void post(){
-        call(Request.Method.POST);
-    }
-
-    private void patch(){
-        call(Request.Method.PATCH);
-    }
-
-    private void delete(){
-        call(Request.Method.DELETE);
-    }
-
-    private void call(int requestMethod){
+    private JsonRequest<T> generateRequest(Response.Listener<T> successListener, Response.ErrorListener errorListener, int requestMethod){
         JSONObject jsonBody = null;
         if(requestMethod != Request.Method.GET){
             jsonBody = getJsonBody(this.requestBody);
         }
 
-        this.request = (K) new JsonObjectRequest(
+        return (JsonRequest<T>) new JsonObjectRequest(
                 requestMethod,
                 APICall.this.url,
                 jsonBody,
-                response -> {
-                    if(runOnResponse != null) runOnResponse.apply((T) response);
-                },
-                error -> Log.i("APICall error", error.toString())
+                (Response.Listener<JSONObject>) successListener,
+                (Response.ErrorListener) errorListener
         ) {
             @Override
             public Map<String, String> getHeaders() {
@@ -107,15 +89,13 @@ class APICall<T, K> {
         };
     }
 
-    private void call(){
-        this.request = (K) new JsonArrayRequest(
+    private JsonRequest<T> generateRequest(Response.Listener<T> successListener, Response.ErrorListener errorListener){
+        return (JsonRequest<T>) new JsonArrayRequest(
                 Request.Method.GET,
                 APICall.this.url,
                 null,
-                (JSONArray response) -> {
-                    if(runOnResponse != null) runOnResponse.apply((T) response);
-                },
-                error -> Log.i("APICall error", error.toString())
+                (Response.Listener<JSONArray>) successListener,
+                (Response.ErrorListener) errorListener
         ) {
             @Override
             public Map<String, String> getHeaders() {
@@ -126,7 +106,23 @@ class APICall<T, K> {
         };
     }
 
-    public K getRequest(){
+    public JsonRequest<T> getRequest(){
         return this.request;
+    }
+
+    public abstract APICall<T> call();
+
+    protected void call(Response.Listener<T> successListener, Response.ErrorListener errorListener){
+        this.request = isArray ? generateRequest(successListener, errorListener) : init(successListener, errorListener);
+        if(jwt != null){
+            if(isArray){
+                RequestQueueSingleton.getInstance().add((JsonArrayRequest) getRequest());
+            }
+            else{
+                RequestQueueSingleton.getInstance().add((JsonObjectRequest) getRequest());
+            }
+        }else{
+            LoginAPI.addWaitingRequest((IAPICall<T>) this);
+        }
     }
 }
