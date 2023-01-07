@@ -2,6 +2,7 @@ package uni.project.mylocalbooking.api;
 
 import androidx.lifecycle.MutableLiveData;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 import uni.project.mylocalbooking.models.AppUser;
@@ -29,7 +30,7 @@ public interface IMyLocalBookingAPI{
      * */
     void register(AppUser user, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError);
 
-    void login(String cellphone, String password, APICallBack<AppUser> onSuccess, APICallBack<StatusCode> onError);
+    void login(String cellphone, String password, MutableLiveData<AppUser> loginOutcome);
     /*
      * pre:
      *       CURRENT_USER.id != null
@@ -76,7 +77,7 @@ public interface IMyLocalBookingAPI{
      *       returns inserted establishment
      * */
     void addEstablishment(Establishment establishment, APICallBack<Establishment> onSuccess, APICallBack<StatusCode> onError);
-    void getOwnedEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata);
+    void getOwnedEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError);
 
     /*
      * pre:
@@ -133,15 +134,17 @@ public interface IMyLocalBookingAPI{
      */
     void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError);
 
-    void getClosestEstablishments(MutableLiveData<Collection<Establishment>> establishmentsLivedata);
+    void getClosestEstablishments(APICallBack<Collection<Establishment>> onSuccess, APICallBack<StatusCode> onError);
 
     void setPreferredPosition(Coordinates position, APICallBack<Void> onSuccess, APICallBack<StatusCode> onError);
 
     void rateEstablishment(Establishment establishment, float rating, String comment, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError);
 
+    boolean getReservations(Establishment establishment, LocalDate date);
 
+    AppUser getUserByCellphone(String cellphone);
 
-    // left to implement:
+        // left to implement:
 
     // void deleteBlueprint(SlotBlueprint blueprint);
     // void editBlueprint(SlotBlueprint blueprint);

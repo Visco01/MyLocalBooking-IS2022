@@ -32,25 +32,16 @@ public class ManualSlot extends Slot implements IDatabaseSubclassModel, ISelecta
     public final LocalTime fromTime;
     public final LocalTime toTime;
 
-    public ManualSlot(Long id, LocalTime fromTime, LocalTime toTime, Long slot_id, LocalDate date, AppUser owner, boolean passwordProtected, HashSet<Client> reservations, ManualSlotBlueprint blueprint) {
-        super(slot_id, date, owner, passwordProtected, reservations, blueprint);
+    public ManualSlot(Long id, LocalTime fromTime, LocalTime toTime, Long slot_id, LocalDate date, String ownerCellphone, boolean passwordProtected, HashSet<Client> reservations, ManualSlotBlueprint blueprint) {
+        super(slot_id, date, ownerCellphone, passwordProtected, reservations, blueprint);
         this.id = id;
         this.fromTime = fromTime;
         this.toTime = toTime;
-
-        SortedSet<ManualSlot> slots = blueprint.slots.get(super.date);
-        boolean firstInsert = slots == null;
-        if(firstInsert)
-            slots = new TreeSet<>();
-
-        slots.add(this);
-
-        if(firstInsert)
-            blueprint.slots.put(super.date, slots);
+        blueprint.addSlot(this);
     }
 
-    public ManualSlot(LocalTime fromTime, LocalTime toTime, LocalDate date, AppUser owner, ManualSlotBlueprint blueprint) {
-        this(null, fromTime, toTime, null, date, owner, false, new HashSet<>(), blueprint);
+    public ManualSlot(LocalTime fromTime, LocalTime toTime, LocalDate date, String ownerCellphone, ManualSlotBlueprint blueprint) {
+        this(null, fromTime, toTime, null, date, ownerCellphone, false, new HashSet<>(), blueprint);
     }
 
     public ManualSlot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {

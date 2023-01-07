@@ -13,10 +13,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -59,7 +57,7 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         closeTime = LocalTime.parse(object.getString("close_time"));
         maxDuration = Duration.between(
                 LocalTime.MIN,
-                LocalDateTime.ofInstant(Instant.parse(object.getString("max_duration")), ZoneOffset.UTC).toLocalTime()
+                LocalTime.parse(object.getString("max_duration"))
         );
     }
 
@@ -85,13 +83,8 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         parcel.writeSerializable(closeTime);
         parcel.writeSerializable(maxDuration);
 
-        ManualSlot[] slotsArr = new ManualSlot[super.slots.size()];
-        int j = 0;
-        for(SortedSet<ManualSlot> slotList : slots.values())
-            for(ManualSlot slot : slotList) {
-                slotsArr[j] = slot;
-                j++;
-            }
+
+        ManualSlot[] slotsArr = slots.values().stream().flatMap(SortedSet::stream).toArray(ManualSlot[]::new);
         parcel.writeParcelableArray(slotsArr, i);
     }
 

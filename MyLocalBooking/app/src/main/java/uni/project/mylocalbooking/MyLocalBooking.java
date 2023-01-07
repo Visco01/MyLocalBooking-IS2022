@@ -59,6 +59,9 @@ public class MyLocalBooking extends Application {
     }
 
     public static AppUser getCurrentUser() {
-        return currentUser == null ? buildCurrentUser() : currentUser;
+        if(currentUser == null)
+            currentUser = buildCurrentUser();
+
+        return currentUser;
     }
 }
