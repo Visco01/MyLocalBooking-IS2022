@@ -5,8 +5,10 @@ import com.google.maps.model.GeocodingResult;
 public class SelectableMapLocation {
     public final String address;
     public final Coordinates coordinates;
+    public final String placeId;
     public SelectableMapLocation(GeocodingResult result) {
         address = result.formattedAddress;
         this.coordinates = new Coordinates(result.geometry.location.lat, result.geometry.location.lng);
+        this.placeId = result.placeId;
     }
 }
