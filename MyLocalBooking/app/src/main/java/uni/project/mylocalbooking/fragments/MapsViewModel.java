@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.maps.GeocodingApi;
 import com.google.maps.PendingResult;
 import com.google.maps.android.SphericalUtil;
@@ -19,14 +18,14 @@ import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class MapsViewModel  extends ViewModel {
-    private final MutableLiveData<SelectableMapLocation> selectedPosition = new MutableLiveData<>();
+    private final MutableLiveData<SelectableMapLocation> bestGeocodedResult = new MutableLiveData<>();
     private final MutableLiveData<List<SelectableMapLocation>> geocodingResults = new MutableLiveData<>();
     private final MutableLiveData<SelectableMapLocation> tempMarkerPosition = new MutableLiveData<>();
-    public final MutableLiveData<SelectableMapLocation> selectedLocation = new MutableLiveData<>();
-    public final MutableLiveData<SelectableMapLocation> confirmedLocation = new MutableLiveData<>();
+    private final MutableLiveData<SelectableMapLocation> selectedLocation = new MutableLiveData<>();
+    private final MutableLiveData<SelectableMapLocation> confirmedLocation = new MutableLiveData<>();
 
-    public LiveData<SelectableMapLocation> getSelectedPosition() {
-        return selectedPosition;
+    public LiveData<SelectableMapLocation> getBestGeocodedResult() {
+        return bestGeocodedResult;
     }
     public LiveData<List<SelectableMapLocation>> getGeocodingResults() {
         return geocodingResults;
@@ -57,7 +56,7 @@ public class MapsViewModel  extends ViewModel {
                     }
                 }
 
-                selectedPosition.postValue(options.remove(0));
+                bestGeocodedResult.postValue(options.remove(0));
                 geocodingResults.postValue(options);
             }
 

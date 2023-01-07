@@ -19,7 +19,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import uni.project.mylocalbooking.R;
-import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerClickListener {
@@ -39,7 +38,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         map.setOnMarkerClickListener(this);
         viewModel = new ViewModelProvider(requireActivity()).get(MapsViewModel.class);
 
-        viewModel.getSelectedPosition().observe(this, location -> {
+        viewModel.getBestGeocodedResult().observe(this, location -> {
             LatLng position = location.coordinates.toMapsCoordinates();
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15), 700, null);
             placedMarker = map.addMarker(new MarkerOptions().position(position));
