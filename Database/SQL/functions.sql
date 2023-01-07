@@ -379,9 +379,6 @@ CREATE TYPE periodic_reservations_result AS
 	slot_password_digest varchar,
 	date date,
 	owner_cellphone char(13),
-
-	periodic_slot_id bigint,
-	periodic_slot_blueprint_id bigint,
 	
 	app_user_id bigint,
 	cellphone char(13),
@@ -392,7 +389,10 @@ CREATE TYPE periodic_reservations_result AS
 	dob date,
 	client_id bigint,
 	lat double precision,
-	lng double precision
+	lng double precision,
+
+	periodic_slot_id bigint,
+	periodic_slot_blueprint_id bigint
 );
 
 create or replace function get_periodic_reservations_by_date(reservation_establishment_id bigint, reservation_date date)
@@ -405,9 +405,6 @@ begin
 				s.password_digest,
 				s.date,
 				o.cellphone,
-
-				p.id,
-				pb.id,
 				
 				a.id,
 				a.cellphone,
@@ -418,7 +415,10 @@ begin
 				a.dob,
 				c.id,
 				c.lat,
-				c.lng
+				c.lng,
+
+				p.id,
+				pb.id
 	from		slot_blueprints b
 				join periodic_slot_blueprints pb on pb.slot_blueprint_id = b.id
 				join periodic_slots p on p.periodic_slot_blueprint_id = pb.id
@@ -441,11 +441,6 @@ CREATE TYPE manual_reservations_result AS
 	slot_password_digest varchar,
 	date date,
 	owner_cellphone char(13),
-
-	manual_slot_id bigint,
-	fromtime time,
-	totime time,
-	manual_slot_blueprint_id bigint,
 	
 	app_user_id bigint,
 	cellphone char(13),
@@ -456,7 +451,12 @@ CREATE TYPE manual_reservations_result AS
 	dob date,
 	client_id bigint,
 	lat double precision,
-	lng double precision
+	lng double precision,
+
+	manual_slot_id bigint,
+	manual_slot_blueprint_id bigint,
+	fromtime time,
+	totime time
 );
 
 create or replace function get_manual_reservations_by_date(reservation_establishment_id bigint, reservation_date date)
@@ -468,13 +468,7 @@ begin
 	select		s.id,
 				s.password_digest,
 				s.date,
-                o.cellphone,
-
-				m.id,
-				m.fromtime,
-				m.totime,
-				mb.id,
-				
+                o.cellphone,				
 				a.id,
 				a.cellphone,
 				a.password_digest,
@@ -484,7 +478,12 @@ begin
 				a.dob,
 				c.id,
 				c.lat,
-				c.lng
+				c.lng,
+
+				m.id,
+				mb.id,
+				m.fromtime,
+				m.totime
 	from		slot_blueprints b
 				join manual_slot_blueprints mb on mb.slot_blueprint_id = b.id
 				join manual_slots m on m.manual_slot_blueprint_id = mb.id
