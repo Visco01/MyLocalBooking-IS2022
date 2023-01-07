@@ -2,8 +2,6 @@ package uni.project.mylocalbooking.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-
 import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +25,6 @@ public class Coordinates implements Parcelable {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-
 
     public Coordinates(JSONObject object) throws JSONException {
         latitude = object.getDouble("lat");

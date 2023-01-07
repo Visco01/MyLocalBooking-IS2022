@@ -71,7 +71,7 @@ public class SessionPreferences {
 
         return null;
     }
-    
+
     public static Map<String, ?> getUserPrefs(){
         return theInstance.getAll();
     }
