@@ -31,7 +31,7 @@ public class ChooseEstablishmentOnMapActivity extends AppCompatActivity {
 
 
         adapter = new AlternativeLocationListAdapter(option -> {
-            viewModel.setTempPosition(option);
+            viewModel.setSelectedLocation(option);
         });
         optionsListView = findViewById(R.id.options_list);
 

@@ -19,7 +19,6 @@ import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class MapsViewModel  extends ViewModel {
     private final MutableLiveData<List<SelectableMapLocation>> geocodingResults = new MutableLiveData<>();
-    private final MutableLiveData<SelectableMapLocation> tempMarkerPosition = new MutableLiveData<>();
     private final MutableLiveData<SelectableMapLocation> selectedLocation = new MutableLiveData<>();
     private final MutableLiveData<SelectableMapLocation> confirmedLocation = new MutableLiveData<>();
 
@@ -80,19 +79,11 @@ public class MapsViewModel  extends ViewModel {
         results[1] = northeastCorner;
     }
 
-    LiveData<SelectableMapLocation> getTempPosition() {
-        return tempMarkerPosition;
-    }
-
-    public void setTempPosition(SelectableMapLocation pos) {
-        tempMarkerPosition.setValue(pos);
-    }
-
     public LiveData<SelectableMapLocation> getSelectedLocation() {
         return selectedLocation;
     }
 
-    void setSelectedLocation(SelectableMapLocation location) {
+    public void setSelectedLocation(SelectableMapLocation location) {
         selectedLocation.setValue(location);
     }
 
