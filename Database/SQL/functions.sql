@@ -468,7 +468,6 @@ begin
 	select		s.id,
 				s.password_digest,
 				s.date,
-				s.app_user_id,
                 o.cellphone,
 
 				m.id,
