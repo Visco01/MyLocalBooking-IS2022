@@ -41,6 +41,8 @@ public class ChooseEstablishmentOnMapActivity extends AppCompatActivity {
             });
         });
         optionsListView.setAdapter(adapter);
+
+        viewModel.getConfirmedLocation().observe(this, loc -> finish());
     }
 
 
