@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -47,7 +48,10 @@ public class ChooseEstablishmentOnMapActivity extends AppCompatActivity {
         });
         optionsListView.setAdapter(adapter);
 
-        viewModel.getConfirmedLocation().observe(this, loc -> finish());
+        viewModel.getConfirmedLocation().observe(this, loc -> {
+            setResult(RESULT_OK, new Intent().putExtra("selected_location", loc));
+            finish();
+        });
 
         if(savedInstanceState != null) {
             geocodingResults = savedInstanceState.getParcelableArrayList("geocoding_results")
