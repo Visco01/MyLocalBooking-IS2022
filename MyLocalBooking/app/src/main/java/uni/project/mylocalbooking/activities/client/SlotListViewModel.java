@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.api.StatusCode;
+import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ManualSlot;
@@ -69,6 +70,7 @@ public class SlotListViewModel extends ViewModel {
             slot.setOwner(MyLocalBooking.getCurrentUser());
 
         IMyLocalBookingAPI.getApiInstance().addReservation(slot, password, s -> {
+                    slot.reservations.add((Client) MyLocalBooking.getCurrentUser());
                     currentDay.setValue(currentDay.getValue());
                     reservationOutcome.setValue(null);
                 },
