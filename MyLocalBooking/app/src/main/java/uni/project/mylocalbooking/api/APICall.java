@@ -110,7 +110,7 @@ abstract class APICall<T> implements IAPICall<T> {
         return this.request;
     }
 
-    public abstract void call();
+    public abstract APICall<T> call();
 
     protected void call(Response.Listener<T> successListener, Response.ErrorListener errorListener){
         this.request = isArray ? generateRequest(successListener, errorListener) : init(successListener, errorListener);

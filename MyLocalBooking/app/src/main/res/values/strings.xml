@@ -65,5 +65,6 @@
     <string name="create_manual_slot_dialog_title">Choose your slot</string>
     <string name="no_available_slots">No available slots for this day</string>
     <string name="reservation_error">Reservation error</string>
-    <string name="reservation_error_generic_message">An error occurred while trying to make this reservation, please try again.</string>
+    <string name="make_reservation_error_generic_message">An error occurred while trying to make this reservation, please try again.</string>
+    <string name="get_reservation_error_generic_message">An error occurred while trying to obtain reservations for this day. Please swipe to refresh the page</string>
 </resources>
