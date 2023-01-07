@@ -23,12 +23,13 @@ public class ChooseEstablishmentOnMapActivity extends AppCompatActivity {
     private List<SelectableMapLocation> geocodingResults;
     private AlternativeLocationListAdapter adapter;
     private ListView optionsListView;
+    private AppCompatButton confirmationButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(MapsViewModel.class);
         setContentView(R.layout.activity_choose_establishment_on_map);
-
+        confirmationButton = findViewById(R.id.confirmation_button);
 
         adapter = new AlternativeLocationListAdapter(option -> {
             viewModel.setSelectedLocation(option);
@@ -39,7 +40,6 @@ public class ChooseEstablishmentOnMapActivity extends AppCompatActivity {
 
         viewModel.getSelectedLocation().observe(this, loc -> {
             boolean valid = loc != null;
-            AppCompatButton confirmationButton = findViewById(R.id.confirmation_button);
             confirmationButton.setVisibility(valid ? View.VISIBLE : View.GONE);
             confirmationButton.setOnClickListener(btn -> {
                 viewModel.confirmLocation(loc);
@@ -59,6 +59,7 @@ public class ChooseEstablishmentOnMapActivity extends AppCompatActivity {
     private void onNewGeocodingResults(List<SelectableMapLocation> geocodingResults) {
         this.geocodingResults = geocodingResults;
         adapter.onListUpdated(geocodingResults);
+        viewModel.setSelectedLocation(geocodingResults.get(0));
         optionsListView.setVisibility(geocodingResults.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
