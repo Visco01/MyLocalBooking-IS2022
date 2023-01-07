@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -19,7 +20,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.api.StatusCode;
 import uni.project.mylocalbooking.fragments.FailureFragment;
@@ -36,6 +39,17 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        if (!SessionPreferences.getUserPrefs().isEmpty()){
+            System.out.println(SessionPreferences.getUserPrefs());
+            if (MyLocalBooking.getCurrentUser() != null){
+                System.out.println(MyLocalBooking.getCurrentUser());
+                startActivity(new Intent(MyLocalBooking.getAppContext(),HomeActivity.class));
+            }
+        }
+        else{
+            System.out.println("Empty sessionData");
+        }
 
         IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
 
@@ -60,6 +74,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (cell.getText().toString().isEmpty() || psswd.getText().toString().isEmpty()){
                     failedEmptiness();
                 }
+                // Provider: 3332221113 - Psswd: Ciao123
+                // Client: mirco@client.it / fwefwfs-->3332221114 - Psswd: Ciao123
+                // mirco.client@gmail.com + 3332221115 - Psswd: Ciao123
                 else{
                     api.login(cell.getText().toString(), psswd.getText().toString(), loginOutcome);
                 }
@@ -70,6 +87,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signIn();
+            }
+        });
+
+        TextView redirect = findViewById(R.id.redirectSignupText);
+        redirect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MyLocalBooking.getAppContext(), IntermediateRegistrationActivity.class));
             }
         });
 

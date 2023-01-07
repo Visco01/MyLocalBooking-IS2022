@@ -12,6 +12,7 @@ import java.time.LocalDate;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.models.Slot;
 
 public class ReservationDetailActivity extends AppCompatActivity {
@@ -55,6 +56,9 @@ public class ReservationDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO
+                //IMyLocalBookingAPI.getApiInstance().cancelReservation(
+
+                //);
             }
         });
 

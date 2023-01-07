@@ -112,7 +112,9 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             return;
         }
         String url = MyLocalBookingAPI.apiPrefix + "change_user_password/" + cellphone;
+        System.out.println(new_password);
         new_password = Utility.generateEncryptedPassword(new_password);
+        System.out.println(new_password);
         String requestBody = JSONBodyGenerator.generateNewPasswordBody(new_password);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "PATCH", (RunOnResponse<JSONObject>) response -> {
             try {

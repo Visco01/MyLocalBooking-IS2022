@@ -12,7 +12,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +30,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (!SessionPreferences.getUserPrefs().isEmpty()){
+            System.out.println(SessionPreferences.getUserPrefs());
+            if (MyLocalBooking.getCurrentUser() != null){
+                System.out.println(MyLocalBooking.getCurrentUser());
+                startActivity(new Intent(MyLocalBooking.getAppContext(),HomeActivity.class));
+            }
+        }
+        else{
+            System.out.println("Empty sessionData");
+        }
 
         nextBtn = findViewById(R.id.next_btn_landing_page);
         backBtn = findViewById(R.id.back_btn_landing_page);

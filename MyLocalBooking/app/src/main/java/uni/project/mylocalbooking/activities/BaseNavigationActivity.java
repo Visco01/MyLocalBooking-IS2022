@@ -37,7 +37,9 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
         // TODO: Remove before submission
         // Get the currentUser info
         //Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
-
+        // if (!sessionData){
+        //      return to login page!!!
+        // }
         //if (((String) sessionData.get("usertype")).equals("client")){
 
         if (UserTest.getType() == "Client"){
