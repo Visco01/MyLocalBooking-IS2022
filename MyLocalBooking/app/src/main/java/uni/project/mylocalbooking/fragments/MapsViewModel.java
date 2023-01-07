@@ -18,15 +18,11 @@ import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class MapsViewModel  extends ViewModel {
-    private final MutableLiveData<SelectableMapLocation> bestGeocodedResult = new MutableLiveData<>();
     private final MutableLiveData<List<SelectableMapLocation>> geocodingResults = new MutableLiveData<>();
     private final MutableLiveData<SelectableMapLocation> tempMarkerPosition = new MutableLiveData<>();
     private final MutableLiveData<SelectableMapLocation> selectedLocation = new MutableLiveData<>();
     private final MutableLiveData<SelectableMapLocation> confirmedLocation = new MutableLiveData<>();
 
-    public LiveData<SelectableMapLocation> getBestGeocodedResult() {
-        return bestGeocodedResult;
-    }
     public LiveData<List<SelectableMapLocation>> getGeocodingResults() {
         return geocodingResults;
     }
@@ -55,8 +51,6 @@ public class MapsViewModel  extends ViewModel {
                         options.add(new SelectableMapLocation(result));
                     }
                 }
-
-                bestGeocodedResult.postValue(options.remove(0));
                 geocodingResults.postValue(options);
             }
 

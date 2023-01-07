@@ -35,15 +35,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void onMapReady(GoogleMap map) {
         this.map = map;
         map.setOnMapLongClickListener(this);
-        map.setOnMarkerClickListener(this);
         viewModel = new ViewModelProvider(requireActivity()).get(MapsViewModel.class);
 
-        viewModel.getBestGeocodedResult().observe(this, location -> {
-            LatLng position = location.coordinates.toMapsCoordinates();
+        viewModel.getGeocodingResults().observe(this, locations -> {
+            SelectableMapLocation bestLocation = locations.get(0);
+            LatLng position = bestLocation.coordinates.toMapsCoordinates();
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15), 700, null);
             placedMarker = map.addMarker(new MarkerOptions().position(position));
             selectedMarker = placedMarker;
-            placedLocation = location;
+            placedLocation = bestLocation;
             toggleSelectedMarker(placedMarker);
         });
 
