@@ -61,6 +61,7 @@ public class SessionPreferences {
         return edit.putLong(key, Double.doubleToRawLongBits(value));
     }
 
+
     public static Double getDouble(String key, Double defaultValue) {
         if(defaultValue != null)
             return Double.longBitsToDouble(theInstance.getLong(key, Double.doubleToLongBits(defaultValue)));
@@ -70,6 +71,7 @@ public class SessionPreferences {
 
         return null;
     }
+
     public static Map<String, ?> getUserPrefs(){
         return theInstance.getAll();
     }
