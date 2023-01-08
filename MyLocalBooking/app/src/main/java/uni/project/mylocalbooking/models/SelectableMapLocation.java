@@ -6,14 +6,14 @@ import android.os.Parcelable;
 import com.google.maps.model.GeocodingResult;
 
 public class SelectableMapLocation implements Parcelable {
-    public static final Parcelable.Creator<Coordinates> CREATOR
-            = new Parcelable.Creator<Coordinates>() {
-        public Coordinates createFromParcel(Parcel in) {
-            return new Coordinates(in);
+    public static final Parcelable.Creator<SelectableMapLocation> CREATOR
+            = new Parcelable.Creator<SelectableMapLocation>() {
+        public SelectableMapLocation createFromParcel(Parcel in) {
+            return new SelectableMapLocation(in);
         }
 
-        public Coordinates[] newArray(int size) {
-            return new Coordinates[size];
+        public SelectableMapLocation[] newArray(int size) {
+            return new SelectableMapLocation[size];
         }
     };
     public final String address;
