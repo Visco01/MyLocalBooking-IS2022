@@ -2,7 +2,7 @@ package uni.project.mylocalbooking.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,5 +45,13 @@ public class Coordinates implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeDouble(latitude);
         parcel.writeDouble(longitude);
+    }
+
+    public com.google.maps.model.LatLng toApiCoordinates() {
+        return new com.google.maps.model.LatLng(latitude, longitude);
+    }
+
+    public LatLng toMapsCoordinates() {
+        return new LatLng(latitude, longitude);
     }
 }

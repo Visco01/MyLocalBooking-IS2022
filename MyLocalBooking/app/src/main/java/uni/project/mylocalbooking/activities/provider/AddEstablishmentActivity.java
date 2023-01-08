@@ -1,11 +1,14 @@
 package uni.project.mylocalbooking.activities.provider;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
@@ -19,6 +22,7 @@ import uni.project.mylocalbooking.fragments.SuccessFragment;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.Provider;
+import uni.project.mylocalbooking.models.SelectableMapLocation;
 
 public class AddEstablishmentActivity extends AppCompatActivity {
 
@@ -79,6 +83,21 @@ public class AddEstablishmentActivity extends AppCompatActivity {
             }
         });
 
+
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        SelectableMapLocation location = (SelectableMapLocation) data.getExtras().getParcelable("selected_location");
+                        // TODO: do something with this data
+                    }
+                });
+
+        findViewById(R.id.choose_on_map_button).setOnClickListener(view -> {
+            Intent intent = new Intent(this, ChooseEstablishmentOnMapActivity.class);
+            activityResultLauncher.launch(intent);
+        });
     }
 
     private void confirmAdd() {
