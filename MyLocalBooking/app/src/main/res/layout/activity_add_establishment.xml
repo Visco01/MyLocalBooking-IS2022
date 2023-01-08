@@ -86,6 +86,20 @@
                 app:layout_constraintTop_toBottomOf="@+id/loginText" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/choose_on_map_button"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/button_confirm"
+                android:text="Choose on map"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toTopOf="@+id/confirm_add_est"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/newEstAddress"/>
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/confirm_add_est"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
@@ -97,7 +111,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/newEstAddress">
+                app:layout_constraintTop_toBottomOf="@+id/choose_on_map_button">
 
             </androidx.appcompat.widget.AppCompatButton>
         </androidx.constraintlayout.widget.ConstraintLayout>
