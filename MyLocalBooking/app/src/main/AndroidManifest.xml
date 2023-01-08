@@ -25,7 +25,8 @@
 
         <activity
             android:name=".activities.provider.ChooseEstablishmentOnMapActivity"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
