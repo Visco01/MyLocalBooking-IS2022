@@ -20,7 +20,8 @@ public class BlockingAPICall<T> extends APICall<T> implements IAPICall<T> {
     }
 
     @Override
-    public void call() {
+    public BlockingAPICall<T> call() {
         super.call(future, future);
+        return this;
     }
 }

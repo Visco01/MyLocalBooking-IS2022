@@ -11,7 +11,8 @@ public class CallbackAPICall<T> extends APICall<T> {
     }
 
     @Override
-    public void call() {
+    public CallbackAPICall<T> call() {
         super.call(runOnResponse, error -> Log.i("APICall error", error.toString()));
+        return this;
     }
 }

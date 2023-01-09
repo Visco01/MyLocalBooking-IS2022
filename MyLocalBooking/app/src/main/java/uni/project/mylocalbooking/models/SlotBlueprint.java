@@ -9,13 +9,11 @@ import org.json.JSONObject;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.function.IntFunction;
 
 
 public abstract class SlotBlueprint extends DatabaseModel {
@@ -45,7 +43,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
     public final LocalDate fromDate;
     public final LocalDate toDate;
 
-    public Collection<Slot> slots = new ArrayList<>();
+    public final HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
 
     public SlotBlueprint(Long id, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         super(id);
@@ -55,9 +53,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
         this.toDate = toDate;
         this.establishment = establishment;
 
-        if(establishment.blueprints == null)
-            establishment.blueprints = new ArrayList<>();
-        establishment.blueprints.add(this);
+        establishment.addBlueprint(this);
     }
 
     public SlotBlueprint(Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
@@ -67,7 +63,9 @@ public abstract class SlotBlueprint extends DatabaseModel {
     protected SlotBlueprint(JSONObject object) throws JSONException {
         super(object);
         weekdays = getDaysOfWeek(object.getInt("weekdays"));
-        reservationLimit = object.has("reservation_limit") ? object.getInt("reservation_limit") : null;
+        reservationLimit = object.has("reservation_limit") && !object.isNull("reservation_limit") ?
+                object.getInt("reservation_limit") : null;
+
         fromDate = LocalDate.parse(object.getString("from_date"));
         toDate = LocalDate.parse(object.getString("to_date"));
     }
@@ -89,7 +87,9 @@ public abstract class SlotBlueprint extends DatabaseModel {
 
         for(Parcelable s : in.readParcelableArray(Slot.class.getClassLoader())) {
             Slot slot = (Slot) s;
-            slots.add(slot);
+            if(!slots.containsKey(slot.date))
+                slots.put(slot.date, new ArrayList<>());
+            slots.get(slot.date).add(slot);
             slot.blueprint = this;
         }
     }
@@ -111,12 +111,21 @@ public abstract class SlotBlueprint extends DatabaseModel {
         parcel.writeSerializable(fromDate);
         parcel.writeSerializable(toDate);
 
-        Slot[] slotsArr = new Slot[slots.size()];
-        slots.toArray(slotsArr);
+        Slot[] slotsArr = slots.values().stream().flatMap(Collection::stream).toArray(Slot[]::new);
         parcel.writeParcelableArray(slotsArr, i);
     }
 
+    public int getDaysOfWeekAsInt(){
+        int result = 0;
+        for (DayOfWeek w : weekdays)
+            result = result | 7 - w.getValue();
+        return result;
+    }
+
     protected void addSlot(Slot slot) {
-        slots.add(slot);
+        if(!slots.containsKey(slot.date))
+            slots.put(slot.date, new ArrayList<>());
+
+        slots.get(slot.date).add(slot);
     }
 }

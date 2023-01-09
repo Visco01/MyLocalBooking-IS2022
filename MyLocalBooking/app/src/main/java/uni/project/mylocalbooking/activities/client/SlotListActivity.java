@@ -4,19 +4,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.Collection;
 
-import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.fragments.PasswordInputDialogFragment;
 import uni.project.mylocalbooking.fragments.PasswordRequestDialogFragment;
@@ -28,33 +30,52 @@ import uni.project.mylocalbooking.models.SlotBlueprint;
 public class SlotListActivity extends AppCompatActivity implements SlotListAdapter.IListener {
     private SlotListViewModel viewModel;
     private Establishment currentEstablishment;
+    private final SlotListAdapter adapter = new SlotListAdapter(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        currentEstablishment = (Establishment) getIntent().getExtras().getParcelable("current_establishment");
         setContentView(R.layout.activity_slot_list);
 
         viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
-
-        SlotListAdapter adapter = new SlotListAdapter(this);
         ((ListView) findViewById(R.id.slot_list)).setAdapter(adapter);
 
-        viewModel.getCurrentDay().observe(this, date -> {
-            adapter.onRefresh(date, viewModel.getBlueprints(date));
-            findViewById(R.id.no_available_slots).setVisibility(adapter.filteredSlots.isEmpty() ? View.VISIBLE : View.GONE);
+        ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setOnRefreshListener(() -> {
+            refreshDate(viewModel.getCurrentDay().getValue());
         });
+
+        viewModel.getCurrentDay().observe(this, this::refreshDate);
 
         viewModel.getReservationOutcome().observe(this, code -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             // TODO: be more specific with error message
-            builder.setMessage(R.string.reservation_error_generic_message)
+            builder.setMessage(R.string.make_reservation_error_generic_message)
                     .setTitle(R.string.reservation_error);
             builder.create();
 
         });
+    }
 
-        currentEstablishment = (Establishment) getIntent().getExtras().getParcelable("current_establishment");
-        viewModel.setBlueprints(currentEstablishment.blueprints);
+    private void refreshDate (LocalDate date) {
+        MutableLiveData<Collection<SlotBlueprint>> blueprints = new MutableLiveData<>();
+        blueprints.observe(this, bp -> {
+            adapter.onRefresh(date, bp);
+
+            findViewById(R.id.reservations_warning_text).setVisibility(bp.isEmpty() ? View.VISIBLE : View.GONE);
+            if(bp.isEmpty())
+                ((TextView) findViewById(R.id.reservations_warning_text)).setText(R.string.no_available_slots);
+        });
+
+        new Thread(() -> {
+            try {
+                blueprints.postValue(currentEstablishment.getBlueprints(date));
+            } catch (Establishment.PartialReservationsResultsException e) {
+                e.printStackTrace();
+                findViewById(R.id.reservations_warning_text).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.reservations_warning_text)).setText(R.string.get_reservation_error_generic_message);
+            }
+        }).start();
     }
 
     @Nullable
