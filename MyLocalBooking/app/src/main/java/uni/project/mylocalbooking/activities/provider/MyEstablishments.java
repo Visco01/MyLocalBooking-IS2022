@@ -1,5 +1,6 @@
 package uni.project.mylocalbooking.activities.provider;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -56,7 +57,6 @@ public class MyEstablishments extends BaseNavigationActivity implements RVInterf
             }, statusCode -> {
                 System.out.println("getOwnedEstablishment return error" + statusCode.name());
             });
-
         }
 
         addButton = findViewById(R.id.addEstablishmentButton);
