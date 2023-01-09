@@ -50,18 +50,13 @@ public class MyEstablishments extends BaseNavigationActivity implements RVInterf
         }
 
         if (savedInstanceState == null) {
-
-            MutableLiveData<Collection<Establishment>> ownewEstablishment = new MutableLiveData<>();
-            ownewEstablishment.observe( this, est -> {
+            IMyLocalBookingAPI.getApiInstance().getOwnedEstablishments(est -> {
                 establishments = est;
                 init_recycleRview();
+            }, statusCode -> {
+                System.out.println("getOwnedEstablishment return error" + statusCode.name());
             });
 
-            IMyLocalBookingAPI.getApiInstance().getOwnedEstablishments(ownewEstablishment);
-
-        }else {
-            for(Parcelable e : savedInstanceState.getParcelableArray("establishments"))
-                establishments.add((Establishment) e);
         }
 
         addButton = findViewById(R.id.addEstablishmentButton);
