@@ -39,7 +39,7 @@
             android:id="@+id/myEstablishment_textView1"
             android:textColor="@color/booking_color"
             android:layout_marginLeft="100dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="18dp"
             android:textSize="20dp">
 
         </TextView>
@@ -49,11 +49,11 @@
             android:layout_height="wrap_content"
             android:text="Location"
             android:textStyle="bold"
-            android:textSize="18dp"
+            android:textSize="17dp"
             android:id="@+id/myEstablishment_textView2"
             android:textColor="@color/booking_color"
             android:layout_marginLeft="100dp"
-            android:layout_marginTop="45dp">
+            android:layout_marginTop="43dp">
 
 
         </TextView>

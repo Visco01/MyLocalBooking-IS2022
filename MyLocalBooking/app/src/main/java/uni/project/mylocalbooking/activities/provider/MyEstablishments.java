@@ -1,33 +1,68 @@
 package uni.project.mylocalbooking.activities.provider;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
+import uni.project.mylocalbooking.activities.LoginActivity;
+import uni.project.mylocalbooking.activities.UserTest;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.Provider;
 
 public class MyEstablishments extends BaseNavigationActivity implements RVInterface {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    List<ModelClass_myEstablishment> myEstablishmentList;
+    Collection<Establishment> establishments = new ArrayList<>();
     Adapter_myEstablishment adapter_myEstablishment;
     private Button addButton;
+    Provider provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        UserTest.setType("Provider");
         super.onCreate(savedInstanceState);
+        provider = (Provider) MyLocalBooking.getCurrentUser();
+        /*
         init_data();
-        init_recycleRview();
+
+         */
+
+        if (SessionPreferences.getUserPrefs().isEmpty()){
+            System.out.println("Empty sessionData");
+            startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
+        }
+
+        if (savedInstanceState == null) {
+
+            MutableLiveData<Collection<Establishment>> ownewEstablishment = new MutableLiveData<>();
+            ownewEstablishment.observe( this, est -> {
+                establishments = est;
+                init_recycleRview();
+            });
+
+            IMyLocalBookingAPI.getApiInstance().getOwnedEstablishments(ownewEstablishment);
+
+        }else {
+            for(Parcelable e : savedInstanceState.getParcelableArray("establishments"))
+                establishments.add((Establishment) e);
+        }
 
         addButton = findViewById(R.id.addEstablishmentButton);
         // addButton = findViewById(R.id.addButton);
@@ -56,11 +91,11 @@ public class MyEstablishments extends BaseNavigationActivity implements RVInterf
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter_myEstablishment = new Adapter_myEstablishment(myEstablishmentList, this);
+        adapter_myEstablishment = new Adapter_myEstablishment(new ArrayList<>(establishments), this);
         recyclerView.setAdapter(adapter_myEstablishment);
         adapter_myEstablishment.notifyDataSetChanged();
     }
-
+/*
     private void init_data() {
 
         myEstablishmentList = new ArrayList<>();
@@ -68,12 +103,12 @@ public class MyEstablishments extends BaseNavigationActivity implements RVInterf
         myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
         myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
 
-
     }
 
+ */
     @Override
     public void onItemClick(int position) {
-        Intent intent = new Intent(this, CalendarViewActivity.class);
+        Intent intent = new Intent(this, Past_provider_bookings.class);
         startActivity(intent);
     }
 }
