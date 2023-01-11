@@ -5,12 +5,9 @@ import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-
 import java.util.Map;
+import java.util.Objects;
 
-import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.client.HomeClientActivity;
 
@@ -19,57 +16,28 @@ import uni.project.mylocalbooking.fragments.FailureFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private Button homePro;
-    private Button homeCli;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
-        homePro = findViewById(R.id.btn_comirs_home_provider);
-        homeCli = findViewById(R.id.go_client_home);
 
         Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
 
         if (!sessionData.isEmpty()){
             sessionData.forEach((k,v) -> System.out.println(k + ": " + v));
             //System.out.println(sessionData);
-            //TODO Da rimuovere.
-            if(((String) sessionData.get("usertype")).equals("client")){
+            if(Objects.equals((String) sessionData.get("usertype"), "client")){
                 openHome();
             }
-            else if (((String) sessionData.get("usertype")).equals("provider")){
+            else if (Objects.equals((String) sessionData.get("usertype"), "provider")){
                 openHomeProvider();
             }
             else{
                 System.out.println("Not a valid Login, entering \"UNAUTHORIZED MODE\"");
                 failedLogin();
+                startActivity(new Intent(this, LoginActivity.class));
             }
         }
-
-        homeCli.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openHome();
-            }
-        });
-
-        homePro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { openHomeProvider(); }
-        });
-
-        /*
-        prenota.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MyLocalBooking.getAppContext(), SlotListActivity.class));
-            }
-        });*/
     }
-
 
     protected void openHome() {
         Intent intent = new Intent(this, HomeClientActivity.class);

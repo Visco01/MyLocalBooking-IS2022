@@ -20,6 +20,8 @@
     <color name="slot_bottom_line">#70CFCFCF</color>
     <color name="weekday_picker_activated">#FF000000</color>
     <color name="weekday_picker_deactivated">#FFFFFFFF</color>
+    <color name="rosso">#cb3234</color>
+    <color name="map_picker">#8BC34A</color>
 
 
 

@@ -31,12 +31,9 @@ import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.MainActivity;
-import uni.project.mylocalbooking.activities.UserTest;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
-import uni.project.mylocalbooking.models.Client;
-import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Provider;
 
 public class ProviderRegistrationActivity extends AppCompatActivity {
@@ -193,7 +190,6 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
     }
 
     private void confirmSignup() {
-        UserTest.setType("Provider");
         DialogFragment newFragment = new SuccessFragment("User created successfully!",
                 "Enjoy ###PLACEHOLDER###");
         newFragment.show(getSupportFragmentManager(), "successReview");

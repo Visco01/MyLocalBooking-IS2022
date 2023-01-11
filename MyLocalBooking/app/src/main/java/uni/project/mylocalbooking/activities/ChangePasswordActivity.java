@@ -8,7 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.Map;
+
+import io.opencensus.internal.StringUtils;
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
+import uni.project.mylocalbooking.api.AESCrypt;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.AskConfirmFragment;
 import uni.project.mylocalbooking.fragments.FailureFragment;
@@ -19,14 +25,16 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     // TODO: get the value and remove the line below
     // For testing purpose i'll use the following one
-    private final String currentPassword = "Ciao123";
+    Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
+    private String currentPassword = (String) sessionData.get("password");
     EditText oldPassword, newPassword, newPasswordConfirm;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
+
+        currentPassword = currentPassword.replaceAll("\\s+","");
 
         oldPassword = findViewById(R.id.oldPassword);
         newPassword = findViewById(R.id.newPassword);
@@ -44,28 +52,48 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     failedChangeEmptiness();
                 }
                 // Check if old password matches
-                else if(!currentPassword.equals(inputValue1)) {
-                    failedChangeOld();
-                }
-                // Check if new password is valid (DB constraint
-                else if(!checkPassword(inputValue2)){
-                    failedChangeValid();
-                }
-                // Check if confirm is the same as newPassword
-                else if(!inputValue2.equals(inputValue3)){
-                    failedChangeEquals();
-                }
-                else{
-                    // Errore nel parsing di una qualche stringa nel JSON (non è colpa della mail null)
-                    IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
-                    api.changeUserPassword(inputValue2,
-                            (a) -> confirmChange(),
-                            (b) -> {
-                                    System.out.println("Possible data error, change password api failed");
-                                    failedChangeAPI();
-                                    }
-                    );
-                    //confirmChange();
+                else {
+                    try {
+                        System.out.println(currentPassword);
+                        System.out.println(AESCrypt.encrypt(inputValue1));
+                        String cr = AESCrypt.encrypt(inputValue1);
+                        cr = cr.replaceAll("\\s+","");
+                        if(!currentPassword.equals(cr)) {
+                            System.out.println("CUR: " + currentPassword);
+                            for (int i=0; i<currentPassword.length(); i++){
+                                System.out.println(currentPassword.charAt(i));
+                            }
+                            System.out.println("-----\n");
+                            System.out.println("CRY: " + cr);
+                            for (int i=0; i<cr.length(); i++){
+                                System.out.println(cr.charAt(i));
+                            }
+                            System.out.println("-----\n");
+                            failedChangeOld();
+                        }
+                        // Check if new password is valid (DB constraint
+                        else if(!checkPassword(inputValue2)){
+                            failedChangeValid();
+                        }
+                        // Check if confirm is the same as newPassword
+                        else if(!inputValue2.equals(inputValue3)){
+                            failedChangeEquals();
+                        }
+                        else{
+                            // Errore nel parsing di una qualche stringa nel JSON (non è colpa della mail null)
+                            IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
+                            api.changeUserPassword(inputValue2.replaceAll("\\s+",""),
+                                    (a) -> confirmChange(),
+                                    (b) -> {
+                                            System.out.println("Possible data error, change password api failed");
+                                            failedChangeAPI();
+                                            }
+                            );
+                            //confirmChange();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
