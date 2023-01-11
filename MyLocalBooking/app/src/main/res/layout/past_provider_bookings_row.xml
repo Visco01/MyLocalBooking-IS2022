@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="15dp"
+            android:layout_marginLeft="15dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/myEstablishment_imageview1"
+            android:src="@drawable/logo">
+
+        </ImageView>
+
+    </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:id="@+id/titlePastProviderBookings"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="13dp"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/booking_color">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/whoBookProviderBookings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginLeft="100dp"
+            android:textSize="18dp"
+            android:textColor="@color/booking_color"
+            android:textStyle="bold"
+            android:text="Who prenote">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/DateProviderBookings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="In date"
+            android:layout_marginTop="58dp"
+            android:layout_marginLeft="100dp"
+            android:textColor="@color/booking_color">
+
+        </TextView>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
