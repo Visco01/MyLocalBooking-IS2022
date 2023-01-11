@@ -21,7 +21,6 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.LoginActivity;
-import uni.project.mylocalbooking.activities.UserTest;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.Provider;
@@ -37,7 +36,6 @@ public class MyEstablishments extends BaseNavigationActivity implements RVInterf
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        UserTest.setType("Provider");
         super.onCreate(savedInstanceState);
         provider = (Provider) MyLocalBooking.getCurrentUser();
         /*

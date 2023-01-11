@@ -10,7 +10,9 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Map;
+import java.util.Objects;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.client.MyBookings;
@@ -34,15 +36,12 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
         // Set the layout of the corresponding Activity
         setContentView(getContentViewId());
 
-        // TODO: Remove before submission
-        // Get the currentUser info
-        //Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
-        // if (!sessionData){
-        //      return to login page!!!
-        // }
-        //if (((String) sessionData.get("usertype")).equals("client")){
+        Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
+        if (sessionData.isEmpty()){
+             startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
+        }
 
-        if (UserTest.getType() == "Client"){
+        if (Objects.equals((String) sessionData.get("usertype"), "client")){
             navigationView = (BottomNavigationView) findViewById(R.id.navigationClient);
             // Default position
             navigationView.setSelectedItemId(R.id.homeClient);
@@ -70,7 +69,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             });
         }
 
-        else if (UserTest.getType() == "Provider"){
+        else if (Objects.equals((String) sessionData.get("usertype"), "provider")){
 
             navigationView = (BottomNavigationView) findViewById(R.id.navigationProvider);
 
