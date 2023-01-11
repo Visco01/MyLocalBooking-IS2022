@@ -35,8 +35,6 @@ public class AddEstablishmentActivity extends AppCompatActivity {
     private String mapAddress;
 
 
-    // TODO: position picker
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,8 +98,6 @@ public class AddEstablishmentActivity extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         SelectableMapLocation location = (SelectableMapLocation) data.getExtras().getParcelable("selected_location");
-                        // TODO: do something with this data
-                        //System.out.println("Lat: " + location.coordinates.latitude + "\n" + "Long: " + location.coordinates.longitude);
                         lat = (float) location.coordinates.latitude;
                         lon = (float) location.coordinates.longitude;
                         mapAddress = location.address;
