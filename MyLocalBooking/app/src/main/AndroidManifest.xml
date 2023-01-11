@@ -41,6 +41,20 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".activities.provider.PeopleWhoBook"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.provider.Past_provider_bookings"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activities.provider.DailyCalendarActivity"
             android:exported="false"
             android:screenOrientation="portrait">

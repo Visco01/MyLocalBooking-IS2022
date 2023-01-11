@@ -12,13 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.models.Establishment;
 
 public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEstablishment.ViewHolder3> {
 
     private final RVInterface rvInterface;
-    List<ModelClass_myEstablishment> providerEstablishment;
+    List<Establishment> providerEstablishment;
 
-    public Adapter_myEstablishment(List<ModelClass_myEstablishment> providerEstablishment, RVInterface rvInterface) {
+    public Adapter_myEstablishment(List<Establishment> providerEstablishment, RVInterface rvInterface) {
         this.rvInterface = rvInterface;
         this.providerEstablishment = providerEstablishment;
     }
@@ -32,10 +33,9 @@ public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEsta
 
     @Override
     public void onBindViewHolder(@NonNull Adapter_myEstablishment.ViewHolder3 holder, int position) {
-        int resource = providerEstablishment.get(position).getImageView();
-        String title = providerEstablishment.get(position).getTitle();
-        String location = providerEstablishment.get(position).getLocation();
-        holder.setData(resource, title, location);
+
+        int resource = R.drawable.logo;
+        holder.setData(resource, providerEstablishment.get(position));
     }
 
     @Override
@@ -48,6 +48,7 @@ public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEsta
         private ImageView imageView;
         private TextView textViewTitle;
         private TextView textViewLocation;
+        private Establishment establishment;
 
         public ViewHolder3(@NonNull View itemView, RVInterface rvInterface) {
             super(itemView);
@@ -71,10 +72,11 @@ public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEsta
 
         }
 
-        public void setData(int resource, String title, String location) {
+        public void setData(int resource, Establishment establishment) {
+            this.establishment = establishment;
             imageView.setImageResource(resource);
-            textViewTitle.setText(title);
-            textViewLocation.setText(location);
+            textViewTitle.setText(establishment.name);
+            textViewLocation.setText(establishment.address);
         }
     }
 

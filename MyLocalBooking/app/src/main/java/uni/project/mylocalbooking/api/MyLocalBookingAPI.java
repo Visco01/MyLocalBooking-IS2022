@@ -226,10 +226,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         if(appUserId == null)
             return;
 
-        Long providerId = getProviderByAppUserId(appUserId);
-        if(providerId == null) {
-            return;
-        }
+        Long providerId = ((Provider) MyLocalBooking.getCurrentUser()).getSubclassId();
         String url = MyLocalBookingAPI.apiPrefix + "establishments_by_provider_id/" + providerId; // TODO: conform API response to new json models
         new CallbackAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, data -> {
             Collection<Establishment> establishments = new ArrayList<>();
