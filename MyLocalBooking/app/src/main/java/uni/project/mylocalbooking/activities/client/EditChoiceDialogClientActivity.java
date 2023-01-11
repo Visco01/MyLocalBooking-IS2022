@@ -50,9 +50,8 @@ public class EditChoiceDialogClientActivity extends Dialog implements View.OnCli
             case R.id.editBirthday:
                 motherActivity.startActivity(new Intent(motherActivity, ChangeDataActivity.class));
                 return;
-            // TODO: still not implemented
             case R.id.editPosition:
-                motherActivity.startActivity(new Intent(motherActivity, ProfileClientActivity.class));
+                motherActivity.startActivity(new Intent(motherActivity, ChangePositionActivity.class));
                 return;
             case R.id.editName:
                 motherActivity.startActivity(new Intent(motherActivity, ChangeNameActivity.class));

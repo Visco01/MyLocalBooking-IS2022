@@ -12,7 +12,7 @@ import android.app.Dialog;
 import java.util.Objects;
 
 import uni.project.mylocalbooking.MyLocalBooking;
-import uni.project.mylocalbooking.activities.UserTest;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.client.HomeClientActivity;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 
@@ -34,11 +34,11 @@ public class SuccessFragment extends DialogFragment {
         builder.setMessage(successMessage).setTitle(successTitle)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // TODO: Replace with AppUser
-                        if (Objects.equals(UserTest.getType(), "Client")){
+
+                        if (Objects.equals((String) SessionPreferences.getUserPrefs().get("usertype"), "client")){
                             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeClientActivity.class));
                         }
-                        else if (Objects.equals(UserTest.getType(), "Provider")){
+                        else if (Objects.equals((String) SessionPreferences.getUserPrefs().get("usertype"), "provider")){
                             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
                         }
                         else{
@@ -55,10 +55,10 @@ public class SuccessFragment extends DialogFragment {
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
         // User type dynamic
-        if (Objects.equals(UserTest.getType(), "Client")){
+        if (Objects.equals((String) SessionPreferences.getUserPrefs().get("usertype"), "client")){
             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeClientActivity.class));
         }
-        else if (Objects.equals(UserTest.getType(), "Provider")){
+        else if (Objects.equals((String) SessionPreferences.getUserPrefs().get("usertype"), "provider")){
             startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
         }
         else{

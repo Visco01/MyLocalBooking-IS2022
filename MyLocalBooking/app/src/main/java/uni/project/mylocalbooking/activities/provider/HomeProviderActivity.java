@@ -1,9 +1,6 @@
 package uni.project.mylocalbooking.activities.provider;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,10 +11,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
-import uni.project.mylocalbooking.activities.UserTest;
 
 public class HomeProviderActivity extends BaseNavigationActivity {
 
@@ -29,7 +24,6 @@ public class HomeProviderActivity extends BaseNavigationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        UserTest.setType("Provider");
         super.onCreate(savedInstanceState);
 
         setTitle("Date & Time");

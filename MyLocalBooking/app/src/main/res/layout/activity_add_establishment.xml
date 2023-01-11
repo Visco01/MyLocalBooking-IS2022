@@ -28,9 +28,12 @@
                 android:id="@+id/loginText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
                 android:text="Add Establishment"
                 android:textAlignment="center"
+                android:gravity="center"
                 android:textColor="@color/booking_color"
                 android:textSize="36sp"
                 android:textStyle="bold"
@@ -38,7 +41,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"></TextView>
 
-            <EditText
+            <TextView
                 android:id="@+id/newEstAddress"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -48,13 +51,16 @@
                 android:background="@drawable/button_begin"
                 android:drawableLeft="@drawable/ic_baseline_push_pin_24"
                 android:drawablePadding="8dp"
+                android:gravity="center_vertical"
                 android:hint="Address"
-                android:inputType="text"
                 android:padding="8dp"
                 android:textColor="@color/black"
+                android:textIsSelectable="false"
+                android:textSize="16sp"
+                android:textStyle="italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/newEstName"></EditText>
+                app:layout_constraintTop_toBottomOf="@+id/newEstName" />
 
             <EditText
                 android:id="@+id/newEstName"
@@ -86,6 +92,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/loginText" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/choose_on_map_button"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/button_map_picker"
+                android:text="Choose your Address here"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toTopOf="@+id/confirm_add_est"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/newEstAddress" />
+
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/confirm_add_est"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
@@ -97,7 +116,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/newEstAddress">
+                app:layout_constraintTop_toBottomOf="@+id/choose_on_map_button">
 
             </androidx.appcompat.widget.AppCompatButton>
         </androidx.constraintlayout.widget.ConstraintLayout>

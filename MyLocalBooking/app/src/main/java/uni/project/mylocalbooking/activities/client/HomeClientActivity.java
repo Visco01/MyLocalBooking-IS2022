@@ -1,22 +1,19 @@
 package uni.project.mylocalbooking.activities.client;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -25,17 +22,12 @@ import android.widget.Switch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
-import uni.project.mylocalbooking.activities.HomeActivity;
 import uni.project.mylocalbooking.activities.LoginActivity;
-import uni.project.mylocalbooking.activities.UserTest;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.models.Establishment;
@@ -50,12 +42,19 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        UserTest.setType("Client");
         super.onCreate(savedInstanceState);
 
         if (SessionPreferences.getUserPrefs().isEmpty()){
             System.out.println("Empty sessionData");
             startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
+        }
+
+        if (isConnected()){
+            System.out.println("Connected");
+        }
+        else{
+            System.out.println("Not");
+
         }
 
         if(savedInstanceState == null) {
@@ -156,6 +155,19 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
                     deniedPermission();
                 }
             });
+
+    public boolean isConnected() {
+        boolean connected = false;
+        try {
+            ConnectivityManager cm = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo nInfo = cm.getActiveNetworkInfo();
+            connected = nInfo != null && nInfo.isAvailable() && nInfo.isConnected();
+            return connected;
+        } catch (Exception e) {
+            System.out.println("Connectivity Exception: \n" + e.getMessage());
+        }
+        return connected;
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
