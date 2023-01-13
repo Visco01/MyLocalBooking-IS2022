@@ -71,7 +71,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
 
     @Override
     public void onDaySelected(DayOfWeek dow) {
-        viewModel.setCurrentDayOfWeek(dow);
+        viewModel.setSelectedDayOfWeek(dow);
     }
 
     private LocalDate getFirstDayOfWeek(LocalDate date) {
@@ -108,7 +108,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
         });
 
         viewModel.setStartOfWeek(initialWeek);
-        viewModel.setCurrentDayOfWeek(LocalDate.now().getDayOfWeek());
+        viewModel.setSelectedDayOfWeek(LocalDate.now().getDayOfWeek());
         return view;
     }
 
