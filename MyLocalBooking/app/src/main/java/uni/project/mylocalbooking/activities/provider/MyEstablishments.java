@@ -25,7 +25,7 @@ import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.Provider;
 
-public class MyEstablishments extends BaseNavigationActivity implements RVInterface {
+public class MyEstablishments extends BaseNavigationActivity implements Adapter_myEstablishment.EstablishmentSelected {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
@@ -88,6 +88,11 @@ public class MyEstablishments extends BaseNavigationActivity implements RVInterf
         recyclerView.setAdapter(adapter_myEstablishment);
         adapter_myEstablishment.notifyDataSetChanged();
     }
+
+    @Override
+    public void onEstablishmentSelected(Establishment establishment) {
+        startActivity(new Intent(this, Past_provider_bookings.class).putExtra("current_establishment_selected", establishment));
+    }
 /*
     private void init_data() {
 
@@ -99,9 +104,4 @@ public class MyEstablishments extends BaseNavigationActivity implements RVInterf
     }
 
  */
-    @Override
-    public void onItemClick(int position) {
-        Intent intent = new Intent(this, Past_provider_bookings.class);
-        startActivity(intent);
-    }
 }
