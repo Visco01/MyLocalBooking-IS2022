@@ -36,7 +36,6 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    Collection<Establishment> establishments;
     Adapter_search_establishment adapter;
     Switch switchPos;
 
@@ -59,16 +58,12 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
 
         if(savedInstanceState == null) {
             IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
-                establishments = est;
+                super.establishments = est;
                 initRecyclerView();
             }, statusCode -> {
                 System.out.println("GetClosestEstablishments returned error " + statusCode.name());
             });
-        } else {
-            for(Parcelable e : savedInstanceState.getParcelableArray("establishments"))
-                establishments.add((Establishment) e);
         }
-
 
         switchPos = findViewById(R.id.switchPosition);
 
@@ -167,14 +162,6 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
             System.out.println("Connectivity Exception: \n" + e.getMessage());
         }
         return connected;
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Establishment[] establishmentsArr = new Establishment[establishments.size()];
-        establishments.toArray(establishmentsArr);
-        outState.putParcelableArray("establishments", establishmentsArr);
     }
 
     private void initRecyclerView() {

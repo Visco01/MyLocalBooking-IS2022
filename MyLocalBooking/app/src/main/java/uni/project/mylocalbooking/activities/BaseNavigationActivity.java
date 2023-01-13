@@ -1,16 +1,21 @@
 package uni.project.mylocalbooking.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
@@ -21,11 +26,13 @@ import uni.project.mylocalbooking.activities.client.HomeClientActivity;
 import uni.project.mylocalbooking.activities.provider.HomeProviderActivity;
 import uni.project.mylocalbooking.activities.provider.MyEstablishments;
 import uni.project.mylocalbooking.activities.provider.ProfileProviderActivity;
+import uni.project.mylocalbooking.models.Establishment;
 
 public abstract class BaseNavigationActivity extends AppCompatActivity {
 
     protected BottomNavigationView navigationView;
     private Intent intent;
+    protected Collection<Establishment> establishments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,12 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
         Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
         if (sessionData.isEmpty()){
              startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
+        }
+
+        if(savedInstanceState != null && savedInstanceState.containsKey("establishments")) {
+            establishments = Arrays.stream(savedInstanceState.getParcelableArray("establishments"))
+                    .map(e -> (Establishment)e)
+                    .collect(Collectors.toList());
         }
 
         if (Objects.equals((String) sessionData.get("usertype"), "client")){
@@ -115,6 +128,15 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         overridePendingTransition(0, 0);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(establishments != null) {
+            Parcelable[] arr = new Parcelable[establishments.size()];
+            outState.putParcelableArray("establishments", establishments.toArray(arr));
+        }
     }
 
     private void updateNavigationBarState(){
