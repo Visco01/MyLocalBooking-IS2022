@@ -501,7 +501,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String url = MyLocalBookingAPI.apiPrefix + "slots?establishment_id=" + establishment.getId() + "&date='" + date.toString() + "'";
         HashMap<Long, SlotBlueprint> blueprints = new HashMap<>();
         for(SlotBlueprint b : establishment.blueprints)
-            blueprints.put(b.getId(), b);
+            blueprints.put(((IDatabaseSubclassModel)b).getSubclassId(), b);
 
         JSONArray response = new BlockingAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, true).call().waitResponse();
         Collection<Slot> slots = new ArrayList<>();
