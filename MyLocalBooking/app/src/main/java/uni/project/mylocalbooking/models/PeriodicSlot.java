@@ -24,11 +24,8 @@ public class PeriodicSlot extends Slot implements ISelectableSlot {
         }
     };
 
-    private Long id;
-
     public PeriodicSlot(Long id, Long slot_id, LocalDate date, String ownerCellphone, boolean passwordProtected, HashSet<Client> reservations, PeriodicSlotBlueprint blueprint) {
-        super(slot_id, date, ownerCellphone, passwordProtected, reservations, blueprint);
-        this.id = id;
+        super(id, slot_id, date, ownerCellphone, passwordProtected, reservations, blueprint);
     }
 
     public PeriodicSlot(LocalDate date, String ownerCellphone, PeriodicSlotBlueprint blueprint) {
@@ -37,29 +34,15 @@ public class PeriodicSlot extends Slot implements ISelectableSlot {
 
     public PeriodicSlot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
         super(object, blueprints);
-
-        id = object.getLong("subclass_id");
     }
 
     protected PeriodicSlot(Parcel in) {
         super(in);
-        id = in.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
-        parcel.writeLong(id);
-    }
-
-    @Override
-    public Long getSubclassId() {
-        return id;
-    }
-
-    @Override
-    public void setSubclassId(Long id) {
-        this.id = id;
     }
 
     @Override

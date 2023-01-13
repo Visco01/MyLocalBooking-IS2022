@@ -36,7 +36,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
         }
     };
 
-    private Long id;
     public final LocalTime openTime;
     public final LocalTime closeTime;
     public final Duration maxDuration;
@@ -44,8 +43,7 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     public final HashMap<LocalDate, SortedSet<ManualSlot>> slots = new HashMap<>();
 
     public ManualSlotBlueprint(Long id, LocalTime openTime, LocalTime closeTime, Duration maxDuration, Long slot_id, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
-        super(slot_id, establishment, reservationLimit, weekdays, fromDate, toDate);
-        this.id = id;
+        super(id, slot_id, establishment, reservationLimit, weekdays, fromDate, toDate);
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.maxDuration = maxDuration;
@@ -58,7 +56,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     public ManualSlotBlueprint(JSONObject object) throws JSONException {
         super(object);
 
-        id = object.getLong("subclass_id");
         openTime = LocalTime.parse(object.getString("open_time"));
         closeTime = LocalTime.parse(object.getString("close_time"));
         maxDuration = Duration.between(
@@ -69,7 +66,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
 
     protected ManualSlotBlueprint(Parcel in) {
         super(in);
-        id = in.readLong();
         openTime = (LocalTime) in.readSerializable();
         closeTime = (LocalTime) in.readSerializable();
         maxDuration = (Duration) in.readSerializable();
@@ -84,7 +80,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
-        parcel.writeLong(id);
         parcel.writeSerializable(openTime);
         parcel.writeSerializable(closeTime);
         parcel.writeSerializable(maxDuration);
@@ -97,16 +92,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     @Override
     public boolean hasSlotsInDate(@NotNull LocalDate date) {
         return slots.containsKey(date);
-    }
-
-    @Override
-    public Long getSubclassId() {
-        return id;
-    }
-
-    @Override
-    public void setSubclassId(Long id) {
-        this.id = id;
     }
 
     @Override

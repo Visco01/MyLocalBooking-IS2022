@@ -28,13 +28,11 @@ public class ManualSlot extends Slot implements ISelectableSlot, Comparable<Manu
         }
     };
 
-    private Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;
 
     public ManualSlot(Long id, LocalTime fromTime, LocalTime toTime, Long slot_id, LocalDate date, String ownerCellphone, boolean passwordProtected, HashSet<Client> reservations, ManualSlotBlueprint blueprint) {
-        super(slot_id, date, ownerCellphone, passwordProtected, reservations, blueprint);
-        this.id = id;
+        super(id, slot_id, date, ownerCellphone, passwordProtected, reservations, blueprint);
         this.fromTime = fromTime;
         this.toTime = toTime;
     }
@@ -46,14 +44,12 @@ public class ManualSlot extends Slot implements ISelectableSlot, Comparable<Manu
     public ManualSlot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
         super(object, blueprints);
 
-        id = object.getLong("subclass_id");
         fromTime = LocalTime.parse(object.getString("from_time"));
         toTime = LocalTime.parse(object.getString("to_time"));
     }
 
     protected ManualSlot(Parcel in) {
         super(in);
-        id = in.readLong();
         fromTime = (LocalTime) in.readSerializable();
         toTime = (LocalTime) in.readSerializable();
     }
@@ -61,19 +57,8 @@ public class ManualSlot extends Slot implements ISelectableSlot, Comparable<Manu
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
-        parcel.writeLong(id);
         parcel.writeSerializable(fromTime);
         parcel.writeSerializable(toTime);
-    }
-
-    @Override
-    public Long getSubclassId() {
-        return id;
-    }
-
-    @Override
-    public void setSubclassId(Long id) {
-        this.id = id;
     }
 
     @Override

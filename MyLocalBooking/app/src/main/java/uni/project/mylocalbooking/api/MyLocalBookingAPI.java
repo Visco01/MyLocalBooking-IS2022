@@ -7,13 +7,11 @@ import androidx.lifecycle.MutableLiveData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.helpers.Util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import uni.project.mylocalbooking.MyLocalBooking;
@@ -22,7 +20,6 @@ import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
-import uni.project.mylocalbooking.models.IDatabaseSubclassModel;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlot;
@@ -501,7 +498,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String url = MyLocalBookingAPI.apiPrefix + "slots?establishment_id=" + establishment.getId() + "&date='" + date.toString() + "'";
         HashMap<Long, SlotBlueprint> blueprints = new HashMap<>();
         for(SlotBlueprint b : establishment.blueprints)
-            blueprints.put(((IDatabaseSubclassModel)b).getSubclassId(), b);
+            blueprints.put(b.getSubclassId(), b);
 
         JSONArray response = new BlockingAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, true).call().waitResponse();
         Collection<Slot> slots = new ArrayList<>();

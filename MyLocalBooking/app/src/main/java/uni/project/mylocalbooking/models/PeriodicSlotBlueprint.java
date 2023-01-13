@@ -28,15 +28,13 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
         }
     };
 
-    private Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;
 
     public final HashMap<LocalDate, PeriodicSlot> slots = new HashMap<>();
 
     public PeriodicSlotBlueprint(Long id, LocalTime fromTime, LocalTime toTime, Long base_id, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
-        super(base_id, establishment, reservationLimit, weekdays, fromDate, toDate);
-        this.id = id;
+        super(id, base_id, establishment, reservationLimit, weekdays, fromDate, toDate);
         this.fromTime = fromTime;
         this.toTime = toTime;
     }
@@ -48,14 +46,12 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
     public PeriodicSlotBlueprint(JSONObject object) throws JSONException {
         super(object);
 
-        id = object.getLong("subclass_id");
         fromTime = LocalTime.parse(object.getString("from_time"));
         toTime = LocalTime.parse(object.getString("to_time"));
     }
 
     protected PeriodicSlotBlueprint(Parcel in) {
         super(in);
-        id = in.readLong();
         fromTime = (LocalTime) in.readSerializable();
         toTime = (LocalTime) in.readSerializable();
 
@@ -69,7 +65,6 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
-        parcel.writeLong(id);
         parcel.writeSerializable(fromTime);
         parcel.writeSerializable(toTime);
 
@@ -81,16 +76,6 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
     @Override
     public boolean hasSlotsInDate(@NotNull LocalDate date) {
         return slots.containsKey(date);
-    }
-
-    @Override
-    public Long getSubclassId() {
-        return id;
-    }
-
-    @Override
-    public void setSubclassId(Long id) {
-        this.id = id;
     }
 
     @Override

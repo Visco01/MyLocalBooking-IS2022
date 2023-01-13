@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public abstract class SlotBlueprint extends DatabaseModel implements IDatabaseSubclassModel {
+public abstract class SlotBlueprint extends DatabaseSubclassModel {
     public static SlotBlueprint fromJson(JSONObject object) throws JSONException {
         String clientType = object.getString("type");
         if(clientType.equals("periodic"))
@@ -45,8 +45,8 @@ public abstract class SlotBlueprint extends DatabaseModel implements IDatabaseSu
 
     private final HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
 
-    public SlotBlueprint(Long id, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
-        super(id);
+    public SlotBlueprint(Long sublassId, Long superclassId, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
+        super(sublassId, superclassId);
         this.weekdays = weekdays;
         this.reservationLimit = reservationLimit;
         this.fromDate = fromDate;
@@ -57,7 +57,7 @@ public abstract class SlotBlueprint extends DatabaseModel implements IDatabaseSu
     }
 
     public SlotBlueprint(Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
-        this(null, establishment, reservationLimit, weekdays, fromDate, toDate);
+        this(null, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
     protected SlotBlueprint(JSONObject object) throws JSONException {
