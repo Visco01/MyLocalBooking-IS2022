@@ -74,10 +74,8 @@ public class SlotListViewModel extends ViewModel {
                     currentDay.setValue(currentDay.getValue());
                     reservationOutcome.setValue(null);
                 },
-                code -> {
-                    slot.blueprint.slots.remove(slot);
-                    reservationOutcome.setValue(code);
-                });
+                reservationOutcome::setValue
+        );
     }
 
     private void makeReservation(PeriodicSlotBlueprint blueprint, String password) {

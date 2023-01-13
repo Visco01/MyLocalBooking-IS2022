@@ -110,8 +110,10 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
         return super.reservationLimit;
     }
 
-    protected void addSlot(PeriodicSlot slot) {
-        super.addSlot(slot);
-        slots.put(slot.date, slot);
+    @Override
+    public void addSlot(Slot slot) {
+        assert slot instanceof PeriodicSlot;
+
+        slots.put(slot.date, (PeriodicSlot) slot);
     }
 }

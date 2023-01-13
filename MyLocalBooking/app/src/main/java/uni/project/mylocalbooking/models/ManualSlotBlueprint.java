@@ -108,12 +108,13 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         return closeTime;
     }
 
-    protected void addSlot(ManualSlot slot) {
-        super.addSlot(slot);
+    @Override
+    public void addSlot(Slot slot) {
+        assert slot instanceof ManualSlot;
 
         if(!slots.containsKey(slot.date))
             slots.put(slot.date, new TreeSet<>());
 
-        slots.get(slot.date).add(slot);
+        slots.get(slot.date).add((ManualSlot) slot);
     }
 }

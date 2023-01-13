@@ -43,8 +43,6 @@ public abstract class Slot extends DatabaseModel {
         this.passwordProtected = passwordProtected;
         this.reservations = reservations;
         this.blueprint = blueprint;
-
-        blueprint.addSlot(this);
     }
 
     public Slot(LocalDate date, String ownerCellphone, SlotBlueprint blueprint) {

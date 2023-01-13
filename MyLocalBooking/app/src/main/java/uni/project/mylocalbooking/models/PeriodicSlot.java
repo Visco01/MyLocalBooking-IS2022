@@ -29,7 +29,6 @@ public class PeriodicSlot extends Slot implements IDatabaseSubclassModel, ISelec
     public PeriodicSlot(Long id, Long slot_id, LocalDate date, String ownerCellphone, boolean passwordProtected, HashSet<Client> reservations, PeriodicSlotBlueprint blueprint) {
         super(slot_id, date, ownerCellphone, passwordProtected, reservations, blueprint);
         this.id = id;
-        blueprint.addSlot(this);
     }
 
     public PeriodicSlot(LocalDate date, String ownerCellphone, PeriodicSlotBlueprint blueprint) {

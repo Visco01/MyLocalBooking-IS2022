@@ -37,7 +37,6 @@ public class ManualSlot extends Slot implements IDatabaseSubclassModel, ISelecta
         this.id = id;
         this.fromTime = fromTime;
         this.toTime = toTime;
-        blueprint.addSlot(this);
     }
 
     public ManualSlot(LocalTime fromTime, LocalTime toTime, LocalDate date, String ownerCellphone, ManualSlotBlueprint blueprint) {

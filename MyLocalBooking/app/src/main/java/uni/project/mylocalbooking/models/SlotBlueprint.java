@@ -122,10 +122,6 @@ public abstract class SlotBlueprint extends DatabaseModel {
         return result;
     }
 
-    protected void addSlot(Slot slot) {
-        if(!slots.containsKey(slot.date))
-            slots.put(slot.date, new ArrayList<>());
-
-        slots.get(slot.date).add(slot);
-    }
+    public abstract void addSlot(@NotNull Slot slot);
+    public abstract boolean hasSlotsInDate(@NotNull LocalDate date);
 }
