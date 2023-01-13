@@ -19,42 +19,54 @@ import android.widget.TextView;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+import uni.project.mylocalbooking.api.StatusCode;
 import uni.project.mylocalbooking.fragments.PasswordInputDialogFragment;
 import uni.project.mylocalbooking.fragments.PasswordRequestDialogFragment;
+import uni.project.mylocalbooking.fragments.WeekdayPickerFragment;
+import uni.project.mylocalbooking.fragments.WeekdayPickerViewModel;
+import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ManualSlot;
+import uni.project.mylocalbooking.models.PeriodicSlot;
+import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
+import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListActivity extends AppCompatActivity implements SlotListAdapter.IListener {
-    private SlotListViewModel viewModel;
+    private WeekdayPickerViewModel weekdayPickerViewModel;
     private Establishment currentEstablishment;
     private final SlotListAdapter adapter = new SlotListAdapter(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        currentEstablishment = (Establishment) getIntent().getExtras().getParcelable("current_establishment");
         setContentView(R.layout.activity_slot_list);
 
-        viewModel = new ViewModelProvider(this).get(SlotListViewModel.class);
+        weekdayPickerViewModel = new ViewModelProvider(this).get(WeekdayPickerViewModel.class);
+
+        if(savedInstanceState == null) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("simple", false);
+
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.weekday_picker_container_view, WeekdayPickerFragment.class, bundle)
+                    .commit();
+        }
+
+        currentEstablishment = (Establishment) getIntent().getExtras().getParcelable("current_establishment");
+
         ((ListView) findViewById(R.id.slot_list)).setAdapter(adapter);
 
         ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setOnRefreshListener(() -> {
-            refreshDate(viewModel.getCurrentDay().getValue());
+            refreshDate(weekdayPickerViewModel.getSelectedDate().getValue());
         });
 
-        viewModel.getCurrentDay().observe(this, this::refreshDate);
-
-        viewModel.getReservationOutcome().observe(this, code -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // TODO: be more specific with error message
-            builder.setMessage(R.string.make_reservation_error_generic_message)
-                    .setTitle(R.string.reservation_error);
-            builder.create();
-
-        });
+        weekdayPickerViewModel.getSelectedDate().observe(this, this::refreshDate);
     }
 
     private void refreshDate (LocalDate date) {
@@ -95,7 +107,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
                 @Override
                 public void onRefused() {
-                    viewModel.makeReservation(selectableSlot, null);
+                    makeReservation((PeriodicSlotBlueprint) selectableSlot, null);
                 }
             });
             dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
@@ -103,7 +115,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
             showPasswordInputDialog(selectableSlot, R.string.slot_password_required, null);
         }
         else {
-            viewModel.makeReservation(selectableSlot, null);
+            makeReservation(selectableSlot, null);
         }
     }
 
@@ -131,14 +143,49 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
             @Override
             public void onRefused() {
-                viewModel.makeReservation(slot, null);
+                makeReservation((Slot) slot, null);
             }
         });
         wishToSetPasswordDialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
 
     private void showPasswordInputDialog(ISelectableSlot slot, int titleId, PasswordInputDialogFragment.ICancelListener cancelListener) {
-        PasswordInputDialogFragment dialog = new PasswordInputDialogFragment(password -> viewModel.makeReservation(slot, password), cancelListener, titleId);
+        PasswordInputDialogFragment dialog = new PasswordInputDialogFragment(password -> makeReservation(slot, password), cancelListener, titleId);
         dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
+    }
+
+    private void makeReservation(ISelectableSlot selectable, String password) {
+        if(selectable instanceof Slot)
+            makeReservation((Slot) selectable, password);
+        else
+            makeReservation((PeriodicSlotBlueprint) selectable, password);
+    }
+
+    private void makeReservation(Slot slot, String password) {
+        if(slot instanceof PeriodicSlot)
+            slot.setOwner(slot.blueprint.establishment.getProviderCellphone());
+        else
+            slot.setOwner(MyLocalBooking.getCurrentUser());
+
+        IMyLocalBookingAPI.getApiInstance().addReservation(slot, password, s -> {
+                    slot.reservations.add((Client) MyLocalBooking.getCurrentUser());
+                    refreshDate(weekdayPickerViewModel.getSelectedDate().getValue());
+                    onReservationOutcome(null);
+                },
+                code -> {
+                    onReservationOutcome(code);
+                });
+    }
+
+    private void makeReservation(PeriodicSlotBlueprint blueprint, String password) {
+        makeReservation((Slot) new PeriodicSlot(weekdayPickerViewModel.getSelectedDate().getValue(), blueprint.establishment.getProviderCellphone(), blueprint), password);
+    }
+
+    private void onReservationOutcome(StatusCode code) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // TODO: be more specific with error message
+        builder.setMessage(R.string.make_reservation_error_generic_message)
+                .setTitle(R.string.reservation_error);
+        builder.create();
     }
 }
