@@ -24,11 +24,7 @@ import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link WeekdayPickerFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdapter.IWeekdayPickerListener {
     private static final String MIN_START_OF_WEEK_ARG = "minStartOfWeek";
     private static final String INITIAL_WEEK_ARG = "initialWeek";
@@ -37,21 +33,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
     private WeekdayPickerViewModel viewModel;
     private LocalDate minStartOfWeek;
     private LocalDate initialWeek;
-    private boolean simpleWeekdayPicker = true;
-
-    public WeekdayPickerFragment() {
-    }
-
-    /*
-    public static WeekdayPickerFragment newInstance(LocalDate minStartOfWeek, LocalDate initialWeek) {
-        WeekdayPickerFragment fragment = new WeekdayPickerFragment();
-        Bundle args = new Bundle();
-        args.putLong(MIN_START_OF_WEEK_ARG, minStartOfWeek.toEpochDay());
-        args.putLong(INITIAL_WEEK_ARG, initialWeek.toEpochDay());
-        fragment.setArguments(args);
-        return fragment;
-    }
-*/
+    private boolean simpleWeekdayPicker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,14 +43,21 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
         if(savedInstanceState != null)
             return;
 
-        if(getArguments() != null) {
+        Bundle args = getArguments();
+        if(args != null) {
             simpleWeekdayPicker = getArguments().getBoolean(SIMPLE_MODE_ARG);
             if(!simpleWeekdayPicker) {
-                minStartOfWeek = getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(MIN_START_OF_WEEK_ARG)));
-                initialWeek = getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(INITIAL_WEEK_ARG)));
+                minStartOfWeek = args.containsKey(MIN_START_OF_WEEK_ARG) ?
+                        getFirstDayOfWeek(LocalDate.ofEpochDay(args.getLong(MIN_START_OF_WEEK_ARG))) :
+                        getFirstDayOfWeek(LocalDate.now());
+
+                initialWeek = args.containsKey(MIN_START_OF_WEEK_ARG) ?
+                        getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(INITIAL_WEEK_ARG))):
+                        getFirstDayOfWeek(LocalDate.now());
             }
         }
         else {
+            simpleWeekdayPicker = true;
             minStartOfWeek = getFirstDayOfWeek(LocalDate.now());
             initialWeek = getFirstDayOfWeek(minStartOfWeek);
         }
