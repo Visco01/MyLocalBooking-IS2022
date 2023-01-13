@@ -111,11 +111,15 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
                 }
             });
             dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
-        } else if(selectableSlot.isPasswordProtected()) {
-            showPasswordInputDialog(selectableSlot, R.string.slot_password_required, null);
-        }
-        else {
-            makeReservation(selectableSlot, null);
+        } else {
+            Slot slot = (Slot) selectableSlot;
+
+            if(slot.reservations.contains((Client) MyLocalBooking.getCurrentUser()))
+                deleteReservation(slot);
+            else if(selectableSlot.isPasswordProtected())
+                showPasswordInputDialog(selectableSlot, R.string.slot_password_required, null);
+            else
+                makeReservation(selectableSlot, null);
         }
     }
 
@@ -152,6 +156,12 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
     private void showPasswordInputDialog(ISelectableSlot slot, int titleId, PasswordInputDialogFragment.ICancelListener cancelListener) {
         PasswordInputDialogFragment dialog = new PasswordInputDialogFragment(password -> makeReservation(slot, password), cancelListener, titleId);
         dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
+    }
+
+    private void deleteReservation(Slot slot) {
+        IMyLocalBookingAPI.getApiInstance().cancelReservation(slot, s -> {
+            refreshDate(weekdayPickerViewModel.getSelectedDate().getValue());
+        }, null);
     }
 
     private void makeReservation(ISelectableSlot selectable, String password) {
