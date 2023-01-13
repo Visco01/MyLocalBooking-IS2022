@@ -12,8 +12,7 @@ public class WeekdayPickerViewModel extends ViewModel {
     private final MutableLiveData<HashSet<DayOfWeek>> selectedDaysOfWeek = new MutableLiveData<>();
     private final MutableLiveData<DayOfWeek> selectedDayOfWeek = new MutableLiveData<>();
     private final MutableLiveData<LocalDate> startOfWeek = new MutableLiveData<>();
-    private final MutableLiveData<DayOfWeek> currentDayOfWeek = new MutableLiveData<>();
-    private final MutableLiveData<LocalDate> currentDay = new MutableLiveData<>();
+    private final MutableLiveData<LocalDate> selectedDate = new MutableLiveData<>();
 
     public LiveData<HashSet<DayOfWeek>> getSelectedDaysOfWeek() {
         return selectedDaysOfWeek;
@@ -31,6 +30,12 @@ public class WeekdayPickerViewModel extends ViewModel {
 
     void setSelectedDayOfWeek(DayOfWeek dow) {
         selectedDayOfWeek.setValue(dow);
+        LocalDate weekStart = getStartOfWeek().getValue();
+
+        if(weekStart != null) {
+            LocalDate date = weekStart.plusDays(selectedDayOfWeek.getValue().getValue() - 1);
+            selectedDate.setValue(date);
+        }
     }
 
     public LiveData<LocalDate> getStartOfWeek() {
