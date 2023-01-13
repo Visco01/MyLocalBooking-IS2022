@@ -3,6 +3,9 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,8 +16,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -86,6 +92,11 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
 
         ManualSlot[] slotsArr = slots.values().stream().flatMap(SortedSet::stream).toArray(ManualSlot[]::new);
         parcel.writeParcelableArray(slotsArr, i);
+    }
+
+    @Override
+    public boolean hasSlotsInDate(@NotNull LocalDate date) {
+        return slots.containsKey(date);
     }
 
     @Override

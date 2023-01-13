@@ -113,7 +113,7 @@ public class Establishment extends DatabaseModel {
         if(results.isEmpty())
             return results;
 
-        boolean completeResults = results.stream().allMatch(blueprint -> blueprint.slots.containsKey(date)) ||
+        boolean completeResults = results.stream().allMatch(blueprint -> blueprint.hasSlotsInDate(date)) ||
                 IMyLocalBookingAPI.getApiInstance().getReservations(this, date);
 
         if(!completeResults)

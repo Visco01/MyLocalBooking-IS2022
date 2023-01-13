@@ -3,15 +3,18 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ISelectableSlot {
     public static final Parcelable.Creator<PeriodicSlotBlueprint> CREATOR
@@ -73,6 +76,11 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
         PeriodicSlot[] slotsArr = new PeriodicSlot[slots.size()];
         slots.values().toArray(slotsArr);
         parcel.writeParcelableArray(slotsArr, i);
+    }
+
+    @Override
+    public boolean hasSlotsInDate(@NotNull LocalDate date) {
+        return slots.containsKey(date);
     }
 
     @Override
