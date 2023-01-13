@@ -16,7 +16,7 @@ import java.util.HashSet;
 
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 
-public abstract class Slot extends DatabaseModel {
+public abstract class Slot extends DatabaseModel implements IDatabaseSubclassModel {
     public static Slot fromJson(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
         String clientType = object.getString("type");
         if(clientType.equals("periodic"))

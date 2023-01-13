@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 import java.time.LocalDate;
 
-public class Client extends AppUser implements IDatabaseSubclassModel {
+public class Client extends AppUser {
     public static final Parcelable.Creator<Client> CREATOR
             = new Parcelable.Creator<Client>() {
         public Client createFromParcel(Parcel in) {

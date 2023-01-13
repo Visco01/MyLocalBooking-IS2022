@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ITimeFrame {
+public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     public static final Parcelable.Creator<ManualSlotBlueprint> CREATOR
             = new Parcelable.Creator<ManualSlotBlueprint>() {
         public ManualSlotBlueprint createFromParcel(Parcel in) {

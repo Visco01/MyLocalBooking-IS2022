@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class ManualSlot extends Slot implements IDatabaseSubclassModel, ISelectableSlot, Comparable<ManualSlot> {
+public class ManualSlot extends Slot implements ISelectableSlot, Comparable<ManualSlot> {
     public static final Parcelable.Creator<ManualSlot> CREATOR
             = new Parcelable.Creator<ManualSlot>() {
         public ManualSlot createFromParcel(Parcel in) {

@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 import java.util.HashMap;
 
-public class Provider extends AppUser implements IDatabaseSubclassModel {
+public class Provider extends AppUser {
     public static final Parcelable.Creator<Provider> CREATOR
             = new Parcelable.Creator<Provider>() {
         public Provider createFromParcel(Parcel in) {

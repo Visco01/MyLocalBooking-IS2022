@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ISelectableSlot {
+public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableSlot {
     public static final Parcelable.Creator<PeriodicSlotBlueprint> CREATOR
             = new Parcelable.Creator<PeriodicSlotBlueprint>() {
         public PeriodicSlotBlueprint createFromParcel(Parcel in) {

@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import java.time.LocalDate;
 
-public abstract class AppUser extends DatabaseModel {
+public abstract class AppUser extends DatabaseModel implements IDatabaseSubclassModel {
     public static AppUser fromJson(JSONObject object) throws JSONException {
         String clientType = object.getString("type");
         if(clientType.equals("client"))

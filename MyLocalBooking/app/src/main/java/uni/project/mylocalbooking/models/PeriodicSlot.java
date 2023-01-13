@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class PeriodicSlot extends Slot implements IDatabaseSubclassModel, ISelectableSlot {
+public class PeriodicSlot extends Slot implements ISelectableSlot {
     public static final Parcelable.Creator<PeriodicSlot> CREATOR
             = new Parcelable.Creator<PeriodicSlot>() {
         public PeriodicSlot createFromParcel(Parcel in) {

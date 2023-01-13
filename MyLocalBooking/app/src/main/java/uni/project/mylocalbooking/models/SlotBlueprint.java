@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public abstract class SlotBlueprint extends DatabaseModel {
+public abstract class SlotBlueprint extends DatabaseModel implements IDatabaseSubclassModel {
     public static SlotBlueprint fromJson(JSONObject object) throws JSONException {
         String clientType = object.getString("type");
         if(clientType.equals("periodic"))
