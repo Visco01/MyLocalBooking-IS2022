@@ -3,17 +3,20 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
-public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ISelectableSlot {
+public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableSlot {
     public static final Parcelable.Creator<PeriodicSlotBlueprint> CREATOR
             = new Parcelable.Creator<PeriodicSlotBlueprint>() {
         public PeriodicSlotBlueprint createFromParcel(Parcel in) {
@@ -25,15 +28,13 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
         }
     };
 
-    private Long id;
     public final LocalTime fromTime;
     public final LocalTime toTime;
 
     public final HashMap<LocalDate, PeriodicSlot> slots = new HashMap<>();
 
     public PeriodicSlotBlueprint(Long id, LocalTime fromTime, LocalTime toTime, Long base_id, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
-        super(base_id, establishment, reservationLimit, weekdays, fromDate, toDate);
-        this.id = id;
+        super(id, base_id, establishment, reservationLimit, weekdays, fromDate, toDate);
         this.fromTime = fromTime;
         this.toTime = toTime;
     }
@@ -45,14 +46,12 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
     public PeriodicSlotBlueprint(JSONObject object) throws JSONException {
         super(object);
 
-        id = object.getLong("subclass_id");
         fromTime = LocalTime.parse(object.getString("from_time"));
         toTime = LocalTime.parse(object.getString("to_time"));
     }
 
     protected PeriodicSlotBlueprint(Parcel in) {
         super(in);
-        id = in.readLong();
         fromTime = (LocalTime) in.readSerializable();
         toTime = (LocalTime) in.readSerializable();
 
@@ -66,7 +65,6 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
-        parcel.writeLong(id);
         parcel.writeSerializable(fromTime);
         parcel.writeSerializable(toTime);
 
@@ -76,13 +74,8 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
     }
 
     @Override
-    public Long getSubclassId() {
-        return id;
-    }
-
-    @Override
-    public void setSubclassId(Long id) {
-        this.id = id;
+    public boolean hasSlotsInDate(@NotNull LocalDate date) {
+        return slots.containsKey(date);
     }
 
     @Override
@@ -110,8 +103,10 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements IDatabaseSub
         return super.reservationLimit;
     }
 
-    protected void addSlot(PeriodicSlot slot) {
-        super.addSlot(slot);
-        slots.put(slot.date, slot);
+    @Override
+    public void addSlot(Slot slot) {
+        assert slot instanceof PeriodicSlot;
+
+        slots.put(slot.date, (PeriodicSlot) slot);
     }
 }

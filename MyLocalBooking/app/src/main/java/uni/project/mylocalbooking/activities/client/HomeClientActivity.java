@@ -21,7 +21,9 @@ import android.view.View;
 import android.widget.Switch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
@@ -57,7 +59,7 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
 
         }
 
-        if(savedInstanceState == null) {
+        if(savedInstanceState == null || !savedInstanceState.containsKey("establishments")) {
             IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
                 establishments = est;
                 initRecyclerView();
@@ -65,8 +67,9 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
                 System.out.println("GetClosestEstablishments returned error " + statusCode.name());
             });
         } else {
-            for(Parcelable e : savedInstanceState.getParcelableArray("establishments"))
-                establishments.add((Establishment) e);
+            establishments = Arrays.stream(savedInstanceState.getParcelableArray("establishments"))
+                    .map(e -> (Establishment) e)
+                    .collect(Collectors.toList());
         }
 
 
@@ -172,9 +175,12 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        Establishment[] establishmentsArr = new Establishment[establishments.size()];
-        establishments.toArray(establishmentsArr);
-        outState.putParcelableArray("establishments", establishmentsArr);
+
+        if(establishments != null) {
+            Establishment[] establishmentsArr = new Establishment[establishments.size()];
+            establishments.toArray(establishmentsArr);
+            outState.putParcelableArray("establishments", establishmentsArr);
+        }
     }
 
     private void initRecyclerView() {
