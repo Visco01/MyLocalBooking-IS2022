@@ -96,6 +96,7 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
             ITimeFrame timeFrame = availableTimeframes.get(i);
             ((TextView) view.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
             ((TextView) view.findViewById(R.id.close_time)).setText(timeFrame.getEnd().toString());
+            ((TextView) view.findViewById(R.id.timeframe_title)).setText(R.string.available_time);
 
             Button button = view.findViewById(R.id.create_slot_button);
             button.setText(R.string.create_blueprint);
