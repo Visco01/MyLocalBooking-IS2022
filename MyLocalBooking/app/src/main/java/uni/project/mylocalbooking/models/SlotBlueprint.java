@@ -43,7 +43,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
     public final LocalDate fromDate;
     public final LocalDate toDate;
 
-    private final HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
+    public final HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
 
     public SlotBlueprint(Long sublassId, Long superclassId, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         super(sublassId, superclassId);

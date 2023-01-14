@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Client: mirco@client.it / fwefwfs-->3332221114 - Psswd: Ciao123
                 // mirco.client@gmail.com + 3332221115 - Psswd: Ciao123
                 else{
-                    api.login(cell.getText().toString(), psswd.getText().toString(), loginOutcome);
+                    api.login("0394032766679", "TestTest1", loginOutcome);
                 }
             }).start();
         });
