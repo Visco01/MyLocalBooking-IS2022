@@ -4,13 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/sfondo_local_booking"
     tools:context=".activities.provider.Past_provider_bookings">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPastProviderBookings"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/rvPastProviderBookings">
+        android:layout_height="match_parent">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/addSlotButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="520dp"
+        android:layout_marginEnd="16dp"
+        android:text="Add Slot"
+        app:layout_constraintEnd_toStartOf="@+id/rvPastProviderBookings"
+        app:layout_constraintStart_toEndOf="@+id/rvPastProviderBookings"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

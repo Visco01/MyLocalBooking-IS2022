@@ -6,6 +6,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.view.View;
+import android.widget.Button;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.LoginActivity;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
@@ -31,6 +35,7 @@ public class Past_provider_bookings extends AppCompatActivity implements RVInter
     AdapterPastProviderBookings adapterPastProviderBookings;
     LocalDate currentDate;
     ArrayList<Slot> allTodaySlots = new ArrayList<>();
+    Button addSlotButton;
 
 
     @Override
@@ -62,6 +67,15 @@ public class Past_provider_bookings extends AppCompatActivity implements RVInter
             System.out.println("Empty sessionData");
             startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
         }
+
+        addSlotButton = findViewById(R.id.addSlotButton);
+        addSlotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO
+                System.out.println("Not implemented");
+            }
+        });
 
     }
 
