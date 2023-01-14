@@ -8,10 +8,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
@@ -34,7 +37,12 @@ public class AdapterPastProviderBookings extends RecyclerView.Adapter<AdapterPas
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder5 holder, int position) {
-        holder.setData();
+        Slot s = slots.get(position);
+        HashSet<Client> cl = s.reservations;
+        for (Client c: cl){
+            holder.setData(c.firstname + c.lastname, s.date, s.blueprint.establishment.name);
+        }
+
     }
 
     @Override
@@ -72,10 +80,10 @@ public class AdapterPastProviderBookings extends RecyclerView.Adapter<AdapterPas
 
         }
 
-        public void setData() {
-            titleView.setText();
-            whoBookedView.setText();
-            dateView.setText();
+        public void setData(String clientName, LocalDate date, String estName) {
+            titleView.setText(estName);
+            whoBookedView.setText(clientName);
+            dateView.setText(date.toString());
         }
 
 
