@@ -21,12 +21,14 @@ import uni.project.mylocalbooking.R;
 public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdapter.ViewHolder> {
 
     private final IWeekdayPickerListener listener;
-    private final LocalDate minStartOfWeek;
+    private final LocalDate initialWeek;
+    private LocalDate initialDate;
     private final HashMap<LocalDate, View> selectedDates = new HashMap<>();
 
-    public WeekdayPickerAdapter(IWeekdayPickerListener listener, LocalDate minStartOfWeek) {
+    public WeekdayPickerAdapter(IWeekdayPickerListener listener, LocalDate initialWeek, LocalDate initialDate) {
         this.listener = listener;
-        this.minStartOfWeek = minStartOfWeek;
+        this.initialWeek = initialWeek;
+        this.initialDate = initialDate;
     }
 
     @NonNull
@@ -40,7 +42,7 @@ public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LocalDate startOfWeek = minStartOfWeek.plusWeeks(position);
+        LocalDate startOfWeek = initialWeek.plusWeeks(position);
         holder.setStartOfWeek(startOfWeek);
     }
 
@@ -78,9 +80,10 @@ public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdap
                 AppCompatButton button = (AppCompatButton) dayView.findViewById(R.id.weekday_button);
 
                 LocalDate date = startOfWeek.plusDays(i);
-                if(selectedDates.containsKey(date)) {
+                if(date.equals(initialDate) || selectedDates.containsKey(date)) {
                     selectedDates.put(date, dayView); // overwrite view which may be old
                     setViewActive(dayView, true);
+                    initialDate = null;
                 }
                 else
                     setViewActive(dayView, false);

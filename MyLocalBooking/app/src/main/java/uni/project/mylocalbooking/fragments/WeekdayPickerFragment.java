@@ -28,11 +28,13 @@ import uni.project.mylocalbooking.R;
 public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdapter.IWeekdayPickerListener {
     private static final String MIN_START_OF_WEEK_ARG = "minStartOfWeek";
     private static final String INITIAL_WEEK_ARG = "initialWeek";
+    private static final String INITIAL_DAY_ARG = "initialDay";
     private static final String SIMPLE_MODE_ARG = "simple";
 
     private WeekdayPickerViewModel viewModel;
     private LocalDate minStartOfWeek;
     private LocalDate initialWeek;
+    private LocalDate initialDay;
     private boolean simpleWeekdayPicker;
 
     @Override
@@ -51,9 +53,16 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
                         getFirstDayOfWeek(LocalDate.ofEpochDay(args.getLong(MIN_START_OF_WEEK_ARG))) :
                         getFirstDayOfWeek(LocalDate.now());
 
-                initialWeek = args.containsKey(MIN_START_OF_WEEK_ARG) ?
+                initialWeek = args.containsKey(INITIAL_WEEK_ARG) ?
                         getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(INITIAL_WEEK_ARG))):
-                        getFirstDayOfWeek(LocalDate.now());
+                        minStartOfWeek;
+
+                if(args.containsKey(INITIAL_DAY_ARG))
+                    initialDay = getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(INITIAL_WEEK_ARG)));
+                else {
+                    LocalDate today = LocalDate.now();
+                    initialDay =  today.compareTo(initialWeek) >= 0 ? today : initialWeek;
+                }
             }
         }
         else {
@@ -89,7 +98,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.week_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        recyclerView.setAdapter(new WeekdayPickerAdapter(this, minStartOfWeek));
+        recyclerView.setAdapter(new WeekdayPickerAdapter(this, initialWeek, initialDay));
         new PagerSnapHelper().attachToRecyclerView(recyclerView);
 
         TextView month = (TextView) view.findViewById(R.id.weekday_month);
