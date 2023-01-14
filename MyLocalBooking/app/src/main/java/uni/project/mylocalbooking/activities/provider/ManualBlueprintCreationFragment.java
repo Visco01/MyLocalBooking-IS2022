@@ -36,7 +36,6 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
             LocalTime previous = LocalTime.MIN;
             for(ManualSlotBlueprint blueprint : blueprints) {
                 if(previous.compareTo(blueprint.openTime) < 0) {
-                    long nano = previous.toNanoOfDay();
                     final LocalTime start = previous;
                     final LocalTime end = blueprint.openTime;
                     results.add(new ITimeFrame() {
@@ -54,7 +53,9 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
                 previous = blueprint.closeTime;
             }
 
-            if(previous.compareTo(LocalTime.MAX) < 0) {
+            // TODO: right bound should allow 00:00
+            LocalTime maxTime = LocalTime.of(23, 59);
+            if(previous.compareTo(maxTime) < 0) {
                 final LocalTime start = previous;
                 results.add(new ITimeFrame() {
 
@@ -65,7 +66,7 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
 
                     @Override
                     public LocalTime getEnd() {
-                        return LocalTime.MAX;
+                        return maxTime;
                     }
                 });
             }
