@@ -61,7 +61,7 @@ def generateAppUser():
     lastname = fake.last_name()
     email = testPercentage(EMAIL_PERCENTAGE, f'{firstname}.{lastname}@gmail.com')
     user = db.AppUser(
-        password_digest=generateRandomPassword(15),
+        password_digest='j7K/ktH8ivZe5wiEKjYHaA==', #TestTest1
         cellphone=f'039{fake.msisdn()[3:]}',
         email=email,
         firstname=firstname,
