@@ -130,7 +130,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
                     newTimeWindow.fromTime,
                     newTimeWindow.toTime,
                     newTimeWindow.date,
-                    null,
+                    MyLocalBooking.getCurrentUser().cellphone,
                     newTimeWindow.blueprint
             );
             requestPasswordConfirmation(slot);
