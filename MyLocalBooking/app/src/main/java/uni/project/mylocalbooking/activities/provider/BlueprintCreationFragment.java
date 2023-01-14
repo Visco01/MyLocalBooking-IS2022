@@ -5,16 +5,13 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -121,7 +118,7 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
     private void addFromDate(LinearLayout list) {
         CalendarView calendar = new CalendarView(requireContext());
         calendar.setDate(LocalDate.now().toEpochDay());
-        creteViewCardView(list, TITLE_FROMDATE, calendar, view -> {
+        createViewCardView(list, TITLE_FROMDATE, calendar, view -> {
             fromDate = LocalDate.ofEpochDay(calendar.getDate());
         });
     }
@@ -129,7 +126,7 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
     private void addToDate(LinearLayout list) {
         CalendarView calendar = new CalendarView(requireContext());
         calendar.setDate(LocalDate.now().toEpochDay());
-        creteViewCardView(list, TITLE_TODATE, calendar, view -> {
+        createViewCardView(list, TITLE_TODATE, calendar, view -> {
             toDate = LocalDate.ofEpochDay(calendar.getDate());
         });
     }
@@ -140,7 +137,7 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
 
         // TODO: validate input
 
-        creteViewCardView(list, TITLE_RESERVATIONS_LIMIT, limitText, view -> {
+        createViewCardView(list, TITLE_RESERVATIONS_LIMIT, limitText, view -> {
             int value = Integer.valueOf(String.valueOf(limitText.getText()));
             reservationLimit = value <= 0 ? 1 : value;
         });
@@ -153,7 +150,7 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
         return fragmentContainer;
     }
 
-    private <T extends Fragment> void createFragmentCardView(LinearLayout list, String title, Bundle innerBundle, Class<T> fragmentClass, View.OnClickListener onNext) {
+    protected  <T extends Fragment> void createFragmentCardView(LinearLayout list, String title, Bundle innerBundle, Class<T> fragmentClass, View.OnClickListener onNext) {
         CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString("title", title);
@@ -171,7 +168,7 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
                 .commit();
     }
 
-    private <T extends View> void creteViewCardView(LinearLayout list, String title, T view, View.OnClickListener onNext) {
+    protected  <T extends View> void createViewCardView(LinearLayout list, String title, T view, View.OnClickListener onNext) {
         CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString("title", title);
