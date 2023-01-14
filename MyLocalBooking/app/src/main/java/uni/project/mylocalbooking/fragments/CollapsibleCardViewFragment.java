@@ -3,6 +3,7 @@ package uni.project.mylocalbooking.fragments;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainer;
 
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.function.Consumer;
 
 import uni.project.mylocalbooking.R;
 
@@ -37,27 +40,49 @@ public class CollapsibleCardViewFragment extends Fragment {
             if(linearLayout.getChildCount() <= 1)
                 ((IOnAttachedListener) getParentFragment()).notifyFragmentAttached(title);
             else {
-                for(int i = 1; i < linearLayout.getChildCount(); i++) {
-                    View content = linearLayout.getChildAt(i);
-                    content.setVisibility(content.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-                }
+                toggleExpanded(view);
             }
         });
         return view;
     }
 
-    public <T extends Fragment> T setContent(Class<T> fragmentClass, Bundle bundle) {
+    public <T extends Fragment> T setContent(Class<T> fragmentClass, Bundle bundle, View.OnClickListener listener) {
         try {
             T fragment = fragmentClass.newInstance();
             fragment.setArguments(bundle);
-            getChildFragmentManager().beginTransaction()
+            getParentFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.content_layout, fragment)
+                    .add(R.id.content_layout, fragment, title)
                     .commit();
+
+            AppCompatButton button = (AppCompatButton) getView().findViewById(R.id.next_button);
+            button.setOnClickListener(listener);
+            button.setVisibility(View.VISIBLE);
             return fragment;
         } catch (IllegalAccessException | java.lang.InstantiationException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void expand() {
+        setExpanded(true);
+    }
+
+    public void collapse() {
+        setExpanded(false);
+    }
+
+    private void toggleExpanded(View root) {
+        int visibility = root.findViewById(R.id.content_layout).getVisibility();
+        if(visibility == View.VISIBLE)
+            collapse();
+        else
+            expand();
+    }
+
+    private void setExpanded(boolean expanded) {
+        getView().findViewById(R.id.content_layout).setVisibility(expanded ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.next_button).setVisibility(expanded ? View.VISIBLE : View.GONE);
     }
 }

@@ -21,7 +21,6 @@
         app:strokeWidth="2dp" >
 
         <LinearLayout
-            android:id="@+id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -54,9 +53,27 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- TODO: append child here -->
+            <LinearLayout
+                android:id="@+id/content_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- TODO: fragment goes here -->
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/next_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/next"
+                android:background="@color/reservation_button_available"
+                android:visibility="gone"/>
 
         </LinearLayout>
+
+
 
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

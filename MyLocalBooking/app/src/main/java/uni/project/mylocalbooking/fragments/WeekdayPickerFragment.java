@@ -102,6 +102,10 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
         viewModel.setSelectedDayOfWeek(dow);
     }
 
+    public HashSet<DayOfWeek> getSelectedDaysOfWeek() {
+        return selectedDaysOfWeek;
+    }
+
     private LocalDate getFirstDayOfWeek(LocalDate date) {
         int current_dow = date.getDayOfWeek().getValue();
         int monday_dow = DayOfWeek.MONDAY.getValue();

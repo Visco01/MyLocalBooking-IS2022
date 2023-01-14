@@ -2,6 +2,7 @@ package uni.project.mylocalbooking.activities.provider;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 
@@ -32,8 +33,12 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
             this.bundle = bundle;
         }
 
-        private T create() {
-            return cardViewFragment.setContent(innerFragmentType, bundle);
+        private T create(View.OnClickListener listener) {
+            return cardViewFragment.setContent(innerFragmentType, bundle, listener);
+        }
+
+        private void setOnNext (View.OnClickListener listener) {
+
         }
     }
     private Collection<SlotBlueprint> blueprints;
@@ -82,7 +87,9 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
 
     @Override
     public void notifyFragmentAttached(String title) {
-        Fragment created = pendingFragments.get(title).create();
+        Fragment created = pendingFragments.get(title).create(v -> {
+            System.out.println();
+        });
         createdFragments.put(title, created);
     }
 }
