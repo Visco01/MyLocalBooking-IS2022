@@ -46,9 +46,9 @@ public class CollapsibleCardViewFragment extends Fragment {
         return view;
     }
 
-    public Fragment setContent(Class<? extends Fragment> fragmentClass, Bundle bundle) {
+    public <T extends Fragment> T setContent(Class<T> fragmentClass, Bundle bundle) {
         try {
-            Fragment fragment = fragmentClass.newInstance();
+            T fragment = fragmentClass.newInstance();
             fragment.setArguments(bundle);
             getChildFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)

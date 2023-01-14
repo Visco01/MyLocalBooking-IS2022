@@ -21,23 +21,24 @@ import uni.project.mylocalbooking.fragments.WeekdayPickerFragment;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class BlueprintCreationFragment extends Fragment implements CollapsibleCardViewFragment.IOnAttachedListener {
-    private static class FragmentInfo {
+    private static class FragmentInfo<T extends Fragment> {
         private final CollapsibleCardViewFragment cardViewFragment;
-        private final Class<? extends Fragment> innerFragmentType;
+        private final Class<T> innerFragmentType;
         private final Bundle bundle;
 
-        private FragmentInfo(CollapsibleCardViewFragment cardViewFragment, Class<? extends Fragment> innerFragmentType, Bundle bundle) {
+        private FragmentInfo(CollapsibleCardViewFragment cardViewFragment, Class<T> innerFragmentType, Bundle bundle) {
             this.cardViewFragment = cardViewFragment;
             this.innerFragmentType = innerFragmentType;
             this.bundle = bundle;
         }
 
-        private void create() {
-            cardViewFragment.setContent(innerFragmentType, bundle);
+        private T create() {
+            return cardViewFragment.setContent(innerFragmentType, bundle);
         }
     }
     private Collection<SlotBlueprint> blueprints;
-    protected final HashMap<String, FragmentInfo> createdFragments = new HashMap<>();
+    protected final HashMap<String, FragmentInfo> pendingFragments = new HashMap<>();
+    protected final HashMap<String, Fragment> createdFragments = new HashMap<>();
 
 
     @Override
@@ -72,7 +73,7 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
         Bundle innerBundle = new Bundle();
         innerBundle.putBoolean("simple", true);
 
-        createdFragments.put(title, new FragmentInfo(fragment, WeekdayPickerFragment.class, innerBundle));
+        pendingFragments.put(title, new FragmentInfo(fragment, WeekdayPickerFragment.class, innerBundle));
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .add(fragmentContainer.getId(), fragment)
@@ -81,6 +82,7 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
 
     @Override
     public void notifyFragmentAttached(String title) {
-        createdFragments.get(title).create();
+        Fragment created = pendingFragments.get(title).create();
+        createdFragments.put(title, created);
     }
 }
