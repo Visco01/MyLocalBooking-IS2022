@@ -8,9 +8,11 @@ import androidx.fragment.app.FragmentContainerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.LinearLayout;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,29 +25,48 @@ import uni.project.mylocalbooking.fragments.WeekdayPickerFragment;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class BlueprintCreationFragment extends Fragment implements CollapsibleCardViewFragment.IOnAttachedListener {
-    private static class FragmentInfo<T extends Fragment> {
-        private final CollapsibleCardViewFragment cardViewFragment;
-        private final Class<T> innerFragmentType;
-        private final Bundle bundle;
-        private final View.OnClickListener listener;
+    private abstract static class CardViewInfo {
+        protected final View.OnClickListener listener;
+        protected final CollapsibleCardViewFragment cardViewFragment;
 
-        private FragmentInfo(CollapsibleCardViewFragment cardViewFragment, Class<T> innerFragmentType, Bundle bundle, View.OnClickListener listener) {
-            this.cardViewFragment = cardViewFragment;
-            this.innerFragmentType = innerFragmentType;
-            this.bundle = bundle;
+        private CardViewInfo(CollapsibleCardViewFragment cardViewFragment, View.OnClickListener listener) {
             this.listener = listener;
+            this.cardViewFragment = cardViewFragment;
         }
 
-        private T create() {
-            return cardViewFragment.setContent(innerFragmentType, bundle, listener);
+        protected abstract void create();
+    }
+    private static class FragmentCardViewInfo<T extends Fragment> extends CardViewInfo {
+        private final Class<T> innerFragmentType;
+        public T innerFragment;
+        private final Bundle bundle;
+
+        private FragmentCardViewInfo(CollapsibleCardViewFragment cardViewFragment, Class<T> innerFragmentType, Bundle bundle, View.OnClickListener listener) {
+            super(cardViewFragment, listener);
+            this.innerFragmentType = innerFragmentType;
+            this.bundle = bundle;
+        }
+
+        protected void create() {
+            innerFragment = cardViewFragment.setContent(innerFragmentType, bundle, listener);
+        }
+    }
+    private static class ViewCardViewInfo<T extends View> extends CardViewInfo {
+        private final T view;
+
+        private ViewCardViewInfo(CollapsibleCardViewFragment cardViewFragment, T view, View.OnClickListener listener) {
+            super(cardViewFragment, listener);
+            this.view = view;
+        }
+
+        protected void create() {
+            cardViewFragment.setContent(view, listener);
         }
     }
     protected Collection<SlotBlueprint> blueprints;
     protected Collection<SlotBlueprint> conflictingBlueprints;
-
-    protected final HashMap<String, FragmentInfo> pendingFragments = new HashMap<>();
-    protected final HashMap<String, Fragment> createdFragments = new HashMap<>();
-
+    protected final HashMap<String, CardViewInfo> createdCardViews = new HashMap<>();
+    protected LocalDate fromDate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,26 +82,16 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
         View view = inflater.inflate(R.layout.fragment_blueprint_creation, container, false);
         LinearLayout list = view.findViewById(R.id.blueprint_creation_steps_layout);
         addWeekdays(list);
+        addFromDate(list);
         return view;
     }
 
     private void addWeekdays(LinearLayout list) {
-        FragmentContainerView fragmentContainer = new FragmentContainerView(getContext());
-        fragmentContainer.setId(View.generateViewId());
-        list.addView(fragmentContainer);
-
-        String title = "Weekdays";
-
-        CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("title", title);
-        fragment.setArguments(bundle);
-
+        String title = "WeekDays";
         Bundle innerBundle = new Bundle();
         innerBundle.putBoolean("simple", true);
 
-
-        pendingFragments.put(title, new FragmentInfo(fragment, WeekdayPickerFragment.class, innerBundle, view -> {
+        createFragmentCardView(list, title, innerBundle, WeekdayPickerFragment.class, view -> {
             HashSet<DayOfWeek> weekDays = ((WeekdayPickerFragment) getChildFragmentManager().findFragmentByTag(title)).getSelectedDaysOfWeek();
 
             conflictingBlueprints = blueprints.stream().filter(blueprint -> {
@@ -90,9 +101,56 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
                 return !intersection.isEmpty();
 
             }).collect(Collectors.toList());
+        });
+    }
 
+    private void addFromDate(LinearLayout list) {
+        String title = "fromDate";
+        CalendarView calendar = new CalendarView(requireContext());
+        calendar.setDate(LocalDate.now().toEpochDay());
+        creteViewCardView(list, title, calendar, view -> {
+            fromDate = LocalDate.ofEpochDay(calendar.getDate());
+        });
+
+    }
+
+    private FragmentContainerView addFragmentContainer(LinearLayout list) {
+        FragmentContainerView fragmentContainer = new FragmentContainerView(requireContext());
+        fragmentContainer.setId(View.generateViewId());
+        list.addView(fragmentContainer);
+        return fragmentContainer;
+    }
+
+    private <T extends Fragment> void createFragmentCardView(LinearLayout list, String title, Bundle innerBundle, Class<T> fragmentClass, View.OnClickListener onNext) {
+        CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        fragment.setArguments(bundle);
+
+        createdCardViews.put(title, new FragmentCardViewInfo(fragment, fragmentClass, innerBundle, v -> {
             fragment.collapse();
+            onNext.onClick(v);
         }));
+
+        FragmentContainerView fragmentContainer = addFragmentContainer(list);
+        getChildFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(fragmentContainer.getId(), fragment)
+                .commit();
+    }
+
+    private <T extends View> void creteViewCardView(LinearLayout list, String title, T view, View.OnClickListener onNext) {
+        CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        fragment.setArguments(bundle);
+
+        createdCardViews.put(title, new ViewCardViewInfo<T>(fragment, view, v -> {
+            fragment.collapse();
+            onNext.onClick(v);
+        }));
+
+        FragmentContainerView fragmentContainer = addFragmentContainer(list);
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .add(fragmentContainer.getId(), fragment)
@@ -101,7 +159,6 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
 
     @Override
     public void notifyFragmentAttached(String title) {
-        Fragment created = pendingFragments.get(title).create();
-        createdFragments.put(title, created);
+        createdCardViews.get(title).create();
     }
 }

@@ -37,11 +37,10 @@ public class CollapsibleCardViewFragment extends Fragment {
         ((TextView) view.findViewById(R.id.cardview_title)).setText(title);
         LinearLayout linearLayout = view.findViewById(R.id.content_layout);
         view.findViewById(R.id.base_cardview).setOnClickListener(v -> {
-            if(linearLayout.getChildCount() <= 1)
+            if(linearLayout.getChildCount() == 0)
                 ((IOnAttachedListener) getParentFragment()).notifyFragmentAttached(title);
-            else {
+            else
                 toggleExpanded(view);
-            }
         });
         return view;
     }
@@ -63,6 +62,15 @@ public class CollapsibleCardViewFragment extends Fragment {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public <T extends View> T setContent(T view, View.OnClickListener listener) {
+        ((LinearLayout) getView().findViewById(R.id.content_layout)).addView(view);
+
+        AppCompatButton button = (AppCompatButton) getView().findViewById(R.id.next_button);
+        button.setOnClickListener(listener);
+        button.setVisibility(View.VISIBLE);
+        return view;
     }
 
     public void expand() {
