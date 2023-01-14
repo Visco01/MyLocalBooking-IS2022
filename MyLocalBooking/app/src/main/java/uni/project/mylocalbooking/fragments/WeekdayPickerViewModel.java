@@ -18,6 +18,10 @@ public class WeekdayPickerViewModel extends ViewModel {
         return selectedDaysOfWeek;
     }
 
+    public WeekdayPickerViewModel() {
+        selectedDaysOfWeek.setValue(new HashSet<>());
+    }
+
     void toggleSelectedDayOfWeek(DayOfWeek dow) {
         HashSet<DayOfWeek> daysOfWeek = selectedDaysOfWeek.getValue();
         if(daysOfWeek.contains(dow))
