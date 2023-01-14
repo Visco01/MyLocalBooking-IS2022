@@ -5,11 +5,16 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -63,10 +68,18 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
             cardViewFragment.setContent(view, listener);
         }
     }
+
+    protected static final String TITLE_WEEKDAYS = "weekdays";
+    protected static final String TITLE_FROMDATE = "fromdate";
+    protected static final String TITLE_TODATE = "todate";
+    protected static final String TITLE_RESERVATIONS_LIMIT = "reservationlimit";
+
     protected Collection<SlotBlueprint> blueprints;
     protected Collection<SlotBlueprint> conflictingBlueprints;
     protected final HashMap<String, CardViewInfo> createdCardViews = new HashMap<>();
     protected LocalDate fromDate;
+    protected LocalDate toDate;
+    protected Integer reservationLimit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,16 +96,17 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
         LinearLayout list = view.findViewById(R.id.blueprint_creation_steps_layout);
         addWeekdays(list);
         addFromDate(list);
+        addToDate(list);
+        addReservationLimit(list);
         return view;
     }
 
     private void addWeekdays(LinearLayout list) {
-        String title = "WeekDays";
         Bundle innerBundle = new Bundle();
         innerBundle.putBoolean("simple", true);
 
-        createFragmentCardView(list, title, innerBundle, WeekdayPickerFragment.class, view -> {
-            HashSet<DayOfWeek> weekDays = ((WeekdayPickerFragment) getChildFragmentManager().findFragmentByTag(title)).getSelectedDaysOfWeek();
+        createFragmentCardView(list, TITLE_WEEKDAYS, innerBundle, WeekdayPickerFragment.class, view -> {
+            HashSet<DayOfWeek> weekDays = ((WeekdayPickerFragment) getChildFragmentManager().findFragmentByTag(TITLE_WEEKDAYS)).getSelectedDaysOfWeek();
 
             conflictingBlueprints = blueprints.stream().filter(blueprint -> {
 
@@ -105,13 +119,31 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
     }
 
     private void addFromDate(LinearLayout list) {
-        String title = "fromDate";
         CalendarView calendar = new CalendarView(requireContext());
         calendar.setDate(LocalDate.now().toEpochDay());
-        creteViewCardView(list, title, calendar, view -> {
+        creteViewCardView(list, TITLE_FROMDATE, calendar, view -> {
             fromDate = LocalDate.ofEpochDay(calendar.getDate());
         });
+    }
 
+    private void addToDate(LinearLayout list) {
+        CalendarView calendar = new CalendarView(requireContext());
+        calendar.setDate(LocalDate.now().toEpochDay());
+        creteViewCardView(list, TITLE_TODATE, calendar, view -> {
+            toDate = LocalDate.ofEpochDay(calendar.getDate());
+        });
+    }
+
+    private void addReservationLimit(LinearLayout list) {
+        EditText limitText = new EditText(requireContext());
+        limitText.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        // TODO: validate input
+
+        creteViewCardView(list, TITLE_RESERVATIONS_LIMIT, limitText, view -> {
+            int value = Integer.valueOf(String.valueOf(limitText.getText()));
+            reservationLimit = value <= 0 ? 1 : value;
+        });
     }
 
     private FragmentContainerView addFragmentContainer(LinearLayout list) {
