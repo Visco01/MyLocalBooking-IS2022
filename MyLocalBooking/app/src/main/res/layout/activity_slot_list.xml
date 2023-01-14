@@ -7,8 +7,7 @@
     tools:context=".activities.client.SlotListActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
-        android:name="uni.project.mylocalbooking.fragments.WeekdayPickerFragment"
+        android:id="@+id/weekday_picker_container_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +25,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragmentContainerView" >
+        app:layout_constraintTop_toBottomOf="@+id/weekday_picker_container_view" >
 
         <ListView
             android:id="@+id/slot_list"

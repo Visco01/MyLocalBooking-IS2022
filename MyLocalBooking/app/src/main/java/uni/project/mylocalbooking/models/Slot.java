@@ -3,6 +3,8 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,10 +15,11 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 
-public abstract class Slot extends DatabaseModel {
+public abstract class Slot extends DatabaseSubclassModel {
     public static Slot fromJson(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
         String clientType = object.getString("type");
         if(clientType.equals("periodic"))
@@ -36,15 +39,13 @@ public abstract class Slot extends DatabaseModel {
 
     private String ownerCellphone;
 
-    public Slot(Long id, LocalDate date, String ownerCellphone, boolean passwordProtected, HashSet<Client> reservations, @NotNull SlotBlueprint blueprint) {
-        super(id);
+    public Slot(Long subclassId, Long superclassId, LocalDate date, String ownerCellphone, boolean passwordProtected, HashSet<Client> reservations, @NotNull SlotBlueprint blueprint) {
+        super(subclassId, superclassId);
         this.date = date;
         this.ownerCellphone = ownerCellphone;
         this.passwordProtected = passwordProtected;
         this.reservations = reservations;
         this.blueprint = blueprint;
-
-        blueprint.addSlot(this);
     }
 
     public HashSet<Client> getReservations() {
@@ -52,7 +53,7 @@ public abstract class Slot extends DatabaseModel {
     }
 
     public Slot(LocalDate date, String ownerCellphone, SlotBlueprint blueprint) {
-        this(null, date, ownerCellphone, false, new HashSet<>(), blueprint);
+        this(null, null, date, ownerCellphone, false, new HashSet<>(), blueprint);
     }
 
     protected Slot(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
