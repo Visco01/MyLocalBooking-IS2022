@@ -401,27 +401,24 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError) {
-        Map<String, ?> prefs = SessionPreferences.getUserPrefs();
-        int currentUserId = (int) prefs.get("id");
+        long currentUserId = MyLocalBooking.getCurrentUser().getSubclassId();
 
-        getClientByAppUserId((long) currentUserId, clientId -> {
-            String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
-            String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
-            Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
-                try {
-                    String status = response.getString("status");
-                    if(status.equals("OK")){
-                        boolean slot_id = Long.parseLong(response.getString("slot_id")) != -1;
-                        if(!slot_id) slot.setId(null);
-                        if(onSuccess != null) onSuccess.apply(slot);
-                    }else{
-                        if(onError != null) onError.apply(StatusCode.NOT_FOUND);
-                    }
-                } catch (JSONException e) {
-                    if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+        String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
+        String requestBody = JSONBodyGenerator.generateReservationBody(currentUserId, slot.getId());
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
+            try {
+                String status = response.getString("status");
+                if(status.equals("OK")){
+                    boolean slot_id = Long.parseLong(response.getString("slot_id")) != -1;
+                    if(!slot_id) slot.setId(null);
+                    if(onSuccess != null) onSuccess.apply(slot);
+                }else{
+                    if(onError != null) onError.apply(StatusCode.NOT_FOUND);
                 }
-            }, false);
-        }, onError);
+            } catch (JSONException e) {
+                if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+            }
+        }, false);
     }
 
     @Override
