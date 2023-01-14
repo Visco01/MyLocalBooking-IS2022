@@ -15,10 +15,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.fragments.TimeFramePickerDialogFragment;
 import uni.project.mylocalbooking.models.ITimeFrame;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 
-public class ManualSlotCreationDialogFragment extends DialogFragment implements RangeSlider.OnSliderTouchListener, RangeSlider.OnChangeListener {
+public class ManualSlotCreationDialogFragment extends TimeFramePickerDialogFragment implements RangeSlider.OnSliderTouchListener, RangeSlider.OnChangeListener {
     public interface IListener {
         void onManualSlotCreated(FreeManualTimeWindow timeWindow);
     }
@@ -51,26 +52,14 @@ public class ManualSlotCreationDialogFragment extends DialogFragment implements 
     private static final int TIME_GRANULARITY_MINUTES = 15;
 
     private final FreeManualTimeWindow timeWindow;
-    private final IListener listener;
     Float lastValidStart;
     Float lastValidEnd;
 
     public ManualSlotCreationDialogFragment(FreeManualTimeWindow timeWindow, IListener listener) {
+        super(timeWindow, timeWindow.blueprint.maxDuration, timeFrame -> {
+            listener.onManualSlotCreated(new FreeManualTimeWindow(timeWindow.blueprint, timeWindow.date, timeFrame.getStart(), timeFrame.getEnd()));
+        });
         this.timeWindow = timeWindow;
-        this.listener = listener;
-    }
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = requireActivity().getLayoutInflater().inflate(R.layout.manual_slot_dialog, null);
-        initView(view);
-        builder.setView(view);
-        builder.setTitle(R.string.create_manual_slot_dialog_title)
-                .setPositiveButton(R.string.confirm, (dialog, id) -> {
-                    listener.onManualSlotCreated(parseView(view));
-                })
-                .setNegativeButton(R.string.cancel, null);
-        return builder.create();
     }
 
     @Override
@@ -104,30 +93,10 @@ public class ManualSlotCreationDialogFragment extends DialogFragment implements 
 
     }
 
-    private FreeManualTimeWindow parseView(View view) {
-        RangeSlider slider = view.findViewById(R.id.time_slider);
-        LocalTime fromTime = timeWindow.fromTime.plusMinutes(slider.getValues().get(0).intValue());
-        LocalTime toTime = timeWindow.fromTime.plusMinutes(slider.getValues().get(1).intValue());
-
-        return new FreeManualTimeWindow(timeWindow.blueprint, timeWindow.date, fromTime, toTime);
-    }
-
-    private void initView(View view) {
-        RangeSlider slider = view.findViewById(R.id.time_slider);
-        slider.setStepSize(TIME_GRANULARITY_MINUTES);
-        slider.setMinSeparationValue(TIME_GRANULARITY_MINUTES);
-
-        LocalTime start = timeWindow.getStart();
-        LocalTime initialEnd = start.plusMinutes(timeWindow.blueprint.maxDuration.toMinutes());
-        if(initialEnd.compareTo(timeWindow.toTime) > 0)
-            initialEnd = timeWindow.toTime;
-
-        slider.setValueFrom(0);
-        slider.setValueTo(Duration.between(start, timeWindow.getEnd()).getSeconds() / 60f);
-
-        slider.setValues(0f, Duration.between(start, initialEnd).getSeconds() / 60f);
-        slider.setLabelFormatter(value -> start.plusMinutes((int) value).toString());
+    protected RangeSlider initView(View view) {
+        RangeSlider slider = super.initView(view);
         slider.addOnChangeListener(this);
         slider.addOnSliderTouchListener(this);
+        return slider;
     }
 }
