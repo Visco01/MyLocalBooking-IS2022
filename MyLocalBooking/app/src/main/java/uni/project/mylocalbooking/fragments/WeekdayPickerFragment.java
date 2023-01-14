@@ -3,6 +3,7 @@ package uni.project.mylocalbooking.fragments;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
@@ -36,6 +39,8 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
     private LocalDate initialWeek;
     private LocalDate initialDay;
     private boolean simpleWeekdayPicker;
+    private final HashSet<DayOfWeek> selectedDaysOfWeek = new HashSet<>();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -131,11 +136,41 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
             final DayOfWeek dow = DayOfWeek.of(i);
             String name = dow.getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
             ((TextView) dayView.findViewById(R.id.weekday_name)).setText(name);
-            ((Button) dayView.findViewById(R.id.weekday_button)).setOnClickListener(view -> {
-                viewModel.setSelectedDayOfWeek(dow);
+            AppCompatButton button = dayView.findViewById(R.id.weekday_button);
+
+            setViewActive(dayView, selectedDaysOfWeek.contains(dow));
+            button.setOnClickListener(view -> {
+                toggleView(view, dow);
+                viewModel.toggleSelectedDayOfWeek(dow);
             });
             weekRoot.addView(dayView);
         }
         return weekRoot;
+    }
+
+    private void toggleView(View view, DayOfWeek dow) {
+        if(selectedDaysOfWeek.contains(dow)) {
+            setViewActive(view, true);
+            selectedDaysOfWeek.add(dow);
+        } else {
+            setViewActive(view, false);
+            selectedDaysOfWeek.remove(dow);
+        }
+    }
+
+    private void setViewActive(View view, boolean active) {
+        TextView dayText = view.findViewById(R.id.weekday_name);
+        TextView numText = view.findViewById(R.id.weekday_number);
+        AppCompatButton button = view.findViewById(R.id.weekday_button);
+
+        if(active) {
+            button.setBackgroundResource(R.drawable.circle);
+            dayText.setTextColor(0xFF000000);
+            numText.setTextColor(0xFF000000);
+        } else {
+            button.setBackgroundColor(0x00000000);
+            dayText.setTextColor(0xFFFFFFFF);
+            numText.setTextColor(0xFFFFFFFF);
+        }
     }
 }
