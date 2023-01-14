@@ -10,23 +10,27 @@ import android.os.Bundle;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.LoginActivity;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.Slot;
+import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class Past_provider_bookings extends AppCompatActivity implements RVInterface{
 
     Establishment establishment;
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    List<ModelClass_pastProviderBookings> pastProviderBookings;
-    Collection<Establishment> establishments = new ArrayList<>();
     AdapterPastProviderBookings adapterPastProviderBookings;
     LocalDate currentDate;
+    ArrayList<Slot> allTodaySlots = new ArrayList<>();
 
 
     @Override
@@ -36,7 +40,22 @@ public class Past_provider_bookings extends AppCompatActivity implements RVInter
         currentDate = LocalDate.now();
         currentDate.minusDays(1);
         setContentView(R.layout.activity_past_provider_bookings);
-        initData();
+
+        try {
+            Collection<SlotBlueprint> slotsBlueprint = establishment.getBlueprints(currentDate);
+            for (SlotBlueprint s: slotsBlueprint){
+                HashMap<LocalDate, List<Slot>> i = s.slots;
+                List<Slot> ss = i.get(LocalDate.now().minusDays(1));
+                if (ss == null){
+                    //TODO capire che farci
+                    System.out.println("No reservations");
+                }
+                allTodaySlots.addAll(ss);
+            }
+
+        } catch (Establishment.PartialReservationsResultsException e) {
+            e.printStackTrace();
+        }
         initRecycleRview();
 
         if (SessionPreferences.getUserPrefs().isEmpty()){
@@ -51,18 +70,10 @@ public class Past_provider_bookings extends AppCompatActivity implements RVInter
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapterPastProviderBookings = new AdapterPastProviderBookings(this, pastProviderBookings);
+        adapterPastProviderBookings = new AdapterPastProviderBookings(this, allTodaySlots);
         recyclerView.setAdapter(adapterPastProviderBookings);
         adapterPastProviderBookings.notifyDataSetChanged();
 
-    }
-
-    private void initData() {
-        pastProviderBookings = new ArrayList<>();
-        pastProviderBookings.add(new ModelClass_pastProviderBookings("Porto san giorgio", "Topo Gigio", "11/01/2021"));
-        pastProviderBookings.add(new ModelClass_pastProviderBookings("Porto san giorgio", "Topo Gigio", "11/01/2021"));
-        pastProviderBookings.add(new ModelClass_pastProviderBookings("Porto san giorgio", "Topo Gigio", "11/01/2021"));
-        pastProviderBookings.add(new ModelClass_pastProviderBookings("Porto san giorgio", "Topo Gigio", "11/01/2021"));
     }
 
     @Override

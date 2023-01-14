@@ -47,6 +47,10 @@ public abstract class Slot extends DatabaseModel {
         blueprint.addSlot(this);
     }
 
+    public HashSet<Client> getReservations() {
+        return this.reservations;
+    }
+
     public Slot(LocalDate date, String ownerCellphone, SlotBlueprint blueprint) {
         this(null, date, ownerCellphone, false, new HashSet<>(), blueprint);
     }

@@ -93,15 +93,5 @@ public class MyEstablishments extends BaseNavigationActivity implements Adapter_
     public void onEstablishmentSelected(Establishment establishment) {
         startActivity(new Intent(this, Past_provider_bookings.class).putExtra("current_establishment_selected", establishment));
     }
-/*
-    private void init_data() {
 
-        myEstablishmentList = new ArrayList<>();
-        myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
-        myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
-        myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
-
-    }
-
- */
 }

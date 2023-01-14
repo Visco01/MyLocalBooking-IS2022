@@ -21,12 +21,12 @@ public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEsta
     }
 
 
-    private List<Establishment> providerEstablishment;
+    private List<Establishment> providerEstablishments;
     private EstablishmentSelected establishmentSelected;
 
     public Adapter_myEstablishment(List<Establishment> providerEstablishment, EstablishmentSelected establishmentSelected) {
         this.establishmentSelected = establishmentSelected;
-        this.providerEstablishment = providerEstablishment;
+        this.providerEstablishments = providerEstablishment;
     }
 
     @NonNull
@@ -40,12 +40,12 @@ public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEsta
     public void onBindViewHolder(@NonNull Adapter_myEstablishment.ViewHolder3 holder, int position) {
 
         int resource = R.drawable.logo;
-        holder.setData(resource, providerEstablishment.get(position));
+        holder.setData(resource, providerEstablishments.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return providerEstablishment.size();
+        return providerEstablishments.size();
     }
 
     public class ViewHolder3 extends RecyclerView.ViewHolder {

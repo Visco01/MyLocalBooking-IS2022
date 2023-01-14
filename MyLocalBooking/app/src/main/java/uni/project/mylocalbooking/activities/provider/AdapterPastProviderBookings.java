@@ -3,24 +3,26 @@ package uni.project.mylocalbooking.activities.provider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.models.Slot;
+import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class AdapterPastProviderBookings extends RecyclerView.Adapter<AdapterPastProviderBookings.ViewHolder5> {
 
     private final RVInterface rvInterface;
-    List<ModelClass_pastProviderBookings> pastProviderBookings;
+    private List<Slot> slots;
 
-    public AdapterPastProviderBookings(RVInterface rvInterface, List<ModelClass_pastProviderBookings> pastProviderBookings) {
+    public AdapterPastProviderBookings(RVInterface rvInterface, ArrayList<Slot> slots) {
         this.rvInterface = rvInterface;
-        this.pastProviderBookings = pastProviderBookings;
+        this.slots = slots;
     }
 
     @NonNull
@@ -32,15 +34,12 @@ public class AdapterPastProviderBookings extends RecyclerView.Adapter<AdapterPas
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder5 holder, int position) {
-        String title = pastProviderBookings.get(position).getTitle();
-        String whwoBooked = pastProviderBookings.get(position).getWhoBooked();
-        String date = pastProviderBookings.get(position).getDate();
-        holder.setData(title, whwoBooked, date);
+        holder.setData();
     }
 
     @Override
     public int getItemCount() {
-        return pastProviderBookings.size();
+        return slots.size();
     }
 
 
@@ -73,10 +72,10 @@ public class AdapterPastProviderBookings extends RecyclerView.Adapter<AdapterPas
 
         }
 
-        public void setData(String title, String whoBooked, String date) {
-            titleView.setText(title);
-            whoBookedView.setText(whoBooked);
-            dateView.setText(date);
+        public void setData() {
+            titleView.setText();
+            whoBookedView.setText();
+            dateView.setText();
         }
 
 
