@@ -122,6 +122,20 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
         return result;
     }
 
+    public boolean overlapsWith(SlotBlueprint other) {
+        if(!establishment.equals(other.establishment))
+            return false;
+
+        if(!fromDate.isBefore(other.toDate) || !other.fromDate.isBefore(fromDate))
+            return false;
+
+        HashSet<DayOfWeek> intersection = new HashSet<>();
+        intersection.addAll(weekdays);
+        intersection.retainAll(other.weekdays);
+
+        return !intersection.isEmpty();
+    }
+
     public abstract void addSlot(@NotNull Slot slot);
     public abstract boolean hasSlotsInDate(@NotNull LocalDate date);
 }
