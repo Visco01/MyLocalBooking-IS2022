@@ -21,10 +21,23 @@ import uni.project.mylocalbooking.fragments.WeekdayPickerFragment;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class BlueprintCreationFragment extends Fragment implements CollapsibleCardViewFragment.IOnAttachedListener {
+    private static class FragmentInfo {
+        private final CollapsibleCardViewFragment cardViewFragment;
+        private final Class<? extends Fragment> innerFragmentType;
+        private final Bundle bundle;
+
+        private FragmentInfo(CollapsibleCardViewFragment cardViewFragment, Class<? extends Fragment> innerFragmentType, Bundle bundle) {
+            this.cardViewFragment = cardViewFragment;
+            this.innerFragmentType = innerFragmentType;
+            this.bundle = bundle;
+        }
+
+        private void create() {
+            cardViewFragment.setContent(innerFragmentType, bundle);
+        }
+    }
     private Collection<SlotBlueprint> blueprints;
-    protected final HashMap<String, CollapsibleCardViewFragment> cardViewFragments = new HashMap<>();
-    protected final HashMap<String, Class<? extends Fragment>> innerFragments = new HashMap<>();
-    protected final HashMap<String, Bundle> innerBundles = new HashMap<>();
+    protected final HashMap<String, FragmentInfo> createdFragments = new HashMap<>();
 
 
     @Override
@@ -50,25 +63,24 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
         list.addView(fragmentContainer);
 
         String title = "Weekdays";
-        Bundle bundle = new Bundle();
-        bundle.putString("title", title);
 
         CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
         fragment.setArguments(bundle);
-        cardViewFragments.put(title, fragment);
+
+        Bundle innerBundle = new Bundle();
+        innerBundle.putBoolean("simple", true);
+
+        createdFragments.put(title, new FragmentInfo(fragment, WeekdayPickerFragment.class, innerBundle));
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .add(fragmentContainer.getId(), fragment)
                 .commit();
-
-        innerFragments.put(title, WeekdayPickerFragment.class);
     }
 
     @Override
     public void notifyFragmentAttached(String title) {
-        cardViewFragments.get(title).setContent (
-                innerFragments.get(title),
-                innerBundles.get(title)
-        );
+        createdFragments.get(title).create();
     }
 }
