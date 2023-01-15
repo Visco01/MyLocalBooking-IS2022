@@ -33,7 +33,6 @@ public class MyBookings extends BaseNavigationActivity {
     List<ModelClass_myBookings> myBookingsList;
     Adapter_myBookings adapter_myBookings;
 
-    MutableLiveData<?> res;
 
     boolean result;
 
@@ -45,10 +44,14 @@ public class MyBookings extends BaseNavigationActivity {
         List<Establishment> l = Arrays.stream(getIntent().getExtras().getBundle("establishments").getParcelableArray("establishments"))
                         .map(e -> (Establishment) e).collect(Collectors.toList());
 
+        MutableLiveData<List<Slot>> res = new MutableLiveData<>();
+        res.observe(this, reservations -> {
+            System.out.println( );
+        });
+
         try{
-            result = api.getClientReservations(l,
-                    (Long) SessionPreferences.getUserPrefs().get("subclass_id"),
-                    (MutableLiveData<List<Slot>>) res);
+            api.getClientReservations(l,
+                    (Long) SessionPreferences.getUserPrefs().get("subclass_id"), res);
 
             System.out.println(result);
         }catch (Throwable e){

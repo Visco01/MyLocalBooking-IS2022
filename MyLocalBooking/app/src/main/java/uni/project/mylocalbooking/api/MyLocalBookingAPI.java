@@ -513,7 +513,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public boolean getClientReservations(Collection<Establishment> establishments, Long clientId, MutableLiveData<List<Slot>> slotsLivedata){
+    public void getClientReservations(Collection<Establishment> establishments, Long clientId, MutableLiveData<List<Slot>> slotsLivedata){
         String url = MyLocalBookingAPI.apiPrefix + "reservations_by_client/" + clientId;
         HashMap<Long, SlotBlueprint> periodic_blueprints = new HashMap<>();
         HashMap<Long, SlotBlueprint> manual_blueprints = new HashMap<>();
@@ -524,23 +524,25 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             }
         }
 
-        JSONArray response = new BlockingAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, true).call().waitResponse();
-        List<Slot> slots = new ArrayList<>();
-        try {
-            for(int i = 0; i < response.length(); i++){
-                JSONObject elem = response.getJSONObject(i);
-                if(elem.getString("type").equals("periodic"))
-                    slots.add(Slot.fromJson(elem, periodic_blueprints));
-                else
-                    slots.add(Slot.fromJson(elem, manual_blueprints));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
+        new CallbackAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, new RunOnResponse<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                List<Slot> slots = new ArrayList<>();
+                try {
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject elem = response.getJSONObject(i);
+                        if(elem.getString("type").equals("periodic"))
+                            slots.add(Slot.fromJson(elem, periodic_blueprints));
+                        else
+                            slots.add(Slot.fromJson(elem, manual_blueprints));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-        slots.forEach(s -> s.blueprint.addSlot(s));
-        slotsLivedata.setValue(slots);
-        return true;
+                slots.forEach(s -> s.blueprint.addSlot(s));
+                slotsLivedata.setValue(slots);
+            }
+        }, true).call();
     }
 }

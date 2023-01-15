@@ -143,7 +143,7 @@ public interface IMyLocalBookingAPI{
 
     boolean getReservations(Establishment establishment, LocalDate date);
 
-    boolean getClientReservations(Collection<Establishment> establishments, Long clientId, MutableLiveData<List<Slot>> slotsLivedata);
+    void getClientReservations(Collection<Establishment> establishments, Long clientId, MutableLiveData<List<Slot>> slotsLivedata);
 
     AppUser getUserByCellphone(String cellphone);
 
