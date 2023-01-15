@@ -303,11 +303,12 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
         LinearLayout layout = new LinearLayout(requireContext());
         layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-
+        layout.setOrientation(LinearLayout.VERTICAL);
         layout.setTag("TIMEFRAMES LAYOUT");
+
         for(int i = 0; i < availableTimeframes.size(); i++) {
             View view = getLayoutInflater().inflate(R.layout.manual_blueprint_list_item, layout, false);
-            layout.addView(view);
+            layout.addView(view, i);
             ITimeFrame timeFrame = availableTimeframes.get(i);
             view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             ((TextView) view.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());

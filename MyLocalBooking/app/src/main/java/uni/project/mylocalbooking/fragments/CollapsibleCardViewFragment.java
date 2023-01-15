@@ -33,7 +33,6 @@ public class CollapsibleCardViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_collapsible_cardview, container, false);
         ((TextView) view.findViewById(R.id.cardview_title)).setText(title);
-        //FrameLayout linearLayout = view.findViewById(R.id.content_layout); TODO: what?
         view.findViewById(R.id.cardview_header).setOnClickListener(v -> {
             ((IOnAttachedListener) getParentFragment()).onCardViewClicked(title);
         });
