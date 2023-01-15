@@ -16,6 +16,7 @@ import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.provider.AddEstablishmentActivity;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 
 public class MyBookings extends BaseNavigationActivity {
 
@@ -27,6 +28,9 @@ public class MyBookings extends BaseNavigationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
+        //api.g
 
         initData();
         initRecyckeRview();

@@ -74,9 +74,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (cell.getText().toString().isEmpty() || psswd.getText().toString().isEmpty()){
                     failedEmptiness();
                 }
-                // Provider: 3332221113 - Psswd: Ciao123
-                // Client: mirco@client.it / fwefwfs-->3332221114 - Psswd: Ciao123
-                // mirco.client@gmail.com + 3332221115 - Psswd: Ciao123
                 else{
                     api.login(cell.getText().toString(), psswd.getText().toString(), loginOutcome);
                 }

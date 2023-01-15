@@ -19,21 +19,18 @@ public class ViewPageAdapter extends PagerAdapter {
 
     int images[] = {
         R.drawable.calendar_icon,
-        R.drawable.image1,
         R.drawable.image2,
         R.drawable.image3
     };
 
     int headings[] = {
         R.string.heading_one,
-        R.string.heading_two,
         R.string.heading_three,
         R.string.heading_fourth
     };
 
     int description[] = {
         R.string.desc_one,
-        R.string.desc_two,
         R.string.desc_three,
         R.string.desc_fourth
     };
