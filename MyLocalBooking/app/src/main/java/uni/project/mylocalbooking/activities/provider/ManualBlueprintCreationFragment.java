@@ -28,24 +28,25 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
     private Slider maxDurationSlider;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        LinearLayout list = view.findViewById(R.id.blueprint_creation_steps_layout);
-
-        addTimeFramePicker(list);
-        addMaxDuration(list);
-
-        return view;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addTimeFramePicker();
+        addMaxDuration();
     }
 
-    private void addTimeFramePicker(LinearLayout layout) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    private void addTimeFramePicker() {
         ListView list = new ListView(getContext());
         AvailableBlueprintsAdapter adapter = new AvailableBlueprintsAdapter(
                 blueprints.stream().map(b -> (ManualSlotBlueprint) b).collect(Collectors.toList())
         );
 
-        createViewCardView(layout, TITLE_TIME, list, view -> {
+        createViewCardView(TITLE_TIME, list, view -> {
             createdCardViews.get(TITLE_MAX_DURATION).expand();
             createdCardViews.get(TITLE_TIME).collapse();
         });
@@ -53,11 +54,11 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
         list.setAdapter(adapter);
     }
 
-    private void addMaxDuration(LinearLayout layout) {
+    private void addMaxDuration() {
         maxDurationSlider = new Slider(requireContext());
         maxDurationSlider.setStepSize(TIME_GRANULARITY_MINUTES);
 
-        createViewCardView(layout, TITLE_MAX_DURATION, maxDurationSlider, view -> {
+        createViewCardView(TITLE_MAX_DURATION, maxDurationSlider, view -> {
             super.end(new ManualSlotBlueprint(
                     openTime,
                     closeTime,

@@ -20,23 +20,24 @@ public class PeriodicBlueprintCreationFragment extends BlueprintCreationFragment
     private PeriodicSlotBlueprint blueprint;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        LinearLayout list = view.findViewById(R.id.blueprint_creation_steps_layout);
-
-        addTimeFramePicker(list);
-
-        return view;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addTimeFramePicker();
     }
 
-    private void addTimeFramePicker(LinearLayout layout) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    private void addTimeFramePicker() {
         ListView list = new ListView(getContext());
         AvailableBlueprintsAdapter adapter = new AvailableBlueprintsAdapter(
                 blueprints.stream().map(b -> (ManualSlotBlueprint) b).collect(Collectors.toList())
         );
 
-        createViewCardView(layout, TITLE_TIME, list, view -> {
+        createViewCardView(TITLE_TIME, list, view -> {
             super.end(blueprint);
         });
 

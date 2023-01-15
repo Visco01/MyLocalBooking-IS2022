@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.time.DayOfWeek;
@@ -167,6 +168,54 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
     }
 
+    private class BlueprintCreationStepsAdapter extends BaseAdapter {
+        private final List<BlueprintCreationFragment.CardViewInfo> cardViewInfo;
+
+        public BlueprintCreationStepsAdapter(List<BlueprintCreationFragment.CardViewInfo> cardViewInfo) {
+            this.cardViewInfo = cardViewInfo;
+        }
+
+        @Override
+        public int getCount() {
+            return cardViewInfo.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return cardViewInfo.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            BlueprintCreationFragment.CardViewInfo info = cardViewInfo.get(i);
+
+            view = new LinearLayout(viewGroup.getContext());
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+            FragmentContainerView fragmentContainer = addFragmentContainer((LinearLayout) view);
+            getChildFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(fragmentContainer.getId(), info.cardViewFragment)
+                    .commit();
+
+            return view;
+        }
+
+        private FragmentContainerView addFragmentContainer(LinearLayout list) {
+            FragmentContainerView fragmentContainer = new FragmentContainerView(requireContext());
+            fragmentContainer.setId(View.generateViewId());
+            fragmentContainer.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            list.addView(fragmentContainer);
+            return fragmentContainer;
+        }
+    }
+
+
     protected static final String TITLE_WEEKDAYS = "Weekdays";
     protected static final String TITLE_FROM_DATE = "From date";
     protected static final String TITLE_TO_DATE = "To date";
@@ -182,6 +231,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     protected Collection<SlotBlueprint> blueprints;
     protected Collection<SlotBlueprint> conflictingBlueprints;
     protected final HashMap<String, CardViewInfo> createdCardViews = new HashMap<>();
+    private final List<CardViewInfo> cardViewInfoList = new ArrayList<>();
     protected LocalDate fromDate;
     protected LocalDate toDate;
     protected Integer reservationLimit;
@@ -193,25 +243,27 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         super.onCreate(savedInstanceState);
         establishment = getArguments().getParcelable("establishment");
         blueprints = establishment.blueprints;
+        addWeekdays();
+        addFromDate();
+        addToDate();
+        addReservationLimit();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_blueprint_creation, container, false);
-        LinearLayout list = view.findViewById(R.id.blueprint_creation_steps_layout);
-        addWeekdays(list);
-        addFromDate(list);
-        addToDate(list);
-        addReservationLimit(list);
+        ListView list = view.findViewById(R.id.blueprint_creation_steps_layout);
+        BlueprintCreationStepsAdapter adapter = new BlueprintCreationStepsAdapter(cardViewInfoList);
+        list.setAdapter(adapter);
         return view;
     }
 
-    private void addWeekdays(LinearLayout list) {
+    private void addWeekdays() {
         Bundle innerBundle = new Bundle();
         innerBundle.putBoolean("simple", true);
 
-        createFragmentCardView(list, TITLE_WEEKDAYS, innerBundle, WeekdayPickerFragment.class, view -> {
+        createFragmentCardView(TITLE_WEEKDAYS, innerBundle, WeekdayPickerFragment.class, view -> {
             weekDays = ((WeekdayPickerFragment) getChildFragmentManager().findFragmentByTag(TITLE_WEEKDAYS)).getSelectedDaysOfWeek();
             conflictingBlueprints = blueprints.stream().filter(blueprint -> {
 
@@ -223,45 +275,39 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         });
     }
 
-    private void addFromDate(LinearLayout list) {
+    private void addFromDate() {
         CalendarView calendar = new CalendarView(requireContext());
         calendar.setDate(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond());
-        createViewCardView(list, TITLE_FROM_DATE, calendar, view -> {
+        createViewCardView(TITLE_FROM_DATE, calendar, view -> {
             fromDate = LocalDate.ofEpochDay(calendar.getDate());
         });
     }
 
-    private void addToDate(LinearLayout list) {
+    private void addToDate() {
         CalendarView calendar = new CalendarView(requireContext());
         calendar.setDate(LocalDate.now().toEpochDay());
-        createViewCardView(list, TITLE_TO_DATE, calendar, view -> {
+        createViewCardView(TITLE_TO_DATE, calendar, view -> {
             toDate = LocalDate.ofEpochDay(calendar.getDate());
         });
     }
 
-    private void addReservationLimit(LinearLayout list) {
+    private void addReservationLimit() {
         EditText limitText = new EditText(requireContext());
         limitText.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         // TODO: validate input
 
-        createViewCardView(list, TITLE_RESERVATIONS_LIMIT, limitText, view -> {
+        createViewCardView(TITLE_RESERVATIONS_LIMIT, limitText, view -> {
             int value = Integer.valueOf(String.valueOf(limitText.getText()));
             reservationLimit = value <= 0 ? 1 : value;
         });
-    }
-
-    private FragmentContainerView addFragmentContainer(LinearLayout list) {
-        FragmentContainerView fragmentContainer = new FragmentContainerView(requireContext());
-        fragmentContainer.setId(View.generateViewId());
-        list.addView(fragmentContainer);
-        return fragmentContainer;
     }
 
     private void addStepToOrder(String title, CardViewInfo info) {
         createdCardViews.put(title, info);
         stepsList.add(title);
         stepsOrder.put(title, stepsList.size() - 1);
+        cardViewInfoList.add(info);
     }
 
     private void advance(String title) {
@@ -271,7 +317,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
             onCardViewClicked(stepsList.get(current + 1));
     }
 
-    protected  <T extends Fragment> void createFragmentCardView(LinearLayout list, String title, Bundle innerBundle, Class<T> fragmentClass, View.OnClickListener onNext) {
+    protected  <T extends Fragment> void createFragmentCardView(String title, Bundle innerBundle, Class<T> fragmentClass, View.OnClickListener onNext) {
         CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString("title", title);
@@ -281,15 +327,9 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
             advance(title);
             onNext.onClick(v);
         }));
-
-        FragmentContainerView fragmentContainer = addFragmentContainer(list);
-        getChildFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .add(fragmentContainer.getId(), fragment)
-                .commit();
     }
 
-    protected  <T extends View> void createViewCardView(LinearLayout list, String title, T view, View.OnClickListener onNext) {
+    protected  <T extends View> void createViewCardView(String title, T view, View.OnClickListener onNext) {
         CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString("title", title);
@@ -299,12 +339,6 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
             advance(title);
             onNext.onClick(v);
         }));
-
-        FragmentContainerView fragmentContainer = addFragmentContainer(list);
-        getChildFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .add(fragmentContainer.getId(), fragment)
-                .commit();
     }
 
     @Override
