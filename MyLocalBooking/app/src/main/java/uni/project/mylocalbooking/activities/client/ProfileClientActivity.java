@@ -36,6 +36,7 @@ public class ProfileClientActivity extends BaseNavigationActivity {
     private TextView fullName;
     private TextView email;
     private TextView passwordClient;
+    private TextView birthday;
 
 
     @Override
@@ -50,9 +51,11 @@ public class ProfileClientActivity extends BaseNavigationActivity {
         fullName = findViewById(R.id.fullNameClient);
         email = findViewById(R.id.emailClient);
         passwordClient = findViewById(R.id.passwordClient);
+        birthday = findViewById(R.id.birthDayClient);
         email.setText(client.email);
         clientNumber.setText(client.cellphone);
         fullName.setText(client.firstname + " " + client.lastname);
+        birthday.setText(client.dob.toString());
 
         passwordClient.setText(client.password);
         editButton.setOnClickListener(new View.OnClickListener() {
