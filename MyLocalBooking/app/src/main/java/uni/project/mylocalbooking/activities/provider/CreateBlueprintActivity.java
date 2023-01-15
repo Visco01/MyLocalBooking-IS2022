@@ -51,7 +51,6 @@ public class CreateBlueprintActivity extends AppCompatActivity {
             finish();
         });
 
-
         if(isPeriodic)
             startPeriodic();
         else
@@ -59,6 +58,7 @@ public class CreateBlueprintActivity extends AppCompatActivity {
     }
 
     private void startPeriodic() {
+        findViewById(R.id.buttons_layout).setVisibility(View.GONE);
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .add(R.id.blueprint_creation_fragment, PeriodicBlueprintCreationFragment.class, bundle)
@@ -66,6 +66,7 @@ public class CreateBlueprintActivity extends AppCompatActivity {
     }
 
     private void startManual() {
+        findViewById(R.id.buttons_layout).setVisibility(View.GONE);
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .add(R.id.blueprint_creation_fragment, ManualBlueprintCreationFragment.class, bundle)
