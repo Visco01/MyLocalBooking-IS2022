@@ -1,5 +1,6 @@
 package uni.project.mylocalbooking.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,9 +10,11 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
@@ -42,6 +45,12 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
         Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
         if (sessionData.isEmpty()){
              startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
+        }
+
+        if(savedInstanceState != null && savedInstanceState.containsKey("establishments")) {
+            establishments = Arrays.stream(savedInstanceState.getParcelableArray("establishments"))
+                    .map(e -> (Establishment) e)
+                    .collect(Collectors.toList());
         }
 
         boolean isClient = Objects.equals((String) sessionData.get("usertype"), "client");
@@ -134,6 +143,15 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             }, code -> {
                 System.out.println("ESTABLISHMENTS_ERROR" + code);
             });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(establishments != null) {
+            Establishment[] arr = new Establishment[establishments.size()];
+            outState.putParcelableArray("establishments", establishments.toArray(arr));
+        }
     }
 
     // Highlights the current item on the NavBar the first time the user launches the app
