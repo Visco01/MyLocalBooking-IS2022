@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import uni.project.mylocalbooking.MyLocalBooking;
@@ -512,7 +513,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     }
 
     @Override
-    public boolean getClientReservations(Collection<Establishment> establishments, Long clientId){
+    public boolean getClientReservations(Collection<Establishment> establishments, Long clientId, MutableLiveData<List<Slot>> slotsLivedata){
         String url = MyLocalBookingAPI.apiPrefix + "reservations_by_client/" + clientId;
         HashMap<Long, SlotBlueprint> periodic_blueprints = new HashMap<>();
         HashMap<Long, SlotBlueprint> manual_blueprints = new HashMap<>();
@@ -524,7 +525,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         }
 
         JSONArray response = new BlockingAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, true).call().waitResponse();
-        Collection<Slot> slots = new ArrayList<>();
+        List<Slot> slots = new ArrayList<>();
         try {
             for(int i = 0; i < response.length(); i++){
                 JSONObject elem = response.getJSONObject(i);
@@ -539,6 +540,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         }
 
         slots.forEach(s -> s.blueprint.addSlot(s));
+        slotsLivedata.setValue(slots);
         return true;
     }
 }

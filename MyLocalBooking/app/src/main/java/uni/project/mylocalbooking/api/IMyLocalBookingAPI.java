@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
@@ -142,7 +143,7 @@ public interface IMyLocalBookingAPI{
 
     boolean getReservations(Establishment establishment, LocalDate date);
 
-    boolean getClientReservations(Collection<Establishment> establishments, Long clientId);
+    boolean getClientReservations(Collection<Establishment> establishments, Long clientId, MutableLiveData<List<Slot>> slotsLivedata);
 
     AppUser getUserByCellphone(String cellphone);
 
