@@ -73,7 +73,7 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
             imageView.setImageResource(resource);
             textViewTittle.setText(establishment.name);
             textViewLocation.setText(establishment.address);
-            textViewHour.setText(slot.blueprint.fromDate.toString() + " " + slot.blueprint.toDate.toString());
+            textViewHour.setText(slot.date.toString());
         }
 
         @Override
