@@ -54,15 +54,15 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
-                android:id="@+id/content_layout"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/inner_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <!-- TODO: fragment goes here -->
 
-            </LinearLayout>
+            </androidx.fragment.app.FragmentContainerView>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/next_button"

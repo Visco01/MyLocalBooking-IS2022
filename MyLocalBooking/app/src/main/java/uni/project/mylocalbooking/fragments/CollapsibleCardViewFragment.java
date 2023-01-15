@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,7 +33,7 @@ public class CollapsibleCardViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_collapsible_cardview, container, false);
         ((TextView) view.findViewById(R.id.cardview_title)).setText(title);
-        LinearLayout linearLayout = view.findViewById(R.id.content_layout);
+        //FrameLayout linearLayout = view.findViewById(R.id.content_layout); TODO: what?
         view.findViewById(R.id.cardview_header).setOnClickListener(v -> {
             ((IOnAttachedListener) getParentFragment()).onCardViewClicked(title);
         });
@@ -45,7 +46,7 @@ public class CollapsibleCardViewFragment extends Fragment {
             fragment.setArguments(bundle);
             getParentFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.content_layout, fragment, title)
+                    .add(R.id.inner_content, fragment, title)
                     .commit();
 
             AppCompatButton button = (AppCompatButton) getView().findViewById(R.id.next_button);
@@ -58,7 +59,13 @@ public class CollapsibleCardViewFragment extends Fragment {
     }
 
     public <T extends View> T setContent(T view, View.OnClickListener listener) {
-        ((LinearLayout) getView().findViewById(R.id.content_layout)).addView(view);
+        View innerContent = getView().findViewById(R.id.inner_content);
+        ViewGroup parent = (ViewGroup) innerContent.getParent();
+        int index = parent.indexOfChild(innerContent);
+        parent.removeView(innerContent);
+        innerContent = view;
+        innerContent.setId(R.id.inner_content);
+        parent.addView(innerContent, index);
 
         AppCompatButton button = (AppCompatButton) getView().findViewById(R.id.next_button);
         button.setOnClickListener(listener);
@@ -73,25 +80,10 @@ public class CollapsibleCardViewFragment extends Fragment {
         setExpanded(false);
     }
 
-    private void toggleExpanded(View root) {
-        LinearLayout layout = root.findViewById(R.id.content_layout);
-        if(layout.getChildCount() == 0)
-            ((IOnAttachedListener) getParentFragment()).onFragmentAttached(title);
-        else {
-            int visibility = layout.getVisibility();
-            if(visibility == View.VISIBLE)
-                collapse();
-            else
-                expand();
-        }
-    }
-
     private void setExpanded(boolean expanded) {
-        LinearLayout layout = getView().findViewById(R.id.content_layout);
-        if(layout.getChildCount() == 0)
-            ((IOnAttachedListener) getParentFragment()).onFragmentAttached(title);
+        ((IOnAttachedListener) getParentFragment()).onFragmentAttached(title);
 
-        getView().findViewById(R.id.content_layout).setVisibility(expanded ? View.VISIBLE : View.GONE);
+        getView().findViewById(R.id.inner_content).setVisibility(expanded ? View.VISIBLE : View.GONE);
         getView().findViewById(R.id.next_button).setVisibility(expanded ? View.VISIBLE : View.GONE);
     }
 }
