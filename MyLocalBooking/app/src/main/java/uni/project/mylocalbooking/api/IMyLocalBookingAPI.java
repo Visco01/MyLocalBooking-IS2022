@@ -142,6 +142,8 @@ public interface IMyLocalBookingAPI{
 
     boolean getReservations(Establishment establishment, LocalDate date);
 
+    boolean getClientReservations(Collection<Establishment> establishments, Long clientId);
+
     AppUser getUserByCellphone(String cellphone);
 
         // left to implement:
