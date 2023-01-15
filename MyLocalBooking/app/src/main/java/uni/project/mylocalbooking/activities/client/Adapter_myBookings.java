@@ -19,6 +19,8 @@ import java.util.Set;
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.ManualSlot;
+import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.Slot;
 
 public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.ViewHolder2>{
@@ -73,7 +75,14 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
             imageView.setImageResource(resource);
             textViewTittle.setText(establishment.name);
             textViewLocation.setText(establishment.address);
-            textViewHour.setText(slot.date.toString());
+
+            if (slot instanceof PeriodicSlot) {
+                textViewHour.setText(((PeriodicSlot) slot).getStart().toString() + " - " + ((PeriodicSlot) slot).getEnd().toString());
+            }
+            else
+            {
+                textViewHour.setText(((ManualSlot) slot).getStart().toString() + " - " + ((ManualSlot) slot).getEnd().toString());
+            }
         }
 
         @Override
