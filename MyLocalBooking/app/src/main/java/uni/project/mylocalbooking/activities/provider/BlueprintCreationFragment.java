@@ -18,9 +18,10 @@ import android.widget.TextView;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.fragments.CollapsibleCardViewFragment;
 import uni.project.mylocalbooking.fragments.WeekdayPickerFragment;
+import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ITimeFrame;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.SlotBlueprint;
@@ -157,24 +159,26 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
     }
 
-    protected static final String TITLE_WEEKDAYS = "weekdays";
-    protected static final String TITLE_FROMDATE = "fromdate";
-    protected static final String TITLE_TODATE = "todate";
-    protected static final String TITLE_RESERVATIONS_LIMIT = "reservationlimit";
+    protected static final String TITLE_WEEKDAYS = "Weekdays";
+    protected static final String TITLE_FROM_DATE = "From date";
+    protected static final String TITLE_TO_DATE = "To date";
+    protected static final String TITLE_RESERVATIONS_LIMIT = "Reservation limit";
 
+    protected Establishment establishment;
     protected Collection<SlotBlueprint> blueprints;
     protected Collection<SlotBlueprint> conflictingBlueprints;
     protected final HashMap<String, CardViewInfo> createdCardViews = new HashMap<>();
     protected LocalDate fromDate;
     protected LocalDate toDate;
     protected Integer reservationLimit;
+    protected HashSet<DayOfWeek> weekDays;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        blueprints = Arrays.stream(getArguments().getParcelableArray("blueprints"))
-                .map(b -> (SlotBlueprint) b)
-                .collect(Collectors.toList());
+        establishment = getArguments().getParcelable("establishment");
+        blueprints = establishment.blueprints;
     }
 
     @Override
@@ -194,8 +198,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         innerBundle.putBoolean("simple", true);
 
         createFragmentCardView(list, TITLE_WEEKDAYS, innerBundle, WeekdayPickerFragment.class, view -> {
-            HashSet<DayOfWeek> weekDays = ((WeekdayPickerFragment) getChildFragmentManager().findFragmentByTag(TITLE_WEEKDAYS)).getSelectedDaysOfWeek();
-
+            weekDays = ((WeekdayPickerFragment) getChildFragmentManager().findFragmentByTag(TITLE_WEEKDAYS)).getSelectedDaysOfWeek();
             conflictingBlueprints = blueprints.stream().filter(blueprint -> {
 
                 HashSet<DayOfWeek> intersection = new HashSet<>(weekDays);
@@ -208,8 +211,8 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
     private void addFromDate(LinearLayout list) {
         CalendarView calendar = new CalendarView(requireContext());
-        calendar.setDate(LocalDate.now().toEpochDay());
-        createViewCardView(list, TITLE_FROMDATE, calendar, view -> {
+        calendar.setDate(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond());
+        createViewCardView(list, TITLE_FROM_DATE, calendar, view -> {
             fromDate = LocalDate.ofEpochDay(calendar.getDate());
         });
     }
@@ -217,7 +220,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     private void addToDate(LinearLayout list) {
         CalendarView calendar = new CalendarView(requireContext());
         calendar.setDate(LocalDate.now().toEpochDay());
-        createViewCardView(list, TITLE_TODATE, calendar, view -> {
+        createViewCardView(list, TITLE_TO_DATE, calendar, view -> {
             toDate = LocalDate.ofEpochDay(calendar.getDate());
         });
     }
@@ -280,6 +283,10 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     @Override
     public void notifyFragmentAttached(String title) {
         createdCardViews.get(title).create();
+    }
+
+    protected void end(SlotBlueprint result) {
+        // TODO: pass result to parent activity
     }
 
     protected abstract void onAddBlueprint(ITimeFrame timeFrame);

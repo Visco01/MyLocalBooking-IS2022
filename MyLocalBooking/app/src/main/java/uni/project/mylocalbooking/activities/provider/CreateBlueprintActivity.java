@@ -28,9 +28,8 @@ public class CreateBlueprintActivity extends AppCompatActivity {
 
         boolean isPeriodic = establishment.blueprints.stream().findAny().get() instanceof PeriodicSlotBlueprint;
         if(!isPeriodic) {
-            ManualSlotBlueprint[] arr = new ManualSlotBlueprint[establishment.blueprints.size()];
             Bundle bundle = new Bundle();
-            bundle.putParcelableArray("blueprints", establishment.blueprints.toArray(arr));
+            bundle.putParcelable("establishment", establishment);
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
                     .add(R.id.blueprint_creation_fragment, ManualBlueprintCreationFragment.class, bundle)

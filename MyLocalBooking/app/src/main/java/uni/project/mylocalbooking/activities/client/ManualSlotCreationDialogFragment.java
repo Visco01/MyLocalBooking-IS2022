@@ -49,8 +49,6 @@ public class ManualSlotCreationDialogFragment extends TimeFramePickerDialogFragm
         }
     }
 
-    private static final int TIME_GRANULARITY_MINUTES = 15;
-
     private final FreeManualTimeWindow timeWindow;
     Float lastValidStart;
     Float lastValidEnd;
