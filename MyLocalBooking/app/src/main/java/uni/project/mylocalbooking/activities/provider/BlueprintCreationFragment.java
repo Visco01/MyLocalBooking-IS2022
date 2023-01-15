@@ -181,7 +181,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
     private class BlueprintCreationStepsAdapter extends BaseAdapter {
         private final List<BlueprintCreationFragment.CardViewInfo> cardViewInfo;
-
+        private final HashSet<CollapsibleCardViewFragment> attachedFragments = new HashSet();
         public BlueprintCreationStepsAdapter(List<BlueprintCreationFragment.CardViewInfo> cardViewInfo) {
             this.cardViewInfo = cardViewInfo;
         }
@@ -205,19 +205,25 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         public View getView(int i, View view, ViewGroup viewGroup) {
             BlueprintCreationFragment.CardViewInfo info = cardViewInfo.get(i);
 
-            if(!info.cardViewFragment.isAdded()) {
+            if(!attachedFragments.contains(info.cardViewFragment)) {
                 FragmentContainerView fragmentContainer = addFragmentContainer(viewGroup);
                 getChildFragmentManager().beginTransaction()
                         .setReorderingAllowed(true)
                         .add(fragmentContainer.getId(), info.cardViewFragment)
                         .commit();
 
+                attachedFragments.add(info.cardViewFragment);
                 return fragmentContainer;
             } else {
                 View currentView = info.cardViewFragment.getView();
                 //ViewGroup parent = (ViewGroup) currentView.getParent();
                 //parent.removeView(currentView);
                 //viewGroup.addView(currentView);
+                if(currentView == null) {
+                    LinearLayout layout = new LinearLayout(viewGroup.getContext());
+                    return layout;
+                }
+
                 return currentView;
             }
         }
