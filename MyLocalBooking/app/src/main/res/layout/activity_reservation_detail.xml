@@ -7,19 +7,6 @@
     android:background="@drawable/sfondo_my_bookings"
     tools:context=".activities.client.ReservationDetailActivity">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/backButtonReservation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:clickable="true"
-        android:contentDescription="back"
-        app:backgroundTint="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
         android:layout_width="match_parent"
@@ -111,7 +98,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/topLine2" />
 
             <TextView
-                android:id="@+id/newEstAddress"
+                android:id="@+id/estAddressDetail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -134,7 +121,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/newEstAddress" />
+                app:layout_constraintTop_toBottomOf="@+id/estAddressDetail" />
 
             <TextView
                 android:id="@+id/dateDesc"
@@ -173,7 +160,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/reservationDate" />
 
             <TextView
-                android:id="@+id/reservationSlot"
+                android:id="@+id/reservationSlotHour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -207,7 +194,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reservationSlot" />
+                app:layout_constraintTop_toBottomOf="@+id/reservationSlotHour" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/deleteReservationButton"

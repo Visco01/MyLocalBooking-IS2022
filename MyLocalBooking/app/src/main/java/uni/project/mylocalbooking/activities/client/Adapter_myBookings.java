@@ -58,6 +58,8 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
         private TextView textViewTittle;
         private TextView textViewLocation;
         private TextView textViewHour;
+        private Establishment establishment;
+        private Slot slot;
 
         public ViewHolder2(@NonNull View itemView) {
             super(itemView);
@@ -72,6 +74,8 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
         }
 
         public void setData(int resource, Slot slot, Establishment establishment) {
+            this.slot = slot;
+            this.establishment = establishment;
             imageView.setImageResource(resource);
             textViewTittle.setText(establishment.name);
             textViewLocation.setText(establishment.address);
@@ -89,6 +93,8 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
         public void onClick(View view) {
             final Context context = MyLocalBooking.getAppContext();
             Intent intent = new Intent(context, ReservationDetailActivity.class);
+            intent.putExtra("establishment", establishment);
+            intent.putExtra("slot", slot);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }

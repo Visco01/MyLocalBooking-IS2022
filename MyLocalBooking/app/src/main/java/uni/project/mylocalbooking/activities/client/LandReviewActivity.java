@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -32,24 +33,7 @@ public class LandReviewActivity extends AppCompatActivity {
     private String reviewString;
     private RatingBar ratingBar;
     private FloatingActionButton backButton;
-    private Provider mircoMock = new Provider(
-            false,
-            "MockData Company",
-            2,
-            null,
-            "3330003330",
-            "mirco@mo.ck",
-            "Mirco",
-            "Mock",
-            LocalDate.now(),
-            "pssw");
-    private Establishment establishment = new Establishment(
-            mircoMock,
-            "Mock Est",
-            "Via Prova 01",
-            new Coordinates(0.0f, 0.0f),
-            "00200"
-    );
+    private TextView estName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +46,11 @@ public class LandReviewActivity extends AppCompatActivity {
         reviewText = findViewById(R.id.review_land);
         reviewString = reviewText.getText().toString();
         ratingBar = findViewById(R.id.rating_land_bar);
+
+        Establishment establishment = (Establishment) getIntent().getExtras().get("establishment");
+        estName = findViewById(R.id.estNameReview);
+        estName.setText(establishment.name);
+
 
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -87,19 +76,16 @@ public class LandReviewActivity extends AppCompatActivity {
                 }
                 else{
                     IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
-                    // TODO: adjust with the right establishment
-                    // Missing anonymous
                     api.rateEstablishment(
                             establishment,
                             (float) reviewStars,
                             reviewText.getText().toString(),
                             (a) -> confirmSend(),
-                            (b) -> { // Non ci arriva mai, fa prima error 422
+                            (b) -> {
                                 System.out.println("Error with API data");
                                 failedSend();
                             }
                     );
-                    //confirmSend();
                 }
             }
         });
