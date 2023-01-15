@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import uni.project.mylocalbooking.MyLocalBooking;
@@ -508,6 +509,38 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         }
 
         slots.forEach(s -> s.blueprint.addSlot(s));
+        return true;
+    }
+
+    @Override
+    public boolean getClientReservations(Collection<Establishment> establishments, Long clientId, MutableLiveData<List<Slot>> slotsLivedata){
+        String url = MyLocalBookingAPI.apiPrefix + "reservations_by_client/" + clientId;
+        HashMap<Long, SlotBlueprint> periodic_blueprints = new HashMap<>();
+        HashMap<Long, SlotBlueprint> manual_blueprints = new HashMap<>();
+        for(Establishment est : establishments){
+            for(SlotBlueprint b : est.blueprints){
+                if(b instanceof PeriodicSlotBlueprint) periodic_blueprints.put(b.getSubclassId(), b);
+                else manual_blueprints.put(b.getSubclassId(), b);
+            }
+        }
+
+        JSONArray response = new BlockingAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, true).call().waitResponse();
+        List<Slot> slots = new ArrayList<>();
+        try {
+            for(int i = 0; i < response.length(); i++){
+                JSONObject elem = response.getJSONObject(i);
+                if(elem.getString("type").equals("periodic"))
+                    slots.add(Slot.fromJson(elem, periodic_blueprints));
+                else
+                    slots.add(Slot.fromJson(elem, manual_blueprints));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        slots.forEach(s -> s.blueprint.addSlot(s));
+        slotsLivedata.setValue(slots);
         return true;
     }
 }
