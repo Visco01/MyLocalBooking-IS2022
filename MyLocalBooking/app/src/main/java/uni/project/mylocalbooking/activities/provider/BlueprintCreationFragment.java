@@ -136,12 +136,12 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
         @Override
         public int getCount() {
-            return availableTimeframes.size();
+            return 1;
         }
 
         @Override
         public Object getItem(int i) {
-            return availableTimeframes.get(i);
+            return null;
         }
 
         @Override
@@ -151,8 +151,19 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            view = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.manual_blueprint_list_item, viewGroup, false);
+            LinearLayout layout = new LinearLayout(viewGroup.getContext());
+            layout.removeAllViews();
+
+            for(i = 0; i < availableTimeframes.size(); i++)
+                createItemView(i, layout);
+
+            return layout;
+        }
+
+        private View createItemView(int i, ViewGroup viewGroup) {
+            View view = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.manual_blueprint_list_item, viewGroup, true);
+
 
             ITimeFrame timeFrame = availableTimeframes.get(i);
             ((TextView) view.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
