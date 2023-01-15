@@ -9,19 +9,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.Slot;
 
 public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.ViewHolder2>{
 
-    List<ModelClass_myBookings> userBookings;
+    MutableLiveData<List<Slot>> userBookings;
+    List<Establishment> userEstablishmentBooked;
 
-    public Adapter_myBookings(List<ModelClass_myBookings> userBookings) {
+    public Adapter_myBookings(MutableLiveData<List<Slot>> userBookings, List<Establishment> userEstablishmentBooked) {
         this.userBookings = userBookings;
+        this.userEstablishmentBooked = userEstablishmentBooked;
     }
 
     @NonNull
@@ -33,16 +38,13 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
 
     @Override
     public void onBindViewHolder(@NonNull Adapter_myBookings.ViewHolder2 holder, int position) {
-        int resource = userBookings.get(position).getImageview();
-        String tittle = userBookings.get(position).getTittle();
-        String location = userBookings.get(position).getLocation();
-        String hour = userBookings.get(position).getHour();
-        holder.setData(resource, tittle, location, hour);
+        int resource = R.drawable.logo;
+        holder.setData(resource, userBookings.getValue().get(position), userEstablishmentBooked.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return userBookings.size();
+        return userBookings.getValue().size();
     }
 
 
@@ -65,11 +67,11 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
             itemView.setOnClickListener(this);
         }
 
-        public void setData(int resource, String tittle, String position, String hour) {
+        public void setData(int resource, Slot slot, Establishment establishment) {
             imageView.setImageResource(resource);
-            textViewTittle.setText(tittle);
-            textViewLocation.setText(position);
-            textViewHour.setText(hour);
+            textViewTittle.setText(establishment.name);
+            textViewLocation.setText(establishment.address);
+            textViewHour.setText(slot.blueprint.fromDate.toString() + " " + slot.blueprint.toDate.toString());
         }
 
         @Override

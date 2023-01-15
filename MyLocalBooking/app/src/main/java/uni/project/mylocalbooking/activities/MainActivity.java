@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (getItem(0) < 3) {
-                    mSlideViewPager.setCurrentItem(1, true);
+                    mSlideViewPager.setCurrentItem(getItem(1), true);
                 }
                 else {
                     Intent intent = new Intent(MainActivity.this, LoginOrRegistrationActivity.class);

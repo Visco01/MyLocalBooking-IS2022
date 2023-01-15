@@ -16,11 +16,16 @@ import uni.project.mylocalbooking.models.Establishment;
 
 public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEstablishment.ViewHolder3> {
 
-    private final RVInterface rvInterface;
-    List<Establishment> providerEstablishment;
+    public interface EstablishmentSelected {
+        void onEstablishmentSelected(Establishment establishment);
+    }
 
-    public Adapter_myEstablishment(List<Establishment> providerEstablishment, RVInterface rvInterface) {
-        this.rvInterface = rvInterface;
+
+    private List<Establishment> providerEstablishment;
+    private EstablishmentSelected establishmentSelected;
+
+    public Adapter_myEstablishment(List<Establishment> providerEstablishment, EstablishmentSelected establishmentSelected) {
+        this.establishmentSelected = establishmentSelected;
         this.providerEstablishment = providerEstablishment;
     }
 
@@ -28,7 +33,7 @@ public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEsta
     @Override
     public Adapter_myEstablishment.ViewHolder3 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_establishment_row, parent, false);
-        return new ViewHolder3(view, rvInterface);
+        return new ViewHolder3(view);
     }
 
     @Override
@@ -43,32 +48,23 @@ public class Adapter_myEstablishment extends RecyclerView.Adapter<Adapter_myEsta
         return providerEstablishment.size();
     }
 
-    public static class ViewHolder3 extends RecyclerView.ViewHolder {
+    public class ViewHolder3 extends RecyclerView.ViewHolder {
 
         private ImageView imageView;
         private TextView textViewTitle;
         private TextView textViewLocation;
         private Establishment establishment;
 
-        public ViewHolder3(@NonNull View itemView, RVInterface rvInterface) {
+        public ViewHolder3(@NonNull View itemView) {
             super(itemView);
+
+            itemView.findViewById(R.id.myEstablishmentOldPrenotation).setOnClickListener(view -> {
+                establishmentSelected.onEstablishmentSelected(establishment);
+            });
+
             imageView = itemView.findViewById(R.id.myEstablishment_imageview1);
             textViewTitle = itemView.findViewById(R.id.myEstablishment_textView1);
             textViewLocation = itemView.findViewById(R.id.myEstablishment_textView2);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (rvInterface != null) {
-                        int pos = getAbsoluteAdapterPosition();
-
-                        if (pos != RecyclerView.NO_POSITION) {
-                            rvInterface.onItemClick(pos);
-                        }
-
-                    }
-                }
-            });
 
         }
 
