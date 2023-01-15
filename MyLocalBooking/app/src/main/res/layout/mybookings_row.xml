@@ -54,10 +54,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="100dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="31dp"
                 android:text="Position"
                 android:textColor="@color/booking_color"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:textStyle="bold"></TextView>
 
             <TextView
@@ -65,10 +65,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="100dp"
-                android:layout_marginTop="52dp"
+                android:layout_marginTop="67dp"
                 android:text="Hour"
                 android:textColor="@color/booking_color"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:textStyle="bold"></TextView>
 
         </androidx.cardview.widget.CardView>
