@@ -194,23 +194,28 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         public View getView(int i, View view, ViewGroup viewGroup) {
             BlueprintCreationFragment.CardViewInfo info = cardViewInfo.get(i);
 
-            view = new LinearLayout(viewGroup.getContext());
-            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            if(!info.cardViewFragment.isAdded()) {
+                FragmentContainerView fragmentContainer = addFragmentContainer(viewGroup);
+                getChildFragmentManager().beginTransaction()
+                        .setReorderingAllowed(true)
+                        .add(fragmentContainer.getId(), info.cardViewFragment)
+                        .commit();
 
-            FragmentContainerView fragmentContainer = addFragmentContainer((LinearLayout) view);
-            getChildFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(fragmentContainer.getId(), info.cardViewFragment)
-                    .commit();
-
-            return view;
+                return fragmentContainer;
+            } else {
+                View currentView = info.cardViewFragment.getView();
+                //ViewGroup parent = (ViewGroup) currentView.getParent();
+                //parent.removeView(currentView);
+                //viewGroup.addView(currentView);
+                return currentView;
+            }
         }
 
-        private FragmentContainerView addFragmentContainer(LinearLayout list) {
+        private FragmentContainerView addFragmentContainer(ViewGroup viewGroup) {
             FragmentContainerView fragmentContainer = new FragmentContainerView(requireContext());
             fragmentContainer.setId(View.generateViewId());
             fragmentContainer.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            list.addView(fragmentContainer);
+            //viewGroup.addView(fragmentContainer);
             return fragmentContainer;
         }
     }
