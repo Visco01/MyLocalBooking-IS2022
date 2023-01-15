@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="25dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:cardCornerRadius="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/logo">
+            </ImageView>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="title"
+            android:id="@+id/title_prenotation"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/booking_color"
+            android:layout_marginLeft="100dp">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="numberPrenotation"
+            android:id="@+id/number_prenotation"
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/booking_color"
+            android:layout_marginLeft="290dp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/name_client_prenotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="30dp"
+            android:text="name client"
+            android:textColor="@color/booking_color"
+            android:textSize="18dp"
+            android:textStyle="bold">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="50dp"
+            android:text="From"
+            android:textColor="@color/booking_color"
+            android:textSize="16sp"
+            android:textStyle="bold"></TextView>
+
+        <TextClock
+            android:id="@+id/from_hour_prenotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="50dp"
+            android:text="11:50:00"
+            android:textColor="@color/booking_color"
+            android:textSize="16sp"
+            android:textStyle="bold"></TextClock>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="235dp"
+            android:layout_marginTop="50dp"
+            android:text="To"
+            android:textColor="@color/booking_color"
+            android:textSize="16sp"
+            android:textStyle="bold"></TextView>
+
+        <TextClock
+            android:id="@+id/to_hour_prenotation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="260dp"
+            android:layout_marginTop="50dp"
+            android:text="12:50:00"
+            android:textColor="@color/booking_color"
+            android:textSize="16sp"
+            android:textStyle="bold"></TextClock>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

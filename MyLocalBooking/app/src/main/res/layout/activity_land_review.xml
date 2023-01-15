@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/sfondo_local_booking"
+    tools:context=".activities.client.LandReviewActivity">
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/backButtonReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginStart="16dp"
+        android:clickable="true"
+        android:contentDescription="back"
+        app:backgroundTint="@color/white"
+        app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/logo"
+                ></ImageView>
+
+            <TextView
+                android:id="@+id/estNameReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Est Name at runtime"
+                android:textAlignment="center"
+                android:textColor="@color/booking_color"
+                android:textSize="25dp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <RatingBar
+                android:id="@+id/rating_land_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+
+                android:numStars="5"
+                android:rating="0.0"
+                android:stepSize="0.5"></RatingBar>
+
+            <EditText
+                android:id="@+id/review_land"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Write review . . ."
+                >
+
+            </EditText>
+
+            <CheckBox
+                android:id="@+id/anonymousReviewCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Anonymous?" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/send_land_review"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_confirm"
+                android:text="Send"
+                android:textColor="@color/white">
+
+            </androidx.appcompat.widget.AppCompatButton>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>
