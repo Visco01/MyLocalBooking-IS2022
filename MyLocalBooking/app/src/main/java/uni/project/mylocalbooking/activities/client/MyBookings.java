@@ -1,15 +1,10 @@
 package uni.project.mylocalbooking.activities.client;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.view.View;
-import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,11 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
-import uni.project.mylocalbooking.activities.provider.AddEstablishmentActivity;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.Slot;
@@ -101,5 +94,10 @@ public class MyBookings extends BaseNavigationActivity {
     // Returns the id in the navigation menu
     public int getNavigationMenuItemId(){
         return R.id.reservations;
+    }
+
+    @Override
+    protected void onEstablishmentsReady(Collection<Establishment> establishments) {
+        // TODO: catch
     }
 }
