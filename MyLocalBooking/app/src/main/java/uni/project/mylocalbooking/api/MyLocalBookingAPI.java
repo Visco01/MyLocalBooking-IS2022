@@ -476,7 +476,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void rateEstablishment(Establishment establishment, float rating, String comment, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
         Long clientId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
-        clientId = 1296L;
+        //clientId = 1296L;
         if(clientId == -1 && onError != null){
             onError.apply(StatusCode.SESSION_PREFERENCES_NOT_FOUND);
             return;
