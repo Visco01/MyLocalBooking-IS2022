@@ -2,6 +2,7 @@ package uni.project.mylocalbooking.activities.provider;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentResultListener;
 
 import android.os.Bundle;
 import android.widget.ListView;
@@ -10,6 +11,7 @@ import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
+import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class CreateBlueprintActivity extends AppCompatActivity {
     private Establishment establishment;
@@ -27,9 +29,21 @@ public class CreateBlueprintActivity extends AppCompatActivity {
         }
 
         boolean isPeriodic = establishment.blueprints.stream().findAny().get() instanceof PeriodicSlotBlueprint;
-        if(!isPeriodic) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("establishment", establishment);
+
+        getSupportFragmentManager().setFragmentResultListener("blueprint", this, (requestKey, bundle) -> {
+            SlotBlueprint result = bundle.getParcelable("blueprint");
+            System.out.println(); // TODO: REMOVE
+        });
+
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("establishment", establishment);
+        if(isPeriodic) {
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.blueprint_creation_fragment, PeriodicBlueprintCreationFragment.class, bundle)
+                    .commit();
+        } else {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
                     .add(R.id.blueprint_creation_fragment, ManualBlueprintCreationFragment.class, bundle)

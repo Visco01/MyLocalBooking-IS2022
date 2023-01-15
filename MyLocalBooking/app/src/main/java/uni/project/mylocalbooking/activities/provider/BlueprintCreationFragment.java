@@ -330,7 +330,9 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     }
 
     protected void end(SlotBlueprint result) {
-        // TODO: pass result to parent activity
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("blueprint", result);
+        getParentFragmentManager().setFragmentResult("blueprint", bundle);
     }
 
     protected abstract void onAddBlueprint(ITimeFrame timeFrame);
