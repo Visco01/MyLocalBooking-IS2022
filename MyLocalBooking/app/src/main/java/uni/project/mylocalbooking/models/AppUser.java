@@ -9,6 +9,10 @@ import java.time.LocalDate;
 
 public abstract class AppUser extends DatabaseSubclassModel {
     public static AppUser fromJson(JSONObject object) throws JSONException {
+        if (object == null){
+            System.out.println("Null obj");
+            return null;
+        }
         String clientType = object.getString("type");
         if(clientType.equals("client"))
             return new Client(object);

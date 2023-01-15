@@ -62,8 +62,11 @@ public class LoginActivity extends AppCompatActivity {
         loginOutcome.observe(this, user -> {
             if(user != null)
                 openMenuActivity();
-            else
+            else{
                 System.out.println("Error with Login data");
+                failedValid();
+            }
+
         });
 
 
@@ -136,8 +139,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void failedValid(){
-        DialogFragment newFragment = new FailureFragment("Error, invalid credentials!",
-                "Your given cellphone/email and password combination isn't valid.\n");
+        DialogFragment newFragment = new FailureFragment("Error, invalid data!",
+                "Your given cellphone and password combination isn't correct.\n" +
+                        "Please try again");
         newFragment.show(getSupportFragmentManager(), "failure");
     }
 
