@@ -9,19 +9,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.ManualSlot;
+import uni.project.mylocalbooking.models.PeriodicSlot;
+import uni.project.mylocalbooking.models.Slot;
 
 public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.ViewHolder2>{
 
-    List<ModelClass_myBookings> userBookings;
+    List<Slot> userBookings;
+    List<Establishment> userEstablishmentBooked;
 
-    public Adapter_myBookings(List<ModelClass_myBookings> userBookings) {
-        this.userBookings = userBookings;
+    public Adapter_myBookings(List<Slot> slots, List<Establishment> ests) {
+        this.userBookings = slots;
+        this.userEstablishmentBooked = ests;
     }
 
     @NonNull
@@ -33,11 +42,8 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
 
     @Override
     public void onBindViewHolder(@NonNull Adapter_myBookings.ViewHolder2 holder, int position) {
-        int resource = userBookings.get(position).getImageview();
-        String tittle = userBookings.get(position).getTittle();
-        String location = userBookings.get(position).getLocation();
-        String hour = userBookings.get(position).getHour();
-        holder.setData(resource, tittle, location, hour);
+        int resource = R.drawable.logo;
+        holder.setData(resource, userBookings.get(position), userEstablishmentBooked.get(position));
     }
 
     @Override
@@ -52,6 +58,8 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
         private TextView textViewTittle;
         private TextView textViewLocation;
         private TextView textViewHour;
+        private Establishment establishment;
+        private Slot slot;
 
         public ViewHolder2(@NonNull View itemView) {
             super(itemView);
@@ -65,17 +73,28 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
             itemView.setOnClickListener(this);
         }
 
-        public void setData(int resource, String tittle, String position, String hour) {
+        public void setData(int resource, Slot slot, Establishment establishment) {
+            this.slot = slot;
+            this.establishment = establishment;
             imageView.setImageResource(resource);
-            textViewTittle.setText(tittle);
-            textViewLocation.setText(position);
-            textViewHour.setText(hour);
+            textViewTittle.setText(establishment.name);
+            textViewLocation.setText(establishment.address);
+
+            if (slot instanceof PeriodicSlot) {
+                textViewHour.setText(((PeriodicSlot) slot).getStart().toString() + " - " + ((PeriodicSlot) slot).getEnd().toString());
+            }
+            else
+            {
+                textViewHour.setText(((ManualSlot) slot).getStart().toString() + " - " + ((ManualSlot) slot).getEnd().toString());
+            }
         }
 
         @Override
         public void onClick(View view) {
             final Context context = MyLocalBooking.getAppContext();
             Intent intent = new Intent(context, ReservationDetailActivity.class);
+            intent.putExtra("establishment", establishment);
+            intent.putExtra("slot", slot);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }

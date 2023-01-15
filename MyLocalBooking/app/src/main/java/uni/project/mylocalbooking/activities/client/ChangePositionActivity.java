@@ -56,7 +56,6 @@ public class ChangePositionActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
                 if (pos.getText().toString().isEmpty()){
                     failedChange();
                 }
@@ -72,7 +71,6 @@ public class ChangePositionActivity extends AppCompatActivity {
                                         failedChange2();
                                     }
                     );
-                    //TODO Update SessionPrefs?
                 }
 
             }

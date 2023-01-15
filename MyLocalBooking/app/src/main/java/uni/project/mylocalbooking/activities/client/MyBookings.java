@@ -1,35 +1,72 @@
 package uni.project.mylocalbooking.activities.client;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.provider.AddEstablishmentActivity;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.Slot;
 
 public class MyBookings extends BaseNavigationActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    List<ModelClass_myBookings> myBookingsList;
+    MutableLiveData<List<Slot>> res;
     Adapter_myBookings adapter_myBookings;
+    List<Slot> slots = new ArrayList<>();
+    List<Establishment> l;
+    HashMap<Slot, Establishment> resMap = new HashMap<>();
+    List<Establishment> ests = new ArrayList<Establishment>();
+
+
+    boolean result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
 
-        initData();
-        initRecyckeRview();
+        l = Arrays.stream(getIntent().getExtras().getBundle("establishments").getParcelableArray("establishments"))
+                .map(e -> (Establishment) e).collect(Collectors.toList());
+
+        MutableLiveData<List<Slot>> res = new MutableLiveData<>();
+        res.observe(this, reservations -> {
+            slots = res.getValue();
+            for (Slot s: slots){
+                ests.add(s.blueprint.establishment);
+            }
+            initRecyckeRview();
+        });
+
+        try{
+            api.getClientReservations(l,
+                    (Long) SessionPreferences.getUserPrefs().get("subclass_id"), res);
+
+            System.out.println(result);
+        }catch (Throwable e){
+            System.out.println("err");
+        }
+
     }
 
     private void initRecyckeRview() {
@@ -38,11 +75,12 @@ public class MyBookings extends BaseNavigationActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter_myBookings = new Adapter_myBookings(myBookingsList);
+        adapter_myBookings = new Adapter_myBookings(slots, ests);
         recyclerView.setAdapter(adapter_myBookings);
         adapter_myBookings.notifyDataSetChanged();
     }
 
+    /*
     private void initData() {
 
         myBookingsList = new ArrayList<>();
@@ -52,6 +90,8 @@ public class MyBookings extends BaseNavigationActivity {
         myBookingsList.add(new ModelClass_myBookings(R.drawable.logo, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
 
     }
+
+    */
 
     // Returns the layout id, that is used by the super-class to manage the inflation
     public int getContentViewId(){

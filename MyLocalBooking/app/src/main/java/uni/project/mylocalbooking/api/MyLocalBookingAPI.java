@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import uni.project.mylocalbooking.MyLocalBooking;
@@ -475,7 +476,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void rateEstablishment(Establishment establishment, float rating, String comment, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
         Long clientId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
-        clientId = 1296L;
+        //clientId = 1296L;
         if(clientId == -1 && onError != null){
             onError.apply(StatusCode.SESSION_PREFERENCES_NOT_FOUND);
             return;
@@ -509,5 +510,39 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
         slots.forEach(s -> s.blueprint.addSlot(s));
         return true;
+    }
+
+    @Override
+    public void getClientReservations(Collection<Establishment> establishments, Long clientId, MutableLiveData<List<Slot>> slotsLivedata){
+        String url = MyLocalBookingAPI.apiPrefix + "reservations_by_client/" + clientId;
+        HashMap<Long, SlotBlueprint> periodic_blueprints = new HashMap<>();
+        HashMap<Long, SlotBlueprint> manual_blueprints = new HashMap<>();
+        for(Establishment est : establishments){
+            for(SlotBlueprint b : est.blueprints){
+                if(b instanceof PeriodicSlotBlueprint) periodic_blueprints.put(b.getSubclassId(), b);
+                else manual_blueprints.put(b.getSubclassId(), b);
+            }
+        }
+
+        new CallbackAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, new RunOnResponse<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                List<Slot> slots = new ArrayList<>();
+                try {
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject elem = response.getJSONObject(i);
+                        if(elem.getString("type").equals("periodic"))
+                            slots.add(Slot.fromJson(elem, periodic_blueprints));
+                        else
+                            slots.add(Slot.fromJson(elem, manual_blueprints));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                slots.forEach(s -> s.blueprint.addSlot(s));
+                slotsLivedata.setValue(slots);
+            }
+        }, true).call();
     }
 }

@@ -63,6 +63,10 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
             IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
                 establishments = est;
                 initRecyclerView();
+
+                Parcelable[] p = new Parcelable[establishments.size()];
+                establishments.toArray(p);
+                bundle.putParcelableArray("establishments", p);
             }, statusCode -> {
                 System.out.println("GetClosestEstablishments returned error " + statusCode.name());
             });
@@ -70,66 +74,18 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
             establishments = Arrays.stream(savedInstanceState.getParcelableArray("establishments"))
                     .map(e -> (Establishment) e)
                     .collect(Collectors.toList());
+
+            Parcelable[] p = new Parcelable[establishments.size()];
+            establishments.toArray(p);
+            bundle.putParcelableArray("establishments", p);
         }
 
 
-        switchPos = findViewById(R.id.switchPosition);
+
 
         // Check if device has GPS at hardware level.
         if (MyLocalBooking.getAppContext().getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_LOCATION_GPS)) {
-
-            switchPos.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // When switch is checked
-                    if (switchPos.isChecked()){
-                        System.out.println("Checked");
-
-                        // If version is >= our build version
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                            System.out.println("Build ok");
-
-                            // If the permission was already given
-                            if (ContextCompat.checkSelfPermission(MyLocalBooking.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                                    PackageManager.PERMISSION_GRANTED){
-                                System.out.println("Already given");
-                            }
-
-                            /* Ask for the permission
-                            else if (shouldShowRequestPermissionRationale(ACCESS_COARSE_LOCATION)) {
-                                // In an educational UI, explain to the user why your app requires this
-                                // permission for a specific feature to behave as expected, and what
-                                // features are disabled if it's declined. In this UI, include a
-                                // "cancel" or "no thanks" button that lets the user continue
-                                // using your app without granting the permission.
-                                showInContextUI();
-                            }*/
-
-                            // If permission wasn't given before, ask harder
-                            else{
-                                System.out.println("Not given");
-                                // Manage request code yourself
-                                // requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 42); // Request code a piacere
-
-                                // Managed by the system (better)
-                                requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
-                            }
-                        }
-
-                        // If version <= build version
-                        else{
-                            System.out.println("Build not ok");
-                        }
-                    }
-
-                    // Unchecked the switch
-                    else{
-                        System.out.println("Unchecked");
-                    }
-
-                }
-            });
         }
         // If device doesn't have GPS
         else {

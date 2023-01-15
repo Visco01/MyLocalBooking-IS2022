@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (getItem(0) < 3) {
-                    mSlideViewPager.setCurrentItem(1, true);
+                    mSlideViewPager.setCurrentItem(getItem(1), true);
                 }
                 else {
                     Intent intent = new Intent(MainActivity.this, LoginOrRegistrationActivity.class);
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         dots = new TextView[4];
         mDotLayout.removeAllViews();
 
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 3; ++i) {
             dots[i] = new TextView(this);
             dots[i].setText(Html.fromHtml("&#8226"));
             dots[i].setTextSize(35);
