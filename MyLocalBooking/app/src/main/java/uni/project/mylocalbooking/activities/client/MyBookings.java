@@ -1,22 +1,30 @@
 package uni.project.mylocalbooking.activities.client;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.provider.AddEstablishmentActivity;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+import uni.project.mylocalbooking.models.Establishment;
+import uni.project.mylocalbooking.models.Slot;
 
 public class MyBookings extends BaseNavigationActivity {
 
@@ -25,12 +33,29 @@ public class MyBookings extends BaseNavigationActivity {
     List<ModelClass_myBookings> myBookingsList;
     Adapter_myBookings adapter_myBookings;
 
+    MutableLiveData<?> res;
+
+    boolean result;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
-        //api.g
+
+        List<Establishment> l = Arrays.stream(getIntent().getExtras().getBundle("establishments").getParcelableArray("establishments"))
+                        .map(e -> (Establishment) e).collect(Collectors.toList());
+
+        try{
+            result = api.getClientReservations(l,
+                    (Long) SessionPreferences.getUserPrefs().get("subclass_id"),
+                    (MutableLiveData<List<Slot>>) res);
+
+            System.out.println(result);
+        }catch (Throwable e){
+            System.out.println("err");
+        }
+
+        System.out.println("1");
 
         initData();
         initRecyckeRview();

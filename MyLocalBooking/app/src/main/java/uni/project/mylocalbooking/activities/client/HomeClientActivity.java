@@ -63,6 +63,10 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
             IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
                 establishments = est;
                 initRecyclerView();
+
+                Parcelable[] p = new Parcelable[establishments.size()];
+                establishments.toArray(p);
+                bundle.putParcelableArray("establishments", p);
             }, statusCode -> {
                 System.out.println("GetClosestEstablishments returned error " + statusCode.name());
             });
@@ -70,7 +74,12 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
             establishments = Arrays.stream(savedInstanceState.getParcelableArray("establishments"))
                     .map(e -> (Establishment) e)
                     .collect(Collectors.toList());
+
+            Parcelable[] p = new Parcelable[establishments.size()];
+            establishments.toArray(p);
+            bundle.putParcelableArray("establishments", p);
         }
+
 
 
 

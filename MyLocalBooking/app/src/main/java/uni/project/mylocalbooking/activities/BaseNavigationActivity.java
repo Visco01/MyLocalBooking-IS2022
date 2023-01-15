@@ -26,6 +26,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
 
     protected BottomNavigationView navigationView;
     private Intent intent;
+    protected Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
                         return true;
                     // Reservations
                     case R.id.reservations:
-                        intent = new Intent(getBaseContext(), MyBookings.class);
+                        intent = new Intent(getBaseContext(), MyBookings.class).putExtra("establishments", bundle);
                         startActivity(intent);
                         return true;
                 }finish();
