@@ -28,8 +28,6 @@ import uni.project.mylocalbooking.models.Establishment;
 public abstract class BaseNavigationActivity extends AppCompatActivity {
 
     protected BottomNavigationView navigationView;
-    private Intent intent;
-    protected Bundle bundle = new Bundle();
     protected Collection<Establishment> establishments;
 
     @Override
@@ -91,16 +89,13 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
         navigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.homeProvider:
-                    intent = new Intent(getBaseContext(), HomeProviderActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(getBaseContext(), HomeProviderActivity.class));
                     return true;
                 case R.id.profileProvider:
-                    intent = new Intent(getBaseContext(), ProfileProviderActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(getBaseContext(), ProfileProviderActivity.class));
                     return true;
                 case R.id.establishments:
-                    intent = new Intent(getBaseContext(), MyEstablishments.class);
-                    startActivity(intent);
+                    startActivity(new Intent(getBaseContext(), MyEstablishments.class));
                     return true;
             }finish();
             return false;
@@ -121,18 +116,15 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
                     switch (item.getItemId()) {
                         // Home Client
                         case R.id.homeClient:
-                            intent = new Intent(getBaseContext(), HomeClientActivity.class);
-                            startActivity(intent);
+                            startActivity(new Intent(getBaseContext(), HomeClientActivity.class));
                             return true;
                         // Profile Client
                         case R.id.profileClient:
-                            intent = new Intent(getBaseContext(), ProfileClientActivity.class);
-                            startActivity(intent);
+                            startActivity(new Intent(getBaseContext(), ProfileClientActivity.class));
                             return true;
                         // Reservations
                         case R.id.reservations:
-                            intent = new Intent(getBaseContext(), MyBookings.class).putExtra("establishments", bundle);
-                            startActivity(intent);
+                            startActivity(new Intent(getBaseContext(), MyBookings.class));
                             return true;
                     }finish();
                     return false;
