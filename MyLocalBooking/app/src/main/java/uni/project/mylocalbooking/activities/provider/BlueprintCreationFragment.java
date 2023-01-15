@@ -37,13 +37,21 @@ import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public abstract class BlueprintCreationFragment extends Fragment implements CollapsibleCardViewFragment.IOnAttachedListener {
-    private abstract static class CardViewInfo {
+    protected abstract static class CardViewInfo {
         protected final View.OnClickListener listener;
         protected final CollapsibleCardViewFragment cardViewFragment;
 
         private CardViewInfo(CollapsibleCardViewFragment cardViewFragment, View.OnClickListener listener) {
             this.listener = listener;
             this.cardViewFragment = cardViewFragment;
+        }
+
+        public void collapse() {
+            cardViewFragment.collapse();
+        }
+
+        public void expand() {
+            cardViewFragment.expand();
         }
 
         protected abstract void create();
@@ -164,6 +172,12 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     protected static final String TITLE_TO_DATE = "To date";
     protected static final String TITLE_RESERVATIONS_LIMIT = "Reservation limit";
 
+    private int stepCounter = -1;
+    private String lastValidStep;
+    private HashMap<String, Integer> stepsOrder = new HashMap<>();
+    private List<String> stepsList = new ArrayList<>();
+    private CardViewInfo lastExpanded;
+
     protected Establishment establishment;
     protected Collection<SlotBlueprint> blueprints;
     protected Collection<SlotBlueprint> conflictingBlueprints;
@@ -244,14 +258,27 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         return fragmentContainer;
     }
 
+    private void addStepToOrder(String title, CardViewInfo info) {
+        createdCardViews.put(title, info);
+        stepsList.add(title);
+        stepsOrder.put(title, stepsList.size() - 1);
+    }
+
+    private void advance(String title) {
+        lastValidStep = title;
+        int current = stepsOrder.get(title);
+        if(current < stepsList.size() - 1)
+            onCardViewClicked(stepsList.get(current + 1));
+    }
+
     protected  <T extends Fragment> void createFragmentCardView(LinearLayout list, String title, Bundle innerBundle, Class<T> fragmentClass, View.OnClickListener onNext) {
         CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString("title", title);
         fragment.setArguments(bundle);
 
-        createdCardViews.put(title, new FragmentCardViewInfo(fragment, fragmentClass, innerBundle, v -> {
-            fragment.collapse();
+        addStepToOrder(title, new FragmentCardViewInfo(fragment, fragmentClass, innerBundle, v -> {
+            advance(title);
             onNext.onClick(v);
         }));
 
@@ -268,8 +295,8 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         bundle.putString("title", title);
         fragment.setArguments(bundle);
 
-        createdCardViews.put(title, new ViewCardViewInfo<T>(fragment, view, v -> {
-            fragment.collapse();
+        addStepToOrder(title, new ViewCardViewInfo<T>(fragment, view, v -> {
+            advance(title);
             onNext.onClick(v);
         }));
 
@@ -281,8 +308,25 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     }
 
     @Override
-    public void notifyFragmentAttached(String title) {
+    public void onFragmentAttached(String title) {
         createdCardViews.get(title).create();
+    }
+
+    @Override
+    public void onCardViewClicked(String title) {
+        Integer lastValidOrder = stepsOrder.get(lastValidStep);
+        int order = stepsOrder.get(title);
+
+        if(lastValidOrder == null && order == 0) {
+            createdCardViews.get(title).expand();
+            lastExpanded = createdCardViews.get(title);
+        }
+        else if(lastValidOrder != null && order <= lastValidOrder + 1) {
+            createdCardViews.get(title).expand();
+            if (lastExpanded != null)
+                lastExpanded.collapse();
+            lastExpanded = createdCardViews.get(title);
+        }
     }
 
     protected void end(SlotBlueprint result) {

@@ -26,6 +26,7 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardview_header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 

@@ -8,6 +8,7 @@ import android.widget.ListView;
 
 import com.google.android.material.slider.Slider;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
@@ -21,10 +22,9 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
     private static final int TIME_GRANULARITY_MINUTES = 15;
     private static final String TITLE_TIME = "Time window";
     private static final String TITLE_MAX_DURATION = "Maximum slot duration";
-    private ManualSlotBlueprint blueprint;
 
-    private LocalTime fromTime;
-    private LocalTime toTime;
+    private LocalTime openTime;
+    private LocalTime closeTime;
     private Slider maxDurationSlider;
 
     @Override
@@ -46,7 +46,8 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
         );
 
         createViewCardView(layout, TITLE_TIME, list, view -> {
-            System.out.println(); //TODO: pass the result to the parent activity
+            createdCardViews.get(TITLE_MAX_DURATION).expand();
+            createdCardViews.get(TITLE_TIME).collapse();
         });
 
         list.setAdapter(adapter);
@@ -57,17 +58,26 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
         maxDurationSlider.setStepSize(TIME_GRANULARITY_MINUTES);
 
         createViewCardView(layout, TITLE_MAX_DURATION, maxDurationSlider, view -> {
-            System.out.println(); //TODO: pass the result to the parent activity
+            super.end(new ManualSlotBlueprint(
+                    openTime,
+                    closeTime,
+                    Duration.ofMinutes((int) maxDurationSlider.getValue()),
+                    establishment,
+                    reservationLimit,
+                    weekDays,
+                    fromDate,
+                    toDate
+            ));
         });
     }
 
     protected void onAddBlueprint(ITimeFrame timeFrame) {
         TimeFramePickerDialogFragment slotCreationDialog = new TimeFramePickerDialogFragment(timeFrame, newTimeFrame -> {
-            fromTime = newTimeFrame.getStart();
-            toTime = newTimeFrame.getEnd();
+            openTime = newTimeFrame.getStart();
+            closeTime = newTimeFrame.getEnd();
 
             maxDurationSlider.setValueFrom(0);
-            maxDurationSlider.setValueTo(fromTime.until(toTime, ChronoUnit.MINUTES));
+            maxDurationSlider.setValueTo(openTime.until(closeTime, ChronoUnit.MINUTES));
         });
         slotCreationDialog.show(getChildFragmentManager(), "AddBlueprintDialog");
     }
