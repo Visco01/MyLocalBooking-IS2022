@@ -14,6 +14,7 @@ import android.widget.Button;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,11 +31,12 @@ public class MyBookings extends BaseNavigationActivity {
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    List<ModelClass_myBookings> myBookingsList;
-    List<Establishment> establishments = new ArrayList<>();
     MutableLiveData<List<Slot>> res;
     Adapter_myBookings adapter_myBookings;
     List<Slot> slots = new ArrayList<>();
+    List<Establishment> l;
+    HashMap<Slot, Establishment> resMap = new HashMap<>();
+    List<Establishment> ests = new ArrayList<Establishment>();
 
 
     boolean result;
@@ -44,21 +46,20 @@ public class MyBookings extends BaseNavigationActivity {
         super.onCreate(savedInstanceState);
         IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
 
-        /*
-        List<Establishment> l = Arrays.stream(getIntent().getExtras().getBundle("establishments").getParcelableArray("establishments"))
-                        .map(e -> (Establishment) e).collect(Collectors.toList());
-         */
-
-        establishments = Arrays.stream(getIntent().getExtras().getBundle("establishments").getParcelableArray("establishments"))
+        l = Arrays.stream(getIntent().getExtras().getBundle("establishments").getParcelableArray("establishments"))
                 .map(e -> (Establishment) e).collect(Collectors.toList());
 
-        res = new MutableLiveData<>();
+        MutableLiveData<List<Slot>> res = new MutableLiveData<>();
         res.observe(this, reservations -> {
             slots = res.getValue();
+            for (Slot s: slots){
+                ests.add(s.blueprint.establishment);
+            }
+            initRecyckeRview();
         });
 
         try{
-            api.getClientReservations(establishments,
+            api.getClientReservations(l,
                     (Long) SessionPreferences.getUserPrefs().get("subclass_id"), res);
 
             System.out.println(result);
@@ -66,13 +67,6 @@ public class MyBookings extends BaseNavigationActivity {
             System.out.println("err");
         }
 
-        /*
-        initData();
-         */
-        System.out.println(" Slots" +  slots);
-        System.out.println(" Establishment " + establishments);
-        System.out.println( " Res " + res + " " + res.getValue());
-        initRecyckeRview();
     }
 
     private void initRecyckeRview() {
@@ -81,7 +75,7 @@ public class MyBookings extends BaseNavigationActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter_myBookings = new Adapter_myBookings(res, establishments);
+        adapter_myBookings = new Adapter_myBookings(slots, ests);
         recyclerView.setAdapter(adapter_myBookings);
         adapter_myBookings.notifyDataSetChanged();
     }

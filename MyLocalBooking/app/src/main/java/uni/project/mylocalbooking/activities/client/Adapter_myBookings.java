@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
@@ -21,12 +23,12 @@ import uni.project.mylocalbooking.models.Slot;
 
 public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.ViewHolder2>{
 
-    MutableLiveData<List<Slot>> userBookings;
+    List<Slot> userBookings;
     List<Establishment> userEstablishmentBooked;
 
-    public Adapter_myBookings(MutableLiveData<List<Slot>> userBookings, List<Establishment> userEstablishmentBooked) {
-        this.userBookings = userBookings;
-        this.userEstablishmentBooked = userEstablishmentBooked;
+    public Adapter_myBookings(List<Slot> slots, List<Establishment> ests) {
+        this.userBookings = slots;
+        this.userEstablishmentBooked = ests;
     }
 
     @NonNull
@@ -39,12 +41,12 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
     @Override
     public void onBindViewHolder(@NonNull Adapter_myBookings.ViewHolder2 holder, int position) {
         int resource = R.drawable.logo;
-        holder.setData(resource, userBookings.getValue().get(position), userEstablishmentBooked.get(position));
+        holder.setData(resource, userBookings.get(position), userEstablishmentBooked.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return userBookings.getValue().size();
+        return userBookings.size();
     }
 
 
