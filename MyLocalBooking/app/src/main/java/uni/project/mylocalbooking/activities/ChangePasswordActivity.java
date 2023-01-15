@@ -22,9 +22,6 @@ import uni.project.mylocalbooking.fragments.SuccessFragment;
 
 public class ChangePasswordActivity extends AppCompatActivity {
 
-
-    // TODO: get the value and remove the line below
-    // For testing purpose i'll use the following one
     Map<String, ?> sessionData = SessionPreferences.getUserPrefs();
     private String currentPassword = (String) sessionData.get("password");
     EditText oldPassword, newPassword, newPasswordConfirm;

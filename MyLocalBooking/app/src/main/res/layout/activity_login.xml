@@ -43,7 +43,7 @@
                 android:background="@drawable/button_begin"
                 android:drawableLeft="@drawable/ic_baseline_person_24"
                 android:drawablePadding="8dp"
-                android:hint="Cellphone / Email"
+                android:hint="Cellphone"
                 android:padding="8dp"
                 android:textColor="@color/black"></EditText>
 
@@ -55,7 +55,7 @@
                 android:background="@drawable/button_begin"
                 android:drawableLeft="@drawable/ic_baseline_lock_24"
                 android:drawablePadding="8dp"
-                android:hint="password"
+                android:hint="Password"
                 android:inputType="textPassword"
                 android:padding="8dp"
                 android:textColor="@color/black"></EditText>

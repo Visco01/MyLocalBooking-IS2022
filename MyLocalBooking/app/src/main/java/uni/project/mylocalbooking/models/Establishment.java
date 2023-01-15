@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,6 +41,7 @@ public class Establishment extends DatabaseModel {
     public final String placeId;
 
     public Collection<SlotBlueprint> blueprints = new ArrayList<>();
+    private HashSet<LocalDate> fetchedDates = new HashSet<>();
 
     public Establishment(Long id, String providerCellphone, String name, String address, Coordinates position, String placeId) {
         super(id);
@@ -113,11 +116,14 @@ public class Establishment extends DatabaseModel {
         if(results.isEmpty())
             return results;
 
-        boolean completeResults = results.stream().allMatch(blueprint -> blueprint.slots.containsKey(date)) ||
-                IMyLocalBookingAPI.getApiInstance().getReservations(this, date);
+        if(!fetchedDates.contains(date)) {
+            boolean completeResults = IMyLocalBookingAPI.getApiInstance().getReservations(this, date);
 
-        if(!completeResults)
-            throw new PartialReservationsResultsException();
+            if(!completeResults)
+                throw new PartialReservationsResultsException();
+
+            fetchedDates.add(date);
+        }
 
         return results;
     }

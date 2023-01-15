@@ -13,14 +13,15 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.fragments.AskConfirmFragment;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
 
 public class ChangeNameActivity extends AppCompatActivity {
 
-    private final String currentName = "User's current name";
-    private final String currentLastname = "User's current lastname";
+    private final String currentName = (String) SessionPreferences.getUserPrefs().get("firstname");
+    private final String currentLastname = (String) SessionPreferences.getUserPrefs().get("lastname");
     private String inputValue1;
     private String inputValue2;
 

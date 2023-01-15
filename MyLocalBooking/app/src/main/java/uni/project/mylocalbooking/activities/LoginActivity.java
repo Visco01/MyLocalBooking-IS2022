@@ -62,8 +62,11 @@ public class LoginActivity extends AppCompatActivity {
         loginOutcome.observe(this, user -> {
             if(user != null)
                 openMenuActivity();
-            else
+            else{
                 System.out.println("Error with Login data");
+                failedValid();
+            }
+
         });
 
 
@@ -74,9 +77,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (cell.getText().toString().isEmpty() || psswd.getText().toString().isEmpty()){
                     failedEmptiness();
                 }
-                // Provider: 3332221113 - Psswd: Ciao123
-                // Client: mirco@client.it / fwefwfs-->3332221114 - Psswd: Ciao123
-                // mirco.client@gmail.com + 3332221115 - Psswd: Ciao123
                 else{
                     api.login(cell.getText().toString(), psswd.getText().toString(), loginOutcome);
                 }
@@ -139,8 +139,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void failedValid(){
-        DialogFragment newFragment = new FailureFragment("Error, invalid credentials!",
-                "Your given cellphone/email and password combination isn't valid.\n");
+        DialogFragment newFragment = new FailureFragment("Error, invalid data!",
+                "Your given cellphone and password combination isn't correct.\n" +
+                        "Please try again");
         newFragment.show(getSupportFragmentManager(), "failure");
     }
 

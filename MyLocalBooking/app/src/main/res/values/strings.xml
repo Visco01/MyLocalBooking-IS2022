@@ -30,13 +30,11 @@
     <string name="logout">Logout</string>
     //Headings
     <string name="heading_one">Quick &amp; Easy Prenotation</string>
-    <string name="heading_two">Instant Notifications</string>
     <string name="heading_three">All in one application</string>
     <string name="heading_fourth">Payment</string>
 
     //Description
     <string name="desc_one">Book your favorite establishment for your meetings or a soccer field to have fun with friends!</string>
-    <string name="desc_two">Receive instant notifications about your reservations, don\'t miss your commitments!</string>
     <string name="desc_three">MyLocalBooking the application for the complete management of your reservations, directly from your smartphone</string>
     <string name="desc_fourth">Don\'t worry about online payments visa ATM or credit card, payments are handled in person</string>
     <string name="addedEst">Your establishment was successfully added! Click anywhere to go back to your home</string>
