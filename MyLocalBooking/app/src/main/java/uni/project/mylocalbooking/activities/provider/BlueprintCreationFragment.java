@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -90,100 +91,6 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         protected void create() {
             cardViewFragment.setContent(view, listener);
         }
-    }
-
-    protected class AvailableBlueprintsAdapter extends BaseAdapter {
-        private final List<ITimeFrame> availableTimeframes;
-        protected AvailableBlueprintsAdapter(Collection<ManualSlotBlueprint> blueprints) {
-            this.availableTimeframes = extractTimeFrames(blueprints);
-        }
-
-        private List<ITimeFrame> extractTimeFrames(Collection<ManualSlotBlueprint> blueprints) {
-            List<ITimeFrame> results = new ArrayList<>();
-
-            LocalTime previous = LocalTime.MIN;
-            for(ManualSlotBlueprint blueprint : blueprints) {
-                if(previous.compareTo(blueprint.openTime) < 0) {
-                    final LocalTime start = previous;
-                    final LocalTime end = blueprint.openTime;
-                    results.add(new ITimeFrame() {
-                        @Override
-                        public LocalTime getStart() {
-                            return start;
-                        }
-
-                        @Override
-                        public LocalTime getEnd() {
-                            return end;
-                        }
-                    });
-                }
-                previous = blueprint.closeTime;
-            }
-
-            // TODO: right bound should allow 00:00
-            LocalTime maxTime = LocalTime.of(23, 59);
-            if(previous.compareTo(maxTime) < 0) {
-                final LocalTime start = previous;
-                results.add(new ITimeFrame() {
-
-                    @Override
-                    public LocalTime getStart() {
-                        return start;
-                    }
-
-                    @Override
-                    public LocalTime getEnd() {
-                        return maxTime;
-                    }
-                });
-            }
-            return results;
-        }
-
-        @Override
-        public int getCount() {
-            return 1;
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            LinearLayout layout = new LinearLayout(viewGroup.getContext());
-            layout.removeAllViews();
-
-            for(i = 0; i < availableTimeframes.size(); i++)
-                createItemView(i, layout);
-
-            return layout;
-        }
-
-        private View createItemView(int i, ViewGroup viewGroup) {
-            View view = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.manual_blueprint_list_item, viewGroup, true);
-
-
-            ITimeFrame timeFrame = availableTimeframes.get(i);
-            ((TextView) view.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
-            ((TextView) view.findViewById(R.id.close_time)).setText(timeFrame.getEnd().toString());
-            ((TextView) view.findViewById(R.id.timeframe_title)).setText(R.string.available_time);
-
-            Button button = view.findViewById(R.id.create_slot_button);
-            button.setText(R.string.create_blueprint);
-            button.setOnClickListener(v -> onAddBlueprint(timeFrame));
-
-            return view;
-        }
-
     }
 
     private class BlueprintCreationStepsAdapter extends BaseAdapter {
@@ -361,7 +268,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     @Override
     public void onFragmentAttached(String title) {
         createdCardViews.get(title).create();
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -388,4 +295,73 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     }
 
     protected abstract void onAddBlueprint(ITimeFrame timeFrame);
+
+    protected void addTimeFramePicker(String title, View.OnClickListener onClick) {
+        List<ITimeFrame> availableTimeframes = extractTimeFrames(
+                blueprints.stream().map(b -> (ManualSlotBlueprint) b).collect(Collectors.toList())
+        );
+
+        LinearLayout layout = new LinearLayout(requireContext());
+        layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+
+        layout.setTag("TIMEFRAMES LAYOUT");
+        for(int i = 0; i < availableTimeframes.size(); i++) {
+            View view = getLayoutInflater().inflate(R.layout.manual_blueprint_list_item, layout, false);
+            layout.addView(view);
+            ITimeFrame timeFrame = availableTimeframes.get(i);
+            view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            ((TextView) view.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
+            ((TextView) view.findViewById(R.id.close_time)).setText(timeFrame.getEnd().toString());
+            ((TextView) view.findViewById(R.id.timeframe_title)).setText(R.string.available_time);
+
+            Button button = view.findViewById(R.id.create_slot_button);
+            button.setText(R.string.create_blueprint);
+            button.setOnClickListener(v -> onAddBlueprint(timeFrame));
+        }
+
+        createViewCardView(title, layout, onClick);
+    }
+
+    private List<ITimeFrame> extractTimeFrames(Collection<ManualSlotBlueprint> blueprints) {
+        List<ITimeFrame> results = new ArrayList<>();
+
+        LocalTime previous = LocalTime.MIN;
+        for(ManualSlotBlueprint blueprint : blueprints) {
+            if(previous.compareTo(blueprint.openTime) < 0) {
+                final LocalTime start = previous;
+                final LocalTime end = blueprint.openTime;
+                results.add(new ITimeFrame() {
+                    @Override
+                    public LocalTime getStart() {
+                        return start;
+                    }
+
+                    @Override
+                    public LocalTime getEnd() {
+                        return end;
+                    }
+                });
+            }
+            previous = blueprint.closeTime;
+        }
+
+        // TODO: right bound should allow 00:00
+        LocalTime maxTime = LocalTime.of(23, 59);
+        if(previous.compareTo(maxTime) < 0) {
+            final LocalTime start = previous;
+            results.add(new ITimeFrame() {
+
+                @Override
+                public LocalTime getStart() {
+                    return start;
+                }
+
+                @Override
+                public LocalTime getEnd() {
+                    return maxTime;
+                }
+            });
+        }
+        return results;
+    }
 }

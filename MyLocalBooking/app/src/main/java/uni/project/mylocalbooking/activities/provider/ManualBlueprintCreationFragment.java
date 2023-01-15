@@ -3,16 +3,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.google.android.material.slider.Slider;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.stream.Collectors;
-import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.fragments.TimeFramePickerDialogFragment;
 import uni.project.mylocalbooking.models.ITimeFrame;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
@@ -30,7 +26,10 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addTimeFramePicker();
+        addTimeFramePicker(TITLE_TIME, view -> {
+            createdCardViews.get(TITLE_MAX_DURATION).expand();
+            createdCardViews.get(TITLE_TIME).collapse();
+        });
         addMaxDuration();
     }
 
@@ -40,19 +39,6 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    private void addTimeFramePicker() {
-        ListView list = new ListView(getContext());
-        AvailableBlueprintsAdapter adapter = new AvailableBlueprintsAdapter(
-                blueprints.stream().map(b -> (ManualSlotBlueprint) b).collect(Collectors.toList())
-        );
-
-        createViewCardView(TITLE_TIME, list, view -> {
-            createdCardViews.get(TITLE_MAX_DURATION).expand();
-            createdCardViews.get(TITLE_TIME).collapse();
-        });
-
-        list.setAdapter(adapter);
-    }
 
     private void addMaxDuration() {
         maxDurationSlider = new Slider(requireContext());
