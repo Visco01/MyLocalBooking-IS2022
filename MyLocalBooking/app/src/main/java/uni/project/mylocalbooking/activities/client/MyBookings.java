@@ -31,7 +31,10 @@ public class MyBookings extends BaseNavigationActivity {
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
     List<ModelClass_myBookings> myBookingsList;
+    List<Establishment> establishments = new ArrayList<>();
+    MutableLiveData<List<Slot>> res;
     Adapter_myBookings adapter_myBookings;
+    List<Slot> slots = new ArrayList<>();
 
 
     boolean result;
@@ -41,16 +44,21 @@ public class MyBookings extends BaseNavigationActivity {
         super.onCreate(savedInstanceState);
         IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
 
+        /*
         List<Establishment> l = Arrays.stream(getIntent().getExtras().getBundle("establishments").getParcelableArray("establishments"))
                         .map(e -> (Establishment) e).collect(Collectors.toList());
+         */
 
-        MutableLiveData<List<Slot>> res = new MutableLiveData<>();
+        establishments = Arrays.stream(getIntent().getExtras().getBundle("establishments").getParcelableArray("establishments"))
+                .map(e -> (Establishment) e).collect(Collectors.toList());
+
+        res = new MutableLiveData<>();
         res.observe(this, reservations -> {
-            System.out.println( );
+            slots = res.getValue();
         });
 
         try{
-            api.getClientReservations(l,
+            api.getClientReservations(establishments,
                     (Long) SessionPreferences.getUserPrefs().get("subclass_id"), res);
 
             System.out.println(result);
@@ -58,9 +66,12 @@ public class MyBookings extends BaseNavigationActivity {
             System.out.println("err");
         }
 
-        System.out.println("1");
-
+        /*
         initData();
+         */
+        System.out.println(" Slots" +  slots);
+        System.out.println(" Establishment " + establishments);
+        System.out.println( " Res " + res + " " + res.getValue());
         initRecyckeRview();
     }
 
@@ -70,11 +81,12 @@ public class MyBookings extends BaseNavigationActivity {
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter_myBookings = new Adapter_myBookings(myBookingsList);
+        adapter_myBookings = new Adapter_myBookings(res, establishments);
         recyclerView.setAdapter(adapter_myBookings);
         adapter_myBookings.notifyDataSetChanged();
     }
 
+    /*
     private void initData() {
 
         myBookingsList = new ArrayList<>();
@@ -84,6 +96,8 @@ public class MyBookings extends BaseNavigationActivity {
         myBookingsList.add(new ModelClass_myBookings(R.drawable.logo, "Campo coletti", "Baia del Re 5343/0909", "10.00"));
 
     }
+
+    */
 
     // Returns the layout id, that is used by the super-class to manage the inflation
     public int getContentViewId(){

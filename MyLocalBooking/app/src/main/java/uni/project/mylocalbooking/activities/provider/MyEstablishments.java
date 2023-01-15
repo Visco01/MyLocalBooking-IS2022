@@ -100,7 +100,6 @@ public class MyEstablishments extends BaseNavigationActivity implements Adapter_
         myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
         myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
         myEstablishmentList.add(new ModelClass_myEstablishment(R.drawable.logo, "Campo Coletti", "Ruga giuffa 2345/1241"));
-
     }
 
  */
