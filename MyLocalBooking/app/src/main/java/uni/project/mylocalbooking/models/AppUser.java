@@ -7,8 +7,12 @@ import org.json.JSONObject;
 
 import java.time.LocalDate;
 
-public abstract class AppUser extends DatabaseModel {
+public abstract class AppUser extends DatabaseSubclassModel {
     public static AppUser fromJson(JSONObject object) throws JSONException {
+        if (object == null){
+            System.out.println("Null obj");
+            return null;
+        }
         String clientType = object.getString("type");
         if(clientType.equals("client"))
             return new Client(object);
@@ -26,8 +30,8 @@ public abstract class AppUser extends DatabaseModel {
     public final LocalDate dob;
     public final String password;
 
-    public AppUser(Long id, String cellphone, String email, String firstname, String lastname, LocalDate dob, String password) {
-        super(id);
+    public AppUser(Long subclassId, Long superclassId, String cellphone, String email, String firstname, String lastname, LocalDate dob, String password) {
+        super(subclassId, superclassId);
         this.cellphone = cellphone;
         this.email = email;
         this.firstname = firstname;
@@ -37,7 +41,7 @@ public abstract class AppUser extends DatabaseModel {
     }
 
     public AppUser(String cellphone, String email, String firstname, String lastname, LocalDate dob, String password) {
-        this(null, cellphone, email, firstname, lastname, dob, password);
+        this(null, null, cellphone, email, firstname, lastname, dob, password);
     }
 
     protected AppUser(JSONObject object) throws JSONException {
@@ -45,10 +49,14 @@ public abstract class AppUser extends DatabaseModel {
 
         cellphone = object.getString("cellphone");
         password = object.getString("password_digest");
-        email = object.has("email") ? object.getString("email") : null;
         firstname = object.getString("firstname");
         lastname = object.getString("lastname");
         dob = LocalDate.parse(object.getString("dob"));
+
+        if(object.has("email"))
+            email = object.isNull("email") ? null : object.getString("email");
+        else
+            email = null;
     }
 
     protected AppUser(Parcel in) {

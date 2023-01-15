@@ -111,7 +111,6 @@ public class ClientRegistrationActivity extends AppCompatActivity {
         confirmSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: missing position picker
                 // Name and Surname
                 EditText name = findViewById(R.id.client_signup_name);
                 EditText lastname = findViewById(R.id.client_signup_surname);
@@ -149,7 +148,6 @@ public class ClientRegistrationActivity extends AppCompatActivity {
                 else if (!checkPassword(inputPassword)){
                     failedValidPassword();
                 }
-                // TODO: underage check
                 // Check if date is valid
                 // Date picked < This year
                 else if (Integer.parseInt(split[2]) >= 2022){
@@ -184,21 +182,16 @@ public class ClientRegistrationActivity extends AppCompatActivity {
 
     private void failedApi() {
         DialogFragment newFragment = new FailureFragment("API Error!",
-                "###PLACEHOLDER###");
+                "Something went wrong...\nPlease try again later");
         newFragment.show(getSupportFragmentManager(), "successReview");
     }
 
     private void confirmSignup() {
         DialogFragment newFragment = new SuccessFragment("User created successfully!",
-                "Enjoy ###PLACEHOLDER###");
-        newFragment.show(getSupportFragmentManager(), "successReview");
-    }
-
-    private void confirmSignupUnderage() {
-        DialogFragment newFragment = new SuccessFragment("User created successfully!",
-                "Enjoy ###PLACEHOLDER###\n" +
-                        "Remember you're underage, so you must use the application while a parent or" +
-                        " someone overage is watching you!!!");
+                "Your user has a default position already set in Venice!\n" +
+                        "If you wish to change it with your home, feel free to do so in the your profile.\n\n" +
+                        "Moreover, remember that if you're underage, you must use the application while a " +
+                        "parent or someone overage is watching over you!!!");
         newFragment.show(getSupportFragmentManager(), "successReview");
     }
 

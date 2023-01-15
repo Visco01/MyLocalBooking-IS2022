@@ -32,6 +32,7 @@ public class AddEstablishmentActivity extends AppCompatActivity {
     private boolean success = false;
     private float lat, lon;
     private static long id = 100; //100 Default value
+    private String pId;
     private String mapAddress;
 
 
@@ -77,9 +78,8 @@ public class AddEstablishmentActivity extends AppCompatActivity {
                     api.addEstablishment(new Establishment(
                             (Provider) MyLocalBooking.getCurrentUser(),
                             inputName, mapAddress,
-                            // TODO: Check placeId
                             new Coordinates(lat, lon),
-                            nextId()),
+                            pId),
                             (a) -> confirmAdd(),
                             (b) -> {
                                         System.out.println("Data elaboration error");
@@ -101,6 +101,7 @@ public class AddEstablishmentActivity extends AppCompatActivity {
                         lat = (float) location.coordinates.latitude;
                         lon = (float) location.coordinates.longitude;
                         mapAddress = location.address;
+                        pId = location.placeId;
                         pos.setText(location.address);
                     }
                 });
@@ -125,7 +126,8 @@ public class AddEstablishmentActivity extends AppCompatActivity {
 
     private void failedAddPos(){
         DialogFragment newFragment = new FailureFragment("Added establishment failed",
-                "Please pick a position on the map! ###PLACEHOLDER###");
+                "Please pick a position on the map. To do so, click on the green button up here" +
+                        " and then tap for a few seconds in your position on the map");
         newFragment.show(getSupportFragmentManager(), "failedAddEstablishment");
     }
 

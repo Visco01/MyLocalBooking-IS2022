@@ -74,7 +74,6 @@ public class ProfileProviderActivity extends BaseNavigationActivity {
             @Override
             public void onClick(View view){
                 SessionPreferences.deleteSessionPreferences();
-                // TODO: fix google login and adapt it
                 googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

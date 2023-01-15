@@ -63,7 +63,6 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(@NonNull View view) {
                 view.cancelPendingInputEvents();
-                // TODO: Update with privacy policy popup/activity
                 startActivity(new Intent(MyLocalBooking.getAppContext(), MainActivity.class));
             }
             @Override
@@ -109,7 +108,6 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
         confirmSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: Missing maxstrikes
                 Integer inputMaxStrikes = 2;
                 // Name and Surname
                 EditText name = findViewById(R.id.provider_signup_name);
@@ -191,15 +189,8 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
 
     private void confirmSignup() {
         DialogFragment newFragment = new SuccessFragment("User created successfully!",
-                "Enjoy ###PLACEHOLDER###");
-        newFragment.show(getSupportFragmentManager(), "successReview");
-    }
-
-    private void confirmSignupUnderage() {
-        DialogFragment newFragment = new SuccessFragment("User created successfully!",
-                "Enjoy ###PLACEHOLDER###\n" +
-                        "Remember you're underage, so you must use the application while a parent or" +
-                        " someone overage is watching you!!!");
+                "Your strike number has a default value of 2\n" +
+                        "If you wish to change it with your home, feel free to do so in the your profile.");
         newFragment.show(getSupportFragmentManager(), "successReview");
     }
 

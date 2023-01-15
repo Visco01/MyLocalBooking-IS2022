@@ -3,6 +3,9 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,12 +16,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubclassModel, ITimeFrame {
+public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     public static final Parcelable.Creator<ManualSlotBlueprint> CREATOR
             = new Parcelable.Creator<ManualSlotBlueprint>() {
         public ManualSlotBlueprint createFromParcel(Parcel in) {
@@ -30,7 +36,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         }
     };
 
-    private Long id;
     public final LocalTime openTime;
     public final LocalTime closeTime;
     public final Duration maxDuration;
@@ -38,8 +43,7 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
     public final HashMap<LocalDate, SortedSet<ManualSlot>> slots = new HashMap<>();
 
     public ManualSlotBlueprint(Long id, LocalTime openTime, LocalTime closeTime, Duration maxDuration, Long slot_id, Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
-        super(slot_id, establishment, reservationLimit, weekdays, fromDate, toDate);
-        this.id = id;
+        super(id, slot_id, establishment, reservationLimit, weekdays, fromDate, toDate);
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.maxDuration = maxDuration;
@@ -52,7 +56,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
     public ManualSlotBlueprint(JSONObject object) throws JSONException {
         super(object);
 
-        id = object.getLong("subclass_id");
         openTime = LocalTime.parse(object.getString("open_time"));
         closeTime = LocalTime.parse(object.getString("close_time"));
         maxDuration = Duration.between(
@@ -63,7 +66,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
 
     protected ManualSlotBlueprint(Parcel in) {
         super(in);
-        id = in.readLong();
         openTime = (LocalTime) in.readSerializable();
         closeTime = (LocalTime) in.readSerializable();
         maxDuration = (Duration) in.readSerializable();
@@ -78,7 +80,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);
-        parcel.writeLong(id);
         parcel.writeSerializable(openTime);
         parcel.writeSerializable(closeTime);
         parcel.writeSerializable(maxDuration);
@@ -89,13 +90,8 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
     }
 
     @Override
-    public Long getSubclassId() {
-        return id;
-    }
-
-    @Override
-    public void setSubclassId(Long id) {
-        this.id = id;
+    public boolean hasSlotsInDate(@NotNull LocalDate date) {
+        return slots.containsKey(date);
     }
 
     @Override
@@ -108,12 +104,13 @@ public class ManualSlotBlueprint extends SlotBlueprint implements IDatabaseSubcl
         return closeTime;
     }
 
-    protected void addSlot(ManualSlot slot) {
-        super.addSlot(slot);
+    @Override
+    public void addSlot(Slot slot) {
+        assert slot instanceof ManualSlot;
 
         if(!slots.containsKey(slot.date))
             slots.put(slot.date, new TreeSet<>());
 
-        slots.get(slot.date).add(slot);
+        slots.get(slot.date).add((ManualSlot) slot);
     }
 }

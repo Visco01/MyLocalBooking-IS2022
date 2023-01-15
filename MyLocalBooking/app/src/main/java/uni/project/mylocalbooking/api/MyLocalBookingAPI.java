@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.helpers.Util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 import uni.project.mylocalbooking.models.Establishment;
-import uni.project.mylocalbooking.models.IDatabaseSubclassModel;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlot;
@@ -318,21 +316,26 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         Map<String, ?> prefs = SessionPreferences.getUserPrefs();
         Long currentUserId = (Long) prefs.get("id");
 
+        APICallBack<Slot> privateOnSuccess = s -> {
+            s.blueprint.addSlot(s);
+            if(onSuccess != null)
+                onSuccess.apply(s);
+        };
 
         if(slot.getId() == null){
             if(slot.isOwner(MyLocalBooking.getCurrentUser()))
-                addSlot(slot, password, onSuccess, onError);
+                addSlot(slot, password, privateOnSuccess, onError);
             else
-                addSlot(slot, null, onSuccess, onError);
+                addSlot(slot, null, privateOnSuccess, onError);
         } else {
             if(slot.passwordProtected){
                 getSlotPasswordById(slot.getId(), data -> {
                     if(data.equals(Utility.generateEncryptedPassword(password))){
-                        getClientByAppUserId((long) currentUserId, clientId -> callAddReservation(clientId, slot, onSuccess, onError), onError);
+                        getClientByAppUserId((long) currentUserId, clientId -> callAddReservation(clientId, slot, privateOnSuccess, onError), onError);
                     }
                 }, onError);
             } else {
-                getClientByAppUserId((long) currentUserId, clientId -> callAddReservation(clientId, slot, onSuccess, onError), onError);
+                getClientByAppUserId((long) currentUserId, clientId -> callAddReservation(clientId, slot, privateOnSuccess, onError), onError);
             }
         }
     }
@@ -399,27 +402,24 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
 
     @Override
     public void cancelReservation(Slot slot, APICallBack<Slot> onSuccess, APICallBack<StatusCode> onError) {
-        Map<String, ?> prefs = SessionPreferences.getUserPrefs();
-        int currentUserId = (int) prefs.get("id");
+        long currentUserId = MyLocalBooking.getCurrentUser().getSubclassId();
 
-        getClientByAppUserId((long) currentUserId, clientId -> {
-            String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
-            String requestBody = JSONBodyGenerator.generateReservationBody(clientId, slot.getId());
-            Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
-                try {
-                    String status = response.getString("status");
-                    if(status.equals("OK")){
-                        boolean slot_id = Long.parseLong(response.getString("slot_id")) != -1;
-                        if(!slot_id) slot.setId(null);
-                        if(onSuccess != null) onSuccess.apply(slot);
-                    }else{
-                        if(onError != null) onError.apply(StatusCode.NOT_FOUND);
-                    }
-                } catch (JSONException e) {
-                    if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+        String url = MyLocalBookingAPI.apiPrefix + "delete_reservation_by_ids";
+        String requestBody = JSONBodyGenerator.generateReservationBody(currentUserId, slot.getId());
+        Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
+            try {
+                String status = response.getString("status");
+                if(status.equals("OK")){
+                    boolean slot_id = Long.parseLong(response.getString("slot_id")) != -1;
+                    if(!slot_id) slot.setId(null);
+                    if(onSuccess != null) onSuccess.apply(slot);
+                }else{
+                    if(onError != null) onError.apply(StatusCode.NOT_FOUND);
                 }
-            }, false);
-        }, onError);
+            } catch (JSONException e) {
+                if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+            }
+        }, false);
     }
 
     @Override
@@ -496,19 +496,53 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String url = MyLocalBookingAPI.apiPrefix + "slots?establishment_id=" + establishment.getId() + "&date='" + date.toString() + "'";
         HashMap<Long, SlotBlueprint> blueprints = new HashMap<>();
         for(SlotBlueprint b : establishment.blueprints)
-            blueprints.put(b.getId(), b);
+            blueprints.put(b.getSubclassId(), b);
 
         JSONArray response = new BlockingAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, true).call().waitResponse();
+        Collection<Slot> slots = new ArrayList<>();
         try {
             for(int i = 0; i < response.length(); i++)
-                Slot.fromJson(response.getJSONObject(i), blueprints);
+                slots.add(Slot.fromJson(response.getJSONObject(i), blueprints));
         } catch (JSONException e) {
             e.printStackTrace();
-            // results must be complete, partial results must be deleted
-            establishment.blueprints.forEach(blueprint -> blueprint.slots.remove(date));
             return false;
         }
 
+        slots.forEach(s -> s.blueprint.addSlot(s));
         return true;
+    }
+
+    @Override
+    public void getClientReservations(Collection<Establishment> establishments, Long clientId, MutableLiveData<List<Slot>> slotsLivedata){
+        String url = MyLocalBookingAPI.apiPrefix + "reservations_by_client/" + clientId;
+        HashMap<Long, SlotBlueprint> periodic_blueprints = new HashMap<>();
+        HashMap<Long, SlotBlueprint> manual_blueprints = new HashMap<>();
+        for(Establishment est : establishments){
+            for(SlotBlueprint b : est.blueprints){
+                if(b instanceof PeriodicSlotBlueprint) periodic_blueprints.put(b.getSubclassId(), b);
+                else manual_blueprints.put(b.getSubclassId(), b);
+            }
+        }
+
+        new CallbackAPICall<JSONArray>(MyLocalBookingAPI.jwt, "GET", null, url, new RunOnResponse<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                List<Slot> slots = new ArrayList<>();
+                try {
+                    for(int i = 0; i < response.length(); i++){
+                        JSONObject elem = response.getJSONObject(i);
+                        if(elem.getString("type").equals("periodic"))
+                            slots.add(Slot.fromJson(elem, periodic_blueprints));
+                        else
+                            slots.add(Slot.fromJson(elem, manual_blueprints));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                slots.forEach(s -> s.blueprint.addSlot(s));
+                slotsLivedata.setValue(slots);
+            }
+        }, true).call();
     }
 }

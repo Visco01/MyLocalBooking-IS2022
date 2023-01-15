@@ -15,13 +15,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 
+import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
+import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.ISelectableSlot;
 import uni.project.mylocalbooking.models.ITimeFrame;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
+import uni.project.mylocalbooking.models.Slot;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class SlotListAdapter extends BaseAdapter {
@@ -192,10 +195,10 @@ public class SlotListAdapter extends BaseAdapter {
         }
 
         Button reservationButton = ((Button) slotRoot.findViewById(R.id.reservation_button));
-        // TODO: style button based on if the user is booked or not
+        if(slot instanceof Slot && ((Slot) slot).reservations.contains((Client) MyLocalBooking.getCurrentUser()))
+            reservationButton.setText(R.string.dash);
 
         reservationButton.setOnClickListener(v -> {
-            // TODO: toggle style
             listener.onSlotReservationToggled(slot);
         });
     }

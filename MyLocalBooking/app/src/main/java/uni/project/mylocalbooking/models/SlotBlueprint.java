@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public abstract class SlotBlueprint extends DatabaseModel {
+public abstract class SlotBlueprint extends DatabaseSubclassModel {
     public static SlotBlueprint fromJson(JSONObject object) throws JSONException {
         String clientType = object.getString("type");
         if(clientType.equals("periodic"))
@@ -43,10 +43,10 @@ public abstract class SlotBlueprint extends DatabaseModel {
     public final LocalDate fromDate;
     public final LocalDate toDate;
 
-    public final HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
+    private final HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
 
-    public SlotBlueprint(Long id, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
-        super(id);
+    public SlotBlueprint(Long sublassId, Long superclassId, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
+        super(sublassId, superclassId);
         this.weekdays = weekdays;
         this.reservationLimit = reservationLimit;
         this.fromDate = fromDate;
@@ -57,7 +57,7 @@ public abstract class SlotBlueprint extends DatabaseModel {
     }
 
     public SlotBlueprint(Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
-        this(null, establishment, reservationLimit, weekdays, fromDate, toDate);
+        this(null, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
     protected SlotBlueprint(JSONObject object) throws JSONException {
@@ -122,10 +122,6 @@ public abstract class SlotBlueprint extends DatabaseModel {
         return result;
     }
 
-    protected void addSlot(Slot slot) {
-        if(!slots.containsKey(slot.date))
-            slots.put(slot.date, new ArrayList<>());
-
-        slots.get(slot.date).add(slot);
-    }
+    public abstract void addSlot(@NotNull Slot slot);
+    public abstract boolean hasSlotsInDate(@NotNull LocalDate date);
 }
