@@ -9,24 +9,32 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.fragments.CollapsibleCardViewFragment;
 import uni.project.mylocalbooking.fragments.WeekdayPickerFragment;
+import uni.project.mylocalbooking.models.ITimeFrame;
+import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
-public class BlueprintCreationFragment extends Fragment implements CollapsibleCardViewFragment.IOnAttachedListener {
+public abstract class BlueprintCreationFragment extends Fragment implements CollapsibleCardViewFragment.IOnAttachedListener {
     private abstract static class CardViewInfo {
         protected final View.OnClickListener listener;
         protected final CollapsibleCardViewFragment cardViewFragment;
@@ -64,6 +72,89 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
         protected void create() {
             cardViewFragment.setContent(view, listener);
         }
+    }
+
+    protected class AvailableBlueprintsAdapter extends BaseAdapter {
+        private final List<ITimeFrame> availableTimeframes;
+        protected AvailableBlueprintsAdapter(Collection<ManualSlotBlueprint> blueprints) {
+            this.availableTimeframes = extractTimeFrames(blueprints);
+        }
+
+        private List<ITimeFrame> extractTimeFrames(Collection<ManualSlotBlueprint> blueprints) {
+            List<ITimeFrame> results = new ArrayList<>();
+
+            LocalTime previous = LocalTime.MIN;
+            for(ManualSlotBlueprint blueprint : blueprints) {
+                if(previous.compareTo(blueprint.openTime) < 0) {
+                    final LocalTime start = previous;
+                    final LocalTime end = blueprint.openTime;
+                    results.add(new ITimeFrame() {
+                        @Override
+                        public LocalTime getStart() {
+                            return start;
+                        }
+
+                        @Override
+                        public LocalTime getEnd() {
+                            return end;
+                        }
+                    });
+                }
+                previous = blueprint.closeTime;
+            }
+
+            // TODO: right bound should allow 00:00
+            LocalTime maxTime = LocalTime.of(23, 59);
+            if(previous.compareTo(maxTime) < 0) {
+                final LocalTime start = previous;
+                results.add(new ITimeFrame() {
+
+                    @Override
+                    public LocalTime getStart() {
+                        return start;
+                    }
+
+                    @Override
+                    public LocalTime getEnd() {
+                        return maxTime;
+                    }
+                });
+            }
+            return results;
+        }
+
+        @Override
+        public int getCount() {
+            return availableTimeframes.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return availableTimeframes.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            view = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.manual_blueprint_list_item, viewGroup, false);
+
+            ITimeFrame timeFrame = availableTimeframes.get(i);
+            ((TextView) view.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
+            ((TextView) view.findViewById(R.id.close_time)).setText(timeFrame.getEnd().toString());
+            ((TextView) view.findViewById(R.id.timeframe_title)).setText(R.string.available_time);
+
+            Button button = view.findViewById(R.id.create_slot_button);
+            button.setText(R.string.create_blueprint);
+            button.setOnClickListener(v -> onAddBlueprint(timeFrame));
+
+            return view;
+        }
+
     }
 
     protected static final String TITLE_WEEKDAYS = "weekdays";
@@ -190,4 +281,6 @@ public class BlueprintCreationFragment extends Fragment implements CollapsibleCa
     public void notifyFragmentAttached(String title) {
         createdCardViews.get(title).create();
     }
+
+    protected abstract void onAddBlueprint(ITimeFrame timeFrame);
 }

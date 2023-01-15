@@ -1,22 +1,11 @@
 package uni.project.mylocalbooking.activities.provider;
-
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
-
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.fragments.TimeFramePickerDialogFragment;
 import uni.project.mylocalbooking.models.ITimeFrame;
@@ -24,89 +13,6 @@ import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 
 
 public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
-    private class AvailableBlueprintsAdapter extends BaseAdapter {
-        private final List<ITimeFrame> availableTimeframes;
-        private AvailableBlueprintsAdapter(Collection<ManualSlotBlueprint> blueprints) {
-            this.availableTimeframes = extractTimeFrames(blueprints);
-        }
-
-        private List<ITimeFrame> extractTimeFrames(Collection<ManualSlotBlueprint> blueprints) {
-            List<ITimeFrame> results = new ArrayList<>();
-
-            LocalTime previous = LocalTime.MIN;
-            for(ManualSlotBlueprint blueprint : blueprints) {
-                if(previous.compareTo(blueprint.openTime) < 0) {
-                    final LocalTime start = previous;
-                    final LocalTime end = blueprint.openTime;
-                    results.add(new ITimeFrame() {
-                        @Override
-                        public LocalTime getStart() {
-                            return start;
-                        }
-
-                        @Override
-                        public LocalTime getEnd() {
-                            return end;
-                        }
-                    });
-                }
-                previous = blueprint.closeTime;
-            }
-
-            // TODO: right bound should allow 00:00
-            LocalTime maxTime = LocalTime.of(23, 59);
-            if(previous.compareTo(maxTime) < 0) {
-                final LocalTime start = previous;
-                results.add(new ITimeFrame() {
-
-                    @Override
-                    public LocalTime getStart() {
-                        return start;
-                    }
-
-                    @Override
-                    public LocalTime getEnd() {
-                        return maxTime;
-                    }
-                });
-            }
-            return results;
-        }
-
-        @Override
-        public int getCount() {
-            return availableTimeframes.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return availableTimeframes.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            view = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.manual_blueprint_list_item, viewGroup, false);
-
-            ITimeFrame timeFrame = availableTimeframes.get(i);
-            ((TextView) view.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
-            ((TextView) view.findViewById(R.id.close_time)).setText(timeFrame.getEnd().toString());
-            ((TextView) view.findViewById(R.id.timeframe_title)).setText(R.string.available_time);
-
-            Button button = view.findViewById(R.id.create_slot_button);
-            button.setText(R.string.create_blueprint);
-            button.setOnClickListener(v -> onAddBlueprint(timeFrame));
-
-            return view;
-        }
-
-
-    }
     private static final String TITLE_TIME = "time";
 
     @Override
@@ -127,15 +33,15 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
         );
 
         createViewCardView(layout, TITLE_TIME, list, view -> {
-            System.out.println(); //TODO: REMOVE
+            System.out.println(); //TODO: pass the result to the parent activity
         });
 
         list.setAdapter(adapter);
     }
 
-    private void onAddBlueprint(ITimeFrame timeFrame) {
+    protected void onAddBlueprint(ITimeFrame timeFrame) {
         TimeFramePickerDialogFragment slotCreationDialog = new TimeFramePickerDialogFragment(timeFrame, newTimeFrame -> {
-            System.out.println(); //TODO: REMOVE
+            System.out.println(); //TODO: save result somewhere and wait for the next button to be pressed
         });
         slotCreationDialog.show(getChildFragmentManager(), "AddBlueprintDialog");
     }
