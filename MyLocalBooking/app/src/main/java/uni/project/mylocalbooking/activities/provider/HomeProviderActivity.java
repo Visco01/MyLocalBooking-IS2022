@@ -1,18 +1,23 @@
 package uni.project.mylocalbooking.activities.provider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
+import uni.project.mylocalbooking.models.Establishment;
 
 public class HomeProviderActivity extends BaseNavigationActivity {
 
@@ -34,6 +39,13 @@ public class HomeProviderActivity extends BaseNavigationActivity {
 
         init_data();
         init_recycleRview();
+
+        IMyLocalBookingAPI.getApiInstance().getOwnedEstablishments(est -> {
+            Intent intent = new Intent(this, Establishment_information.class).putExtra("establishment", est.stream().findFirst().get());
+            startActivity(intent);
+        }, code -> {
+            System.out.println();
+        });
     }
 
     private void init_recycleRview() {

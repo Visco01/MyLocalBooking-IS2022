@@ -3,6 +3,8 @@ package uni.project.mylocalbooking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,5 +39,18 @@ public abstract class DatabaseModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeLong(id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(id);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(!(obj instanceof  DatabaseModel))
+            return super.equals(obj);
+
+        return id.equals(((DatabaseModel) obj).id);
     }
 }
