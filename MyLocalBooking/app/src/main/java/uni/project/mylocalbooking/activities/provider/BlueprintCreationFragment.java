@@ -13,7 +13,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,6 +24,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,79 +35,23 @@ import uni.project.mylocalbooking.fragments.CollapsibleCardViewFragment;
 import uni.project.mylocalbooking.fragments.WeekdayPickerFragment;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ITimeFrame;
-import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public abstract class BlueprintCreationFragment extends Fragment implements CollapsibleCardViewFragment.ICollapsibleCardViewParent {
-    protected abstract class CardViewInfo {
-        protected final String title;
-        protected final View.OnClickListener listener;
-        protected final CollapsibleCardViewFragment cardViewFragment;
-
-        private CardViewInfo(String title, CollapsibleCardViewFragment cardViewFragment, View.OnClickListener listener) {
-            this.title = title;
-            this.listener = listener;
-            this.cardViewFragment = cardViewFragment;
-
-            getChildFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(cardViewFragment, title)
-                    .commit();
-        }
-
-        public void collapse() {
-            cardViewFragment.collapse();
-        }
-
-        public void expand() {
-            cardViewFragment.expand();
-        }
-
-        protected abstract void create();
-    }
-    private class FragmentCardViewInfo<T extends Fragment> extends CardViewInfo {
-        private final Class<T> innerFragmentType;
-        public T innerFragment;
-        private final Bundle bundle;
-
-        private FragmentCardViewInfo(String title, CollapsibleCardViewFragment cardViewFragment, Class<T> innerFragmentType, Bundle bundle, View.OnClickListener listener) {
-            super(title, cardViewFragment, listener);
-            this.innerFragmentType = innerFragmentType;
-            this.bundle = bundle;
-        }
-
-        protected void create() {
-            innerFragment = cardViewFragment.setContent(innerFragmentType, bundle, listener);
-        }
-    }
-    private class ViewCardViewInfo<T extends View> extends CardViewInfo {
-        private final T view;
-
-        private ViewCardViewInfo(String title, CollapsibleCardViewFragment cardViewFragment, T view, View.OnClickListener listener) {
-            super(title, cardViewFragment, listener);
-            this.view = view;
-        }
-
-        protected void create() {
-            cardViewFragment.setContent(view, listener);
-        }
-    }
-
     private class BlueprintCreationStepsAdapter extends BaseAdapter {
-        private final List<BlueprintCreationFragment.CardViewInfo> cardViewInfo;
-        private final HashMap<CollapsibleCardViewFragment, View> attachedFragments = new HashMap();
-        public BlueprintCreationStepsAdapter(List<BlueprintCreationFragment.CardViewInfo> cardViewInfo) {
-            this.cardViewInfo = cardViewInfo;
+        private final List<CollapsibleCardViewFragment> cardViewFragments;
+        public BlueprintCreationStepsAdapter(List<CollapsibleCardViewFragment> cardViewFragments) {
+            this.cardViewFragments = cardViewFragments;
         }
 
         @Override
         public int getCount() {
-            return cardViewInfo.size();
+            return cardViewFragments.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return cardViewInfo.get(i);
+            return cardViewFragments.get(i);
         }
 
         @Override
@@ -117,16 +61,16 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            BlueprintCreationFragment.CardViewInfo info = cardViewInfo.get(i);
+            CollapsibleCardViewFragment cardView = cardViewFragments.get(i);
 
-            if(info.cardViewFragment.isDetached()) {
+            if(cardView.innerFragment.isDetached()) {
                 FragmentContainerView fragmentContainer = addFragmentContainer();
-                View fragmentView = getChildFragmentManager().findFragmentByTag(info.title).getView();
+                View fragmentView = getChildFragmentManager().findFragmentByTag(cardView.title).getView();
                 fragmentContainer.addView(fragmentView);
                 return fragmentContainer;
             }
 
-            return info.cardViewFragment.getView();
+            return cardView.innerFragment.getView();
         }
 
         private FragmentContainerView addFragmentContainer() {
@@ -137,7 +81,6 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         }
     }
 
-
     protected static final String TITLE_WEEKDAYS = "Weekdays";
     protected static final String TITLE_FROM_DATE = "From date";
     protected static final String TITLE_TO_DATE = "To date";
@@ -147,13 +90,13 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     private String lastValidStep;
     private HashMap<String, Integer> stepsOrder = new HashMap<>();
     private List<String> stepsList = new ArrayList<>();
-    private CardViewInfo lastExpanded;
+    private CollapsibleCardViewFragment lastExpanded;
 
     protected Establishment establishment;
     protected Collection<SlotBlueprint> blueprints;
     protected Collection<SlotBlueprint> conflictingBlueprints;
-    protected final HashMap<String, CardViewInfo> createdCardViews = new HashMap<>();
-    private final List<CardViewInfo> cardViewInfoList = new ArrayList<>();
+    protected final HashMap<String, CollapsibleCardViewFragment> createdCardViews = new HashMap<>();
+    private final List<CollapsibleCardViewFragment> cardViewInfoList = new ArrayList<>();
     protected LocalDate fromDate;
     protected LocalDate toDate;
     protected Integer reservationLimit;
@@ -184,10 +127,12 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     }
 
     private void addWeekdays() {
+        WeekdayPickerFragment fragment = new WeekdayPickerFragment();
         Bundle innerBundle = new Bundle();
         innerBundle.putBoolean("simple", true);
+        fragment.setArguments(innerBundle);
 
-        createFragmentCardView(TITLE_WEEKDAYS, innerBundle, WeekdayPickerFragment.class, view -> {
+        createFragmentCardView("WeekDays", fragment, view -> {
             weekDays = ((WeekdayPickerFragment) getChildFragmentManager().findFragmentByTag(TITLE_WEEKDAYS)).getSelectedDaysOfWeek();
             conflictingBlueprints = blueprints.stream().filter(blueprint -> {
 
@@ -227,11 +172,11 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         });
     }
 
-    private void addStepToOrder(String title, CardViewInfo info) {
-        createdCardViews.put(title, info);
+    private void addStepToOrder(String title, CollapsibleCardViewFragment cardView) {
+        createdCardViews.put(title, cardView);
         stepsList.add(title);
         stepsOrder.put(title, stepsList.size() - 1);
-        cardViewInfoList.add(info);
+        cardViewInfoList.add(cardView);
     }
 
     private void advance(String title) {
@@ -241,28 +186,26 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
             onCardViewClicked(stepsList.get(current + 1));
     }
 
-    protected  <T extends Fragment> void createFragmentCardView(String title, Bundle innerBundle, Class<T> fragmentClass, View.OnClickListener onNext) {
-        CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("title", title);
-        fragment.setArguments(bundle);
+    protected void createFragmentCardView(String title, Fragment innerFragment, View.OnClickListener onNext) {
+        CollapsibleCardViewFragment cardView = new CollapsibleCardViewFragment(title, innerFragment, onNext);
 
-        addStepToOrder(title, new FragmentCardViewInfo(title, fragment, fragmentClass, innerBundle, v -> {
-            advance(title);
-            onNext.onClick(v);
-        }));
+        getChildFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.blueprint_creation_steps_layout, cardView, title)
+                .commit();
+
+        addStepToOrder(title, cardView);
     }
 
-    protected  <T extends View> void createViewCardView(String title, T view, View.OnClickListener onNext) {
-        CollapsibleCardViewFragment fragment = new CollapsibleCardViewFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("title", title);
-        fragment.setArguments(bundle);
+    protected void createViewCardView(String title, View view, View.OnClickListener onNext) {
+        CollapsibleCardViewFragment cardView = new CollapsibleCardViewFragment(title, view, onNext);
 
-        addStepToOrder(title, new ViewCardViewInfo<T>(title, fragment, view, v -> {
-            advance(title);
-            onNext.onClick(v);
-        }));
+        getChildFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.blueprint_creation_steps_layout, cardView, title)
+                .commit();
+
+        addStepToOrder(title, cardView);
     }
 
     @Override
