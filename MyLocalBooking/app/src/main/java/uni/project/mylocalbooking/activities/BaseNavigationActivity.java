@@ -65,7 +65,6 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             IMyLocalBookingAPI.getApiInstance().getOwnedEstablishments(est -> {
                 establishments = est;
                 loadProviderNavigationOptions();
-                onEstablishmentsReady(est);
             }, code -> {
                 System.out.println("ESTABLISHMENTS_ERROR" + code);
             });
@@ -79,7 +78,6 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
                 establishments = est;
                 loadClientNavigationOptions();
-                onEstablishmentsReady(est);
             }, code -> {
                 System.out.println("ESTABLISHMENTS_ERROR" + code);
             });
@@ -110,6 +108,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             return false;
         });
         updateNavigationBarState();
+        onEstablishmentsReady(establishments);
     }
 
     private void loadClientNavigationOptions() {
@@ -136,6 +135,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             return false;
         });
         updateNavigationBarState();
+        onEstablishmentsReady(establishments);
     }
 
     @Override
