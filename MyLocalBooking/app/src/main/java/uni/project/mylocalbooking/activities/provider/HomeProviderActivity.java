@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
+import uni.project.mylocalbooking.models.Establishment;
 
 public class HomeProviderActivity extends BaseNavigationActivity {
 
@@ -59,4 +61,9 @@ public class HomeProviderActivity extends BaseNavigationActivity {
     public int getContentViewId(){ return R.layout.activity_home_provider;}
 
     protected int getNavigationMenuItemId(){ return R.id.homeProvider;}
+
+    @Override
+    protected void onEstablishmentsReady(Collection<Establishment> establishments) {
+        // TODO: catch
+    }
 }
