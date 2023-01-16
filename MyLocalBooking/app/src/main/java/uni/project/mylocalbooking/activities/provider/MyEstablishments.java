@@ -103,4 +103,9 @@ public class MyEstablishments extends BaseNavigationActivity implements Adapter_
     }
 
  */
+
+    @Override
+    protected void onEstablishmentsReady(Collection<Establishment> establishments) {
+        // TODO: catch
+    }
 }
