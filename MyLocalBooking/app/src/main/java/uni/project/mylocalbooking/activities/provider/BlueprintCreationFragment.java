@@ -191,7 +191,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.blueprint_creation_steps_layout, cardView, title)
+                .add(cardView, title)
                 .commit();
 
         addStepToOrder(title, cardView);
@@ -202,7 +202,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.blueprint_creation_steps_layout, cardView, title)
+                .add(cardView, title)
                 .commit();
 
         addStepToOrder(title, cardView);
