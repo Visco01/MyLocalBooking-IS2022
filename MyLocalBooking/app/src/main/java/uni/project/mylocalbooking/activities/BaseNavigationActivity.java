@@ -31,7 +31,7 @@ import uni.project.mylocalbooking.models.Establishment;
 public abstract class BaseNavigationActivity extends AppCompatActivity {
 
     protected BottomNavigationView navigationView;
-    protected Collection<Establishment> establishments;
+    protected static Collection<Establishment> establishments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

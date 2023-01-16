@@ -27,7 +27,6 @@ public class MyBookings extends BaseNavigationActivity {
     MutableLiveData<List<Slot>> res;
     Adapter_myBookings adapter_myBookings;
     List<Slot> slots = new ArrayList<>();
-    List<Establishment> l;
     HashMap<Slot, Establishment> resMap = new HashMap<>();
     List<Establishment> ests = new ArrayList<Establishment>();
 
@@ -39,9 +38,6 @@ public class MyBookings extends BaseNavigationActivity {
         super.onCreate(savedInstanceState);
         IMyLocalBookingAPI api = IMyLocalBookingAPI.getApiInstance();
 
-        l = Arrays.stream(getIntent().getExtras().getBundle("establishments").getParcelableArray("establishments"))
-                .map(e -> (Establishment) e).collect(Collectors.toList());
-
         MutableLiveData<List<Slot>> res = new MutableLiveData<>();
         res.observe(this, reservations -> {
             slots = res.getValue();
@@ -52,7 +48,7 @@ public class MyBookings extends BaseNavigationActivity {
         });
 
         try{
-            api.getClientReservations(l,
+            api.getClientReservations(establishments,
                     (Long) SessionPreferences.getUserPrefs().get("subclass_id"), res);
 
             System.out.println(result);
