@@ -298,7 +298,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
     protected void addTimeFramePicker(String title, View.OnClickListener onClick) {
         List<ITimeFrame> availableTimeframes = extractTimeFrames(
-                blueprints.stream().map(b -> (ManualSlotBlueprint) b).collect(Collectors.toList())
+                blueprints.stream().map(b -> (ITimeFrame) b).collect(Collectors.toList())
         );
 
         LinearLayout layout = new LinearLayout(requireContext());
@@ -323,14 +323,14 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         createViewCardView(title, layout, onClick);
     }
 
-    private List<ITimeFrame> extractTimeFrames(Collection<ManualSlotBlueprint> blueprints) {
+    private List<ITimeFrame> extractTimeFrames(Collection<ITimeFrame> blueprints) {
         List<ITimeFrame> results = new ArrayList<>();
 
         LocalTime previous = LocalTime.MIN;
-        for(ManualSlotBlueprint blueprint : blueprints) {
-            if(previous.compareTo(blueprint.openTime) < 0) {
+        for(ITimeFrame blueprint : blueprints) {
+            if(previous.compareTo(blueprint.getStart()) < 0) {
                 final LocalTime start = previous;
-                final LocalTime end = blueprint.openTime;
+                final LocalTime end = blueprint.getStart();
                 results.add(new ITimeFrame() {
                     @Override
                     public LocalTime getStart() {
@@ -343,7 +343,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
                     }
                 });
             }
-            previous = blueprint.closeTime;
+            previous = blueprint.getEnd();
         }
 
         // TODO: right bound should allow 00:00
@@ -363,6 +363,8 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
                 }
             });
         }
+
+        results.sort(Comparator.comparing(ITimeFrame::getStart));
         return results;
     }
 }
