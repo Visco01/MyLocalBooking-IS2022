@@ -31,7 +31,7 @@ import uni.project.mylocalbooking.models.Establishment;
 public abstract class BaseNavigationActivity extends AppCompatActivity {
 
     protected BottomNavigationView navigationView;
-    protected Collection<Establishment> establishments;
+    protected static Collection<Establishment> establishments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +60,11 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             startProvider();
     }
 
-    private void startClient() {
+    private void startProvider() {
         if(establishments == null) {
             IMyLocalBookingAPI.getApiInstance().getOwnedEstablishments(est -> {
                 establishments = est;
                 loadProviderNavigationOptions();
-                onEstablishmentsReady(est);
             }, code -> {
                 System.out.println("ESTABLISHMENTS_ERROR" + code);
             });
@@ -74,12 +73,11 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             loadProviderNavigationOptions();
     }
 
-    private void startProvider() {
+    private void startClient() {
         if(establishments == null) {
             IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
                 establishments = est;
                 loadClientNavigationOptions();
-                onEstablishmentsReady(est);
             }, code -> {
                 System.out.println("ESTABLISHMENTS_ERROR" + code);
             });
@@ -109,40 +107,35 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             }finish();
             return false;
         });
+        updateNavigationBarState();
+        onEstablishmentsReady(establishments);
     }
 
     private void loadClientNavigationOptions() {
-        if(establishments == null)
-            IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
-                establishments = est;
+        navigationView = (BottomNavigationView) findViewById(R.id.navigationClient);
+        // Default position
+        navigationView.setSelectedItemId(R.id.homeClient);
 
-                navigationView = (BottomNavigationView) findViewById(R.id.navigationClient);
-                // Default position
-                navigationView.setSelectedItemId(R.id.homeClient);
-
-                // Listener
-                navigationView.setOnItemSelectedListener(item -> {
-                    switch (item.getItemId()) {
-                        // Home Client
-                        case R.id.homeClient:
-                            startActivity(new Intent(getBaseContext(), HomeClientActivity.class));
-                            return true;
-                        // Profile Client
-                        case R.id.profileClient:
-                            startActivity(new Intent(getBaseContext(), ProfileClientActivity.class));
-                            return true;
-                        // Reservations
-                        case R.id.reservations:
-                            startActivity(new Intent(getBaseContext(), MyBookings.class));
-                            return true;
-                    }finish();
-                    return false;
-                });
-
-                onEstablishmentsReady(est);
-            }, code -> {
-                System.out.println("ESTABLISHMENTS_ERROR" + code);
-            });
+        // Listener
+        navigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                // Home Client
+                case R.id.homeClient:
+                    startActivity(new Intent(getBaseContext(), HomeClientActivity.class));
+                    return true;
+                // Profile Client
+                case R.id.profileClient:
+                    startActivity(new Intent(getBaseContext(), ProfileClientActivity.class));
+                    return true;
+                // Reservations
+                case R.id.reservations:
+                    startActivity(new Intent(getBaseContext(), MyBookings.class));
+                    return true;
+            }finish();
+            return false;
+        });
+        updateNavigationBarState();
+        onEstablishmentsReady(establishments);
     }
 
     @Override
@@ -152,13 +145,6 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
             Establishment[] arr = new Establishment[establishments.size()];
             outState.putParcelableArray("establishments", establishments.toArray(arr));
         }
-    }
-
-    // Highlights the current item on the NavBar the first time the user launches the app
-    @Override
-    protected void onStart() {
-        super.onStart();
-        updateNavigationBarState();
     }
 
     // Remove inter-activity transition to avoid screen tossing on tapping bottom navigation items

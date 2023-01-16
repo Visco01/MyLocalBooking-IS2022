@@ -113,4 +113,11 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
 
         slots.get(slot.date).add((ManualSlot) slot);
     }
+
+    public boolean overlapsWith(ManualSlotBlueprint other) {
+        if(!super.overlapsWith(other))
+            return false;
+
+        return openTime.isBefore(other.closeTime) && other.openTime.isBefore(closeTime);
+    }
 }

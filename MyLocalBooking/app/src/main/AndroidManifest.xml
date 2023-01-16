@@ -35,6 +35,14 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".activities.provider.CreateBlueprintActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".activities.provider.ChooseEstablishmentOnMapActivity"
             android:exported="false"
             android:screenOrientation="portrait">
@@ -44,14 +52,16 @@
         </activity>
         <activity
             android:name=".activities.provider.PeopleWhoBook"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.provider.Past_provider_bookings"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -123,7 +133,8 @@
         <activity
             android:name=".activities.client.EditChoiceDialogClientActivity"
             android:exported="false"
-            tools:ignore="Instantiatable">
+            tools:ignore="Instantiatable"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -131,7 +142,8 @@
         <activity
             android:name=".activities.provider.EditChoiceDialogProviderActivity"
             android:exported="false"
-            tools:ignore="Instantiatable">
+            tools:ignore="Instantiatable"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

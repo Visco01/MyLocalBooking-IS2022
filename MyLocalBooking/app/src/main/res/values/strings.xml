@@ -66,4 +66,7 @@
     <string name="terms">I have read and I accept the <a href=""><u>Privacy and Data processing Policy and Terms of use</u></a>  of the application</string>
     <string name="make_reservation_error_generic_message">An error occurred while trying to make this reservation, please try again.</string>
     <string name="get_reservation_error_generic_message">An error occurred while trying to obtain reservations for this day. Please swipe to refresh the page</string>
+    <string name="next">Next</string>
+    <string name="create_blueprint">Create blueprint</string>
+    <string name="available_time">Available time</string>
 </resources>
