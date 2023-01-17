@@ -376,7 +376,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="80dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/button_confirm"
         android:text="Log out"
         android:textColor="@color/white"
