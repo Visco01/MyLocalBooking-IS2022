@@ -3,7 +3,6 @@ package uni.project.mylocalbooking.activities.provider;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -71,7 +70,6 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     protected static final String TITLE_TO_DATE = "To date";
     protected static final String TITLE_RESERVATIONS_LIMIT = "Reservation limit";
 
-    private int stepCounter = -1;
     private String lastValidStep;
     private HashMap<String, Integer> stepsOrder = new HashMap<>();
     private List<String> stepsList = new ArrayList<>();
@@ -81,7 +79,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     protected Collection<SlotBlueprint> blueprints;
     protected Collection<SlotBlueprint> conflictingBlueprints;
     protected final HashMap<String, CollapsibleCardViewFragment> createdCardViews = new HashMap<>();
-    private final List<CollapsibleCardViewFragment> cardViewInfoList = new ArrayList<>();
+    private final List<CollapsibleCardViewFragment> cardViewList = new ArrayList<>();
     protected LocalDate fromDate;
     protected LocalDate toDate;
     protected Integer reservationLimit;
@@ -106,9 +104,15 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_blueprint_creation, container, false);
         ListView list = view.findViewById(R.id.blueprint_creation_steps_layout);
-        adapter = new BlueprintCreationStepsAdapter(cardViewInfoList);
+        adapter = new BlueprintCreationStepsAdapter(cardViewList);
         list.setAdapter(adapter);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        onCardViewClicked(cardViewList.get(0).title);
     }
 
     private void addWeekdays() {
@@ -161,7 +165,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         createdCardViews.put(title, cardView);
         stepsList.add(title);
         stepsOrder.put(title, stepsList.size() - 1);
-        cardViewInfoList.add(cardView);
+        cardViewList.add(cardView);
     }
 
     private void advance(String title) {
