@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getItem(0) < 3) {
+                if (getItem(0) < 2) {
                     mSlideViewPager.setCurrentItem(getItem(1), true);
                 }
                 else {
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpIndicator(int position) {
-        dots = new TextView[4];
+        dots = new TextView[3];
         mDotLayout.removeAllViews();
 
         for (int i = 0; i < 3; ++i) {
