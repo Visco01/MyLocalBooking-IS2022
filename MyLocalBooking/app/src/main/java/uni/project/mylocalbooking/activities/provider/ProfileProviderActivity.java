@@ -76,6 +76,7 @@ public class ProfileProviderActivity extends BaseNavigationActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
+                establishments = null; // TODO: fix lazy workaround
                 MyLocalBooking.clearSessionData();
                 googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
