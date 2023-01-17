@@ -55,7 +55,7 @@ public class ProfileClientActivity extends BaseNavigationActivity {
         passwordClient = findViewById(R.id.passwordClient);
         birthday = findViewById(R.id.birthDayClient);
         email.setText(client.email);
-        position.setText(client.position.latitude + " " + client.position.longitude);
+        position.setText(((Double)client.position.latitude).toString().substring(0,7) + " " + ((Double)client.position.longitude).toString().substring(0, 7));
         clientNumber.setText(client.cellphone);
         fullName.setText(client.firstname + " " + client.lastname);
         birthday.setText(client.dob.toString());
