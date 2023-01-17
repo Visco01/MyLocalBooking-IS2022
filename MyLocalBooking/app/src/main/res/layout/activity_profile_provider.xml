@@ -380,6 +380,7 @@
         android:background="@drawable/button_confirm"
         android:text="Log out"
         android:textStyle="bold"
+        android:textSize="20sp"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/navigationProvider"
         tools:layout_editor_absoluteX="80dp">
