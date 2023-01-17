@@ -56,7 +56,7 @@ public abstract class Slot extends DatabaseSubclassModel {
         super(object);
         blueprint = blueprints.get(object.getLong("blueprint_subclass_id"));
         date = LocalDate.parse(object.getString("date"));
-        passwordProtected = !object.getString("password_digest").isEmpty();
+        passwordProtected = !object.isNull("password_digest");
         ownerCellphone = object.getString("owner_cellphone");
         reservations = new HashSet<>();
 
