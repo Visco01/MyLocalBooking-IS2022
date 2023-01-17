@@ -40,7 +40,7 @@ public class Establishment extends DatabaseModel {
     public final Coordinates position;
     public final String placeId;
 
-    public Collection<SlotBlueprint> blueprints = new ArrayList<>();
+    public HashSet<SlotBlueprint> blueprints = new HashSet<>();
     private HashSet<LocalDate> fetchedDates = new HashSet<>();
 
     public Establishment(Long id, String providerCellphone, String name, String address, Coordinates position, String placeId) {
@@ -84,7 +84,7 @@ public class Establishment extends DatabaseModel {
         position = in.readParcelable(Coordinates.class.getClassLoader());
         placeId = in.readString();
 
-        blueprints = new ArrayList<>();
+        blueprints = new HashSet<>();
         for(Parcelable b : in.readParcelableArray(SlotBlueprint.class.getClassLoader())) {
             SlotBlueprint blueprint = (SlotBlueprint) b;
             blueprints.add(blueprint);
