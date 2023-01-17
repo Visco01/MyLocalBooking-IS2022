@@ -71,6 +71,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     protected static final String TITLE_FROM_DATE = "From date";
     protected static final String TITLE_TO_DATE = "To date";
     protected static final String TITLE_RESERVATIONS_LIMIT = "Reservation limit";
+    protected static final int TIME_GRANULARITY_MINUTES = 15;
 
     private String lastValidStep;
     private HashMap<String, Integer> stepsOrder = new HashMap<>();
@@ -283,17 +284,18 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
             if(previous.compareTo(blueprint.getStart()) < 0) {
                 final LocalTime start = previous;
                 final LocalTime end = blueprint.getStart();
-                results.add(new ITimeFrame() {
-                    @Override
-                    public LocalTime getStart() {
-                        return start;
-                    }
+                if(start.plusMinutes(TIME_GRANULARITY_MINUTES).compareTo(end) <= 0)
+                    results.add(new ITimeFrame() {
+                        @Override
+                        public LocalTime getStart() {
+                            return start;
+                        }
 
-                    @Override
-                    public LocalTime getEnd() {
-                        return end;
-                    }
-                });
+                        @Override
+                        public LocalTime getEnd() {
+                            return end;
+                        }
+                    });
             }
             previous = blueprint.getEnd();
         }
@@ -302,7 +304,8 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         LocalTime maxTime = LocalTime.of(23, 59);
         if(previous.compareTo(maxTime) < 0) {
             final LocalTime start = previous;
-            results.add(new ITimeFrame() {
+            if(start.plusMinutes(TIME_GRANULARITY_MINUTES).compareTo(maxTime) <= 0)
+                results.add(new ITimeFrame() {
 
                 @Override
                 public LocalTime getStart() {
