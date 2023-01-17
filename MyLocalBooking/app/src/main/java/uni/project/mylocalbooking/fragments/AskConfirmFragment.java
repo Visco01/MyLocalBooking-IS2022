@@ -8,18 +8,30 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import android.app.Dialog;
 
+import java.util.function.BiConsumer;
+
 public class AskConfirmFragment extends DialogFragment {
+    public interface IOnConfirm {
+
+    }
     private final String title;
     private final String question;
     private final String successTitle;
     private final String successMessage;
+    private final BiConsumer<String, String> callback;
 
 
-    public AskConfirmFragment (String title, String question, String successTitle, String successMessage){
+    public AskConfirmFragment (String title, String question, String successTitle, String successMessage, BiConsumer<String, String> callback){
         this.title = title;
         this.question = question;
         this.successTitle = successTitle;
         this.successMessage = successMessage;
+        this.callback = callback;
+    }
+
+
+    public AskConfirmFragment (String title, String question, String successTitle, String successMessage){
+        this(title, question, successTitle, successMessage, null);
     }
 
     @NonNull
@@ -31,8 +43,7 @@ public class AskConfirmFragment extends DialogFragment {
         builder.setMessage(question).setTitle(title)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        DialogFragment newFragment = new SuccessFragment(successTitle, successMessage);
-                        newFragment.show(requireActivity().getSupportFragmentManager(), "confirm");
+                        callback.accept(successTitle, successMessage);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener(){
