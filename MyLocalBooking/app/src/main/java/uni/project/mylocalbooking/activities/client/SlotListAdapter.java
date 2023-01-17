@@ -1,5 +1,6 @@
 package uni.project.mylocalbooking.activities.client;
 
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -168,7 +169,8 @@ public class SlotListAdapter extends BaseAdapter {
         LocalDateTime slotStart = LocalDateTime.of(currentDate, slot.getStart());
         LocalDateTime now = LocalDateTime.now();
         boolean future = now.compareTo(slotStart) < 0;
-        boolean bookable = future && (reservationLimit == null || attending < reservationLimit);
+        boolean userHasReservation = slot instanceof Slot && ((Slot) slot).reservations.contains(MyLocalBooking.getCurrentUser());
+        boolean bookable = future && (userHasReservation || reservationLimit == null || attending < reservationLimit);
 
         if(!future)
             slotRoot.findViewById(R.id.side_line).setBackgroundResource(R.color.slot_line_expired);
@@ -198,8 +200,10 @@ public class SlotListAdapter extends BaseAdapter {
         }
 
         Button reservationButton = ((Button) slotRoot.findViewById(R.id.reservation_button));
-        if(slot instanceof Slot && ((Slot) slot).reservations.contains((Client) MyLocalBooking.getCurrentUser()))
+        if(userHasReservation) {
             reservationButton.setText(R.string.dash);
+            reservationButton.setBackgroundTintList(ColorStateList.valueOf(0xFF8BC34A));
+        }
 
         reservationButton.setOnClickListener(v -> {
             listener.onSlotReservationToggled(slot);
