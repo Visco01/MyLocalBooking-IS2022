@@ -61,23 +61,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            CollapsibleCardViewFragment cardView = cardViewFragments.get(i);
-
-            if(cardView.innerFragment.isDetached()) {
-                FragmentContainerView fragmentContainer = addFragmentContainer();
-                View fragmentView = getChildFragmentManager().findFragmentByTag(cardView.title).getView();
-                fragmentContainer.addView(fragmentView);
-                return fragmentContainer;
-            }
-
-            return cardView.innerFragment.getView();
-        }
-
-        private FragmentContainerView addFragmentContainer() {
-            FragmentContainerView fragmentContainer = new FragmentContainerView(requireContext());
-            fragmentContainer.setId(View.generateViewId());
-            fragmentContainer.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            return fragmentContainer;
+            return cardViewFragments.get(i).getView();
         }
     }
 
