@@ -25,7 +25,7 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addTimeFramePicker(TITLE_TIME, view -> {
+        addTimeFramePicker(view -> {
             createdCardViews.get(TITLE_MAX_DURATION).expand();
             createdCardViews.get(TITLE_TIME).collapse();
         });
