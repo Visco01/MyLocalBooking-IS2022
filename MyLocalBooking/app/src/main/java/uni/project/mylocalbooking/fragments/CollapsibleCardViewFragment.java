@@ -2,30 +2,38 @@ package uni.project.mylocalbooking.fragments;
 
 import android.os.Bundle;
 
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import uni.project.mylocalbooking.R;
 
 public class CollapsibleCardViewFragment extends Fragment {
-    public interface IOnAttachedListener {
-        void onFragmentAttached(String title);
+    public interface ICollapsibleCardViewParent {
         void onCardViewClicked(String title);
     }
 
-    private String title;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        title = args.getString("title");
+    public final String title;
+    private final View.OnClickListener listener;
+    public Fragment innerFragment;
+    public View innerView;
+
+    private CollapsibleCardViewFragment(String title, View.OnClickListener listener) {
+        this.listener = listener;
+        this.title = title;
+    }
+
+    public CollapsibleCardViewFragment(String title, Fragment innerFragment, View.OnClickListener listener) {
+        this(title, listener);
+        this.innerFragment = innerFragment;
+    }
+
+    public CollapsibleCardViewFragment(String title, View innerView, View.OnClickListener listener) {
+        this(title, listener);
+        this.innerView = innerView;
     }
 
     @Override
@@ -34,40 +42,25 @@ public class CollapsibleCardViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_collapsible_cardview, container, false);
         ((TextView) view.findViewById(R.id.cardview_title)).setText(title);
         view.findViewById(R.id.cardview_header).setOnClickListener(v -> {
-            ((IOnAttachedListener) getParentFragment()).onCardViewClicked(title);
+            ((ICollapsibleCardViewParent) getParentFragment()).onCardViewClicked(title);
         });
-        return view;
-    }
 
-    public <T extends Fragment> T setContent(Class<T> fragmentClass, Bundle bundle, View.OnClickListener listener) {
-        try {
-            T fragment = fragmentClass.newInstance();
-            fragment.setArguments(bundle);
-            getParentFragmentManager().beginTransaction()
+        if(innerFragment != null) {
+            getChildFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.inner_content, fragment, title)
+                    .add(R.id.inner_content, innerFragment, title)
                     .commit();
-
-            AppCompatButton button = (AppCompatButton) getView().findViewById(R.id.next_button);
-            button.setOnClickListener(listener);
-            return fragment;
-        } catch (IllegalAccessException | java.lang.InstantiationException e) {
-            e.printStackTrace();
-            return null;
         }
-    }
+        else {
+            View innerContent = view.findViewById(R.id.inner_content);
+            ViewGroup parent = (ViewGroup) innerContent.getParent();
+            int index = parent.indexOfChild(innerContent);
+            parent.removeView(innerContent);
+            innerView.setId(R.id.inner_content);
+            parent.addView(innerView, index);
+        }
 
-    public <T extends View> T setContent(T view, View.OnClickListener listener) {
-        View innerContent = getView().findViewById(R.id.inner_content);
-        ViewGroup parent = (ViewGroup) innerContent.getParent();
-        int index = parent.indexOfChild(innerContent);
-        parent.removeView(innerContent);
-        innerContent = view;
-        innerContent.setId(R.id.inner_content);
-        parent.addView(innerContent, index);
-
-        AppCompatButton button = (AppCompatButton) getView().findViewById(R.id.next_button);
-        button.setOnClickListener(listener);
+        view.findViewById(R.id.next_button).setOnClickListener(listener);
         return view;
     }
 
@@ -80,8 +73,6 @@ public class CollapsibleCardViewFragment extends Fragment {
     }
 
     private void setExpanded(boolean expanded) {
-        ((IOnAttachedListener) getParentFragment()).onFragmentAttached(title);
-
         getView().findViewById(R.id.inner_content).setVisibility(expanded ? View.VISIBLE : View.GONE);
         getView().findViewById(R.id.next_button).setVisibility(expanded ? View.VISIBLE : View.GONE);
     }

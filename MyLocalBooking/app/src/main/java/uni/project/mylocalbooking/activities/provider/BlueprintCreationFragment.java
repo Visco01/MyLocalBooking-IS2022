@@ -38,7 +38,7 @@ import uni.project.mylocalbooking.models.ITimeFrame;
 import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 import uni.project.mylocalbooking.models.SlotBlueprint;
 
-public abstract class BlueprintCreationFragment extends Fragment implements CollapsibleCardViewFragment.IOnAttachedListener {
+public abstract class BlueprintCreationFragment extends Fragment implements CollapsibleCardViewFragment.ICollapsibleCardViewParent {
     protected abstract class CardViewInfo {
         protected final String title;
         protected final View.OnClickListener listener;
@@ -263,12 +263,6 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
             advance(title);
             onNext.onClick(v);
         }));
-    }
-
-    @Override
-    public void onFragmentAttached(String title) {
-        createdCardViews.get(title).create();
-        //adapter.notifyDataSetChanged();
     }
 
     @Override
