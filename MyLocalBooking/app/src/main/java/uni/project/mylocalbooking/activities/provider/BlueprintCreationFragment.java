@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.R;
@@ -116,8 +117,8 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         innerBundle.putBoolean("simple", true);
         fragment.setArguments(innerBundle);
 
-        createFragmentCardView("WeekDays", fragment, view -> {
-            weekDays = ((WeekdayPickerFragment) getChildFragmentManager().findFragmentByTag(TITLE_WEEKDAYS)).getSelectedDaysOfWeek();
+        createFragmentCardView(TITLE_WEEKDAYS, fragment, cardView -> {
+            weekDays = ((WeekdayPickerFragment) cardView.innerFragment).getSelectedDaysOfWeek();
             conflictingBlueprints = blueprints.stream().filter(blueprint -> {
 
                 HashSet<DayOfWeek> intersection = new HashSet<>(weekDays);
@@ -131,7 +132,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     private void addFromDate() {
         CalendarView calendar = new CalendarView(requireContext());
         calendar.setDate(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond());
-        createViewCardView(TITLE_FROM_DATE, calendar, view -> {
+        createViewCardView(TITLE_FROM_DATE, calendar, cardView -> {
             fromDate = LocalDate.ofEpochDay(calendar.getDate());
         });
     }
@@ -139,7 +140,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     private void addToDate() {
         CalendarView calendar = new CalendarView(requireContext());
         calendar.setDate(LocalDate.now().toEpochDay());
-        createViewCardView(TITLE_TO_DATE, calendar, view -> {
+        createViewCardView(TITLE_TO_DATE, calendar, cardView -> {
             toDate = LocalDate.ofEpochDay(calendar.getDate());
         });
     }
@@ -150,7 +151,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
         // TODO: validate input
 
-        createViewCardView(TITLE_RESERVATIONS_LIMIT, limitText, view -> {
+        createViewCardView(TITLE_RESERVATIONS_LIMIT, limitText, cardView -> {
             int value = Integer.valueOf(String.valueOf(limitText.getText()));
             reservationLimit = value <= 0 ? 1 : value;
         });
@@ -170,9 +171,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
             onCardViewClicked(stepsList.get(current + 1));
     }
 
-    protected void createFragmentCardView(String title, Fragment innerFragment, View.OnClickListener onNext) {
-        CollapsibleCardViewFragment cardView = new CollapsibleCardViewFragment(title, innerFragment, onNext);
-
+    private void createCardView(String title, CollapsibleCardViewFragment cardView) {
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
                 .add(cardView, title)
@@ -181,15 +180,21 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         addStepToOrder(title, cardView);
     }
 
-    protected void createViewCardView(String title, View view, View.OnClickListener onNext) {
-        CollapsibleCardViewFragment cardView = new CollapsibleCardViewFragment(title, view, onNext);
+    private Consumer<CollapsibleCardViewFragment> createOnNextWrapper(Consumer<CollapsibleCardViewFragment> onNext) {
+        return cv -> {
+            advance(cv.title);
+            onNext.accept(cv);
+        };
+    }
 
-        getChildFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .add(cardView, title)
-                .commit();
+    protected void createFragmentCardView(String title, Fragment innerFragment, Consumer<CollapsibleCardViewFragment> onNext) {
+        CollapsibleCardViewFragment cardView = new CollapsibleCardViewFragment(title, innerFragment, createOnNextWrapper(onNext));
+        createCardView(title, cardView);
+    }
 
-        addStepToOrder(title, cardView);
+    protected void createViewCardView(String title, View view, Consumer<CollapsibleCardViewFragment> onNext) {
+        CollapsibleCardViewFragment cardView = new CollapsibleCardViewFragment(title, view, createOnNextWrapper(onNext));
+        createCardView(title, cardView);
     }
 
     @Override
@@ -217,7 +222,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
     protected abstract void onAddBlueprint(ITimeFrame timeFrame);
 
-    protected void addTimeFramePicker(String title, View.OnClickListener onClick) {
+    protected void addTimeFramePicker(String title, Consumer<CollapsibleCardViewFragment> onClick) {
         List<ITimeFrame> availableTimeframes = extractTimeFrames(
                 blueprints.stream().map(b -> (ITimeFrame) b).collect(Collectors.toList())
         );

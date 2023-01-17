@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.function.Consumer;
+
 import uni.project.mylocalbooking.R;
 
 public class CollapsibleCardViewFragment extends Fragment {
@@ -17,21 +19,21 @@ public class CollapsibleCardViewFragment extends Fragment {
     }
 
     public final String title;
-    private final View.OnClickListener listener;
+    private final Consumer<CollapsibleCardViewFragment> listener;
     public Fragment innerFragment;
     public View innerView;
 
-    private CollapsibleCardViewFragment(String title, View.OnClickListener listener) {
+    private CollapsibleCardViewFragment(String title, Consumer<CollapsibleCardViewFragment> listener) {
         this.listener = listener;
         this.title = title;
     }
 
-    public CollapsibleCardViewFragment(String title, Fragment innerFragment, View.OnClickListener listener) {
+    public CollapsibleCardViewFragment(String title, Fragment innerFragment, Consumer<CollapsibleCardViewFragment> listener) {
         this(title, listener);
         this.innerFragment = innerFragment;
     }
 
-    public CollapsibleCardViewFragment(String title, View innerView, View.OnClickListener listener) {
+    public CollapsibleCardViewFragment(String title, View innerView, Consumer<CollapsibleCardViewFragment> listener) {
         this(title, listener);
         this.innerView = innerView;
     }
@@ -57,10 +59,13 @@ public class CollapsibleCardViewFragment extends Fragment {
             int index = parent.indexOfChild(innerContent);
             parent.removeView(innerContent);
             innerView.setId(R.id.inner_content);
+            innerView.setVisibility(View.GONE);
             parent.addView(innerView, index);
         }
 
-        view.findViewById(R.id.next_button).setOnClickListener(listener);
+        view.findViewById(R.id.next_button).setOnClickListener(v -> {
+            listener.accept(this);
+        });
         return view;
     }
 

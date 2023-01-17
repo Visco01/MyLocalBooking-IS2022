@@ -12,7 +12,7 @@ public class PeriodicBlueprintCreationFragment extends BlueprintCreationFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addTimeFramePicker(TITLE_TIME, view -> {
+        addTimeFramePicker(TITLE_TIME, cardView -> {
             super.end(blueprint);
         });
     }

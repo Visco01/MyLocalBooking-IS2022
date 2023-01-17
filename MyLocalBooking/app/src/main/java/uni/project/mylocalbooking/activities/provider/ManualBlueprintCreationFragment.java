@@ -44,7 +44,7 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
         maxDurationSlider = new Slider(requireContext());
         maxDurationSlider.setStepSize(TIME_GRANULARITY_MINUTES);
 
-        createViewCardView(TITLE_MAX_DURATION, maxDurationSlider, view -> {
+        createViewCardView(TITLE_MAX_DURATION, maxDurationSlider, cardView -> {
             super.end(new ManualSlotBlueprint(
                     openTime,
                     closeTime,
