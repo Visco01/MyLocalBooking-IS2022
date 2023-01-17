@@ -160,6 +160,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
     private void deleteReservation(Slot slot) {
         IMyLocalBookingAPI.getApiInstance().cancelReservation(slot, s -> {
+            s.reservations.remove(MyLocalBooking.getCurrentUser());
             refreshDate(weekdayPickerViewModel.getSelectedDate().getValue());
         }, null);
     }
