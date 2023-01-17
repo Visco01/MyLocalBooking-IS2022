@@ -13,17 +13,18 @@ import java.util.Collection;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 
 public abstract class SlotBlueprint extends DatabaseSubclassModel {
-    public static SlotBlueprint fromJson(JSONObject object) throws JSONException {
+    public static SlotBlueprint fromJson(JSONObject object, Establishment establishment) throws JSONException {
         String clientType = object.getString("type");
         if(clientType.equals("periodic"))
-            return new PeriodicSlotBlueprint(object);
+            return new PeriodicSlotBlueprint(object, establishment);
 
         if (clientType.equals("manual"))
-            return new ManualSlotBlueprint(object);
+            return new ManualSlotBlueprint(object, establishment);
 
         throw new IllegalArgumentException();
     }
@@ -43,7 +44,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
     public final LocalDate fromDate;
     public final LocalDate toDate;
 
-    private final HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
+    public final HashMap<LocalDate, LinkedHashSet<Slot>> slots = new HashMap<>();
 
     public SlotBlueprint(Long sublassId, Long superclassId, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         super(sublassId, superclassId);
@@ -60,7 +61,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
         this(null, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
-    protected SlotBlueprint(JSONObject object) throws JSONException {
+    protected SlotBlueprint(JSONObject object, Establishment establishment) throws JSONException {
         super(object);
         weekdays = getDaysOfWeek(object.getInt("weekdays"));
         reservationLimit = object.has("reservation_limit") && !object.isNull("reservation_limit") ?
@@ -68,6 +69,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
 
         fromDate = LocalDate.parse(object.getString("from_date"));
         toDate = LocalDate.parse(object.getString("to_date"));
+        this.establishment = establishment;
     }
 
     protected SlotBlueprint(Parcel in) {
@@ -88,7 +90,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
         for(Parcelable s : in.readParcelableArray(Slot.class.getClassLoader())) {
             Slot slot = (Slot) s;
             if(!slots.containsKey(slot.date))
-                slots.put(slot.date, new ArrayList<>());
+                slots.put(slot.date, new LinkedHashSet<>());
             slots.get(slot.date).add(slot);
             slot.blueprint = this;
         }
@@ -136,6 +138,17 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
         return !intersection.isEmpty();
     }
 
-    public abstract void addSlot(@NotNull Slot slot);
-    public abstract boolean hasSlotsInDate(@NotNull LocalDate date);
+    /**
+     * This implementation must be called by subclasses overriding this method
+     * @param slot
+     */
+    public void addSlot(@NotNull Slot slot) {
+        LinkedHashSet<Slot> slotsInDate = slots.get(slot.date);
+        if(slotsInDate == null) {
+            slotsInDate = new LinkedHashSet<>();
+            slots.put(slot.date, slotsInDate);
+        }
+        slotsInDate.add(slot);
+    }
+    public abstract void invalidateReservations(LocalDate date);
 }
