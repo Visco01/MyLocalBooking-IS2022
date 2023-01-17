@@ -39,6 +39,7 @@ public class ProfileClientActivity extends BaseNavigationActivity {
     private TextView email;
     private TextView passwordClient;
     private TextView birthday;
+    private TextView position;
 
 
     @Override
@@ -49,12 +50,14 @@ public class ProfileClientActivity extends BaseNavigationActivity {
         googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
         editButton = findViewById(R.id.editButtonClient);
+        position = findViewById(R.id.clientPosition);
         clientNumber = findViewById(R.id.clientNumber);
         fullName = findViewById(R.id.fullNameClient);
         email = findViewById(R.id.emailClient);
         passwordClient = findViewById(R.id.passwordClient);
         birthday = findViewById(R.id.birthDayClient);
         email.setText(client.email);
+        position.setText(((Double)client.position.latitude).toString().substring(0,7) + " " + ((Double)client.position.longitude).toString().substring(0, 7));
         clientNumber.setText(client.cellphone);
         fullName.setText(client.firstname + " " + client.lastname);
         birthday.setText(client.dob.toString());
