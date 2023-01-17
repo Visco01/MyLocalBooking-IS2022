@@ -26,6 +26,12 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
+        <meta-data
+            android:name="RAILS_API_USERNAME"
+            android:value="${RAILS_API_USER}" />
+        <meta-data
+            android:name="RAILS_API_PASSWORD"
+            android:value="${RAILS_API_PW}" />
         <activity
             android:name=".activities.client.ChangePositionActivity"
             android:exported="false"
