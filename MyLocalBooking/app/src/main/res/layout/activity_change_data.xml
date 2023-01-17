@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/sfondo_local_booking"
+    tools:context=".activities.ChangeDataActivity">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/ChangeDataOfBorn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Change birthday"
+                android:textAlignment="center"
+                android:textColor="@color/booking_color"
+                android:textSize="36sp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <EditText
+                android:id="@+id/old_input_data"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_begin"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:drawableLeft="@drawable/ic_baseline_date_range_24"
+                android:drawablePadding="8dp"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="Old Birthday"
+                android:inputType="date"
+                android:padding="8dp"
+                android:textColor="@color/black"></EditText>
+
+            <EditText
+                android:id="@+id/new_born_data"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/button_begin"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:drawableLeft="@drawable/ic_baseline_date_range_24"
+                android:drawablePadding="8dp"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="New Birthday"
+                android:inputType="date"
+                android:padding="8dp"
+                android:textColor="@color/black"></EditText>
+
+            <EditText
+                android:id="@+id/confirm_new_born_data"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/button_begin"
+                android:drawableLeft="@drawable/ic_baseline_date_range_24"
+                android:drawablePadding="8dp"
+                android:hint="Confirm Birthday"
+                android:inputType="date"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"></EditText>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/confirm_change_birthday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_confirm"
+                android:layout_marginTop="15dp"
+                android:text="Confirm"
+                android:textColor="@color/white">
+
+            </androidx.appcompat.widget.AppCompatButton>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="This feature is currently under development, please wait for the next update!"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold|italic" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        app:srcCompat="@drawable/ic_baseline_warning_amber_24" />
+
+</LinearLayout>
