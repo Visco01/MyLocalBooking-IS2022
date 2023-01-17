@@ -12,7 +12,10 @@ public class CallbackAPICall<T> extends APICall<T> {
 
     @Override
     public CallbackAPICall<T> call() {
-        super.call(runOnResponse, error -> Log.i("APICall error", error.toString()));
+        super.call(runOnResponse, error -> {
+            Log.i("APICall error", error.toString());
+            runOnResponse.onResponse(null);
+        });
         return this;
     }
 }

@@ -40,7 +40,7 @@ public class Establishment extends DatabaseModel {
     public final Coordinates position;
     public final String placeId;
 
-    public Collection<SlotBlueprint> blueprints = new ArrayList<>();
+    public HashSet<SlotBlueprint> blueprints = new HashSet<>();
     private HashSet<LocalDate> fetchedDates = new HashSet<>();
 
     public Establishment(Long id, String providerCellphone, String name, String address, Coordinates position, String placeId) {
@@ -72,7 +72,7 @@ public class Establishment extends DatabaseModel {
 
         JSONArray blueprintsArr = object.getJSONArray("slot_blueprints");
         for(int i = 0; i < blueprintsArr.length(); i++)
-            this.addBlueprint(SlotBlueprint.fromJson(blueprintsArr.getJSONObject(i)));
+            this.addBlueprint(SlotBlueprint.fromJson(blueprintsArr.getJSONObject(i), this));
     }
 
     protected Establishment(Parcel in) {
@@ -84,7 +84,7 @@ public class Establishment extends DatabaseModel {
         position = in.readParcelable(Coordinates.class.getClassLoader());
         placeId = in.readString();
 
-        blueprints = new ArrayList<>();
+        blueprints = new HashSet<>();
         for(Parcelable b : in.readParcelableArray(SlotBlueprint.class.getClassLoader())) {
             SlotBlueprint blueprint = (SlotBlueprint) b;
             blueprints.add(blueprint);
@@ -107,7 +107,7 @@ public class Establishment extends DatabaseModel {
         parcel.writeParcelableArray(blueprintsArr, i);
     }
 
-    public Collection<SlotBlueprint> getBlueprints(LocalDate date) throws PartialReservationsResultsException {
+    public Collection<SlotBlueprint> getBlueprints(LocalDate date, boolean forcedRefresh) throws PartialReservationsResultsException {
         Stream<SlotBlueprint> activeBlueprintsInDate = blueprints.stream().filter(b ->
                 b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
                         b.weekdays.contains(date.getDayOfWeek()));
@@ -115,6 +115,11 @@ public class Establishment extends DatabaseModel {
         List<SlotBlueprint> results = activeBlueprintsInDate.collect(Collectors.toList());
         if(results.isEmpty())
             return results;
+
+        if(forcedRefresh) {
+            results.forEach(blueprint -> blueprint.invalidateReservations(date));
+            fetchedDates.remove(date);
+        }
 
         if(!fetchedDates.contains(date)) {
             boolean completeResults = IMyLocalBookingAPI.getApiInstance().getReservations(this, date);
@@ -128,7 +133,11 @@ public class Establishment extends DatabaseModel {
         return results;
     }
 
-    public Provider getProvider() {
+    public Collection<SlotBlueprint> getBlueprints(LocalDate date) throws PartialReservationsResultsException {
+        return getBlueprints(date, false);
+    }
+
+        public Provider getProvider() {
         if(provider != null)
             return provider;
 

@@ -10,6 +10,7 @@
         android:id="@+id/base_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
         app:cardCornerRadius="5dp"
         app:contentPadding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,63 +18,73 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@color/teal_200"
-        android:layout_marginHorizontal="16dp"
-        app:strokeWidth="2dp" >
+        app:strokeWidth="2dp">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cardview_header"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/show"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@android:drawable/arrow_down_float"
-                    app:tint="@color/teal_200" />
-
-
-                <TextView
-                    android:id="@+id/cardview_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-
-                    tools:text="From time" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/inner_content"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <!-- TODO: fragment goes here -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cardview_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp">
 
-            </androidx.fragment.app.FragmentContainerView>
+                    <ImageView
+                        android:id="@+id/show"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@android:drawable/arrow_down_float"
+                        app:tint="@color/teal_200" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/next_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/next"
-                android:background="@color/reservation_button_available"
-                android:visibility="gone"/>
 
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/cardview_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
 
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="From time" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/inner_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:layout="@layout/manual_slot_dialog">
+
+                    <!-- TODO: fragment goes here -->
+
+                </androidx.fragment.app.FragmentContainerView>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/next_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/reservation_button_available"
+                    android:text="@string/next"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </com.google.android.material.card.MaterialCardView>

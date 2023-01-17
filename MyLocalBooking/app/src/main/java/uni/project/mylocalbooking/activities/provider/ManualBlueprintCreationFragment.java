@@ -15,7 +15,6 @@ import uni.project.mylocalbooking.models.ManualSlotBlueprint;
 
 
 public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
-    private static final int TIME_GRANULARITY_MINUTES = 15;
     private static final String TITLE_TIME = "Time window";
     private static final String TITLE_MAX_DURATION = "Maximum slot duration";
 
@@ -44,7 +43,7 @@ public class ManualBlueprintCreationFragment extends BlueprintCreationFragment {
         maxDurationSlider = new Slider(requireContext());
         maxDurationSlider.setStepSize(TIME_GRANULARITY_MINUTES);
 
-        createViewCardView(TITLE_MAX_DURATION, maxDurationSlider, view -> {
+        createViewCardView(TITLE_MAX_DURATION, maxDurationSlider, cardView -> {
             super.end(new ManualSlotBlueprint(
                     openTime,
                     closeTime,

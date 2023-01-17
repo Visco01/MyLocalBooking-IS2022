@@ -51,6 +51,10 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         if(savedInstanceState == null) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("simple", false);
+            bundle.putInt(WeekdayPickerFragment.TEXT_COLOR_ARG, 0xFFFFFFFF);
+            bundle.putInt(WeekdayPickerFragment.ACTIVE_TEXT_COLOR_ARG, 0xFF000000);
+            bundle.putInt(WeekdayPickerFragment.BACKGROUND_COLOR_ARG, 0xFF4777b4);
+            bundle.putInt(WeekdayPickerFragment.ACTIVE_BACKGROUND_COLOR_ARG, 0xFFFFFFFF);
 
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
@@ -63,13 +67,15 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         ((ListView) findViewById(R.id.slot_list)).setAdapter(adapter);
 
         ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setOnRefreshListener(() -> {
-            refreshDate(weekdayPickerViewModel.getSelectedDate().getValue());
+            loadDate(weekdayPickerViewModel.getSelectedDate().getValue(), false);
         });
 
-        weekdayPickerViewModel.getSelectedDate().observe(this, this::refreshDate);
+        weekdayPickerViewModel.getSelectedDate().observe(this, date -> {
+            loadDate(date, false);
+        });
     }
 
-    private void refreshDate (LocalDate date) {
+    private void loadDate(LocalDate date, boolean refresh) {
         MutableLiveData<Collection<SlotBlueprint>> blueprints = new MutableLiveData<>();
         blueprints.observe(this, bp -> {
             adapter.onRefresh(date, bp);
@@ -81,7 +87,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
         new Thread(() -> {
             try {
-                blueprints.postValue(currentEstablishment.getBlueprints(date));
+                blueprints.postValue(currentEstablishment.getBlueprints(date, refresh));
             } catch (Establishment.PartialReservationsResultsException e) {
                 e.printStackTrace();
                 findViewById(R.id.reservations_warning_text).setVisibility(View.VISIBLE);
@@ -160,7 +166,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
     private void deleteReservation(Slot slot) {
         IMyLocalBookingAPI.getApiInstance().cancelReservation(slot, s -> {
-            refreshDate(weekdayPickerViewModel.getSelectedDate().getValue());
+            loadDate(weekdayPickerViewModel.getSelectedDate().getValue(), true);
         }, null);
     }
 
@@ -179,7 +185,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
         IMyLocalBookingAPI.getApiInstance().addReservation(slot, password, s -> {
                     slot.reservations.add((Client) MyLocalBooking.getCurrentUser());
-                    refreshDate(weekdayPickerViewModel.getSelectedDate().getValue());
+                    loadDate(weekdayPickerViewModel.getSelectedDate().getValue(), false);
                     onReservationOutcome(null);
                 },
                 code -> {
