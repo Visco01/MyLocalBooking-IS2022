@@ -72,7 +72,7 @@ public class Establishment extends DatabaseModel {
 
         JSONArray blueprintsArr = object.getJSONArray("slot_blueprints");
         for(int i = 0; i < blueprintsArr.length(); i++)
-            this.addBlueprint(SlotBlueprint.fromJson(blueprintsArr.getJSONObject(i)));
+            this.addBlueprint(SlotBlueprint.fromJson(blueprintsArr.getJSONObject(i), this));
     }
 
     protected Establishment(Parcel in) {

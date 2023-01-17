@@ -17,13 +17,13 @@ import java.util.List;
 
 
 public abstract class SlotBlueprint extends DatabaseSubclassModel {
-    public static SlotBlueprint fromJson(JSONObject object) throws JSONException {
+    public static SlotBlueprint fromJson(JSONObject object, Establishment establishment) throws JSONException {
         String clientType = object.getString("type");
         if(clientType.equals("periodic"))
-            return new PeriodicSlotBlueprint(object);
+            return new PeriodicSlotBlueprint(object, establishment);
 
         if (clientType.equals("manual"))
-            return new ManualSlotBlueprint(object);
+            return new ManualSlotBlueprint(object, establishment);
 
         throw new IllegalArgumentException();
     }
@@ -60,7 +60,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
         this(null, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
-    protected SlotBlueprint(JSONObject object) throws JSONException {
+    protected SlotBlueprint(JSONObject object, Establishment establishment) throws JSONException {
         super(object);
         weekdays = getDaysOfWeek(object.getInt("weekdays"));
         reservationLimit = object.has("reservation_limit") && !object.isNull("reservation_limit") ?
@@ -68,6 +68,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
 
         fromDate = LocalDate.parse(object.getString("from_date"));
         toDate = LocalDate.parse(object.getString("to_date"));
+        this.establishment = establishment;
     }
 
     protected SlotBlueprint(Parcel in) {

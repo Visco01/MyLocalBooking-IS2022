@@ -43,8 +43,8 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
         this(null, fromTime, toTime, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
-    public PeriodicSlotBlueprint(JSONObject object) throws JSONException {
-        super(object);
+    public PeriodicSlotBlueprint(JSONObject object, Establishment establishment) throws JSONException {
+        super(object, establishment);
 
         fromTime = LocalTime.parse(object.getString("from_time"));
         toTime = LocalTime.parse(object.getString("to_time"));

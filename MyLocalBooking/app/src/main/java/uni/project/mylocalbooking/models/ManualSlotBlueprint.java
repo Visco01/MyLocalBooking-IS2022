@@ -53,8 +53,8 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
         this(null, openTime, closeTime, maxDuration, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
-    public ManualSlotBlueprint(JSONObject object) throws JSONException {
-        super(object);
+    public ManualSlotBlueprint(JSONObject object, Establishment establishment) throws JSONException {
+        super(object, establishment);
 
         openTime = LocalTime.parse(object.getString("open_time"));
         closeTime = LocalTime.parse(object.getString("close_time"));
