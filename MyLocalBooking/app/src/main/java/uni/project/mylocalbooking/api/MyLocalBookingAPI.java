@@ -466,6 +466,11 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    if(response == null) {
+                        if(onSuccess != null) onSuccess.apply(null);
+                        return;
+                    }
+
                     String status = response.getString("status");
                     Log.i("client id on set position", String.valueOf(clientId));
                     if(status.equals("OK") && onSuccess != null) onSuccess.apply(null);

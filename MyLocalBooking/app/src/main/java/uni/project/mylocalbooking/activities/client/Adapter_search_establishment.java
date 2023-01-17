@@ -61,7 +61,7 @@ public class Adapter_search_establishment extends RecyclerView.Adapter<Adapter_s
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            itemView.findViewById(R.id.goPrenotationEst).setOnClickListener(view -> {
+            itemView.findViewById(R.id.establishment_cardview).setOnClickListener(view -> {
                 listener.onEstablishmentSelected(establishment);
             });
 
