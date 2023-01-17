@@ -19,7 +19,7 @@ import java.util.Objects;
 
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 
-public abstract class Slot extends DatabaseSubclassModel {
+public abstract class Slot extends DatabaseSubclassModel implements ITimeFrame {
     public static Slot fromJson(JSONObject object, HashMap<Long, SlotBlueprint> blueprints) throws JSONException {
         String clientType = object.getString("type");
         if(clientType.equals("periodic"))
