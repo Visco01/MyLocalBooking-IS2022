@@ -2,6 +2,7 @@ package uni.project.mylocalbooking.activities.provider;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.InputType;
@@ -18,12 +19,13 @@ import android.widget.TextView;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -134,19 +136,39 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     }
 
     private void addFromDate() {
-        CalendarView calendar = new CalendarView(requireContext());
-        calendar.setDate(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond());
-        createViewCardView(TITLE_FROM_DATE, calendar, cardView -> {
-            fromDate = LocalDate.ofEpochDay(calendar.getDate());
+        CalendarView calendarView = new CalendarView(requireContext());
+
+        fromDate = LocalDate.now();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(Date.from(fromDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        long nowMillis = calendar.getTimeInMillis();
+        calendarView.setMinDate(nowMillis);
+        calendarView.setDate(nowMillis, true, true);
+
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                fromDate = LocalDate.of(year, month + 1, dayOfMonth);
+            }
+        });
+        createViewCardView(TITLE_FROM_DATE, calendarView, cardView -> {
+            CollapsibleCardViewFragment nextCardView = (CollapsibleCardViewFragment) getChildFragmentManager().findFragmentByTag(TITLE_TO_DATE);
+            CalendarView nextCalendarView = (CalendarView) nextCardView.innerView;
+
+            Calendar nextCalendar = Calendar.getInstance();
+            nextCalendar.setTime(Date.from(fromDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            nextCalendarView.setDate(nextCalendar.getTimeInMillis());
+            nextCalendarView.setMinDate(nextCalendar.getTimeInMillis());
         });
     }
 
     private void addToDate() {
-        CalendarView calendar = new CalendarView(requireContext());
-        calendar.setDate(LocalDate.now().toEpochDay());
-        createViewCardView(TITLE_TO_DATE, calendar, cardView -> {
-            toDate = LocalDate.ofEpochDay(calendar.getDate());
+        CalendarView calendarView = new CalendarView(requireContext());
+        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            toDate = LocalDate.of(year, month + 1, dayOfMonth);
         });
+        createViewCardView(TITLE_TO_DATE, calendarView, cardView -> {});
     }
 
     private void addReservationLimit() {
