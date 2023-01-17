@@ -48,7 +48,7 @@ public class TimeFramePickerDialogFragment extends DialogFragment {
     private ITimeFrame parseView(View view) {
         RangeSlider slider = view.findViewById(R.id.time_slider);
         LocalTime fromTime = timeFrame.getStart().plusMinutes(slider.getValues().get(0).intValue());
-        LocalTime toTime = timeFrame.getEnd().plusMinutes(slider.getValues().get(1).intValue());
+        LocalTime toTime = timeFrame.getStart().plusMinutes(slider.getValues().get(1).intValue());
 
         return new ITimeFrame() {
             @Override
