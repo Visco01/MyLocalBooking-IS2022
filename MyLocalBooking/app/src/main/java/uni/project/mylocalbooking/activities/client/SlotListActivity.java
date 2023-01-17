@@ -51,6 +51,10 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         if(savedInstanceState == null) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("simple", false);
+            bundle.putInt(WeekdayPickerFragment.TEXT_COLOR_ARG, 0xFFFFFFFF);
+            bundle.putInt(WeekdayPickerFragment.ACTIVE_TEXT_COLOR_ARG, 0xFF000000);
+            bundle.putInt(WeekdayPickerFragment.BACKGROUND_COLOR_ARG, 0xFF4777b4);
+            bundle.putInt(WeekdayPickerFragment.ACTIVE_BACKGROUND_COLOR_ARG, 0xFFFFFFFF);
 
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)

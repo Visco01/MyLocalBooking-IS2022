@@ -115,6 +115,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
 
     private View init(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.weekday_picker, container, false);
+        view.findViewById(R.id.weekday_picker_root).setBackgroundColor(backgroundColor);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.week_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
 
