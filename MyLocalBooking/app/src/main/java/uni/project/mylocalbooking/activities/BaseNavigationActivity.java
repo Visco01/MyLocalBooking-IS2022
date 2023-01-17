@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ import uni.project.mylocalbooking.models.Establishment;
 public abstract class BaseNavigationActivity extends AppCompatActivity {
 
     protected BottomNavigationView navigationView;
-    protected static Collection<Establishment> establishments;
+    protected static HashSet<Establishment> establishments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
         if(savedInstanceState != null && savedInstanceState.containsKey("establishments")) {
             establishments = Arrays.stream(savedInstanceState.getParcelableArray("establishments"))
                     .map(e -> (Establishment) e)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toCollection(HashSet::new));
         }
 
         boolean isClient = Objects.equals((String) sessionData.get("usertype"), "client");
@@ -63,7 +64,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
     private void startProvider() {
         if(establishments == null) {
             IMyLocalBookingAPI.getApiInstance().getOwnedEstablishments(est -> {
-                establishments = est;
+                establishments = new HashSet<>(est);
                 loadProviderNavigationOptions();
             }, code -> {
                 System.out.println("ESTABLISHMENTS_ERROR" + code);
@@ -76,7 +77,7 @@ public abstract class BaseNavigationActivity extends AppCompatActivity {
     private void startClient() {
         if(establishments == null) {
             IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
-                establishments = est;
+                establishments = new HashSet<>(est);
                 loadClientNavigationOptions();
             }, code -> {
                 System.out.println("ESTABLISHMENTS_ERROR" + code);
