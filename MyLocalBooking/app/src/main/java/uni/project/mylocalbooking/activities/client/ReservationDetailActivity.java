@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
@@ -22,6 +21,7 @@ import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.ManualSlot;
 import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.Slot;
+import uni.project.mylocalbooking.models.SlotBlueprint;
 
 public class ReservationDetailActivity extends AppCompatActivity {
 
@@ -35,8 +35,12 @@ public class ReservationDetailActivity extends AppCompatActivity {
         reviewButton = findViewById(R.id.reviewReservationButton);
         deleteButton = findViewById(R.id.deleteReservationButton);
 
-        Slot slot = (Slot) getIntent().getExtras().get("slot");
+        Bundle bundle = getIntent().getExtras();
+
         Establishment establishment = (Establishment) getIntent().getExtras().get("establishment");
+        SlotBlueprint blueprint = (SlotBlueprint) bundle.getParcelable("blueprint");
+        Slot inSlot = (Slot) bundle.getParcelable("slot");
+        Slot slot = blueprint.slots.get(inSlot.date).stream().filter(s -> s.equals(inSlot)).findFirst().get();
 
         TextView estName, estAddressDetail, resDate, hour, revDesc, delDesc;
         revDesc = findViewById(R.id.reviewDesc);
