@@ -35,10 +35,10 @@ public class HomeProviderActivity extends BaseNavigationActivity {
         textViewDate.setText(currentDate);
 
         init_data();
-        init_recycleRview();
+        initRecyclerView();
     }
 
-    private void init_recycleRview() {
+    private void initRecyclerView() {
         recyclerView = findViewById(R.id.prenotation_for_today_rv);
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);

@@ -1,9 +1,6 @@
 package uni.project.mylocalbooking.activities.provider;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import uni.project.mylocalbooking.fragments.TimeFramePickerDialogFragment;
 import uni.project.mylocalbooking.models.ITimeFrame;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
@@ -15,15 +12,9 @@ public class PeriodicBlueprintCreationFragment extends BlueprintCreationFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addTimeFramePicker(TITLE_TIME, view -> {
+        addTimeFramePicker(TITLE_TIME, cardView -> {
             super.end(blueprint);
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     protected void onAddBlueprint(ITimeFrame timeFrame) {
