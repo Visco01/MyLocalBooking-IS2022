@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 
@@ -43,7 +44,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
     public final LocalDate fromDate;
     public final LocalDate toDate;
 
-    private final HashMap<LocalDate, List<Slot>> slots = new HashMap<>();
+    public final HashMap<LocalDate, LinkedHashSet<Slot>> slots = new HashMap<>();
 
     public SlotBlueprint(Long sublassId, Long superclassId, @NotNull Establishment establishment, Integer reservationLimit, HashSet<DayOfWeek> weekdays, LocalDate fromDate, LocalDate toDate) {
         super(sublassId, superclassId);
