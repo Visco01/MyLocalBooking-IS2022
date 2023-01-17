@@ -107,7 +107,7 @@ public class Establishment extends DatabaseModel {
         parcel.writeParcelableArray(blueprintsArr, i);
     }
 
-    public Collection<SlotBlueprint> getBlueprints(LocalDate date) throws PartialReservationsResultsException {
+    public Collection<SlotBlueprint> getBlueprints(LocalDate date, boolean forcedRefresh) throws PartialReservationsResultsException {
         Stream<SlotBlueprint> activeBlueprintsInDate = blueprints.stream().filter(b ->
                 b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
                         b.weekdays.contains(date.getDayOfWeek()));
@@ -115,6 +115,11 @@ public class Establishment extends DatabaseModel {
         List<SlotBlueprint> results = activeBlueprintsInDate.collect(Collectors.toList());
         if(results.isEmpty())
             return results;
+
+        if(forcedRefresh) {
+            results.forEach(blueprint -> blueprint.invalidateReservations(date));
+            fetchedDates.remove(date);
+        }
 
         if(!fetchedDates.contains(date)) {
             boolean completeResults = IMyLocalBookingAPI.getApiInstance().getReservations(this, date);
@@ -128,7 +133,11 @@ public class Establishment extends DatabaseModel {
         return results;
     }
 
-    public Provider getProvider() {
+    public Collection<SlotBlueprint> getBlueprints(LocalDate date) throws PartialReservationsResultsException {
+        return getBlueprints(date, false);
+    }
+
+        public Provider getProvider() {
         if(provider != null)
             return provider;
 

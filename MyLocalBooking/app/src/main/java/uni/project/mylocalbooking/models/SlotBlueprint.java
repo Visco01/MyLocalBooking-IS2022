@@ -137,5 +137,5 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
     }
 
     public abstract void addSlot(@NotNull Slot slot);
-    public abstract boolean hasSlotsInDate(@NotNull LocalDate date);
+    public abstract void invalidateReservations(LocalDate date);
 }

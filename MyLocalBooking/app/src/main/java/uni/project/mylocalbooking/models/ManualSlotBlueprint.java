@@ -90,11 +90,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     }
 
     @Override
-    public boolean hasSlotsInDate(@NotNull LocalDate date) {
-        return slots.containsKey(date);
-    }
-
-    @Override
     public LocalTime getStart() {
         return openTime;
     }
@@ -112,6 +107,11 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
             slots.put(slot.date, new TreeSet<>());
 
         slots.get(slot.date).add((ManualSlot) slot);
+    }
+
+    @Override
+    public void invalidateReservations(LocalDate date) {
+        slots.remove(date);
     }
 
     public boolean overlapsWith(ManualSlotBlueprint other) {

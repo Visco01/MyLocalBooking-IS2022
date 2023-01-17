@@ -74,11 +74,6 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
     }
 
     @Override
-    public boolean hasSlotsInDate(@NotNull LocalDate date) {
-        return slots.containsKey(date);
-    }
-
-    @Override
     public LocalTime getStart() {
         return fromTime;
     }
@@ -108,6 +103,11 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
         assert slot instanceof PeriodicSlot;
 
         slots.put(slot.date, (PeriodicSlot) slot);
+    }
+
+    @Override
+    public void invalidateReservations(LocalDate date) {
+        slots.remove(date);
     }
 
     public boolean overlapsWith(PeriodicSlotBlueprint other) {
