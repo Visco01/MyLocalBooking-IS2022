@@ -109,4 +109,11 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
 
         slots.put(slot.date, (PeriodicSlot) slot);
     }
+
+    public boolean overlapsWith(PeriodicSlotBlueprint other) {
+        if(!super.overlapsWith(other))
+            return false;
+
+        return fromTime.isBefore(other.toTime) && other.fromTime.isBefore(toTime);
+    }
 }
