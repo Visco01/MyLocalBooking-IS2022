@@ -78,7 +78,11 @@ public class LoginActivity extends AppCompatActivity {
                     failedEmptiness();
                 }
                 else{
-                    api.login(cell.getText().toString(), psswd.getText().toString(), loginOutcome);
+                    String cellphone = AppUser.tryFormatCellphone(cell.getText().toString());
+                    if(cellphone == null)
+                        failedValid();
+                    else
+                        api.login(cellphone, psswd.getText().toString(), loginOutcome);
                 }
             }).start();
         });
