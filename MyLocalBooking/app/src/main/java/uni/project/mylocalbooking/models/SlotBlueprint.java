@@ -90,7 +90,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
         for(Parcelable s : in.readParcelableArray(Slot.class.getClassLoader())) {
             Slot slot = (Slot) s;
             if(!slots.containsKey(slot.date))
-                slots.put(slot.date, new ArrayList<>());
+                slots.put(slot.date, new LinkedHashSet<>());
             slots.get(slot.date).add(slot);
             slot.blueprint = this;
         }
@@ -138,6 +138,17 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
         return !intersection.isEmpty();
     }
 
-    public abstract void addSlot(@NotNull Slot slot);
+    /**
+     * This implementation must be called by subclasses overriding this method
+     * @param slot
+     */
+    public void addSlot(@NotNull Slot slot) {
+        LinkedHashSet<Slot> slotsInDate = slots.get(slot.date);
+        if(slotsInDate == null) {
+            slotsInDate = new LinkedHashSet<>();
+            slots.put(slot.date, slotsInDate);
+        }
+        slotsInDate.add(slot);
+    }
     public abstract void invalidateReservations(LocalDate date);
 }

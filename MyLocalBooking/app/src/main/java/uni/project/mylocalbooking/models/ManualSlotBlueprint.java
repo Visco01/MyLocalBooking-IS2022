@@ -101,6 +101,7 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
 
     @Override
     public void addSlot(Slot slot) {
+        super.addSlot(slot);
         assert slot instanceof ManualSlot;
 
         if(!slots.containsKey(slot.date))

@@ -100,6 +100,7 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
 
     @Override
     public void addSlot(Slot slot) {
+        super.addSlot(slot);
         assert slot instanceof PeriodicSlot;
 
         slots.put(slot.date, (PeriodicSlot) slot);
