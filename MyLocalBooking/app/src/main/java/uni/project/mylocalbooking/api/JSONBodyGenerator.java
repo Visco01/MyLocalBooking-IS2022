@@ -87,8 +87,9 @@ class JSONBodyGenerator {
                 body.put("PeriodicSlotBlueprint", concreteBlueprint);
             } else {
                 ManualSlotBlueprint mBlueprint = (ManualSlotBlueprint) blueprint;
-                concreteBlueprint.put("fromtime", mBlueprint.openTime.toString());
-                concreteBlueprint.put("totime", mBlueprint.closeTime.toString());
+                concreteBlueprint.put("opentime", mBlueprint.openTime.toString());
+                concreteBlueprint.put("closetime", mBlueprint.closeTime.toString());
+                concreteBlueprint.put("maxduration", mBlueprint.maxDuration.toString());
                 body.put("ManualSlotBlueprint", concreteBlueprint);
             }
 
