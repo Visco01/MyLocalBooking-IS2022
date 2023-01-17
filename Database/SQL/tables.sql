@@ -9,7 +9,7 @@ drop table if exists app_users cascade;
 create table app_users (
 	id serial primary key,
     password_digest text not null,
-    cellphone char(12) not null unique,
+    cellphone char(13) not null unique,
     email varchar(320),
     firstname text not null,
     lastname text not null,
@@ -19,7 +19,7 @@ create table app_users (
 drop table if exists clients cascade;
 create table clients (
 	id serial primary key,
-	app_user_id int not null references app_users(id)
+	app_user_id bigint not null references app_users(id)
 		on update cascade
 		on delete cascade,
 
@@ -36,7 +36,7 @@ create table clients (
 drop table if exists providers cascade;
 create table providers (
 	id serial primary key,
-	app_user_id int not null references app_users(id)
+	app_user_id bigint not null references app_users(id)
 		on update cascade
 		on delete cascade,
 
@@ -53,12 +53,12 @@ create table providers (
 drop table if exists blacklists cascade;
 create table blacklists (
 	id serial primary key,
-	provider_id int not null references providers(id)
+	provider_id bigint not null references providers(id)
 		on update cascade
 		on delete cascade,
 
 	-- not a foreign key, to prevent users to delete their account to escape blacklists
-	usercellphone char(12),
+	usercellphone char(13),
 
 	unique(usercellphone, provider_id)
 );
@@ -66,12 +66,12 @@ create table blacklists (
 drop table if exists strikes cascade;
 create table strikes (
 	id serial primary key,
-	provider_id int not null references providers(id)
+	provider_id bigint not null references providers(id)
 		on update cascade
 		on delete cascade,
 
 	-- not a foreign key, to prevent users to delete their account to erase their strikes history
-	usercellphone char(12),
+	usercellphone char(13),
 	count int not null default 1 check(count > 0),
 	
 	unique(usercellphone, provider_id)
@@ -80,7 +80,8 @@ create table strikes (
 drop table if exists establishments cascade;
 create table establishments (
     id serial primary key,
-    provider_id int not null references providers(id)
+	has_periodic_policy boolean,
+    provider_id bigint not null references providers(id)
 		on update cascade
 		on delete cascade,
     name text not null,
@@ -101,10 +102,10 @@ create table ratings (
 
 	-- may be null, we want to keep the reviews even when users delete their account
 	-- needs a fix, users may still delete and recreate their account to keep cumulating feedbacks
-	client_id int references clients(id)
+	client_id bigint references clients(id)
 		on update cascade
 		on delete set null,
-	establishment_id int not null references establishments(id)
+	establishment_id bigint not null references establishments(id)
 		on update cascade
 		on delete cascade,
 
@@ -117,10 +118,10 @@ drop table if exists slots cascade;
 create table slots (
 	id serial primary key,
 	date date not null,
-
+	has_periodic_policy boolean,
 	-- the slot owner can leave the reservations open for anyone, or lock them with a password
 	password_digest text,
-	app_user_id int not null references app_users(id)
+	app_user_id bigint not null references app_users(id)
 		on update cascade
 		on delete no action
 );
@@ -128,23 +129,23 @@ create table slots (
 drop table if exists reservations cascade;
 create table reservations (
 	id serial primary key,
-	slot_id int not null references slots(id)
+	slot_id bigint not null references slots(id)
 		on update cascade
 		on delete cascade,
-	client_id int not null references clients(id)
+	client_id bigint not null references clients(id)
 		on update cascade
 		on delete cascade,
 
 	unique(slot_id, client_id)
 );
 
--- they're always associated with at least one periodic_blueprint or manual_blueprint
+-- they're always associated with at least one periodic_slot_blueprint or manual_slot_blueprint
 -- can only be defined by providers
-drop table if exists blueprints cascade;
-create table blueprints (
+drop table if exists slot_blueprints cascade;
+create table slot_blueprints (
 	id serial primary key,
-	establishment_id int not null references establishments(id),
-	weekdays bit(7) not null,
+	establishment_id bigint not null references establishments(id),
+	weekdays INT not null check (weekdays > 0 and weekdays <= (B'1111111')::INT),
 	reservationlimit int check(reservationlimit is null or reservationlimit > 0),
 	fromdate date not null default NOW(), -- date after which slots are scheduled
 	todate date 	-- date after which slots stop being scheduled
@@ -153,10 +154,10 @@ create table blueprints (
 
 -- needed to be able to schedule periodic slots
 -- can only be defined by providers
-drop table if exists periodic_blueprints cascade;
-create table periodic_blueprints (
+drop table if exists periodic_slot_blueprints cascade;
+create table periodic_slot_blueprints (
 	id serial primary key,
-	blueprint_id int not null references blueprints(id)
+	slot_blueprint_id bigint not null references slot_blueprints(id)
 		on update cascade
 		on delete cascade,
 	fromtime time not null,
@@ -165,15 +166,15 @@ create table periodic_blueprints (
 
 -- needed to be able to schedule manual slots
 -- can only be defined by providers
-drop table if exists manual_blueprints cascade;
-create table manual_blueprints (
+drop table if exists manual_slot_blueprints cascade;
+create table manual_slot_blueprints (
 	id serial primary key,
-	blueprint_id int not null references blueprints(id)
+	slot_blueprint_id bigint not null references slot_blueprints(id)
 		on update cascade
 		on delete cascade,
 	opentime time not null,
 	closetime time not null check (closetime > opentime),
-	maxduration interval not null check(maxduration < (closetime - opentime))
+	maxduration interval not null check(maxduration <= (closetime - opentime))
 );
 
 -- these are periodic slot instances
@@ -181,10 +182,10 @@ create table manual_blueprints (
 drop table if exists periodic_slots cascade;
 create table periodic_slots (
 	id serial primary key,
-	slot_id int not null references slots(id)
+	slot_id bigint not null references slots(id)
 		on update cascade
 		on delete cascade,
-	periodic_blueprint_id int not null references periodic_blueprints(id)
+	periodic_slot_blueprint_id bigint not null references periodic_slot_blueprints(id)
 		on delete cascade
 		on update cascade
 );
@@ -199,10 +200,10 @@ create table periodic_slots (
 drop table if exists manual_slots cascade;
 create table manual_slots (
 	id serial primary key,
-	slot_id int not null references slots(id)
+	slot_id bigint not null references slots(id)
 		on update cascade
 		on delete cascade,
-	manual_blueprint_id int not null references manual_blueprints(id)
+	manual_slot_blueprint_id bigint not null references manual_slot_blueprints(id)
 		on update cascade
 		on delete cascade,
 	fromtime time not null,

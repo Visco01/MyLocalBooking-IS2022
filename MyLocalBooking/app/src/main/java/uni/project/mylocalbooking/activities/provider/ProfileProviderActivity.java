@@ -16,11 +16,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.Collection;
+
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.LoginActivity;
+import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.Provider;
 
 public class ProfileProviderActivity extends BaseNavigationActivity {
@@ -95,5 +98,10 @@ public class ProfileProviderActivity extends BaseNavigationActivity {
 
     public int getNavigationMenuItemId(){
         return R.id.profileProvider;
+    }
+
+    @Override
+    protected void onEstablishmentsReady(Collection<Establishment> establishments) {
+        // TODO: catch
     }
 }

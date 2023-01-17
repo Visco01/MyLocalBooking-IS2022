@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.AppCompatButton;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -215,6 +218,11 @@ public class SlotListAdapter extends BaseAdapter {
         ((TextView) viewRoot.findViewById(R.id.close_time)).setText(timeFrame.getEnd().toString());
 
         final ManualSlotCreationDialogFragment.FreeManualTimeWindow window = (ManualSlotCreationDialogFragment.FreeManualTimeWindow) timeFrame;
-        ((Button) viewRoot.findViewById(R.id.create_slot_button)).setOnClickListener(view -> listener.onManualSlotCreate(window));
+
+        AppCompatButton button = viewRoot.findViewById(R.id.create_slot_button);
+        LocalDateTime slotStart = LocalDateTime.of(currentDate, timeFrame.getStart());
+        LocalDateTime now = LocalDateTime.now();
+        button.setOnClickListener(view -> listener.onManualSlotCreate(window));
+        button.setEnabled(now.compareTo(slotStart) < 0);
     }
 }

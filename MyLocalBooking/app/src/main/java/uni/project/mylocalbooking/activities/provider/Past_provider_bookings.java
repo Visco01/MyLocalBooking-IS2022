@@ -9,7 +9,6 @@ import android.os.Bundle;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import uni.project.mylocalbooking.MyLocalBooking;
@@ -24,7 +23,6 @@ public class Past_provider_bookings extends AppCompatActivity implements RVInter
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
     List<ModelClass_pastProviderBookings> pastProviderBookings;
-    Collection<Establishment> establishments = new ArrayList<>();
     AdapterPastProviderBookings adapterPastProviderBookings;
     LocalDate currentDate;
 
@@ -37,16 +35,20 @@ public class Past_provider_bookings extends AppCompatActivity implements RVInter
         currentDate.minusDays(1);
         setContentView(R.layout.activity_past_provider_bookings);
         initData();
-        initRecycleRview();
+        initRecyclerView();
 
         if (SessionPreferences.getUserPrefs().isEmpty()){
             System.out.println("Empty sessionData");
             startActivity(new Intent(MyLocalBooking.getAppContext(), LoginActivity.class));
         }
 
+        findViewById(R.id.past_reservations_create_blueprint_button).setOnClickListener(v -> {
+            startActivity(new Intent(getBaseContext(), CreateBlueprintActivity.class).putExtra("establishment", establishment));
+        });
+
     }
 
-    private void initRecycleRview() {
+    private void initRecyclerView() {
         recyclerView = findViewById(R.id.rvPastProviderBookings);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);

@@ -5,7 +5,6 @@
     android:id="@+id/weekday_picker_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/purple_500"
     tools:context=".fragments.WeekdayPickerFragment">
 
     <TextView
