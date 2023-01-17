@@ -53,8 +53,8 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
         this(null, openTime, closeTime, maxDuration, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
-    public ManualSlotBlueprint(JSONObject object) throws JSONException {
-        super(object);
+    public ManualSlotBlueprint(JSONObject object, Establishment establishment) throws JSONException {
+        super(object, establishment);
 
         openTime = LocalTime.parse(object.getString("open_time"));
         closeTime = LocalTime.parse(object.getString("close_time"));
@@ -90,11 +90,6 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
     }
 
     @Override
-    public boolean hasSlotsInDate(@NotNull LocalDate date) {
-        return slots.containsKey(date);
-    }
-
-    @Override
     public LocalTime getStart() {
         return openTime;
     }
@@ -106,11 +101,24 @@ public class ManualSlotBlueprint extends SlotBlueprint implements ITimeFrame {
 
     @Override
     public void addSlot(Slot slot) {
+        super.addSlot(slot);
         assert slot instanceof ManualSlot;
 
         if(!slots.containsKey(slot.date))
             slots.put(slot.date, new TreeSet<>());
 
         slots.get(slot.date).add((ManualSlot) slot);
+    }
+
+    @Override
+    public void invalidateReservations(LocalDate date) {
+        slots.remove(date);
+    }
+
+    public boolean overlapsWith(ManualSlotBlueprint other) {
+        if(!super.overlapsWith(other))
+            return false;
+
+        return openTime.isBefore(other.closeTime) && other.openTime.isBefore(closeTime);
     }
 }

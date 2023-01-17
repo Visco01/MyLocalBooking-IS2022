@@ -408,6 +408,11 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String requestBody = JSONBodyGenerator.generateReservationBody(currentUserId, slot.getId());
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
             try {
+                if(response == null) {
+                    if(onSuccess != null) onSuccess.apply(slot);
+                    return;
+                }
+
                 String status = response.getString("status");
                 if(status.equals("OK")){
                     boolean slot_id = Long.parseLong(response.getString("slot_id")) != -1;
@@ -417,7 +422,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
                     if(onError != null) onError.apply(StatusCode.NOT_FOUND);
                 }
             } catch (JSONException e) {
-                if(onError != null) onError.apply(StatusCode.JSONOBJECT_PARSE_ERROR);
+                if(onSuccess != null) onSuccess.apply(slot);
             }
         }, false);
     }
@@ -476,7 +481,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
     @Override
     public void rateEstablishment(Establishment establishment, float rating, String comment, APICallBack<StatusCode> onSuccess, APICallBack<StatusCode> onError) {
         Long clientId = (Long) SessionPreferences.getUserPrefs().get("subclass_id");
-        clientId = 1296L;
+        //clientId = 1296L;
         if(clientId == -1 && onError != null){
             onError.apply(StatusCode.SESSION_PREFERENCES_NOT_FOUND);
             return;

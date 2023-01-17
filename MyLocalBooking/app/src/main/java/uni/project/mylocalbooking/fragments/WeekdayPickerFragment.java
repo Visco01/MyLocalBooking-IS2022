@@ -1,9 +1,10 @@
 package uni.project.mylocalbooking.fragments;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,29 +14,39 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.HashSet;
 import java.util.Locale;
 
 import uni.project.mylocalbooking.R;
 
 
 public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdapter.IWeekdayPickerListener {
-    private static final String MIN_START_OF_WEEK_ARG = "minStartOfWeek";
-    private static final String INITIAL_WEEK_ARG = "initialWeek";
-    private static final String INITIAL_DAY_ARG = "initialDay";
-    private static final String SIMPLE_MODE_ARG = "simple";
+    public static final String MIN_START_OF_WEEK_ARG = "minStartOfWeek";
+    public static final String INITIAL_WEEK_ARG = "initialWeek";
+    public static final String INITIAL_DAY_ARG = "initialDay";
+    public static final String SIMPLE_MODE_ARG = "simple";
+    public static final String BACKGROUND_COLOR_ARG = "backgroundColor";
+    public static final String ACTIVE_BACKGROUND_COLOR_ARG = "activeBackgroundColor";
+    public static final String TEXT_COLOR_ARG = "textColor";
+    public static final String ACTIVE_TEXT_COLOR_ARG = "activeTextColor";
 
     private WeekdayPickerViewModel viewModel;
     private LocalDate minStartOfWeek;
     private LocalDate initialWeek;
     private LocalDate initialDay;
-    private boolean simpleWeekdayPicker;
+    private boolean simpleWeekdayPicker = true;
+    private final HashSet<DayOfWeek> selectedDaysOfWeek = new HashSet<>();
+    private int backgroundColor;
+    private int activeBackgroundColor;
+    private int textColor;
+    private int activeTextColor;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,11 +63,9 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
                 minStartOfWeek = args.containsKey(MIN_START_OF_WEEK_ARG) ?
                         getFirstDayOfWeek(LocalDate.ofEpochDay(args.getLong(MIN_START_OF_WEEK_ARG))) :
                         getFirstDayOfWeek(LocalDate.now());
-
                 initialWeek = args.containsKey(INITIAL_WEEK_ARG) ?
                         getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(INITIAL_WEEK_ARG))):
                         minStartOfWeek;
-
                 if(args.containsKey(INITIAL_DAY_ARG))
                     initialDay = getFirstDayOfWeek(LocalDate.ofEpochDay(getArguments().getLong(INITIAL_WEEK_ARG)));
                 else {
@@ -65,11 +74,18 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
                 }
             }
         }
-        else {
-            simpleWeekdayPicker = true;
-            minStartOfWeek = getFirstDayOfWeek(LocalDate.now());
-            initialWeek = getFirstDayOfWeek(minStartOfWeek);
-        }
+
+        backgroundColor = args != null && args.containsKey(BACKGROUND_COLOR_ARG) ?
+                args.getInt(BACKGROUND_COLOR_ARG): 0xFF6200EE;
+
+        activeBackgroundColor = args != null && args.containsKey(ACTIVE_BACKGROUND_COLOR_ARG) ?
+                args.getInt(ACTIVE_BACKGROUND_COLOR_ARG): 0xFFFFFFFF;
+
+        textColor = args != null && args.containsKey(TEXT_COLOR_ARG) ?
+                args.getInt(TEXT_COLOR_ARG): 0xFFFFFFFF;
+
+        activeTextColor = args != null && args.containsKey(ACTIVE_TEXT_COLOR_ARG) ?
+                args.getInt(ACTIVE_TEXT_COLOR_ARG): 0xFF000000;
     }
 
     @Override
@@ -81,6 +97,10 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
     @Override
     public void onDaySelected(DayOfWeek dow) {
         viewModel.setSelectedDayOfWeek(dow);
+    }
+
+    public HashSet<DayOfWeek> getSelectedDaysOfWeek() {
+        return selectedDaysOfWeek;
     }
 
     private LocalDate getFirstDayOfWeek(LocalDate date) {
@@ -95,6 +115,7 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
 
     private View init(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.weekday_picker, container, false);
+        view.findViewById(R.id.weekday_picker_root).setBackgroundColor(backgroundColor);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.week_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
 
@@ -125,17 +146,46 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
         LinearLayout weekRoot = (LinearLayout) inflater.inflate(R.layout.week, container, false);
 
         for(int i = 1; i <= 7; i++) {
-            ConstraintLayout dayView = (ConstraintLayout) LayoutInflater.from(weekRoot.getContext())
-                    .inflate(R.layout.weekday, weekRoot, false);
+            View dayView = weekRoot.getChildAt(i - 1);
 
             final DayOfWeek dow = DayOfWeek.of(i);
             String name = dow.getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
             ((TextView) dayView.findViewById(R.id.weekday_name)).setText(name);
-            ((Button) dayView.findViewById(R.id.weekday_button)).setOnClickListener(view -> {
-                viewModel.setSelectedDayOfWeek(dow);
+            AppCompatButton button = dayView.findViewById(R.id.weekday_button);
+
+            setViewActive(dayView, selectedDaysOfWeek.contains(dow));
+            button.setOnClickListener(view -> {
+                toggleView(dayView, dow);
+                viewModel.toggleSelectedDayOfWeek(dow);
             });
-            weekRoot.addView(dayView);
         }
         return weekRoot;
+    }
+
+    private void toggleView(View view, DayOfWeek dow) {
+        if(selectedDaysOfWeek.contains(dow)) {
+            setViewActive(view, false);
+            selectedDaysOfWeek.remove(dow);
+        } else {
+            setViewActive(view, true);
+            selectedDaysOfWeek.add(dow);
+        }
+    }
+
+    private void setViewActive(View view, boolean active) {
+        TextView dayText = view.findViewById(R.id.weekday_name);
+        TextView numText = view.findViewById(R.id.weekday_number);
+        AppCompatButton button = view.findViewById(R.id.weekday_button);
+
+        if(active) {
+            button.setBackgroundResource(R.drawable.circle);
+            button.setBackgroundTintList(ColorStateList.valueOf(activeBackgroundColor));
+            dayText.setTextColor(activeTextColor);
+            numText.setTextColor(activeTextColor);
+        } else {
+            button.setBackgroundColor(backgroundColor);
+            dayText.setTextColor(textColor);
+            numText.setTextColor(textColor);
+        }
     }
 }

@@ -43,8 +43,8 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
         this(null, fromTime, toTime, null, establishment, reservationLimit, weekdays, fromDate, toDate);
     }
 
-    public PeriodicSlotBlueprint(JSONObject object) throws JSONException {
-        super(object);
+    public PeriodicSlotBlueprint(JSONObject object, Establishment establishment) throws JSONException {
+        super(object, establishment);
 
         fromTime = LocalTime.parse(object.getString("from_time"));
         toTime = LocalTime.parse(object.getString("to_time"));
@@ -74,11 +74,6 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
     }
 
     @Override
-    public boolean hasSlotsInDate(@NotNull LocalDate date) {
-        return slots.containsKey(date);
-    }
-
-    @Override
     public LocalTime getStart() {
         return fromTime;
     }
@@ -105,8 +100,21 @@ public class PeriodicSlotBlueprint extends SlotBlueprint implements ISelectableS
 
     @Override
     public void addSlot(Slot slot) {
+        super.addSlot(slot);
         assert slot instanceof PeriodicSlot;
 
         slots.put(slot.date, (PeriodicSlot) slot);
+    }
+
+    @Override
+    public void invalidateReservations(LocalDate date) {
+        slots.remove(date);
+    }
+
+    public boolean overlapsWith(PeriodicSlotBlueprint other) {
+        if(!super.overlapsWith(other))
+            return false;
+
+        return fromTime.isBefore(other.toTime) && other.fromTime.isBefore(toTime);
     }
 }

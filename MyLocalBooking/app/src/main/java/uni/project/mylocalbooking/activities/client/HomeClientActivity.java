@@ -38,7 +38,6 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
 
     RecyclerView recyclerView;
     LinearLayoutManager layoutManager;
-    Collection<Establishment> establishments;
     Adapter_search_establishment adapter;
     Switch switchPos;
 
@@ -56,32 +55,7 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
         }
         else{
             System.out.println("Not");
-
         }
-
-        if(savedInstanceState == null || !savedInstanceState.containsKey("establishments")) {
-            IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
-                establishments = est;
-                initRecyclerView();
-
-                Parcelable[] p = new Parcelable[establishments.size()];
-                establishments.toArray(p);
-                bundle.putParcelableArray("establishments", p);
-            }, statusCode -> {
-                System.out.println("GetClosestEstablishments returned error " + statusCode.name());
-            });
-        } else {
-            establishments = Arrays.stream(savedInstanceState.getParcelableArray("establishments"))
-                    .map(e -> (Establishment) e)
-                    .collect(Collectors.toList());
-
-            Parcelable[] p = new Parcelable[establishments.size()];
-            establishments.toArray(p);
-            bundle.putParcelableArray("establishments", p);
-        }
-
-
-
 
         // Check if device has GPS at hardware level.
         if (MyLocalBooking.getAppContext().getPackageManager().hasSystemFeature(
@@ -128,17 +102,6 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
         return connected;
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        if(establishments != null) {
-            Establishment[] establishmentsArr = new Establishment[establishments.size()];
-            establishments.toArray(establishmentsArr);
-            outState.putParcelableArray("establishments", establishmentsArr);
-        }
-    }
-
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.recycleRview_establishment);
         layoutManager = new LinearLayoutManager(this);
@@ -156,6 +119,11 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
     // Returns the id in the navigation menu
     public int getNavigationMenuItemId(){
         return R.id.homeClient;
+    }
+
+    @Override
+    protected void onEstablishmentsReady(Collection<Establishment> establishments) {
+        initRecyclerView();
     }
 
     @Override

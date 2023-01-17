@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 
 import uni.project.mylocalbooking.MyLocalBooking;
@@ -25,6 +26,7 @@ import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.LoginActivity;
 import uni.project.mylocalbooking.models.Client;
+import uni.project.mylocalbooking.models.Establishment;
 
 public class ProfileClientActivity extends BaseNavigationActivity {
 
@@ -98,4 +100,8 @@ public class ProfileClientActivity extends BaseNavigationActivity {
         return R.id.profileClient;
     }
 
+    @Override
+    protected void onEstablishmentsReady(Collection<Establishment> establishments) {
+        // TODO: catch
+    }
 }
