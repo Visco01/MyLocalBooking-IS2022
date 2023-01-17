@@ -1,10 +1,8 @@
 package uni.project.mylocalbooking.activities.provider;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,17 +35,10 @@ public class HomeProviderActivity extends BaseNavigationActivity {
         textViewDate.setText(currentDate);
 
         init_data();
-        init_recycleRview();
-
-        IMyLocalBookingAPI.getApiInstance().getOwnedEstablishments(est -> {
-            Intent intent = new Intent(this, Establishment_information.class).putExtra("establishment", est.stream().findFirst().get());
-            startActivity(intent);
-        }, code -> {
-            System.out.println();
-        });
+        initRecyclerView();
     }
 
-    private void init_recycleRview() {
+    private void initRecyclerView() {
         recyclerView = findViewById(R.id.prenotation_for_today_rv);
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
