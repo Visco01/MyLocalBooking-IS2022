@@ -497,3 +497,76 @@ begin
 end;$$;
 
 
+create or replace function get_manual_reservations_by_client(the_client_id bigint)
+    returns setof manual_reservations_result 
+    language 'plpgsql'
+AS $$
+begin
+	return query
+	select		s.id,
+				s.password_digest,
+				s.date,
+                o.cellphone,				
+				a.id,
+				a.cellphone,
+				a.password_digest,
+				a.email,
+				a.firstname,
+				a.lastname,
+				a.dob,
+				c.id,
+				c.lat,
+				c.lng,
+
+				m.id,
+				mb.id,
+				m.fromtime,
+				m.totime
+	from		slot_blueprints b
+				join manual_slot_blueprints mb on mb.slot_blueprint_id = b.id
+				join manual_slots m on m.manual_slot_blueprint_id = mb.id
+				join slots s on s.id = m.slot_id
+				join reservations r on r.slot_id = s.id
+				join clients c on c.id = r.client_id
+				join app_users a on a.id = c.app_user_id
+				join app_users o on o.id = s.app_user_id
+	where		c.id = the_client_id
+	order by	s.date desc, mb.opentime desc;
+end;$$;
+
+
+create or replace function get_periodic_reservations_by_client(the_client_id bigint)
+    returns setof periodic_reservations_result 
+    language 'plpgsql'
+AS $$
+begin
+	return query
+	select		s.id,
+				s.password_digest,
+				s.date,
+				o.cellphone,
+				
+				a.id,
+				a.cellphone,
+				a.password_digest,
+				a.email,
+				a.firstname,
+				a.lastname,
+				a.dob,
+				c.id,
+				c.lat,
+				c.lng,
+
+				p.id,
+				pb.id
+	from		slot_blueprints b
+				join periodic_slot_blueprints pb on pb.slot_blueprint_id = b.id
+				join periodic_slots p on p.periodic_slot_blueprint_id = pb.id
+				join slots s on s.id = p.slot_id
+				join reservations r on r.slot_id = s.id
+				join clients c on c.id = r.client_id
+				join app_users a on a.id = c.app_user_id
+				join app_users o on o.id = s.app_user_id
+	where		c.id = the_client_id
+	order by	s.date desc, pb.fromtime desc;
+end;$$;
