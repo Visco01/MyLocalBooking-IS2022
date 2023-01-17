@@ -122,6 +122,10 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         WeekdayPickerFragment fragment = new WeekdayPickerFragment();
         Bundle innerBundle = new Bundle();
         innerBundle.putBoolean("simple", true);
+        innerBundle.putInt(WeekdayPickerFragment.ACTIVE_BACKGROUND_COLOR_ARG, 0xFF4777b4);
+        innerBundle.putInt(WeekdayPickerFragment.BACKGROUND_COLOR_ARG, 0x00000000);
+        innerBundle.putInt(WeekdayPickerFragment.TEXT_COLOR_ARG, 0xFF000000);
+        innerBundle.putInt(WeekdayPickerFragment.ACTIVE_TEXT_COLOR_ARG, 0xFFFFFFFF);
         fragment.setArguments(innerBundle);
 
         createFragmentCardView(TITLE_WEEKDAYS, fragment, cardView -> {

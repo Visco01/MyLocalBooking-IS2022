@@ -1,10 +1,10 @@
 package uni.project.mylocalbooking.fragments;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,15 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
@@ -30,14 +27,14 @@ import uni.project.mylocalbooking.R;
 
 
 public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdapter.IWeekdayPickerListener {
-    private static final String MIN_START_OF_WEEK_ARG = "minStartOfWeek";
-    private static final String INITIAL_WEEK_ARG = "initialWeek";
-    private static final String INITIAL_DAY_ARG = "initialDay";
-    private static final String SIMPLE_MODE_ARG = "simple";
-    private static final String BACKGROUND_COLOR_ARG = "backgroundColor";
-    private static final String ACTIVE_BACKGROUND_COLOR_ARG = "activeBackgroundColor";
-    private static final String TEXT_COLOR_ARG = "textColor";
-    private static final String ACTIVE_TEXT_COLOR_ARG = "activeTextColor";
+    public static final String MIN_START_OF_WEEK_ARG = "minStartOfWeek";
+    public static final String INITIAL_WEEK_ARG = "initialWeek";
+    public static final String INITIAL_DAY_ARG = "initialDay";
+    public static final String SIMPLE_MODE_ARG = "simple";
+    public static final String BACKGROUND_COLOR_ARG = "backgroundColor";
+    public static final String ACTIVE_BACKGROUND_COLOR_ARG = "activeBackgroundColor";
+    public static final String TEXT_COLOR_ARG = "textColor";
+    public static final String ACTIVE_TEXT_COLOR_ARG = "activeTextColor";
 
     private WeekdayPickerViewModel viewModel;
     private LocalDate minStartOfWeek;
@@ -180,8 +177,8 @@ public class WeekdayPickerFragment extends Fragment implements WeekdayPickerAdap
         AppCompatButton button = view.findViewById(R.id.weekday_button);
 
         if(active) {
-            // TODO: BACKGROUND!
             button.setBackgroundResource(R.drawable.circle);
+            button.setBackgroundTintList(ColorStateList.valueOf(activeBackgroundColor));
             dayText.setTextColor(activeTextColor);
             numText.setTextColor(activeTextColor);
         } else {
