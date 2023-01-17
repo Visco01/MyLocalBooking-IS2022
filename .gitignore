@@ -86,4 +86,5 @@ lint/tmp/
 
 #MacOS stuff
 .DS_Store
+Database/DataPopulation/__pycache__/
 MyLocalBooking/.idea/deploymentTargetDropDown.xml

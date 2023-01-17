@@ -1,11 +1,37 @@
 ----------------------------------
 -- wipe tables
 ----------------------------------
+--
 delete from reservations;
+delete from periodic_slots;
+delete from manual_slots;
+--
 delete from slots;
-delete from blueprints;
+--
+delete from manual_slot_blueprints;
+delete from periodic_slot_blueprints;
+delete from slot_blueprints;
 delete from establishments;
+delete from clients;
+delete from providers;
+--
 delete from app_users;
+
+ALTER SEQUENCE app_users_id_seq RESTART WITH 1;
+ALTER SEQUENCE blacklists_id_seq RESTART WITH 1;
+ALTER SEQUENCE clients_id_seq RESTART WITH 1;
+ALTER SEQUENCE establishments_id_seq RESTART WITH 1;
+ALTER SEQUENCE manual_slot_blueprints_id_seq RESTART WITH 1;
+ALTER SEQUENCE manual_slots_id_seq RESTART WITH 1;
+ALTER SEQUENCE periodic_slot_blueprints_id_seq RESTART WITH 1;
+ALTER SEQUENCE periodic_slots_id_seq RESTART WITH 1;
+ALTER SEQUENCE providers_id_seq RESTART WITH 1;
+ALTER SEQUENCE ratings_id_seq RESTART WITH 1;
+ALTER SEQUENCE reservations_id_seq RESTART WITH 1;
+ALTER SEQUENCE slot_blueprints_id_seq RESTART WITH 1;
+ALTER SEQUENCE slots_id_seq RESTART WITH 1;
+ALTER SEQUENCE strikes_id_seq RESTART WITH 1;
+ALTER SEQUENCE users_id_seq RESTART WITH 1;
 
 
 ----------------------------------
@@ -15,8 +41,8 @@ delete from app_users;
 do
 $$
 declare
-	app_user_id int;
-	provider_id int;
+	app_user_id bigint;
+	provider_id bigint;
 begin
 	insert into app_users(password_digest, cellphone, firstname, lastname, dob) values
 	('', '393475322555', 'nicola', 'marizza', '10/06/00')
@@ -39,34 +65,34 @@ end;$$;
 do
 $$
 declare
-    blueprintid int;
+    blueprintid bigint;
     
-    weekdays bit(7) = B'0000100';
+    weekdays int = (B'0000100')::int;
     reservationlimit int = 15;
     fromdate date = '10/06/21';
     todate date = '10/06/22';
 begin
-    insert into blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
+    insert into slot_blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
     ((select id from establishments where name ~ 'periodic'), weekdays, reservationlimit, fromdate, todate)
     returning id into blueprintid;
     
-    insert into periodic_blueprints(blueprint_id, fromtime, totime) values
+    insert into periodic_slot_blueprints(slot_blueprint_id, fromtime, totime) values
     (blueprintid, '10:00', '12:00'),
     (blueprintid, '12:00', '14:00');
 
 
-    insert into blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
+    insert into slot_blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
     ((select id from establishments where name ~ 'manual'), weekdays, null, fromdate, todate)
     returning id into blueprintid;
     
-    insert into manual_blueprints(blueprint_id, opentime, closetime, maxduration) values
+    insert into manual_slot_blueprints(slot_blueprint_id, opentime, closetime, maxduration) values
     (blueprintid, '08:00', '12:00', '03:00');
 
-    insert into blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
+    insert into slot_blueprints(establishment_id, weekdays, reservationlimit, fromdate, todate) values
     ((select id from establishments where name ~ 'manual'), weekdays, 50, fromdate, todate)
     returning id into blueprintid;
     
-    insert into manual_blueprints(blueprint_id, opentime, closetime, maxduration) values
+    insert into manual_slot_blueprints(slot_blueprint_id, opentime, closetime, maxduration) values
     (blueprintid, '15:30', '21:00', '03:00');
 end;$$;
 
@@ -76,12 +102,12 @@ end;$$;
 do
 $$
 declare
-	base_cellphone char(12) = '391000000000';
-	app_user_id int;
+	base_cellphone char(13) = '391000000000';
+	app_user_id bigint;
 begin
 	for i in 1..100 loop
 		insert into app_users(password_digest, cellphone, firstname, lastname, dob) values
-		('', (base_cellphone::bigint + i)::char(12), 'user_' || i::text, 'user_' || i::text, '10/06/00')
+		('', (base_cellphone::bigint + i)::char(13), 'user_' || i::text, 'user_' || i::text, '10/06/00')
 		returning id into app_user_id;
 
 		insert into clients(app_user_id) values (app_user_id);
@@ -95,8 +121,8 @@ end;$$;
 do
 $$
 declare
-    periodic0_base_id int;
-    periodic1_base_id int;
+    periodic0_base_id bigint;
+    periodic1_base_id bigint;
 begin
     insert into slots(date, password_digest, app_user_id) values
     ('10/06/21', null, (select id from app_users where firstname = 'user_1'))
@@ -106,9 +132,9 @@ begin
     ('10/06/21', null, (select id from app_users where firstname = 'user_2'))
     returning id into periodic1_base_id;
 
-    insert into periodic_slots(slot_id, periodic_blueprint_id) values
-    (periodic0_base_id, (select id from periodic_blueprints where fromtime = '10:00')),
-    (periodic1_base_id, (select id from periodic_blueprints where fromtime = '12:00'));
+    insert into periodic_slots(slot_id, periodic_slot_blueprint_id) values
+    (periodic0_base_id, (select id from periodic_slot_blueprints where fromtime = '10:00')),
+    (periodic1_base_id, (select id from periodic_slot_blueprints where fromtime = '12:00'));
 end;$$;
 
 
@@ -119,8 +145,8 @@ end;$$;
 do
 $$
 declare
-    periodic0_base_id int;
-    periodic1_base_id int;
+    periodic0_base_id bigint;
+    periodic1_base_id bigint;
 begin
     insert into slots(date, password_digest, app_user_id) values
     ('10/06/21', null, (select id from app_users where firstname = 'user_2'))
@@ -130,9 +156,9 @@ begin
     ('10/06/21', null, (select id from app_users where firstname = 'user_3'))
     returning id into periodic1_base_id;
 
-    insert into manual_slots(slot_id, fromtime, totime, manual_blueprint_id) values
-    (periodic0_base_id, '09:15', '12:00', (select id from manual_blueprints where opentime = '08:00')),
-    (periodic1_base_id, '15:30', '16:45', (select id from manual_blueprints where opentime = '15:30'));
+    insert into manual_slots(slot_id, fromtime, totime, manual_slot_blueprint_id) values
+    (periodic0_base_id, '09:15', '12:00', (select id from manual_slot_blueprints where opentime = '08:00')),
+    (periodic1_base_id, '15:30', '16:45', (select id from manual_slot_blueprints where opentime = '15:30'));
 end;$$;
 
 
@@ -148,7 +174,7 @@ do
 $$
 declare
     looped_slot record;
-	slot_owner_id int;
+	slot_owner_id bigint;
 begin
 	-- for every slot
     FOR looped_slot IN
