@@ -34,6 +34,7 @@ import uni.project.mylocalbooking.activities.MainActivity;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
+import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
 
@@ -142,7 +143,7 @@ public class ClientRegistrationActivity extends AppCompatActivity {
                     failedValidNameLastname();
                 }
                 // Cellphone validity
-                else if (!checkValidityCellphone(inputCellphone)){
+                else if (AppUser.tryFormatCellphone(inputCellphone) == null){
                     failedValidCellphone();
                 }
                 else if (!checkPassword(inputPassword)){
@@ -169,7 +170,7 @@ public class ClientRegistrationActivity extends AppCompatActivity {
                     if (!SessionPreferences.getUserPrefs().isEmpty()){
                         SessionPreferences.deleteSessionPreferences();
                     }
-                    api.register(new Client(defaultCoords, inputCellphone, inputEmail, inputName,
+                    api.register(new Client(defaultCoords, AppUser.tryFormatCellphone(inputCellphone), inputEmail, inputName,
                             inputLastname, birthday, inputPassword), inputPassword,
                             (a) -> confirmSignup(),
                             (b) -> failedApi()
@@ -283,20 +284,6 @@ public class ClientRegistrationActivity extends AppCompatActivity {
             return false;
         }
         else if (lastname.indexOf('\"') != -1 || lastname.contains("'")){
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Cellphone must start with the char 3, because of Italian regulations
-     * Moreover its length must be 10!
-     * */
-    private boolean checkValidityCellphone(String n){
-        if (n.length() != 10){
-            return false;
-        }
-        else if(n.charAt(0) != '3'){
             return false;
         }
         return true;

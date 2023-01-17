@@ -75,11 +75,12 @@ public class WeekdayPickerAdapter extends RecyclerView.Adapter<WeekdayPickerAdap
         public void setStartOfWeek(LocalDate startOfWeek) {
             for(int i = 0; i < weekRoot.getChildCount(); i++) {
                 View dayView = weekRoot.getChildAt(i);
-                int dayOfMonth = startOfWeek.plusDays(i + 1).getDayOfMonth();
+                LocalDate date = startOfWeek.plusDays(i);
+
+                int dayOfMonth = date.getDayOfMonth();
                 ((TextView) dayView.findViewById(R.id.weekday_number)).setText(Integer.toString(dayOfMonth));
                 AppCompatButton button = (AppCompatButton) dayView.findViewById(R.id.weekday_button);
 
-                LocalDate date = startOfWeek.plusDays(i);
                 if(date.equals(initialDate) || selectedDates.containsKey(date)) {
                     selectedDates.put(date, dayView); // overwrite view which may be old
                     setViewActive(dayView, true);

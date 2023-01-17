@@ -21,6 +21,11 @@ public class MyLocalBooking extends Application {
     private static AppUser currentUser;
     public static GeoApiContext geoApiContext;
 
+    public static void clearSessionData() {
+        SessionPreferences.deleteSessionPreferences();
+        currentUser = null;
+    }
+
     public void onCreate() {
         super.onCreate();
         MyLocalBooking.context = getApplicationContext();

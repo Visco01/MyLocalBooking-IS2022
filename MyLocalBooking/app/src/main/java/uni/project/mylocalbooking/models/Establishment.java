@@ -116,10 +116,8 @@ public class Establishment extends DatabaseModel {
         if(results.isEmpty())
             return results;
 
-        if(forcedRefresh) {
-            results.forEach(blueprint -> blueprint.invalidateReservations(date));
-            fetchedDates.remove(date);
-        }
+        if(forcedRefresh)
+            flagReservationsRefreshRequired(date, results);
 
         if(!fetchedDates.contains(date)) {
             boolean completeResults = IMyLocalBookingAPI.getApiInstance().getReservations(this, date);
@@ -135,6 +133,18 @@ public class Establishment extends DatabaseModel {
 
     public Collection<SlotBlueprint> getBlueprints(LocalDate date) throws PartialReservationsResultsException {
         return getBlueprints(date, false);
+    }
+
+    public void flagReservationsRefreshRequired(LocalDate date) {
+        Collection<SlotBlueprint> blueprints = this.blueprints.stream().filter(b ->
+                b.fromDate.compareTo(date) <= 0 && b.toDate.compareTo(date) > 0 &&
+                        b.weekdays.contains(date.getDayOfWeek())).collect(Collectors.toList());
+        flagReservationsRefreshRequired(date, blueprints);
+    }
+
+    private void flagReservationsRefreshRequired(LocalDate date, Collection<SlotBlueprint> blueprints) {
+        blueprints.forEach(blueprint -> blueprint.invalidateReservations(date));
+        fetchedDates.remove(date);
     }
 
         public Provider getProvider() {
