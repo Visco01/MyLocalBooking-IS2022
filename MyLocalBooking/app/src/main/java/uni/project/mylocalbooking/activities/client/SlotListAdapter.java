@@ -223,6 +223,10 @@ public class SlotListAdapter extends BaseAdapter {
         LocalDateTime slotStart = LocalDateTime.of(currentDate, timeFrame.getStart());
         LocalDateTime now = LocalDateTime.now();
         button.setOnClickListener(view -> listener.onManualSlotCreate(window));
-        button.setEnabled(now.compareTo(slotStart) < 0);
+
+        boolean isOld = now.compareTo(slotStart) >= 0;
+        button.setEnabled(!isOld);
+        button.setBackgroundColor(isOld ? 0x68CCB5B5 : 0xFF8BC34A);
+        ((TextView) viewRoot.findViewById(R.id.timeframe_title)).setText(isOld ? R.string.no_longer_available : R.string.available_for_booking);
     }
 }
