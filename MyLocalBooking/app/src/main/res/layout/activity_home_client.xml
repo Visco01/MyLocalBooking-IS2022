@@ -8,6 +8,7 @@
     tools:context=".activities.client.HomeClientActivity">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView4"
         android:layout_width="match_parent"
         android:layout_height="550dp"
         android:layout_marginHorizontal="50dp"

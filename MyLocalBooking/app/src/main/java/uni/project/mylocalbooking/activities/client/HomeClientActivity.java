@@ -23,6 +23,7 @@ import android.widget.Switch;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.MyLocalBooking;
@@ -74,6 +75,13 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
                 }
             });
         }
+
+        findViewById(R.id.refresh_establishments_button).setOnClickListener(v -> {
+            IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(est -> {
+                establishments = est.stream().collect(Collectors.toCollection(HashSet::new));
+                initRecyclerView();
+            }, null);
+        });
 
     }
 
