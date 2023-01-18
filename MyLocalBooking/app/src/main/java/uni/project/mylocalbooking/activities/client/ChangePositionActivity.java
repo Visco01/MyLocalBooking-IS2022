@@ -94,19 +94,21 @@ public class ChangePositionActivity extends AppCompatActivity {
 
     private void confirmChange() {
         DialogFragment newFragment = new SuccessFragment("Position Changed Successfully",
-                "### PLACEHOLDER ###");
+                "You position was changed successfully, remember that the available " +
+                        "establishments could have changed!");
         newFragment.show(getSupportFragmentManager(), "successAddEstablishment");
     }
 
     private void failedChange(){
         DialogFragment newFragment = new FailureFragment("Position change failed",
-                "### PLACEHOLDER ###");
+                "You can't leave the field empty. Please choose a position clicking the" +
+                        "button below!");
         newFragment.show(getSupportFragmentManager(), "failedAddEstablishment");
     }
 
     private void failedChange2(){
         DialogFragment newFragment = new FailureFragment("API Position change failed",
-                "### PLACEHOLDER ###");
+                "An unexpected error happened, please try again");
         newFragment.show(getSupportFragmentManager(), "failedAddEstablishment");
     }
 }

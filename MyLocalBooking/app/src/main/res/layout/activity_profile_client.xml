@@ -271,6 +271,7 @@
                         android:textSize="18dp"></TextView>
 
                     <TextView
+                        android:id="@+id/clientPosition"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -402,6 +403,8 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/button_confirm"
         android:text="Log out"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/navigationClient"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
