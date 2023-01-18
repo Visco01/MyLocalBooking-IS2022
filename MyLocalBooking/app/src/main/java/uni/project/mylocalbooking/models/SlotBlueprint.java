@@ -120,7 +120,7 @@ public abstract class SlotBlueprint extends DatabaseSubclassModel {
     public int getDaysOfWeekAsInt(){
         int result = 0;
         for (DayOfWeek w : weekdays)
-            result = result | 7 - w.getValue();
+            result = result | 1 << 7 - (int) w.getValue();
         return result;
     }
 

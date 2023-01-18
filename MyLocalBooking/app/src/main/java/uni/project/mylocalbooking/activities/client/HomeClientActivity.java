@@ -2,27 +2,23 @@ package uni.project.mylocalbooking.activities.client;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.Switch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import uni.project.mylocalbooking.MyLocalBooking;
@@ -74,7 +70,6 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
                 }
             });
         }
-
     }
 
     // Register the permissions callback, which handles the user's response to the system permissions dialog.
@@ -103,6 +98,15 @@ public class HomeClientActivity extends BaseNavigationActivity implements Adapte
     }
 
     private void initRecyclerView() {
+        SwipeRefreshLayout refreshLayout = findViewById(R.id.client_establishments_refresh);
+        refreshLayout.setOnRefreshListener(() -> {
+            IMyLocalBookingAPI.getApiInstance().getClosestEstablishments(ests -> {
+                establishments = ests.stream().collect(Collectors.toCollection(HashSet::new));
+                initRecyclerView();
+                refreshLayout.setRefreshing(false);
+            }, null);
+        });
+
         recyclerView = findViewById(R.id.recycleRview_establishment);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);

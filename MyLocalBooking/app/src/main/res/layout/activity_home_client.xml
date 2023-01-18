@@ -8,6 +8,7 @@
     tools:context=".activities.client.HomeClientActivity">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="48dp"
@@ -18,14 +19,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleRview_establishment"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/client_establishments_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/inactive"
-            android:backgroundTint="@color/inactive">
+            android:layout_height="match_parent">
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycleRview_establishment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/inactive"
+                android:backgroundTint="@color/inactive"/>
+
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     </androidx.cardview.widget.CardView>
 

@@ -25,11 +25,15 @@ import uni.project.mylocalbooking.models.PeriodicSlot;
 import uni.project.mylocalbooking.models.Slot;
 
 public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.ViewHolder2>{
+    public interface IReservationSelectedListener {
+        void onReservationSelected(Slot slot);
+    }
+    private final List<Slot> userBookings;
+    private final IReservationSelectedListener listener;
 
-    List<Slot> userBookings;
-
-    public Adapter_myBookings(List<Slot> slots) {
+    public Adapter_myBookings(IReservationSelectedListener listener, List<Slot> slots) {
         this.userBookings = slots;
+        this.listener = listener;
     }
 
     @NonNull
@@ -76,13 +80,7 @@ public class Adapter_myBookings extends RecyclerView.Adapter<Adapter_myBookings.
 
         @Override
         public void onClick(View view) {
-            final Context context = MyLocalBooking.getAppContext();
-            Intent intent = new Intent(context, ReservationDetailActivity.class);
-            intent.putExtra("establishment", establishment);
-            intent.putExtra("slot", slot);
-            intent.putExtra("blueprint", slot.blueprint);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            listener.onReservationSelected(slot);
         }
 
     }

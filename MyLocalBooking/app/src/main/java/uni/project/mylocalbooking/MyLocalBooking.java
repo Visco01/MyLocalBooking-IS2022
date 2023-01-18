@@ -4,28 +4,27 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
+import android.util.Log;
 
-import androidx.lifecycle.LiveData;
-
-import com.google.maps.GaeRequestHandler;
 import com.google.maps.GeoApiContext;
-
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
+import uni.project.mylocalbooking.api.LoginAPI;
 import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Client;
 import uni.project.mylocalbooking.models.Coordinates;
-import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.Provider;
 
 public class MyLocalBooking extends Application {
     private static Context context;
     private static AppUser currentUser;
     public static GeoApiContext geoApiContext;
+
+    public static void clearSessionData() {
+        SessionPreferences.deleteSessionPreferences();
+        currentUser = null;
+    }
 
     public void onCreate() {
         super.onCreate();
@@ -36,6 +35,10 @@ public class MyLocalBooking extends Application {
             MyLocalBooking.geoApiContext = new GeoApiContext.Builder()
                     .apiKey(ai.metaData.getString("com.google.android.geo.API_KEY"))
                     .build();
+
+            String username = ai.metaData.getString("RAILS_API_USERNAME");
+            String password = ai.metaData.getString("RAILS_API_PASSWORD");
+            LoginAPI.setCredentials(username, password);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

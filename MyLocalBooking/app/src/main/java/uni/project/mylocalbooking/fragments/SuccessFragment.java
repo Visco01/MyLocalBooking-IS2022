@@ -34,17 +34,7 @@ public class SuccessFragment extends DialogFragment {
         builder.setMessage(successMessage).setTitle(successTitle)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-                        if (Objects.equals((String) SessionPreferences.getUserPrefs().get("usertype"), "client")){
-                            startActivity(new Intent(MyLocalBooking.getAppContext(), HomeClientActivity.class));
-                        }
-                        else if (Objects.equals((String) SessionPreferences.getUserPrefs().get("usertype"), "provider")){
-                            startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
-                        }
-                        else{
-                            // Crash
-                            System.out.println("Error type");
-                        }
+                        getActivity().finish();
                     }
                 });
         // Create the AlertDialog object and return it
@@ -55,15 +45,6 @@ public class SuccessFragment extends DialogFragment {
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
         // User type dynamic
-        if (Objects.equals((String) SessionPreferences.getUserPrefs().get("usertype"), "client")){
-            startActivity(new Intent(MyLocalBooking.getAppContext(), HomeClientActivity.class));
-        }
-        else if (Objects.equals((String) SessionPreferences.getUserPrefs().get("usertype"), "provider")){
-            startActivity(new Intent(MyLocalBooking.getAppContext(), HomeProviderActivity.class));
-        }
-        else{
-            // Crash
-            System.out.println("Error type");
-        }
+        getActivity().finish();
     }
 }

@@ -69,4 +69,5 @@
     <string name="next">Next</string>
     <string name="create_blueprint">Create blueprint</string>
     <string name="available_time">Available time</string>
+    <string name="no_longer_available">No longer available</string>
 </resources>

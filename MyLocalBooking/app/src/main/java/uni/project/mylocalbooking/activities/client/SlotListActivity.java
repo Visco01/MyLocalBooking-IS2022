@@ -66,8 +66,9 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
 
         ((ListView) findViewById(R.id.slot_list)).setAdapter(adapter);
 
-        ((SwipeRefreshLayout) findViewById(R.id.swiperefresh)).setOnRefreshListener(() -> {
-            loadDate(weekdayPickerViewModel.getSelectedDate().getValue(), false);
+        SwipeRefreshLayout refreshLayout = findViewById(R.id.swiperefresh);
+        refreshLayout.setOnRefreshListener(() -> {
+            loadDate(weekdayPickerViewModel.getSelectedDate().getValue(), true, () -> refreshLayout.setRefreshing(false));
         });
 
         weekdayPickerViewModel.getSelectedDate().observe(this, date -> {
@@ -75,7 +76,7 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
         });
     }
 
-    private void loadDate(LocalDate date, boolean refresh) {
+    private void loadDate(LocalDate date, boolean refresh, Runnable callback) {
         MutableLiveData<Collection<SlotBlueprint>> blueprints = new MutableLiveData<>();
         blueprints.observe(this, bp -> {
             adapter.onRefresh(date, bp);
@@ -93,7 +94,12 @@ public class SlotListActivity extends AppCompatActivity implements SlotListAdapt
                 findViewById(R.id.reservations_warning_text).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.reservations_warning_text)).setText(R.string.get_reservation_error_generic_message);
             }
+            if(callback != null) callback.run();
         }).start();
+    }
+
+    private void loadDate(LocalDate date, boolean refresh) {
+        loadDate(date, refresh, null);
     }
 
     @Nullable

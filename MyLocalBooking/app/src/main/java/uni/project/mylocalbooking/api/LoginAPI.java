@@ -7,11 +7,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class LoginAPI {
-    private static final String username = "admin";
-    private static final String password = "$2a$12$3K1dWlkO3ZcKZfjUgvPbGeG83i6KxcITC7ap.D3/wq5/GHOhMuRZe";
+public class LoginAPI {
     private static final String url = "https://mylocalbooking-api-o1he.onrender.com/api/auth";
-    private static final String requestBody = "{ \"auth\": { \"username\": \"" + LoginAPI.username + "\", \"password\": \"" + LoginAPI.password + "\" } }";
+    private static String requestBody;
     private static final String jwt = null;
 
     public static JsonObjectRequest getLoginRequest(){
@@ -55,5 +53,9 @@ class LoginAPI {
     
     public static <T> void addWaitingRequest(IAPICall<T> call){
         WaitingRequestsSingleton.getInstance().add(call);
+    }
+
+    public static void setCredentials(String username, String password){
+        requestBody = "{ \"auth\": { \"username\": \"" + username + "\", \"password\": \"" + password + "\" } }";
     }
 }

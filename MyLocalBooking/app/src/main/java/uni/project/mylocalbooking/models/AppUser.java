@@ -23,6 +23,14 @@ public abstract class AppUser extends DatabaseSubclassModel {
         throw new IllegalArgumentException();
     }
 
+    public static String tryFormatCellphone(String cellphone) {
+        switch (cellphone.length()) {
+            case 10:    return "039".concat(cellphone);
+            case 12:    return "0".concat(cellphone);
+            case 13:    return cellphone;
+            default:    return null;
+        }
+    }
     public final String cellphone;
     public final String email;
     public final String firstname;

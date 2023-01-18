@@ -34,6 +34,7 @@ import uni.project.mylocalbooking.activities.MainActivity;
 import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.fragments.FailureFragment;
 import uni.project.mylocalbooking.fragments.SuccessFragment;
+import uni.project.mylocalbooking.models.AppUser;
 import uni.project.mylocalbooking.models.Provider;
 
 public class ProviderRegistrationActivity extends AppCompatActivity {
@@ -143,7 +144,7 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
                     failedValidNameLastname();
                 }
                 // Cellphone validity
-                else if (!checkValidityCellphone(inputCellphone)){
+                else if (AppUser.tryFormatCellphone(inputCellphone) == null){
                     failedValidCellphone();
                 }
                 else if (!checkPassword(inputPassword)){
@@ -169,7 +170,7 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
                     if (!SessionPreferences.getUserPrefs().isEmpty()){
                         SessionPreferences.deleteSessionPreferences();
                     }
-                    api.register(new Provider(false, inputCompanyName, inputMaxStrikes, null, inputCellphone,
+                    api.register(new Provider(false, inputCompanyName, inputMaxStrikes, null, AppUser.tryFormatCellphone(inputCellphone),
                                     inputEmail, inputName, inputLastname, birthday, inputPassword), inputPassword,
                             (a) -> confirmSignup(),
                             (b) -> failedApi()
@@ -284,20 +285,6 @@ public class ProviderRegistrationActivity extends AppCompatActivity {
             return false;
         }
         else if (companyName.indexOf('\"') != -1 || companyName.contains("'")){
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Cellphone must start with the char 3, because of Italian regulations
-     * Moreover its length must be 10!
-     * */
-    private boolean checkValidityCellphone(String n){
-        if (n.length() != 10){
-            return false;
-        }
-        else if(n.charAt(0) != '3'){
             return false;
         }
         return true;
