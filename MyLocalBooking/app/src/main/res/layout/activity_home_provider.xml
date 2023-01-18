@@ -65,19 +65,12 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom">
 
-                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                    android:id="@+id/provider_establishments_refresh"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/prenotation_for_today_rv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/prenotation_for_today_rv"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                </androidx.recyclerview.widget.RecyclerView>
 
             </androidx.cardview.widget.CardView>
 
