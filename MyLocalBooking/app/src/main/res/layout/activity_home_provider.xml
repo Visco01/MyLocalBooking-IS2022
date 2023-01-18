@@ -7,7 +7,16 @@
     android:background="@drawable/sfondo_local_booking"
     tools:context=".activities.provider.HomeProviderActivity">
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/refresh_provider_establishments_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardview_establishments" />
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardview_establishments"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="50dp"
@@ -20,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/navigationProvider"
+        app:layout_constraintTop_toBottomOf="@+id/navigationProvider"
         tools:layout_editor_absoluteX="50dp">
 
         <LinearLayout
@@ -56,12 +65,19 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/prenotation_for_today_rv"
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/provider_establishments_refresh"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                </androidx.recyclerview.widget.RecyclerView>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/prenotation_for_today_rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             </androidx.cardview.widget.CardView>
 
