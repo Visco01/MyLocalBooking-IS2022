@@ -57,8 +57,8 @@ public class HomeProviderActivity extends BaseNavigationActivity {
         prenotationTodayList = new ArrayList<>();
 
         prenotationTodayList.add(new ModelPrenotationToday("Calcetto Coletti", "Giorgio rossi", "11:00:00", "12:00:00", "43123"));
-        prenotationTodayList.add(new ModelPrenotationToday("Calcetto Coletti", "Giorgio rossi", "11:00:00", "12:00:00", "43123"));
-        prenotationTodayList.add(new ModelPrenotationToday("Calcetto Coletti", "Giorgio rossi", "11:00:00", "12:00:00", "43123"));
+        prenotationTodayList.add(new ModelPrenotationToday("Calcetto Coletti", "Mirco Mellara", "13:00:00", "14:00:00", "98273"));
+        prenotationTodayList.add(new ModelPrenotationToday("Calcetto Coletti", "Pietro Donega", "17:00:00", "18:00:00", "07273"));
 
     }
 

@@ -403,6 +403,8 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/button_confirm"
         android:text="Log out"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/navigationClient"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout2"
