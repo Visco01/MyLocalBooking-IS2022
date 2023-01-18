@@ -154,6 +154,10 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String requestBody = JSONBodyGenerator.generateAddBlueprintBody(blueprint);
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
             try {
+                if(response == null) { // TODO: fix lazy workaround
+                    if(onSuccess != null) onSuccess.apply(blueprint);
+                    return;
+                }
                 String status = response.getString("status");
                 if(status.equals("OK")){
                     blueprint.setId(Long.valueOf(response.getString("slot_blueprint_id")));
@@ -408,7 +412,7 @@ class MyLocalBookingAPI implements IMyLocalBookingAPI {
         String requestBody = JSONBodyGenerator.generateReservationBody(currentUserId, slot.getId());
         Utility.callAPI(MyLocalBookingAPI.jwt, requestBody, url, "POST", (RunOnResponse<JSONObject>) response -> {
             try {
-                if(response == null) {
+                if(response == null) { // TODO: fix lazy workaround
                     if(onSuccess != null) onSuccess.apply(slot);
                     return;
                 }

@@ -1,16 +1,22 @@
 package uni.project.mylocalbooking.activities.provider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.stream.Collectors;
+
 import uni.project.mylocalbooking.MyLocalBooking;
 import uni.project.mylocalbooking.R;
 import uni.project.mylocalbooking.SessionPreferences;
 import uni.project.mylocalbooking.activities.BaseNavigationActivity;
 import uni.project.mylocalbooking.activities.LoginActivity;
+import uni.project.mylocalbooking.api.IMyLocalBookingAPI;
 import uni.project.mylocalbooking.models.Establishment;
 import uni.project.mylocalbooking.models.Provider;
 
@@ -49,6 +55,15 @@ public class MyEstablishments extends BaseNavigationActivity implements Adapter_
     }
 
     private void initRecyclerView() {
+        SwipeRefreshLayout refreshLayout = findViewById(R.id.provider_establishments_refresh);
+        refreshLayout.setOnRefreshListener(() -> {
+            IMyLocalBookingAPI.getApiInstance().getOwnedEstablishments(ests -> {
+                establishments = ests.stream().collect(Collectors.toCollection(HashSet::new));
+                initRecyclerView();
+                refreshLayout.setRefreshing(false);
+            }, null);
+        });
+
         recyclerView = findViewById(R.id.my_establishment_rv);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);

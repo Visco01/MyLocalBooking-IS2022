@@ -6,13 +6,12 @@ import uni.project.mylocalbooking.models.ITimeFrame;
 import uni.project.mylocalbooking.models.PeriodicSlotBlueprint;
 
 public class PeriodicBlueprintCreationFragment extends BlueprintCreationFragment {
-    private static final String TITLE_TIME = "Time window";
     private PeriodicSlotBlueprint blueprint;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addTimeFramePicker(TITLE_TIME, cardView -> {
+        addTimeFramePicker(cardView -> {
             super.end(blueprint);
         });
     }

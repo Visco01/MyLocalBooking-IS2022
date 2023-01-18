@@ -71,6 +71,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
     protected static final String TITLE_FROM_DATE = "From date";
     protected static final String TITLE_TO_DATE = "To date";
     protected static final String TITLE_RESERVATIONS_LIMIT = "Reservation limit";
+    private static final String TITLE_TIME = "Time window";
     protected static final int TIME_GRANULARITY_MINUTES = 15;
 
     private String lastValidStep;
@@ -173,7 +174,15 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             toDate = LocalDate.of(year, month + 1, dayOfMonth);
         });
-        createViewCardView(TITLE_TO_DATE, calendarView, cardView -> {});
+        createViewCardView(TITLE_TO_DATE, calendarView, cardView -> {
+            conflictingBlueprints = conflictingBlueprints.stream().filter(b -> {
+                return fromDate.compareTo(b.toDate) <= 0 && toDate.compareTo(b.fromDate) >= 0;
+            }).collect(Collectors.toList());
+
+            CollapsibleCardViewFragment timePickerCardView = (CollapsibleCardViewFragment) getChildFragmentManager().findFragmentByTag(TITLE_TIME);
+            LinearLayout innerView = (LinearLayout) timePickerCardView.innerView;
+            initTimeFramePicker(innerView);
+        });
     }
 
     private void addReservationLimit() {
@@ -253,19 +262,13 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
 
     protected abstract void onAddBlueprint(ITimeFrame timeFrame);
 
-    protected void addTimeFramePicker(String title, Consumer<CollapsibleCardViewFragment> onClick) {
-        List<ITimeFrame> availableTimeframes = extractTimeFrames(
-                blueprints.stream().map(b -> (ITimeFrame) b).collect(Collectors.toList())
-        );
-
-        LinearLayout layout = new LinearLayout(requireContext());
-        layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setTag("TIMEFRAMES LAYOUT");
+    private void initTimeFramePicker(LinearLayout baseLayout) {
+        baseLayout.removeAllViews();
+        List<ITimeFrame> availableTimeframes = extractTimeFrames();
 
         for(int i = 0; i < availableTimeframes.size(); i++) {
-            View view = getLayoutInflater().inflate(R.layout.manual_blueprint_list_item, layout, false);
-            layout.addView(view, i);
+            View view = getLayoutInflater().inflate(R.layout.manual_blueprint_list_item, baseLayout, false);
+            baseLayout.addView(view, i);
             ITimeFrame timeFrame = availableTimeframes.get(i);
             view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             ((TextView) view.findViewById(R.id.open_time)).setText(timeFrame.getStart().toString());
@@ -276,14 +279,29 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
             button.setText(R.string.create_blueprint);
             button.setOnClickListener(v -> onAddBlueprint(timeFrame));
         }
-
-        createViewCardView(title, layout, onClick);
     }
 
-    private List<ITimeFrame> extractTimeFrames(Collection<ITimeFrame> blueprints) {
+    // TODO: does not currently support more than one cardViews of this type
+    protected void addTimeFramePicker(Consumer<CollapsibleCardViewFragment> onClick) {
+
+        LinearLayout layout = new LinearLayout(requireContext());
+        layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setTag("TIMEFRAMES LAYOUT");
+
+        createViewCardView(TITLE_TIME, layout, onClick);
+    }
+
+    private List<ITimeFrame> extractTimeFrames() {
+        List<ITimeFrame> blueprints = conflictingBlueprints.stream()
+                .map(b -> (ITimeFrame) b)
+                .sorted(Comparator.comparing(ITimeFrame::getStart))
+                .collect(Collectors.toList());
+
         List<ITimeFrame> results = new ArrayList<>();
 
         LocalTime previous = LocalTime.MIN;
+
         for(ITimeFrame blueprint : blueprints) {
             if(previous.compareTo(blueprint.getStart()) < 0) {
                 final LocalTime start = previous;
@@ -305,7 +323,7 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
         }
 
         // TODO: right bound should allow 00:00
-        LocalTime maxTime = LocalTime.of(23, 59);
+        LocalTime maxTime = LocalTime.of(23, 45);
         if(previous.compareTo(maxTime) < 0) {
             final LocalTime start = previous;
             if(start.plusMinutes(TIME_GRANULARITY_MINUTES).compareTo(maxTime) <= 0)
@@ -323,7 +341,6 @@ public abstract class BlueprintCreationFragment extends Fragment implements Coll
             });
         }
 
-        results.sort(Comparator.comparing(ITimeFrame::getStart));
         return results;
     }
 }
